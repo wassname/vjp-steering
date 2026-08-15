@@ -1,4 +1,4 @@
-"""Render the public result table and the candour Pareto plot from one CSV."""
+"""Render the public result table and the sycophancy Pareto plot from one CSV."""
 
 import csv
 import html
@@ -122,7 +122,7 @@ def _markdown(table: list[list[str]]) -> str:
     lines = [
         "# Results",
         "",
-        "All rows use the same all-100 evaluation cohort. The figure shows the candour direction.",
+        "All rows use the same all-100 evaluation cohort. The figure shows the sycophancy-reducing direction.",
         "",
         "![Judged effect against off-axis change](results.svg)",
         "",
@@ -145,7 +145,7 @@ def _html(table: list[list[str]]) -> str:
         "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. "
-        "The figure shows the candour direction.</p><img src='results.svg'>"
+        "The figure shows the sycophancy-reducing direction.</p><img src='results.svg'>"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
