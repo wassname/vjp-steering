@@ -20,11 +20,11 @@ Out: the method search, forced-choice moral evaluation, old variants, the select
 
 ## Tasks
 
-- [/] T1 (R1-R5): Review the design before code.
+- [x] T1 (R1-R5): Review the design before code.
   - verify: external plan review finds no dropped requirement or silent dependency on `j-steer-dev`.
   - likely failure: the public repo imports a local path.
   - sneaky failure: the plot uses the selected 20 questions and repeats the winner's curse.
-- [ ] T2 (R1-R2): Write the VJP-delta extraction and use `steering-lite` for the shared runtime.
+- [x] T2 (R1-R2): Write the VJP-delta extraction and use `steering-lite` for the shared runtime.
   - verify: a deterministic tiny-model check compares token gradients and each reduction with an independent reference calculation. Search for copied baseline or hook functions and local path dependencies.
   - likely failure: a hook returns detached activations, so the VJP fails.
   - sneaky failure: token masks or class subtraction differ while the output shape still passes.
@@ -48,6 +48,7 @@ The VJP-delta method uses a target contrast `c = mean(h_pos) - mean(h_neg)`. It 
 ## Log
 
 - 2026-08-15 CODEX: Use the existing `steering-lite` vector and hook runtime. This removes copied baseline and hook code.
+- 2026-08-15 CODEX: The VJP smoke check and notebook structure check pass. The all-100 PCA and random measurements are queued before result export.
 
 ## TODO
 
