@@ -12,11 +12,11 @@ def vjp_delta(P_pos, P_neg, L, T):
             H ← forward_with_source_activations(batch, L, T)
             for l in L:
                 G[l] ← ∇_{H[l]} sum(H[T] * M[..., None] * c)  # G ∈ ℝ^{b×s×d}
-                q[P, l] += sum_s(G[l] * M[..., None]) / sum_s(M)
+                q[P, l] += sum_b(sum_s(G[l] * M[..., None]) / sum_s(M))
         q[P] ← q[P] / len(P)
 
     for l in L:
-        v[l] ← (q[P_pos, l] - q[P_neg, l]) / norm(q[P_pos, l])
+        v[l] ← (q[P_pos, l] - q[P_neg, l]) / norm(q[P_pos, l] - q[P_neg, l])
     return v
 
 
