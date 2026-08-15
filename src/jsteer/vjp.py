@@ -12,6 +12,7 @@ positions. Each source-layer result is normalized before steering.
 from contextlib import contextmanager
 
 import torch
+from jaxtyping import Bool, Float, Int
 from steering_lite import Vector, VjpDeltaC
 
 
@@ -55,7 +56,9 @@ def _encode(model, tokenizer, prompts: list[str], max_length: int):
     ).to(next(model.parameters()).device)
 
 
-def _valid_mask(attention_mask: torch.Tensor, skip_first: int) -> torch.Tensor:
+def _valid_mask(
+    attention_mask: Int[torch.Tensor, "b s"], skip_first: int
+) -> Bool[torch.Tensor, "b s"]:
     positions = torch.arange(attention_mask.shape[1], device=attention_mask.device)
     real_length = attention_mask.sum(dim=1, keepdim=True)
     return (
@@ -93,10 +96,13 @@ def _batch_gradients(
     prompts: list[str],
     layers: tuple[int, ...],
     target_layer: int,
-    cotangent: torch.Tensor,
+    cotangent: Float[torch.Tensor, " d"],
     skip_first: int,
     max_length: int,
-) -> tuple[dict[int, torch.Tensor], torch.Tensor]:
+) -> tuple[
+    dict[int, Float[torch.Tensor, "b s d"]],
+    Bool[torch.Tensor, "b s"],
+]:
     encoded = _encode(model, tokenizer, prompts, max_length)
     valid = _valid_mask(encoded["attention_mask"], skip_first)
     if valid.sum(dim=1).min() == 0:
@@ -121,11 +127,11 @@ def _class_mean_vjp(
     prompts: list[str],
     layers: tuple[int, ...],
     target_layer: int,
-    cotangent: torch.Tensor,
+    cotangent: Float[torch.Tensor, " d"],
     batch_size: int,
     max_length: int,
     skip_first: int,
-) -> dict[int, torch.Tensor]:
+) -> dict[int, Float[torch.Tensor, " d"]]:
     totals = {layer: torch.zeros_like(cotangent, dtype=torch.float32) for layer in layers}
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
