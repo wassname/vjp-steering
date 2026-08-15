@@ -1,0 +1,22 @@
+[project]
+name = "jsteer"
+version = "0.1.0"
+description = "VJP-delta activation steering"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate>=1.6",
+    "marimo>=0.14",
+    "matplotlib>=3.10",
+    "numpy>=1.26",
+    "steering-lite @ git+https://github.com/wassname/steering-lite.git@7f4df9b",
+    "tabulate>=0.9",
+    "transformers>=4.51",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.28,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+exclude-newer = "8 days"
