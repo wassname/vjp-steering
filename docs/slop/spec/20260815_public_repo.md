@@ -43,7 +43,7 @@ Out: the method search, forced-choice moral evaluation, old variants, the select
 
 ## Context
 
-The VJP-delta method uses a target contrast `c = mean(h_pos) - mean(h_neg)`. It averages `J(x)^T c` over valid token positions for each class, subtracts the class means, and normalizes each source-layer vector. `+C` follows the positive persona. The public data uses all 100 questions when available. The selected 20-question set is out of scope.
+The VJP-delta method uses a target contrast `c = mean(h_pos) - mean(h_neg)`. It averages `J(x)^T c` over valid token positions for each class, subtracts the class means, and normalizes each source-layer vector. `+C` follows the positive persona. The public data uses all 100 questions when available. The selected 20-question set is out of scope. The target is fixed before judging: `+C` is more sycophancy and `-C` is more candid. Each bare-versus-steered pair is judged in both presentation orders and the renderer averages the signed contrasts.
 
 ## Log
 
