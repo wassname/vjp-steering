@@ -2,6 +2,14 @@
 
 `j-steer` is a small VJP-delta activation-steering reference. The package contains one method. It uses [`steering-lite`](https://github.com/wassname/steering-lite) for the shared vector, hook, mean-difference, PCA, and random-direction code.
 
+## Point
+
+The experiment asks if pulling a persona contrast backward through a model makes a cleaner steering direction than the ordinary activation difference. This is a hypothesis, not a result.
+
+The public comparison uses all 100 Bullshit Benchmark questions. It measures VJP-delta, mean difference, PCA, and three seeded random directions. The key plot shows judged movement away from sycophancy against judged off-axis change. Output caps exclude degenerate text.
+
+The hope is a VJP-delta curve outside the random band and not dominated by the baselines. A curve inside the band, or one dominated by a baseline, does not support the method.
+
 The VJP-delta method starts with the usual target-layer contrast:
 
 $$c = \mathbb{E}[h_T^+] - \mathbb{E}[h_T^-].$$
