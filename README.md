@@ -14,6 +14,8 @@ The VJP-delta method starts with the usual target-layer contrast:
 
 $$c = \mathbb{E}[h_T^+] - \mathbb{E}[h_T^-].$$
 
+Source layers precede the target layer.
+
 It pulls that contrast back to each source layer and subtracts the two prompt classes:
 
 $$v_L = \mathbb{E}_{x^+}[J_{L \to T}(x)^T c] - \mathbb{E}_{x^-}[J_{L \to T}(x)^T c].$$

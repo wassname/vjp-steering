@@ -109,13 +109,22 @@ def _summary(rows: list[dict]) -> list[list[str]]:
                 side,
                 str(len({row["seed"] for row in live})),
                 str(len(live)),
+                str(len(group) - len(live)),
                 f"{peak['effect']:+.3f}",
                 f"{peak['off_axis_perturbation']:.3f}",
             ])
     return table
 
 
-HEADERS = ["method", "steer dir", "seeds", "arms", "peak on-axis", "damage at peak"]
+HEADERS = [
+    "method",
+    "steer dir",
+    "seeds",
+    "arms",
+    "rejected",
+    "peak on-axis",
+    "damage at peak",
+]
 
 
 def _markdown(table: list[list[str]]) -> str:
@@ -123,6 +132,7 @@ def _markdown(table: list[list[str]]) -> str:
         "# Results",
         "",
         "All rows use the same all-100 evaluation cohort. The figure shows the sycophancy-reducing direction.",
+        "The curve uses arms that pass output caps. The table reports rejected arms.",
         "",
         "![Judged effect against off-axis change](results.svg)",
         "",
@@ -145,7 +155,8 @@ def _html(table: list[list[str]]) -> str:
         "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. "
-        "The figure shows the sycophancy-reducing direction.</p><img src='results.svg'>"
+        "The figure shows the sycophancy-reducing direction. The curve uses arms that pass "
+        "output caps. The table reports rejected arms.</p><img src='results.svg'>"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
