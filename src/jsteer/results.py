@@ -5,13 +5,18 @@ import html
 from html.parser import HTMLParser
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "random")
+LABELS = {
+    "vjp_delta": "VJP-delta",
+    "mean_diff": "mean difference",
+    "pca": "PCA",
+}
 COHORT_FIELDS = (
     "model",
     "tokenizer",
@@ -60,7 +65,7 @@ def _curve(rows: list[dict], grid: np.ndarray) -> np.ndarray:
     return values
 
 
-def plot(rows: list[dict], output: Path | None = None):
+def plot(rows: list[dict]) -> go.Figure:
     side = "-C"
     selected = [row for row in rows if row["side"] == side]
     maximum = max(row["off_axis_perturbation"] for row in selected if row["admissible"])
@@ -70,30 +75,48 @@ def plot(rows: list[dict], output: Path | None = None):
         for seed in sorted({row["seed"] for row in selected if row["method"] == "random"})
     ])
 
-    figure, axis = plt.subplots(figsize=(7.2, 5.0))
     alive = np.isfinite(random_curves).sum(axis=0)
-    low = np.nanmin(random_curves, axis=0)
-    high = np.nanmax(random_curves, axis=0)
-    mean = np.nanmean(random_curves, axis=0)
-    axis.fill_betweenx(grid, low, high, where=alive > 0, color="0.82", label="random directions")
-    axis.plot(mean, grid, color="0.35", linewidth=1.5)
+    low = np.array([np.min(column[np.isfinite(column)]) if count else np.nan for column, count in zip(random_curves.T, alive)])
+    high = np.array([np.max(column[np.isfinite(column)]) if count else np.nan for column, count in zip(random_curves.T, alive)])
+    mean = np.array([np.mean(column[np.isfinite(column)]) if count else np.nan for column, count in zip(random_curves.T, alive)])
+    figure = go.Figure()
+    figure.add_trace(go.Scatter(x=high, y=grid, mode="lines", line={"width": 0}, hoverinfo="skip", showlegend=False))
+    figure.add_trace(go.Scatter(
+        x=low, y=grid, mode="lines", fill="tonextx", fillcolor="rgba(130, 130, 130, 0.25)",
+        line={"width": 0}, hoverinfo="skip", showlegend=False,
+    ))
+    figure.add_trace(go.Scatter(x=mean, y=grid, mode="lines", line={"color": "#666666", "width": 1.5}, hoverinfo="skip", showlegend=False))
 
-    colors = {"vjp_delta": "#08519c", "mean_diff": "#111111", "pca": "#666666"}
+    colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#666666"}
     for method in METHODS[:-1]:
-        curve = _curve([row for row in selected if row["method"] == method], grid)
-        axis.plot(curve, grid, color=colors[method], linewidth=2.2)
+        method_rows = [row for row in selected if row["method"] == method]
+        curve = _curve(method_rows, grid)
+        if not np.isfinite(curve).any():
+            continue
+        figure.add_trace(go.Scatter(
+            x=curve, y=grid, mode="lines", line={"color": colors[method], "width": 3},
+            hoverinfo="skip", showlegend=False,
+        ))
+        points = sorted((row for row in method_rows if row["admissible"] and row["effect"] > 0), key=lambda row: row["off_axis_perturbation"])
+        figure.add_trace(go.Scatter(
+            x=[row["effect"] for row in points], y=[row["off_axis_perturbation"] for row in points],
+            mode="markers", marker={"color": colors[method], "size": 8},
+            text=[f"C={row['C']:g}" for row in points], hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+            showlegend=False,
+        ))
         last = np.flatnonzero(np.isfinite(curve))[-1]
-        axis.text(curve[last], grid[last], f" {method}", color=colors[method], va="center")
+        figure.add_annotation(x=curve[last], y=grid[last], text=LABELS[method], showarrow=False, xshift=8, font={"color": colors[method], "size": 14})
 
-    axis.scatter([0], [0], marker="D", color="black", zorder=5)
-    axis.text(0, 0, " bare", va="bottom")
-    axis.text(np.nanmax(high), grid[np.nanargmax(high)], " random directions", color="0.35")
-    axis.set(xlabel="judged on-axis change", ylabel="absolute judged off-axis change")
-    axis.invert_yaxis()
-    axis.spines[["top", "right"]].set_visible(False)
-    figure.tight_layout()
-    if output is not None:
-        figure.savefig(output, dpi=180)
+    figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
+    figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
+    figure.add_annotation(x=np.nanmax(high), y=grid[np.nanargmax(high)], text="random mean and range", showarrow=False, xshift=12, font={"color": "#666666", "size": 14})
+    figure.update_layout(
+        title="Sycophancy reduction: 100 Bullshit Benchmark questions",
+        width=900, height=550, margin={"l": 80, "r": 30, "t": 65, "b": 70},
+        plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
+        xaxis={"title": "judged movement away from sycophancy", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
+        yaxis={"title": "absolute judged off-axis change (lower is better)", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False, "autorange": "reversed"},
+    )
     return figure
 
 
@@ -103,15 +126,15 @@ def _summary(rows: list[dict]) -> list[list[str]]:
         for side in ("-C", "+C"):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
             live = [row for row in group if row["admissible"]]
-            peak = max(live, key=lambda row: row["effect"])
+            peak = max(live, key=lambda row: row["effect"]) if live else None
             table.append([
                 method,
                 side,
                 str(len({row["seed"] for row in live})),
                 str(len(live)),
                 str(len(group) - len(live)),
-                f"{peak['effect']:+.3f}",
-                f"{peak['off_axis_perturbation']:.3f}",
+                f"{peak['effect']:+.3f}" if peak else "-",
+                f"{peak['off_axis_perturbation']:.3f}" if peak else "-",
             ])
     return table
 
@@ -143,7 +166,7 @@ def _markdown(table: list[list[str]]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def _html(table: list[list[str]]) -> str:
+def _html(table: list[list[str]], figure_html: str) -> str:
     head = "".join(f"<th>{html.escape(cell)}</th>" for cell in HEADERS)
     body = "".join(
         "<tr>" + "".join(f"<td>{html.escape(cell)}</td>" for cell in row) + "</tr>"
@@ -156,7 +179,7 @@ def _html(table: list[list[str]]) -> str:
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. "
         "The figure shows the sycophancy-reducing direction. The curve uses arms that pass "
-        "output caps. The table reports rejected arms.</p><img src='results.svg'>"
+        f"output caps. The table reports rejected arms.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
@@ -203,12 +226,13 @@ def main() -> None:
     rows = _rows()
     table = _summary(rows)
     markdown_text = _markdown(table)
-    html_text = _html(table)
+    figure = plot(rows)
+    html_text = _html(table, figure.to_html(full_html=False, include_plotlyjs="cdn"))
     _check_equivalent(markdown_text, html_text)
     (ROOT / "results.md").write_text(markdown_text)
     (ROOT / "results.html").write_text(html_text)
-    plot(rows, ROOT / "results.svg")
-    plot(rows, ROOT / "results.png")
+    figure.write_image(ROOT / "results.svg")
+    figure.write_image(ROOT / "results.png", scale=2)
     print(f"wrote {len(table)} table rows from {len(rows)} measured arms")
 
 
