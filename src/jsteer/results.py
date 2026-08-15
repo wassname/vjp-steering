@@ -2,6 +2,7 @@
 
 import csv
 import html
+from statistics import median
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -11,6 +12,7 @@ import plotly.graph_objects as go
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "random")
+RANDOM_SEEDS = 10
 LABELS = {
     "vjp_delta": "vjp_delta (ours)",
     "mean_diff": "mean_diff (baseline)",
@@ -42,21 +44,30 @@ def _rows(path: Path = DATA) -> list[dict]:
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"].lower() == "true"
-    if len({row["seed"] for row in rows if row["method"] == "random"}) < 3:
-        raise ValueError("the random band needs at least three seeds")
+    if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
+        raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
     return rows
 
 
 def plot(rows: list[dict]) -> go.Figure:
     figure = go.Figure()
     valid = [row for row in rows if row["admissible"]]
-    random = [row for row in valid if row["method"] == "random" and row["side"] == "-C"]
+    x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
+    random = [row for row in rows if row["method"] == "random"]
+    random_seeds = sorted({row["seed"] for row in random})
+    random_arm = {(row["seed"], row["C"], row["side"]): row for row in random}
     cone = [(0.0, 0.0, 0.0, 0.0)]
     for C in sorted({row["C"] for row in random}):
-        points = [row for row in random if row["C"] == C]
-        cone.append((sum(row["effect"] for row in points) / len(points),
-                     sum(row["off_axis_perturbation"] for row in points) / len(points),
-                     min(row["effect"] for row in points), max(row["effect"] for row in points)))
+        coherent = [
+            seed for seed in random_seeds
+            if random_arm[seed, C, "+C"]["admissible"] and random_arm[seed, C, "-C"]["admissible"]
+        ]
+        if len(coherent) < RANDOM_SEEDS // 2:
+            break
+        points = [random_arm[seed, C, side] for seed in coherent for side in ("+C", "-C")]
+        effects = sorted(row["effect"] for row in points)
+        cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
+                     effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
     figure.add_trace(go.Scatter(
         x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
         y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
@@ -84,8 +95,9 @@ def plot(rows: list[dict]) -> go.Figure:
                     text=["bare", *(f"C={row['C']:g}" for row in points)],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>", showlegend=False,
                 ))
-        label = max(method_rows, key=lambda row: abs(row["effect"]))
-        figure.add_annotation(x=label["effect"], y=label["off_axis_perturbation"], text=LABELS[method], showarrow=False, xshift=8, yshift=12, font={"color": colors[method], "size": 14})
+        label = min(method_rows, key=lambda row: row["effect"]) if method == "mean_diff" else max(method_rows, key=lambda row: row["effect"])
+        xshift = -8 if method == "vjp_delta" else 8
+        figure.add_annotation(x=label["effect"], y=label["off_axis_perturbation"], text=LABELS[method], showarrow=False, xanchor="right" if xshift < 0 else "left", xshift=xshift, yshift=12, font={"color": colors[method], "size": 14})
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
@@ -94,10 +106,10 @@ def plot(rows: list[dict]) -> go.Figure:
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=0, y=0, yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#b23a3a", "size": 12})
     figure.update_layout(
-        title={"text": "Jacobian steering: 100 Bullshit Benchmark v2 questions", "x": 0.5, "xanchor": "center"},
+        title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
         width=1064, height=658, margin={"l": 90, "r": 15, "t": 45, "b": 70},
         font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
-        xaxis={"title": "judge on-axis change", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
+        xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
         yaxis={"title": "off-axis damage (lower is better)", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False, "autorange": "reversed"},
     )
     return figure
@@ -138,7 +150,7 @@ def _markdown(table: list[list[str]]) -> str:
         "# Results",
         "",
         "All rows use the same all-100 evaluation cohort. The figure shows both steering directions.",
-        "The random cone ends at its last arm that passes output caps. The table reports rejected arms.",
+        "The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.",
         "",
         "![Judged effect against off-axis change](results.svg)",
         "",
@@ -161,8 +173,8 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. "
-        "The figure shows both steering directions. The random cone ends at its last arm that "
-        f"passes output caps. The table reports rejected arms.</p>{figure_html}"
+        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        f"than half have two coherent arms. The table reports rejected arms.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
