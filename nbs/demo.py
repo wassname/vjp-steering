@@ -25,6 +25,8 @@
 # $B$. The contrastive pairs supply that $c$. See the [README](../README.md) for the equations.
 #
 # ![the routes from A to B, and the first-order map that stands in for them](../jacobian_vjp_causal_graph.svg)
+#
+# The left pane is drawn after [Janus's information-flow sketch](https://x.com/repligate/status/1965960676104712451).
 
 # %%
 import os
