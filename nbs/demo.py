@@ -24,16 +24,19 @@ def _():
 @app.cell
 def _(mo):
     import torch
+    from pathlib import Path
+    from safetensors.torch import load_file
     from steering_lite import MeanDiffC, PCAC, RandomC, Vector
+    from steering_lite.data import make_persona_pairs
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     from jsteer import steer, vjp_delta
     from jsteer.results import _rows, plot
-    from jsteer.vjp import load_pairs
 
     CLI = mo.cli_args()
     MODEL = str(CLI.get("model", "Qwen/Qwen3.5-4B"))
     DEVICE = str(CLI.get("device", "cuda"))
+    N_PAIRS = int(CLI.get("pairs", 256))
     BATCH_SIZE = int(CLI.get("batch-size", 4))
     MAX_LENGTH = int(CLI.get("max-length", 384))
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -44,10 +47,13 @@ def _(mo):
         MAX_LENGTH,
         MODEL,
         MeanDiffC,
+        N_PAIRS,
         PCAC,
+        Path,
         RandomC,
         Vector,
-        load_pairs,
+        load_file,
+        make_persona_pairs,
         model,
         plot,
         steer,
@@ -61,15 +67,23 @@ def _(
     BATCH_SIZE,
     MAX_LENGTH,
     MeanDiffC,
+    N_PAIRS,
     PCAC,
     RandomC,
     Vector,
-    load_pairs,
+    make_persona_pairs,
     model,
     tokenizer,
     vjp_delta,
 ):
-    positive_prompts, negative_prompts = load_pairs()
+    positive_prompts, negative_prompts = make_persona_pairs(
+        tokenizer,
+        n_pairs=N_PAIRS,
+        thinking=True,
+        persona_pairs=[("sycophantic", "abrasive")],
+        template="Answer as someone who is {persona}.",
+        seed=0,
+    )
     n_layers = len(model.model.layers)
     target_layer = n_layers - 3
     layers = tuple(range(max(1, int(n_layers * 0.2)), min(target_layer, int(n_layers * 0.8))))
@@ -98,6 +112,22 @@ def _(
         ),
     }
     return layers, vectors, vjp_vector
+
+
+@app.cell
+def _(MODEL, Path, layers, load_file, vjp_vector):
+    if MODEL == "Qwen/Qwen3.5-4B":
+        reference = load_file(Path(__file__).parents[1] / "data" / "vjp_delta_reference.safetensors")
+        vector_max_abs_diff = max(
+            (vjp_vector.stacked[layer]["v"] - reference[f"stacked.layer{layer}.v"]).abs().max().item()
+            for layer in layers
+        )
+        if vector_max_abs_diff >= 1e-4:
+            raise AssertionError(f"vector max abs diff is {vector_max_abs_diff:.3g}")
+    else:
+        vector_max_abs_diff = None
+    {"model": MODEL, "vector_max_abs_diff": vector_max_abs_diff, "layers": layers}
+    return
 
 
 @app.cell

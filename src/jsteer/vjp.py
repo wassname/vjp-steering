@@ -10,20 +10,10 @@ positions. Each source-layer result is normalized before steering.
 """
 
 from contextlib import contextmanager
-import json
-from pathlib import Path
 
 import torch
 from jaxtyping import Bool, Float, Int
 from steering_lite import Vector, VjpDeltaC
-
-
-PAIRS = Path(__file__).resolve().parents[2] / "data" / "pairs.json"
-
-
-def load_pairs() -> tuple[list[str], list[str]]:
-    rows = json.loads(PAIRS.read_text())
-    return [row["positive"] for row in rows], [row["negative"] for row in rows]
 
 
 def _blocks(model):
