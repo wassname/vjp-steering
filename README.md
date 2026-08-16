@@ -28,7 +28,7 @@ with steer(model, vector, C=-0.18):
     output = model.generate(**inputs)
 ```
 
-Read [the notebook](nbs/demo.ipynb) on GitHub, or run `just notebook` for the complete extract, steer, generate, and plot example. Run `just check` for the smoke run and generated results.
+Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, generate, and plot example. `nbs/demo.py` is the jupytext source; `just notebook` syncs the two, and `just notebook-run` executes the notebook on a GPU and stores the outputs. Run `just check` for the smoke run and generated results.
 
 ## Source inventory
 
@@ -38,6 +38,6 @@ Read [the notebook](nbs/demo.ipynb) on GitHub, or run `just notebook` for the co
 | `src/jsteer/__init__.py` | `with steer(...)` |
 | `src/jsteer/results.py` | Markdown, HTML, and plot renderer |
 | `src/jsteer/smoke.py` | small real-pipeline smoke run |
-| `nbs/demo.py`, `nbs/demo.ipynb` | one notebook, source and GitHub view |
+| `nbs/demo.py`, `nbs/demo.ipynb` | one jupytext-paired notebook, source and GitHub view |
 
 The checked source inventory rejects extra Python files. Package and render code must stay below 2000 lines.
