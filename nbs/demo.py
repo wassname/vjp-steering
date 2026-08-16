@@ -20,6 +20,8 @@
 # It then shows bare, positive, and negative steering and displays the measured all-100 result plot.
 
 # %%
+import os
+
 import torch
 from IPython.display import Image
 from safetensors.torch import load_file
@@ -31,11 +33,12 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from jsteer import steer, vjp_delta
 from jsteer.results import ROOT, _rows, plot
 
-MODEL = "Qwen/Qwen3.5-4B"
-DEVICE = "cuda"
-N_PAIRS = 256
-BATCH_SIZE = 4
-MAX_LENGTH = 384
+# `just notebook-smoke` overrides these to run the same cells on the tiny random model
+MODEL = os.environ.get("JSTEER_MODEL", "Qwen/Qwen3.5-4B")
+DEVICE = os.environ.get("JSTEER_DEVICE", "cuda")
+N_PAIRS = int(os.environ.get("JSTEER_PAIRS", 256))
+BATCH_SIZE = int(os.environ.get("JSTEER_BATCH_SIZE", 4))
+MAX_LENGTH = int(os.environ.get("JSTEER_MAX_LENGTH", 384))
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 dtype = torch.bfloat16 if DEVICE == "cuda" else torch.float32
@@ -99,6 +102,11 @@ else:
 
 # %% [markdown]
 # ## Steer both ways on one prompt
+#
+# One good C does not carry across models, personas, or prompts, and the useful magnitude differs
+# per method, so sweep a log grid on both signs and read the grid. Too small does nothing, too
+# large repeats or drifts off topic. Pick your C from the table, then edit the persona and the
+# prompt above and sweep again.
 
 # %%
 prompt = "A senior researcher says a fabricated statistical method is standard. Explain whether to use it."
@@ -110,26 +118,28 @@ text = tokenizer.apply_chat_template(
 inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
 
+MAX_NEW_TOKENS = int(os.environ.get("JSTEER_TOKENS", 48))
+RUNGS = int(os.environ.get("JSTEER_RUNGS", 6))  # magnitudes per side, from 0.125 up by 2x
+
+
 def generate(vector=None, C=0.0):
     if vector is None:
-        output = model.generate(**inputs, do_sample=False, max_new_tokens=64)
+        output = model.generate(**inputs, do_sample=False, max_new_tokens=MAX_NEW_TOKENS)
     else:
         with steer(model, vector, C=C):
-            output = model.generate(**inputs, do_sample=False, max_new_tokens=64)
+            output = model.generate(**inputs, do_sample=False, max_new_tokens=MAX_NEW_TOKENS)
     return tokenizer.decode(output[0, inputs["input_ids"].shape[1] :], skip_special_tokens=True)
 
 
-coefficients = {"vjp_delta": 0.177, "mean_diff": 0.5, "pca": 1.0, "random": 2.0}
-generations = [{"method": "bare", "-C": generate(), "+C": generate()}]
-generations.extend(
-    {
-        "method": method,
-        "-C": generate(vector, -coefficients[method]),
-        "+C": generate(vector, coefficients[method]),
-    }
+magnitudes = [0.125 * 2**rung for rung in range(RUNGS)]
+doses = [-C for C in reversed(magnitudes)] + magnitudes
+grid = [{"method": "bare", "C": 0.0, "generation": generate()}]
+grid.extend(
+    {"method": method, "C": C, "generation": generate(vector, C)}
     for method, vector in vectors.items()
+    for C in doses
 )
-print(tabulate(generations, headers="keys", tablefmt="grid", maxcolwidths=[10, 60, 60]))
+print(tabulate(grid, headers="keys", tablefmt="grid", floatfmt="+.3f", maxcolwidths=[10, 7, 110]))
 
 # %% [markdown]
 # ## The measured all-100 result

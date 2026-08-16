@@ -14,4 +14,11 @@ notebook:
 notebook-run:
 	uv run jupytext --sync --execute nbs/demo.py
 
-check: smoke results notebook
+# every notebook cell on the tiny random model, CPU, in about a minute
+# the last cell needs data/results.csv, so this stays red until the measured results land
+notebook-smoke:
+	JSTEER_MODEL=wassname/qwen3-5lyr-tiny-random JSTEER_DEVICE=cpu JSTEER_PAIRS=2 \
+	JSTEER_BATCH_SIZE=2 JSTEER_MAX_LENGTH=128 JSTEER_TOKENS=8 JSTEER_RUNGS=11 \
+	uv run jupytext --to ipynb --execute -o outputs/demo_smoke.ipynb nbs/demo.py
+
+check: smoke results notebook-smoke notebook

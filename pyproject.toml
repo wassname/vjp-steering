@@ -8,6 +8,7 @@ dependencies = [
     "accelerate>=1.6",
     "ipykernel>=6.29",
     "jupytext>=1.17",
+    "nbconvert>=7.16",
     "numpy>=1.26",
     "kaleido>=1.0",
     "plotly>=6.0",

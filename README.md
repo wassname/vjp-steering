@@ -28,7 +28,9 @@ with steer(model, vector, C=-0.18):
     output = model.generate(**inputs)
 ```
 
-Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, generate, and plot example. `nbs/demo.py` is the jupytext source; `just notebook` syncs the two, and `just notebook-run` executes the notebook on a GPU and stores the outputs. Run `just check` for the smoke run and generated results.
+No single C transfers across models, personas, and prompts, and the useful magnitude differs per method, so the notebook sweeps a log grid on both signs and you read the dose grid to pick one. The C above is the value that grid gave for this model and this persona pair.
+
+Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. `nbs/demo.py` is the jupytext source; `just notebook` syncs the two, and `just notebook-run` executes the notebook on a GPU and stores the outputs. `just notebook-smoke` runs every cell on the tiny random model on CPU in about 15 seconds. Run `just check` for the smoke run and generated results.
 
 ## Source inventory
 
