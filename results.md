@@ -13,5 +13,5 @@ The random cone shows ten vectors until fewer than half have two coherent arms. 
 | mean_diff | +C | 1 | 3 | 0 | +3.792 | 0.506 |
 | pca | -C | 1 | 3 | 0 | -0.489 | 0.483 |
 | pca | +C | 1 | 3 | 0 | +3.985 | 0.787 |
-| random | -C | 10 | 24 | 4 | +4.075 | 0.723 |
-| random | +C | 10 | 25 | 3 | +3.851 | 0.470 |
+| random | -C | 10 | 26 | 4 | +4.075 | 0.723 |
+| random | +C | 10 | 27 | 3 | +3.851 | 0.470 |
