@@ -70,7 +70,8 @@ def plot(rows: list[dict]) -> go.Figure:
     for C in sorted({row["C"] for row in random}):
         coherent = [
             seed for seed in random_seeds
-            if random_arm[seed, C, "+C"]["admissible"] and random_arm[seed, C, "-C"]["admissible"]
+            if (seed, C, "+C") in random_arm and (seed, C, "-C") in random_arm
+            and random_arm[seed, C, "+C"]["admissible"] and random_arm[seed, C, "-C"]["admissible"]
         ]
         if len(coherent) < RANDOM_SEEDS // 2:
             break
