@@ -17,7 +17,14 @@
 # # VJP-delta steering
 #
 # This notebook extracts VJP-delta, mean-difference, PCA, and random vectors from one prompt set.
-# It then shows bare, positive, and negative steering and displays the measured all-100 result plot.
+# It then sweeps the steering dose in both directions and displays the measured all-100 result plot.
+#
+# $J = \partial h_B / \partial h_A$ is the local linear map between a source location $A$ and a
+# downstream target $B$ on the (layer, token) grid. It stands in for every route between them to
+# first order, and it is never materialized: one backward pass gives $J^T c$ for a chosen $c$ at
+# $B$. The contrastive pairs supply that $c$. See the [README](../README.md) for the equations.
+#
+# ![the routes from A to B, and the first-order map that stands in for them](../jacobian_vjp_causal_graph.svg)
 
 # %%
 import os
