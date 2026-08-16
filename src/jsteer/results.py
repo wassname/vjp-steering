@@ -96,15 +96,15 @@ def plot(rows: list[dict]) -> go.Figure:
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>", showlegend=False,
                 ))
         label = min(method_rows, key=lambda row: row["effect"]) if method == "mean_diff" else max(method_rows, key=lambda row: row["effect"])
-        xshift = -8 if method == "vjp_delta" else 8
-        figure.add_annotation(x=label["effect"], y=label["off_axis_perturbation"], text=LABELS[method], showarrow=False, xanchor="right" if xshift < 0 else "left", xshift=xshift, yshift=12, font={"color": colors[method], "size": 14})
+        xshift = -20 if method == "vjp_delta" else 20 if method == "pca" else 8
+        yshift = -8 if method == "pca" else 12
+        figure.add_annotation(x=label["effect"], y=label["off_axis_perturbation"], text=LABELS[method], showarrow=False, xanchor="right" if xshift < 0 else "left", xshift=xshift, yshift=yshift, font={"color": colors[method], "size": 14})
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
-    figure.add_annotation(x=cone[-1][0], y=cone[-1][1], text="random mean and range", showarrow=False, xshift=12, yshift=12, font={"color": "#777777", "size": 14})
+    figure.add_annotation(x=cone[-1][0], y=cone[-1][1], text="random median and range", showarrow=False, xshift=12, yshift=12, font={"color": "#777777", "size": 14})
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
-    figure.add_annotation(x=0, y=0, yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#b23a3a", "size": 12})
     figure.update_layout(
         title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
         width=1064, height=658, margin={"l": 90, "r": 15, "t": 45, "b": 70},
