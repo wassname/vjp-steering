@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "random")
 RANDOM_SEEDS = 10
+FIELDS = (
+    "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
+    "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
+    "off_axis_perturbation", "admissible",
+)
 LABELS = {
     "vjp_delta": "vjp_delta (ours)",
     "mean_diff": "mean_diff (baseline)",
@@ -31,7 +36,10 @@ COHORT_FIELDS = (
 
 def _rows(path: Path = DATA) -> list[dict]:
     with path.open(newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        reader = csv.DictReader(handle)
+        if set(reader.fieldnames or ()) != set(FIELDS):
+            raise ValueError(f"results columns must be {FIELDS}")
+        rows = list(reader)
     if {row["method"] for row in rows} != set(METHODS):
         raise ValueError("results must contain vjp_delta, mean_diff, pca, and random")
     for field in COHORT_FIELDS:
@@ -39,6 +47,8 @@ def _rows(path: Path = DATA) -> list[dict]:
         if len(values) != 1:
             raise ValueError(f"mixed {field}: {sorted(values)}")
     for row in rows:
+        if not row["date"] or not row["source_run"]:
+            raise ValueError("each measured row needs date and source_run")
         row["seed"] = int(row["seed"])
         row["C"] = float(row["C"])
         row["effect"] = float(row["effect"])
