@@ -605,7 +605,7 @@ requires-dist = [
     { name = "marimo", specifier = ">=0.14" },
     { name = "numpy", specifier = ">=1.26" },
     { name = "plotly", specifier = ">=6.0" },
-    { name = "steering-lite", git = "https://github.com/wassname/steering-lite.git?rev=7f4df9b" },
+    { name = "steering-lite", git = "https://github.com/wassname/steering-lite.git?rev=0a064ba" },
     { name = "tabulate", specifier = ">=0.9" },
     { name = "transformers", specifier = ">=4.51" },
 ]
@@ -2043,7 +2043,7 @@ wheels = [
 [[package]]
 name = "steering-lite"
 version = "0.0.1"
-source = { git = "https://github.com/wassname/steering-lite.git?rev=7f4df9b#7f4df9b3d4737724c860ab586c39044938c3c422" }
+source = { git = "https://github.com/wassname/steering-lite.git?rev=0a064ba#0a064ba0c23a4998637ff41c5ab0fb5ca50a4271" }
 dependencies = [
     { name = "einops" },
     { name = "jaxtyping" },

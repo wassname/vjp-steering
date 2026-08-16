@@ -8,7 +8,6 @@ results:
 
 notebook:
 	uv run marimo check nbs/demo.py
-	mkdir -p outputs/notebooks
-	uv run marimo export html --force nbs/demo.py -o outputs/notebooks/demo.html
+	uv run --with nbformat marimo export ipynb nbs/demo.py -o nbs/demo.ipynb
 
 check: smoke results notebook

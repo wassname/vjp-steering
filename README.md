@@ -6,7 +6,7 @@
 
 The experiment asks if pulling a persona contrast backward through a model makes a cleaner steering direction than the ordinary activation difference. This is a hypothesis, not a result.
 
-The public comparison uses all 100 Bullshit Benchmark questions. It measures VJP-delta, mean difference, PCA, and three seeded random directions. The key plot shows judged movement away from sycophancy against judged off-axis change. Output caps exclude degenerate text.
+The public comparison uses all 100 Bullshit Benchmark questions. It measures VJP-delta, mean difference, PCA, and ten seeded random directions. The key plot shows judged movement away from sycophancy against judged off-axis change. Output caps exclude degenerate text.
 
 The hope is a VJP-delta curve outside the random band and not dominated by the baselines. A curve inside the band, or one dominated by a baseline, does not support the method.
 
@@ -28,7 +28,7 @@ with steer(model, vector, C=-0.18):
     output = model.generate(**inputs)
 ```
 
-Run `just notebook` for the complete extract, steer, generate, and plot example. Run `just check` for the deterministic VJP check and generated results.
+Read [the notebook](nbs/demo.ipynb) on GitHub, or run `just notebook` for the complete extract, steer, generate, and plot example. Run `just check` for the smoke run and generated results.
 
 ## Source inventory
 
@@ -37,7 +37,7 @@ Run `just notebook` for the complete extract, steer, generate, and plot example.
 | `src/jsteer/vjp.py` | VJP-delta extraction |
 | `src/jsteer/__init__.py` | `with steer(...)` |
 | `src/jsteer/results.py` | Markdown, HTML, and plot renderer |
-| `src/jsteer/smoke.py` | one deterministic check |
-| `nbs/demo.py` | one notebook |
+| `src/jsteer/smoke.py` | small real-pipeline smoke run |
+| `nbs/demo.py`, `nbs/demo.ipynb` | one notebook, source and GitHub view |
 
 The checked source inventory rejects extra Python files. Package and render code must stay below 2000 lines.
