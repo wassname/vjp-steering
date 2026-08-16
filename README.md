@@ -10,6 +10,14 @@ The public comparison uses all 100 Bullshit Benchmark questions. It measures VJP
 
 The hope is a VJP-delta curve outside the random band and not dominated by the baselines. A curve inside the band, or one dominated by a baseline, does not support the method.
 
+## Method
+
+$J = \partial h_B / \partial h_A$ is the local linear map between a source location $A$ and a downstream target $B$ on the (layer, token) grid. It summarises every route from $A$ to $B$ to first order, and it is never materialized: a VJP queries it with one backward pass. Contrastive pairs supply the direction to query it with.
+
+![the routes from A to B, and the first-order map that stands in for them](jacobian_vjp_causal_graph.svg)
+
+Figure drawn after [Janus's information-flow sketch](https://x.com/repligate/status/1965960676104712451). The approach also draws on [Anthropic's Jacobian lens](https://github.com/anthropics/jacobian-lens) and on [AntiPaSTO](https://github.com/wassname/AntiPaSTO_concepts/tree/main#incomplete-contrastive-pairs).
+
 The VJP-delta method starts with the usual target-layer contrast:
 
 $$c = \mathbb{E}[h_T^+] - \mathbb{E}[h_T^-].$$
@@ -41,5 +49,6 @@ Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, s
 | `src/jsteer/results.py` | Markdown, HTML, and plot renderer |
 | `src/jsteer/smoke.py` | small real-pipeline smoke run |
 | `nbs/demo.py`, `nbs/demo.ipynb` | one jupytext-paired notebook, source and GitHub view |
+| `jacobian_vjp_causal_graph.svg` | the method figure; source is `docs/explainers/*.tex` in the working repo |
 
 The checked source inventory rejects extra Python files. Package and render code must stay below 2000 lines.
