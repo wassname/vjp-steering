@@ -2,7 +2,7 @@
 
 import csv
 import html
-from statistics import median
+from statistics import mean, median
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "random")
 RANDOM_SEEDS = 10
+NAMED_SEEDS = {0, 1, 2}
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
@@ -56,12 +57,33 @@ def _rows(path: Path = DATA) -> list[dict]:
         row["admissible"] = row["admissible"].lower() == "true"
     if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
         raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
+    for method in METHODS[:-1]:
+        if {row["seed"] for row in rows if row["method"] == method} != NAMED_SEEDS:
+            raise ValueError(f"{method} needs exactly seeds {sorted(NAMED_SEEDS)}")
     return rows
+
+
+def _means(rows: list[dict]) -> list[dict]:
+    points = []
+    for method in METHODS[:-1]:
+        for C in sorted({row["C"] for row in rows if row["method"] == method}):
+            for side in ("+C", "-C"):
+                arms = [
+                    row for row in rows
+                    if row["method"] == method and row["C"] == C and row["side"] == side
+                    and row["admissible"]
+                ]
+                if {row["seed"] for row in arms} == NAMED_SEEDS:
+                    points.append({"method": method, "C": C, "side": side,
+                                   "effect": mean(row["effect"] for row in arms),
+                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in arms)})
+    return points
 
 
 def plot(rows: list[dict]) -> go.Figure:
     figure = go.Figure()
-    valid = [row for row in rows if row["admissible"]]
+    means = _means(rows)
+    valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     random = [row for row in rows if row["method"] == "random"]
     random_seeds = sorted({row["seed"] for row in random})
@@ -94,7 +116,7 @@ def plot(rows: list[dict]) -> go.Figure:
 
     colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#999999"}
     for method in METHODS[:-1]:
-        method_rows = [row for row in valid if row["method"] == method]
+        method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
             continue
         for side in ("+C", "-C"):
@@ -127,18 +149,19 @@ def plot(rows: list[dict]) -> go.Figure:
 
 
 def _summary(rows: list[dict]) -> list[list[str]]:
+    means = _means(rows)
     table = []
     for method in METHODS:
         for side in ("-C", "+C"):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
-            live = [row for row in group if row["admissible"]]
-            peak = max(live, key=lambda row: row["effect"]) if live else None
+            live = [row for row in (means if method != "random" else group) if row["method"] == method and row["side"] == side]
+            peak = max(live, key=lambda row: abs(row["effect"])) if live else None
             table.append([
                 method,
                 side,
-                str(len({row["seed"] for row in live})),
+                str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS) if live else 0),
                 str(len(live)),
-                str(len(group) - len(live)),
+                str(sum(not row["admissible"] for row in group)),
                 f"{peak['effect']:+.3f}" if peak else "-",
                 f"{peak['off_axis_perturbation']:.3f}" if peak else "-",
             ])
@@ -160,7 +183,7 @@ def _markdown(table: list[list[str]]) -> str:
     lines = [
         "# Results",
         "",
-        "All rows use the same all-100 evaluation cohort. The figure shows both steering directions.",
+        "All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.",
         "The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.",
         "",
         "![Judged effect against off-axis change](results.svg)",
@@ -183,8 +206,8 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         "<style>body{font:16px system-ui;max-width:900px;margin:2rem auto}"
         "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
-        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. "
-        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. Named-method points "
+        "are means over three seeds. The figure shows both steering directions. The random cone shows ten vectors until fewer "
         f"than half have two coherent arms. The table reports rejected arms.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
