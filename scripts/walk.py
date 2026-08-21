@@ -43,7 +43,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
-    parser.add_argument("--n-pairs", type=int, default=200)
+    parser.add_argument("--n-pairs", type=int, default=256)
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--max-length", type=int, default=384)
     parser.add_argument("--max-new-tokens", type=int, default=4096)
@@ -378,7 +378,7 @@ def run_rung(args: argparse.Namespace) -> None:
         template=PERSONA_TEMPLATE,
         seed=args.seed,
     )
-    assert len(positive) == len(negative) == args.n_pairs
+    assert len(positive) == len(negative) > 0
     lengths = tokenizer(positive + negative, add_special_tokens=False)["input_ids"]
     assert max(map(len, lengths)) <= args.max_length, "extraction prompt truncation"
     sample_id = "persona:" + hashlib.sha256(
@@ -461,7 +461,11 @@ def run_rung(args: argparse.Namespace) -> None:
         "eval_version": 10,
         "cohort_sha256": cohort_sha256,
         "cohort_size": len(rows),
-        "n_pairs": args.n_pairs,
+        "n_pairs_requested": args.n_pairs,
+        "n_pairs": len(positive),
+        "batch_size": args.batch_size,
+        "max_length": args.max_length,
+        "max_new_tokens": args.max_new_tokens,
         "extraction_sample_id": sample_id,
         "extraction_seconds": extraction_seconds,
         "vector_file": vector_file.name,
