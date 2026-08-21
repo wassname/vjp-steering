@@ -173,8 +173,30 @@ def walk(args: argparse.Namespace) -> None:
             environment = os.environ.copy()
             environment["HF_HUB_OFFLINE"] = "1"
             environment["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-            logger.info("run grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
-            subprocess.run(command, check=True, cwd=ROOT, env=environment)
+            # shared GPU: a stranger can grab memory under a long rung; retry on OOM instead of losing the walk
+            for attempt in range(3):
+                logger.info(
+                    "run grid={} C={} attempt={}/3 command={}", grid_index, coefficient, attempt + 1, shlex.join(command)
+                )
+                stderr_lines: list[str] = []
+                oom = False
+                proc = subprocess.Popen(command, cwd=ROOT, env=environment, text=True,
+                                        stdout=sys.stdout, stderr=subprocess.PIPE)
+                assert proc.stderr is not None
+                for line in proc.stderr:
+                    sys.stdout.write(line)
+                    sys.stdout.flush()
+                    stderr_lines.append(line)
+                    if "OutOfMemoryError" in line:
+                        oom = True
+                code = proc.wait()
+                if code == 0:
+                    break
+                if attempt < 2 and oom:
+                    logger.warning("OOM at C={}; re-wait and retry", coefficient)
+                    wait_for_gpu()
+                    continue
+                raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
             adopted = adopted_rung(args.method, args.seed, coefficient, args.model)
             assert adopted is not None
         run_dir, artifact = adopted
