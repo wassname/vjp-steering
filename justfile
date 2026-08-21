@@ -31,7 +31,7 @@ queue-walks:
 	set -euo pipefail
 	for seed in 1 2 0; do
 		for method in vjp_delta mean_diff pca; do
-			pueue add --group default --priority=-9 -l "why: complete the public all-100 $method seed $seed dose walk; resolve: walk certificate is COMPLETE after both directions cross two breakdowns plus two rungs" -w "$PWD" -- just walk "$method" "$seed"
+			pueue add --group default --priority=-9 -l "why: complete the public all-100 $method seed $seed dose walk; resolve: walk certificate is COMPLETE after either direction crosses two breakdowns plus two rungs" -w "$PWD" -- just walk "$method" "$seed"
 		done
 	done
 

@@ -225,12 +225,14 @@ def walk(args: argparse.Namespace) -> None:
             "rungs": entries,
         }
         certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
-        if all(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
+        # stop on the first side to confirm a boundary (two consecutive breakdowns + 2 extra
+        # rungs). vjp_delta's +C never degrades, so requiring both sides climbs to the ceiling.
+        if any(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
             certificate["status"] = "COMPLETE"
             certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
             logger.info("WALK_COMPLETE method={} seed={} state={} certificate={}", args.method, args.seed, state, certificate_path)
             return
-    raise RuntimeError(f"{args.method} seed {args.seed} reached grid ceiling without two broken rungs per direction")
+    raise RuntimeError(f"{args.method} seed {args.seed} reached grid ceiling without a confirmed breakdown boundary")
 
 
 def resolve_layers(model, value: str | None) -> tuple[int, ...]:
