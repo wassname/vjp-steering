@@ -6,6 +6,7 @@ smoke:
 	for method in vjp_delta mean_diff pca; do
 		BEARTYPE=1 uv run python scripts/walk.py "$method" --coefficient 16 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --layers 1 --target-layer 4 --status SMOKE_PASS
 	done
+	uv run python scripts/export.py --self-test
 
 walk method seed:
 	HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True uv run python scripts/walk.py {{method}} --seed {{seed}} --walk
@@ -18,6 +19,24 @@ judge-dry:
 
 judge:
 	uv run python scripts/judge.py --refresh
+
+judge-walks:
+	uv run python scripts/judge.py --walks --refresh
+
+export:
+	uv run python scripts/export.py
+
+queue-walks:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	for seed in 1 2 0; do
+		for method in vjp_delta mean_diff pca; do
+			pueue add --group default --priority=-9 -l "why: complete the public all-100 $method seed $seed dose walk; resolve: walk certificate is COMPLETE after both directions cross two breakdowns plus two rungs" -w "$PWD" -- just walk "$method" "$seed"
+		done
+	done
+
+queue-judge:
+	pueue add --group api -l "why: judge every arm in the nine completed public walks; resolve: all content cells are cached and judge reports zero missing" -w "$PWD" -- just judge-walks
 
 results:
 	uv run python -m vjp_steering.results

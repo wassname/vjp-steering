@@ -78,6 +78,7 @@ FORMAT = {
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--refresh", action="store_true")
+    parser.add_argument("--walks", action="store_true")
     parser.add_argument("--run", action="append", default=[])
     return parser.parse_args()
 
@@ -119,7 +120,23 @@ def load_cohort() -> dict[str, dict]:
     return {row["scenario"]: row for row in rows}
 
 
-def artifact_paths(run_names: list[str]) -> list[Path]:
+def completed_walk_paths() -> list[Path]:
+    paths = []
+    for method in ("vjp_delta", "mean_diff", "pca"):
+        for seed in (0, 1, 2):
+            certificate_path = ROOT / "outputs" / f"walk_{method}_s{seed}.json"
+            certificate = json.loads(certificate_path.read_text())
+            assert certificate["status"] == "COMPLETE"
+            assert certificate["method"] == method and certificate["seed"] == seed
+            paths.extend(ROOT / rung["run_dir"] / f"{method}.json" for rung in certificate["rungs"])
+    assert len(paths) == len(set(paths))
+    return sorted(paths)
+
+
+def artifact_paths(run_names: list[str], walks: bool = False) -> list[Path]:
+    if walks:
+        assert not run_names
+        return completed_walk_paths()
     paths = []
     for method in ("vjp_delta", "mean_diff", "pca"):
         for path in (ROOT / "outputs").glob(f"run_*/{method}.json"):
@@ -165,8 +182,8 @@ def demo_rows(artifact_path: Path) -> list[dict]:
     return rows
 
 
-def manifest(run_names: list[str]) -> list[dict]:
-    paths = artifact_paths(run_names)
+def manifest(run_names: list[str], walks: bool = False) -> list[dict]:
+    paths = artifact_paths(run_names, walks)
     if run_names:
         assert {path.parent.name for path in paths} == set(run_names)
     rows = [row for path in paths for row in demo_rows(path)]
@@ -329,7 +346,7 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
 
 def main() -> None:
     args = parse_args()
-    rows = manifest(args.run)
+    rows = manifest(args.run, args.walks)
     cells = required_cells(rows)
     cached = cached_keys()
     todo = [cell for key, cell in cells.items() if key not in cached]
