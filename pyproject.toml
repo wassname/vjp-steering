@@ -6,11 +6,13 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "accelerate>=1.6",
+    "beartype>=0.20",
     "ipykernel>=6.29",
     "jupytext>=1.17",
     "nbconvert>=7.16",
     "numpy>=1.26",
     "kaleido>=1.0",
+    "loguru>=0.7",
     "plotly>=6.0",
     "steering-lite @ git+https://github.com/wassname/steering-lite.git@0a064ba",
     "tabulate>=0.9",

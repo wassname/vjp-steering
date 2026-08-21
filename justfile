@@ -1,7 +1,11 @@
 set dotenv-load
 
 smoke:
-	uv run python -m vjp_steering.smoke
+	#!/usr/bin/env bash
+	set -euo pipefail
+	for method in vjp_delta mean_diff pca; do
+		BEARTYPE=1 uv run python scripts/walk.py "$method" --coefficient 16 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --layers 1 --target-layer 4 --status SMOKE_PASS
+	done
 
 results:
 	uv run python -m vjp_steering.results
