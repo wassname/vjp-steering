@@ -35,6 +35,8 @@ queue-walks:
 		done
 	done
 
+sweeps: queue-walks
+
 queue-judge:
 	pueue add --group api -l "why: judge every arm in the nine completed public walks; resolve: all content cells are cached and judge reports zero missing" -w "$PWD" -- just judge-walks
 
