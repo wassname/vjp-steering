@@ -22,7 +22,7 @@ FIELDS = (
 )
 SCENARIO_FIELDS = (
     "source_run", "method", "seed", "C", "side", "scenario", "effect",
-    "off_axis_perturbation", "steered_off_axis",
+    "off_axis_perturbation", "steered_off_axis", "order_reversal", "score_spread",
 )
 
 
@@ -58,6 +58,11 @@ def score_cell(record: dict) -> tuple[float, float, float]:
         float(judgment["off_axis_A"]) - float(judgment["off_axis_B"]),
         float(judgment["off_axis_A"]),
     )
+
+
+def judge_diagnostics(cells: list[tuple[float, float, float]]) -> tuple[bool, float]:
+    by_order = (mean(cell[0] for cell in cells[:2]), mean(cell[0] for cell in cells[2:]))
+    return by_order[0] * by_order[1] < 0, max(cell[0] for cell in cells) - min(cell[0] for cell in cells)
 
 
 def walk_metadata() -> dict[tuple[str, str], dict]:
@@ -132,6 +137,7 @@ def export() -> None:
             effect = mean(cell[0] for cell in cells)
             if row["side"] == "-C":
                 effect = -effect
+            order_reversal, score_spread = judge_diagnostics(cells)
             scenario_rows.append({
                 "source_run": run.name,
                 "method": artifact["method"],
@@ -142,6 +148,8 @@ def export() -> None:
                 "effect": effect,
                 "off_axis_perturbation": abs(mean(cell[1] for cell in cells)),
                 "steered_off_axis": mean(cell[2] for cell in cells),
+                "order_reversal": order_reversal,
+                "score_spread": score_spread,
             })
         for side in ("+C", "-C"):
             selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
@@ -185,6 +193,7 @@ def self_test() -> None:
     judgment = {"on_axis_A": 2.0, "on_axis_B": -1.0, "off_axis_A": 0.5, "off_axis_B": 2.5}
     assert score_cell({"order": "AB", "judgment": judgment}) == (-3.0, 2.0, 2.5)
     assert score_cell({"order": "BA", "judgment": judgment}) == (3.0, -2.0, 0.5)
+    assert judge_diagnostics([(-2, 0, 0), (-1, 0, 0), (1, 0, 0), (3, 0, 0)]) == (True, 5)
     print("EXPORT_SELF_TEST_PASS")
 
 
