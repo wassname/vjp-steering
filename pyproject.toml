@@ -12,7 +12,7 @@ dependencies = [
     "nbconvert>=7.16",
     "numpy>=1.26",
     "openai>=1.82",
-    "kaleido>=1.0",
+    "kaleido==0.2.1",
     "loguru>=0.7",
     "plotly>=6.0",
     "steering-lite @ git+https://github.com/wassname/steering-lite.git@0a064ba",
