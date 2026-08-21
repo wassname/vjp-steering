@@ -336,6 +336,8 @@ def assert_hook_changes_logits(model, tokenizer, vector, prompt: str, coefficien
 
 def run_rung(args: argparse.Namespace) -> None:
     assert args.coefficient is not None
+    if args.device == "cuda":
+        wait_for_gpu()
     stamp = time.strftime("%Y%m%dT%H%M%S")
     coefficient_slug = str(args.coefficient).replace(".", "p")
     output = args.output or ROOT / "outputs" / f"run_{stamp}_{args.method}_s{args.seed}_c{coefficient_slug}"
