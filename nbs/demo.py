@@ -39,15 +39,15 @@ from steering_lite.data import make_persona_pairs
 from tabulate import tabulate
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from jsteer import steer, vjp_delta
-from jsteer.results import ROOT, _rows, plot
+from vjp_steering import steer, vjp_delta
+from vjp_steering.results import ROOT, _rows, plot
 
 # `just notebook-smoke` overrides these to run the same cells on the tiny random model
-MODEL = os.environ.get("JSTEER_MODEL", "Qwen/Qwen3.5-4B")
-DEVICE = os.environ.get("JSTEER_DEVICE", "cuda")
-N_PAIRS = int(os.environ.get("JSTEER_PAIRS", 256))
-BATCH_SIZE = int(os.environ.get("JSTEER_BATCH_SIZE", 4))
-MAX_LENGTH = int(os.environ.get("JSTEER_MAX_LENGTH", 384))
+MODEL = os.environ.get("VJP_STEER_MODEL", "Qwen/Qwen3.5-4B")
+DEVICE = os.environ.get("VJP_STEER_DEVICE", "cuda")
+N_PAIRS = int(os.environ.get("VJP_STEER_PAIRS", 256))
+BATCH_SIZE = int(os.environ.get("VJP_STEER_BATCH_SIZE", 4))
+MAX_LENGTH = int(os.environ.get("VJP_STEER_MAX_LENGTH", 384))
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 dtype = torch.bfloat16 if DEVICE == "cuda" else torch.float32
@@ -127,8 +127,8 @@ text = tokenizer.apply_chat_template(
 inputs = tokenizer(text, return_tensors="pt").to(model.device)
 
 
-MAX_NEW_TOKENS = int(os.environ.get("JSTEER_TOKENS", 48))
-RUNGS = int(os.environ.get("JSTEER_RUNGS", 6))  # magnitudes per side, from 0.125 up by 2x
+MAX_NEW_TOKENS = int(os.environ.get("VJP_STEER_TOKENS", 48))
+RUNGS = int(os.environ.get("VJP_STEER_RUNGS", 6))  # magnitudes per side, from 0.125 up by 2x
 
 
 def generate(vector=None, C=0.0):

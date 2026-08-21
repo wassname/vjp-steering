@@ -48,7 +48,7 @@ It pulls that contrast back to each source layer and subtracts the two prompt cl
 $$v_L = \mathbb{E}_{x^+}[J_{L \to T}(x)^T c] - \mathbb{E}_{x^-}[J_{L \to T}(x)^T c].$$
 
 ```python
-from jsteer import steer, vjp_delta
+from vjp_steering import steer, vjp_delta
 
 vector = vjp_delta(model, tokenizer, positive_prompts, negative_prompts, layers)
 with steer(model, vector, C=-0.18):

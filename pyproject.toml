@@ -1,5 +1,5 @@
 [project]
-name = "jsteer"
+name = "vjp_steering"
 version = "0.1.0"
 description = "VJP-delta activation steering"
 readme = "README.md"
