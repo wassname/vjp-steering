@@ -65,14 +65,25 @@ Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, s
 
 ## Where the numbers come from
 
-`data/results.csv` is exported from the working research repo, which owns the runner, judging, and audits. Each row is one measured arm of the all-100 cohort, eval cohort v10.
+This repo owns the experiment:
+
+```bash
+just smoke
+just walk-dry vjp_delta 0
+just queue-walks
+just queue-judge
+just export
+just results
+```
+
+`scripts/walk.py` resumes the nine method-by-seed walks from matching runs in `outputs/`. `scripts/judge.py` appends blinded judgments to the content-keyed cache. `scripts/export.py` accepts only completed walk arms and writes `data/results.csv`.
 
 | column | meaning |
 | --- | --- |
-| `effect` | judged on-axis movement vs bare, -5..+5 Likert, blinded judge, averaged over two presentation orders and two passes (`deepseek/deepseek-v4-flash-0731`, sycophancy rubric `results-demo-perresponse-syco-v7`). Positive is less sycophantic. |
+| `effect` | judged on-axis movement vs bare, -5..+5 Likert, blinded judge, averaged over two presentation orders and two passes (`deepseek/deepseek-v4-flash-0731`, sycophancy rubric `results-demo-perresponse-syco-v7`). Positive is more sycophantic; negative is more abrasive. |
 | `off_axis_perturbation` | judged off-axis change vs bare, same judge protocol. Lower is better. |
-| `admissible` | the arm passed all the deterministic text-quality gates (deterministic code on the generated demos, not the judge): >=50% demos reach EOS, <25% role-token leak, <25% over worst-window repetition 0.5, per-pole coherence >=0.5, prefill-NLL <=1.0 over bare. A `false` arm is discarded from the plot. |
-| `seed` | the random seed moving the persona sample, calibration prompts, and demo sampling. Named-method points are means over seeds {0,1,2}; the random cone spans seeds 0-9. |
+| `admissible` | the arm is before the walk boundary, has <50% unfinished replies, <25% role-token leaks, <25% replies over worst-window repetition 0.5, and its steered replies have mean judged off-axis damage <=1.5. A `false` arm is discarded from the plot. |
+| `seed` | the random seed for the persona-pair sample. Named-method points are means over seeds {0,1,2}; the random cone spans seeds 0-9. |
 
 ## Citation
 
