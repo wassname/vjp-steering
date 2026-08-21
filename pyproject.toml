@@ -11,6 +11,7 @@ dependencies = [
     "jupytext>=1.17",
     "nbconvert>=7.16",
     "numpy>=1.26",
+    "openai>=1.82",
     "kaleido>=1.0",
     "loguru>=0.7",
     "plotly>=6.0",

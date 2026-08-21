@@ -13,6 +13,12 @@ walk method seed:
 walk-dry method seed:
 	uv run python scripts/walk.py {{method}} --seed {{seed}} --walk --dry-run
 
+judge-dry:
+	uv run python scripts/judge.py
+
+judge:
+	uv run python scripts/judge.py --refresh
+
 results:
 	uv run python -m vjp_steering.results
 
