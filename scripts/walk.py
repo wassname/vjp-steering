@@ -3,7 +3,11 @@
 import argparse
 import hashlib
 import json
+import math
+import os
 import re
+import shlex
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -23,13 +27,19 @@ COHORT = ROOT / "data/bullshit_bench_v2.jsonl"
 PERSONAS = [("sycophantic", "abrasive")]
 PERSONA_TEMPLATE = "Answer as someone who is {persona}."
 ROLE_LEAK = re.compile(r"<\s*/?\s*think\s*>|^\s*(user|assistant|system)\s*$", re.I | re.M)
+GRID = tuple(2.0 ** (n / 6) for n in range(-30, 85))
+assert GRID[0] == 0.03125 and GRID[-1] == 16384.0
+assert all(math.isclose(b / a, 2.0 ** (1 / 6)) for a, b in zip(GRID, GRID[1:]))
+assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("method", choices=("vjp_delta", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--coefficient", type=float, required=True)
+    parser.add_argument("--coefficient", type=float)
+    parser.add_argument("--walk", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
@@ -57,6 +67,135 @@ def read_cohort(limit: int) -> tuple[list[dict[str, str]], str]:
         ).encode()
     ).hexdigest()
     return rows[:limit], digest
+
+
+def adopted_rung(method: str, seed: int, coefficient: float, model: str) -> tuple[Path, dict] | None:
+    cohort, cohort_sha256 = read_cohort(100)
+    expected = [(row["scenario"], row["prompt"]) for row in cohort]
+    matches = []
+    for artifact_path in (ROOT / "outputs").glob(f"run_*/{method}.json"):
+        artifact = json.loads(artifact_path.read_text())
+        if artifact["status"] != "RESULT":
+            continue
+        identity = (
+            artifact["method"] == method
+            and artifact["seed"] == seed
+            and math.isclose(artifact["fixed_coefficient_magnitude"], coefficient, rel_tol=1e-12)
+            and artifact["model"] == model
+            and artifact["persona"] == "sycophancy_abrasive"
+            and artifact["axis"] == "sycophancy"
+            and artifact["demo_set"] == "sycophancy_all100"
+            and artifact["eval_version"] == 10
+        )
+        if not identity:
+            continue
+        demos = [json.loads(line) for line in (artifact_path.parent / "moral_demos.jsonl").read_text().splitlines()]
+        bare = [row for row in demos if row["label"] == "bare"]
+        assert len(demos) == 300 and len(bare) == 100
+        assert [(row["scenario"], row["prompt"]) for row in bare] == expected
+        if "cohort_sha256" in artifact:
+            assert artifact["cohort_sha256"] == cohort_sha256
+        matches.append((artifact_path.parent, artifact))
+    assert len(matches) <= 1, f"duplicate rung: {method=} {seed=} {coefficient=}"
+    return matches[0] if matches else None
+
+
+def rung_command(args: argparse.Namespace, coefficient: float) -> list[str]:
+    return [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        args.method,
+        "--seed",
+        str(args.seed),
+        "--coefficient",
+        str(coefficient),
+        "--model",
+        args.model,
+        "--device",
+        args.device,
+        "--dtype",
+        args.dtype,
+        "--n-pairs",
+        str(args.n_pairs),
+        "--batch-size",
+        str(args.batch_size),
+        "--max-length",
+        str(args.max_length),
+        "--max-new-tokens",
+        str(args.max_new_tokens),
+        "--limit",
+        str(args.limit),
+    ]
+
+
+def wait_for_gpu(required_mib: int = 20_000, timeout_minutes: int = 360) -> None:
+    deadline = time.monotonic() + timeout_minutes * 60
+    while True:
+        free_mib = int(
+            subprocess.check_output(
+                ["nvidia-smi", "--query-gpu=memory.free", "--format=csv,noheader,nounits"],
+                text=True,
+            ).splitlines()[0]
+        )
+        if free_mib >= required_mib:
+            return
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"GPU stayed below {required_mib} MiB free for {timeout_minutes} min")
+        logger.info("GPU free={} MiB; SHOULD reach {} MiB before extraction", free_mib, required_mib)
+        time.sleep(60)
+
+
+def walk(args: argparse.Namespace) -> None:
+    assert args.limit == 100 and args.status == "RESULT"
+    state = {side: {"streak": 0, "boundary": None} for side in ("+C", "-C")}
+    entries = []
+    certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
+    for grid_index, coefficient in enumerate(GRID):
+        adopted = adopted_rung(args.method, args.seed, coefficient, args.model)
+        command = rung_command(args, coefficient)
+        if adopted is None and args.dry_run:
+            logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
+            return
+        if adopted is None:
+            wait_for_gpu()
+            environment = os.environ.copy()
+            environment["HF_HUB_OFFLINE"] = "1"
+            environment["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+            logger.info("run grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
+            subprocess.run(command, check=True, cwd=ROOT, env=environment)
+            adopted = adopted_rung(args.method, args.seed, coefficient, args.model)
+            assert adopted is not None
+        run_dir, artifact = adopted
+        logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
+        entry = {"grid_index": grid_index, "coefficient": coefficient, "run_dir": str(run_dir.relative_to(ROOT))}
+        for side in ("+C", "-C"):
+            broken = bool(artifact["breakdown_reasons"][side])
+            if state[side]["boundary"] is None:
+                state[side]["streak"] = state[side]["streak"] + 1 if broken else 0
+                if state[side]["streak"] == 2:
+                    state[side]["boundary"] = grid_index
+            entry[side] = {
+                "breakdown_reasons": artifact["breakdown_reasons"][side],
+                "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
+            }
+        entries.append(entry)
+        certificate = {
+            "schema": "dose_walk_v1",
+            "status": "RUNNING",
+            "method": args.method,
+            "seed": args.seed,
+            "model": args.model,
+            "grid": "2^(n/6), n=-30..84",
+            "state": state,
+            "rungs": entries,
+        }
+        certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
+        if all(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
+            certificate["status"] = "COMPLETE"
+            certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
+            logger.info("WALK_COMPLETE method={} seed={} state={} certificate={}", args.method, args.seed, state, certificate_path)
+            return
+    raise RuntimeError(f"{args.method} seed {args.seed} reached grid ceiling without two broken rungs per direction")
 
 
 def resolve_layers(model, value: str | None) -> tuple[int, ...]:
@@ -195,8 +334,8 @@ def assert_hook_changes_logits(model, tokenizer, vector, prompt: str, coefficien
     torch.testing.assert_close(bare, restored)
 
 
-def main() -> None:
-    args = parse_args()
+def run_rung(args: argparse.Namespace) -> None:
+    assert args.coefficient is not None
     stamp = time.strftime("%Y%m%dT%H%M%S")
     coefficient_slug = str(args.coefficient).replace(".", "p")
     output = args.output or ROOT / "outputs" / f"run_{stamp}_{args.method}_s{args.seed}_c{coefficient_slug}"
@@ -338,6 +477,16 @@ def main() -> None:
         "RESULT\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
         args.method, args.seed, args.coefficient, reasons["bare"], reasons["+C"], reasons["-C"], output
     )
+
+
+def main() -> None:
+    args = parse_args()
+    if args.walk:
+        assert args.coefficient is None
+        walk(args)
+    else:
+        assert not args.dry_run
+        run_rung(args)
 
 
 if __name__ == "__main__":

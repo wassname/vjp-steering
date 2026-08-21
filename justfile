@@ -7,6 +7,12 @@ smoke:
 		BEARTYPE=1 uv run python scripts/walk.py "$method" --coefficient 16 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --layers 1 --target-layer 4 --status SMOKE_PASS
 	done
 
+walk method seed:
+	HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True uv run python scripts/walk.py {{method}} --seed {{seed}} --walk
+
+walk-dry method seed:
+	uv run python scripts/walk.py {{method}} --seed {{seed}} --walk --dry-run
+
 results:
 	uv run python -m vjp_steering.results
 
