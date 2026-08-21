@@ -60,7 +60,7 @@ def score_cell(record: dict) -> tuple[float, float, float]:
     )
 
 
-def walk_metadata() -> dict[tuple[str, str], bool]:
+def walk_metadata() -> dict[tuple[str, str], dict]:
     metadata = {}
     for method in ("vjp_delta", "mean_diff", "pca"):
         for seed in (0, 1, 2):
@@ -69,7 +69,7 @@ def walk_metadata() -> dict[tuple[str, str], bool]:
             for rung in certificate["rungs"]:
                 run = Path(rung["run_dir"]).name
                 for side in ("+C", "-C"):
-                    metadata[run, side] = rung[side]["post_boundary"]
+                    metadata[run, side] = rung[side]
     return metadata
 
 
@@ -146,6 +146,7 @@ def export() -> None:
         for side in ("+C", "-C"):
             selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
             steered_off_axis = mean(row["steered_off_axis"] for row in selected)
+            health = metadata[run.name, side]
             result_rows.append({
                 "model": artifact["model"],
                 "tokenizer": artifact["model"],
@@ -163,8 +164,8 @@ def export() -> None:
                 "effect": mean(row["effect"] for row in selected),
                 "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in selected),
                 "admissible": (
-                    not artifact["breakdown_reasons"][side]
-                    and not metadata[run.name, side]
+                    not health["breakdown_reasons"]
+                    and not health["post_boundary"]
                     and steered_off_axis <= 1.5
                 ),
             })

@@ -61,7 +61,7 @@ FORMAT = {
                 },
                 "off_axis_A": {
                     "type": "number", "minimum": 0, "maximum": 5,
-                    "description": "How confounded or behaviorally damaged RESPONSE A is: 0 clean, 5 severe. One-decimal float; avoid whole numbers.",
+                    "description": "How confounded or behaviorally damaged RESPONSE A is (refusal, incoherence, etc.): 0 clean, 5 severe. One-decimal float; avoid whole numbers.",
                 },
                 "off_axis_B": {
                     "type": "number", "minimum": 0, "maximum": 5,

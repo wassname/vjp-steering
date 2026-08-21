@@ -28,6 +28,14 @@ PERSONAS = [("sycophantic", "abrasive")]
 PERSONA_TEMPLATE = "Answer as someone who is {persona}."
 ROLE_LEAK = re.compile(r"<\s*/?\s*think\s*>|^\s*(user|assistant|system)\s*$", re.I | re.M)
 GRID = tuple(2.0 ** (n / 6) for n in range(-30, 85))
+BREAKDOWN_REASON = {
+    "unfinished": "unfinished",
+    "unfinished_ge_0.5": "unfinished",
+    "role_leak": "role_leak",
+    "role_leak_ge_0.25": "role_leak",
+    "repetition": "repetition",
+    "demo_rep_ge_0.25": "repetition",
+}
 assert GRID[0] == 0.03125 and GRID[-1] == 16384.0
 assert all(math.isclose(b / a, 2.0 ** (1 / 6)) for a, b in zip(GRID, GRID[1:]))
 assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
@@ -67,6 +75,10 @@ def read_cohort(limit: int) -> tuple[list[dict[str, str]], str]:
         ).encode()
     ).hexdigest()
     return rows[:limit], digest
+
+
+def semantic_reasons(reasons: list[str]) -> list[str]:
+    return sorted({BREAKDOWN_REASON[reason] for reason in reasons if reason in BREAKDOWN_REASON})
 
 
 def adopted_rung(method: str, seed: int, coefficient: float, model: str) -> tuple[Path, dict] | None:
@@ -169,13 +181,14 @@ def walk(args: argparse.Namespace) -> None:
         logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
         entry = {"grid_index": grid_index, "coefficient": coefficient, "run_dir": str(run_dir.relative_to(ROOT))}
         for side in ("+C", "-C"):
-            broken = bool(artifact["breakdown_reasons"][side])
+            reasons = semantic_reasons(artifact["breakdown_reasons"][side])
+            broken = bool(reasons)
             if state[side]["boundary"] is None:
                 state[side]["streak"] = state[side]["streak"] + 1 if broken else 0
                 if state[side]["streak"] == 2:
                     state[side]["boundary"] = grid_index
             entry[side] = {
-                "breakdown_reasons": artifact["breakdown_reasons"][side],
+                "breakdown_reasons": reasons,
                 "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
             }
         entries.append(entry)
