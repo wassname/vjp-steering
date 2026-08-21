@@ -1,14 +1,33 @@
-# j-steer
+# vjp-steering
 
-`j-steer` is a small VJP-delta activation-steering reference. The package contains one method. It uses [`steering-lite`](https://github.com/wassname/steering-lite) for the shared vector, hook, mean-difference, PCA, and random-direction code.
+Work in progress. The numbers below are a mid-experiment snapshot, not a result. Final results in the next couple of months.
+
+`vjp-steering` is a small VJP-delta activation-steering reference. The package contains one method. It uses [`steering-lite`](https://github.com/wassname/steering-lite) for the shared vector, hook, mean-difference, PCA, and random-direction code.
 
 ## Point
 
-The experiment asks if pulling a persona contrast backward through a model makes a cleaner steering direction than the ordinary activation difference. This is a hypothesis, not a result.
-
-The public comparison uses all 100 Bullshit Benchmark questions. It measures VJP-delta, mean difference, PCA, and ten seeded random directions. The key plot shows judged movement away from sycophancy against judged off-axis change. Output caps exclude degenerate text.
+The experiment asks if pulling a persona contrast backward through a model makes a cleaner steering direction than the ordinary activation difference.
 
 The hope is a VJP-delta curve outside the random band and not dominated by the baselines. A curve inside the band, or one dominated by a baseline, does not support the method.
+
+## Results so far
+
+Model `Qwen/Qwen3.5-4B`, sycophancy axis, all 100 Bullshit Benchmark v2 questions. Named-method points are means over three seeds. The random cone shows ten vectors until fewer than half have two coherent arms. Output caps exclude degenerate text.
+
+![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results.png)
+
+| method | steer dir | seeds | arms | rejected | peak on-axis | damage at peak |
+| --- | --- | --- | --- | --- | --- | --- |
+| vjp_delta | -C | 3 | 1 | 5 | -1.944 | 0.562 |
+| vjp_delta | +C | 3 | 3 | 0 | +3.502 | 0.406 |
+| mean_diff | -C | 3 | 3 | 0 | -1.223 | 0.871 |
+| mean_diff | +C | 3 | 3 | 0 | +3.715 | 0.521 |
+| pca | -C | 3 | 3 | 0 | -1.360 | 1.495 |
+| pca | +C | 3 | 3 | 0 | +3.939 | 0.830 |
+| random | -C | 10 | 30 | 4 | +4.075 | 0.723 |
+| random | +C | 10 | 30 | 3 | +3.851 | 0.470 |
+
+Doses are not comparable across methods. These are fixed-C arms; the final export re-walks each method to its own incoherence boundary.
 
 ## Method
 
@@ -42,7 +61,7 @@ Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, s
 
 ## Measured-data provenance
 
-`data/results.csv` is exported from the working research repository (the "dev" repo that owns the runner, judging, and audits; provenance in `docs/`). Each row is one measured arm of the all-100 Bullshit Benchmark v2 cohort, model `Qwen/Qwen3.5-4B`, sycophancy axis, eval cohort v10. The columns mean:
+`data/results.csv` is exported from the working research repository, which owns the runner, judging, and audits. Each row is one measured arm of the all-100 cohort, eval cohort v10.
 
 | column | meaning |
 | --- | --- |
@@ -51,17 +70,14 @@ Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, s
 | `admissible` | the arm passed all deterministic text-quality gates (deterministic code on the generated demos, not the judge): >=50% demos reach EOS, <25% role-token leak, <25% over worst-window repetition 0.5, per-pole coherence >=0.5, prefill-NLL <=1.0 over bare. A `false` arm is discarded from the plot. |
 | `seed` | the random seed moving the persona sample, calibration prompts, and demo sampling. Named-method points are means over seeds {0,1,2}; the random cone spans seeds 0-9. |
 
-Doses (`C`) are per-method magnitudes on a half-octave grid `2^(n/2)`; C is NOT comparable across methods. An arm's endpoint is only meaningful at that method's own incoherence boundary (two consecutive breakdowns per steer direction). The measured rows currently exported are fixed-C arms; the dev repo re-walks each method to its own boundary before exporting the final plot.
+## Citation
 
-## Source inventory
-
-| path | purpose |
-| --- | --- |
-| `src/jsteer/vjp.py` | VJP-delta extraction |
-| `src/jsteer/__init__.py` | `with steer(...)` |
-| `src/jsteer/results.py` | Markdown, HTML, and plot renderer |
-| `src/jsteer/smoke.py` | small real-pipeline smoke run |
-| `nbs/demo.py`, `nbs/demo.ipynb` | one jupytext-paired notebook, source and GitHub view |
-| `jacobian_vjp_causal_graph.svg` | the method figure; source is `docs/explainers/*.tex` in the working repo |
-
-The checked source inventory rejects extra Python files. Package and render code must stay below 2000 lines.
+```bibtex
+@software{clark2026vjpsteering,
+  title = {vjp-steering: contrastive steering vectors from vector-Jacobian products},
+  author = {Clark, Michael J.},
+  year = {2026},
+  url = {https://github.com/wassname/vjp-steering},
+  note = {Work in progress}
+}
+```

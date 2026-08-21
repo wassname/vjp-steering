@@ -202,7 +202,7 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         for row in table
     )
     return (
-        "<!doctype html><meta charset='utf-8'><title>j-steer results</title>"
+        "<!doctype html><meta charset='utf-8'><title>vjp-steering results</title>"
         "<style>body{font:16px system-ui;max-width:900px;margin:2rem auto}"
         "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
