@@ -8,13 +8,16 @@ import re
 from pathlib import Path
 from statistics import mean
 
-from judge import cache_key, completed_walk_paths, demo_rows, valid
+from judge import MODEL, RUBRIC, cache_key, completed_walk_paths, demo_rows, valid
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
 RESULTS = ROOT / "data/results.csv"
 SCENARIOS = ROOT / "data/judged_scenarios.csv"
+RANDOM_RESULTS = ROOT / "data/random_results.csv"
+RANDOM_SCENARIOS = ROOT / "data/random_scenarios.csv"
+RANDOM_PROVENANCE = ROOT / "data/random_provenance.json"
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
@@ -92,10 +95,18 @@ def cohort_hash() -> str:
     return hashlib.sha256(json.dumps(sorted(prompts.items())).encode()).hexdigest()
 
 
-def random_rows(data_hash: str) -> list[dict]:
-    with RESULTS.open(newline="") as file:
-        rows = [row for row in csv.DictReader(file) if row["method"] == "random"]
+def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
+    provenance = json.loads(RANDOM_PROVENANCE.read_text())
+    assert provenance["judge_model"] == MODEL and provenance["rubric"] == RUBRIC
+    assert provenance["data_hash"] == data_hash
+    assert provenance["results_sha256"] == hashlib.sha256(RANDOM_RESULTS.read_bytes()).hexdigest()
+    assert provenance["scenarios_sha256"] == hashlib.sha256(RANDOM_SCENARIOS.read_bytes()).hexdigest()
+    with RANDOM_RESULTS.open(newline="") as file:
+        rows = list(csv.DictReader(file))
+    with RANDOM_SCENARIOS.open(newline="") as file:
+        scenarios = list(csv.DictReader(file))
     assert len({row["seed"] for row in rows}) == 10
+    assert set(provenance["runs"]) == {row["source_run"] for row in rows}
     expected = {
         "model": "Qwen/Qwen3.5-4B",
         "tokenizer": "Qwen/Qwen3.5-4B",
@@ -107,7 +118,7 @@ def random_rows(data_hash: str) -> list[dict]:
     }
     for row in rows:
         assert all(row[key] == value for key, value in expected.items())
-    return rows
+    return rows, scenarios
 
 
 def export() -> None:
@@ -177,13 +188,15 @@ def export() -> None:
                     and steered_off_axis <= 1.5
                 ),
             })
-    result_rows.extend(random_rows(data_hash))
+    random_result_rows, random_scenario_rows = random_rows(data_hash)
+    result_rows.extend(random_result_rows)
+    scenario_rows.extend(random_scenario_rows)
     with RESULTS.open("w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=FIELDS)
+        writer = csv.DictWriter(file, fieldnames=FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(result_rows)
     with SCENARIOS.open("w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=SCENARIO_FIELDS)
+        writer = csv.DictWriter(file, fieldnames=SCENARIO_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(scenario_rows)
     print(f"wrote {len(result_rows)} result arms and {len(scenario_rows)} scenario scores")
