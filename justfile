@@ -23,6 +23,9 @@ judge-dry:
 judge:
 	uv run python scripts/judge.py --refresh
 
+judge-walks-dry:
+	uv run python scripts/judge.py --walks
+
 judge-walks:
 	uv run python scripts/judge.py --walks --refresh
 

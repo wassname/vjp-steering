@@ -83,7 +83,7 @@ def semantic_reasons(reasons: list[str]) -> list[str]:
     return sorted({BREAKDOWN_REASON[reason] for reason in reasons if reason in BREAKDOWN_REASON})
 
 
-def adopted_rung(method: str, seed: int, coefficient: float, model: str) -> tuple[Path, dict] | None:
+def adopted_rung(method: str, seed: int, coefficient: float, model: str, max_new_tokens: int) -> tuple[Path, dict] | None:
     cohort, cohort_sha256 = read_cohort(100)
     expected = [(row["scenario"], row["prompt"]) for row in cohort]
     matches = []
@@ -100,6 +100,9 @@ def adopted_rung(method: str, seed: int, coefficient: float, model: str) -> tupl
             and artifact["axis"] == "sycophancy"
             and artifact["demo_set"] == "sycophancy_all100"
             and artifact["eval_version"] == 10
+            # the cap sets answer length, which the judge scores as an off-axis confound,
+            # so a rung from the old 4096 default is not the same measurement
+            and artifact.get("max_new_tokens") == max_new_tokens
         )
         if not identity:
             continue
@@ -167,7 +170,7 @@ def walk(args: argparse.Namespace) -> None:
     entries = []
     certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
     for grid_index, coefficient in enumerate(GRID):
-        adopted = adopted_rung(args.method, args.seed, coefficient, args.model)
+        adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens)
         command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
             logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
@@ -201,7 +204,7 @@ def walk(args: argparse.Namespace) -> None:
                     wait_for_gpu()
                     continue
                 raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
-            adopted = adopted_rung(args.method, args.seed, coefficient, args.model)
+            adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens)
             assert adopted is not None
         run_dir, artifact = adopted
         logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
