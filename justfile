@@ -29,6 +29,12 @@ judge-walks-dry:
 judge-walks:
 	uv run python scripts/judge.py --walks --refresh
 
+judge-walks-faulthandler:
+	uv run python -X faulthandler scripts/judge.py --walks --refresh
+
+judge-cell-repro:
+	uv run python scripts/scratch/repro_judge_cell.py
+
 export:
 	uv run python scripts/export.py
 
