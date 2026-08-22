@@ -31,8 +31,9 @@ COHORT_FIELDS = (
     "data_hash",
     "eval_cohort",
     "layers",
-    "batch_size",
 )
+# batch_size stays a reported column but not a cohort key: bare and steered always share a
+# batch within a rung, so it only shifts padding numerics, and rungs ran at 4 and at 32
 
 
 def _rows(path: Path = DATA) -> list[dict]:

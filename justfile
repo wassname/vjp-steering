@@ -1,5 +1,8 @@
 set dotenv-load
 
+# uv_sync images need a 2025+ builder; the workspace default is still 2024.10
+export MODAL_IMAGE_BUILDER_VERSION := "2025.06"
+
 smoke:
 	#!/usr/bin/env bash
 	set -euo pipefail
@@ -36,6 +39,22 @@ queue-walks:
 	done
 
 sweeps: queue-walks
+
+# the same nine walks on Modal, nine GPUs at once instead of one card in series
+modal-smoke:
+	modal run modal/app.py::smoke
+
+# seed the Volume with the rungs already on disk so Modal adopts them instead of re-running
+modal-push:
+	rm -rf /tmp/jsteer-push && mkdir -p /tmp/jsteer-push
+	rsync -a --include="*/" --include="*.json" --include="*.jsonl" --exclude="*" outputs/ /tmp/jsteer-push/
+	modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
+
+modal-walks:
+	modal run --detach modal/app.py::main
+
+modal-pull:
+	modal volume get --force jsteer-pub-cache outputs .
 
 queue-judge:
 	pueue add --group api -l "why: judge every arm in the nine completed public walks; resolve: all content cells are cached and judge reports zero missing" -w "$PWD" -- just judge-walks

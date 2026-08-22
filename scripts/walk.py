@@ -53,6 +53,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
     parser.add_argument("--n-pairs", type=int, default=256)
     parser.add_argument("--batch-size", type=int, default=4)
+    # extraction holds a backward graph, so it OOMs at a batch that generation is happy with
+    parser.add_argument("--extract-batch-size", type=int)
     parser.add_argument("--max-length", type=int, default=384)
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--limit", type=int, default=100)
@@ -131,6 +133,8 @@ def rung_command(args: argparse.Namespace, coefficient: float) -> list[str]:
         str(args.n_pairs),
         "--batch-size",
         str(args.batch_size),
+        "--extract-batch-size",
+        str(args.extract_batch_size or args.batch_size),
         "--max-length",
         str(args.max_length),
         "--max-new-tokens",
@@ -254,6 +258,7 @@ def vector_hash(vector: Vector) -> str:
 
 
 def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector:
+    batch_size = args.extract_batch_size or args.batch_size
     if args.method == "vjp_delta":
         vector = vjp_delta(
             model,
@@ -262,7 +267,7 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector
             negative,
             layers,
             target_layer=args.target_layer,
-            batch_size=args.batch_size,
+            batch_size=batch_size,
             max_length=args.max_length,
             skip_first=16,
         )
@@ -276,7 +281,7 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector
             positive,
             negative,
             config,
-            batch_size=args.batch_size,
+            batch_size=batch_size,
             max_length=args.max_length,
         )
     vector.cfg.dtype = getattr(torch, args.dtype)
@@ -503,6 +508,7 @@ def run_rung(args: argparse.Namespace) -> None:
         "n_pairs_requested": args.n_pairs,
         "n_pairs": len(positive),
         "batch_size": args.batch_size,
+        "extract_batch_size": args.extract_batch_size or args.batch_size,
         "max_length": args.max_length,
         "max_new_tokens": args.max_new_tokens,
         "extraction_sample_id": sample_id,
