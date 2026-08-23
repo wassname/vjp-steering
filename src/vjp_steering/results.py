@@ -122,6 +122,11 @@ def plot(rows: list[dict]) -> go.Figure:
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
+            # dense grids tangle near bare: draw a log-spaced subset, endpoints always kept;
+            # the CSV keeps every rung
+            if len(points) > 12:
+                idx = sorted({round(i * (len(points) - 1) / 11) for i in range(12)} | {len(points) - 1})
+                points = [points[i] for i in idx]
             if points:
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
