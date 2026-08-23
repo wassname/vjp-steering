@@ -126,6 +126,7 @@ def plot(rows: list[dict]) -> go.Figure:
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
                     mode="lines+markers", line={"color": colors[method], "width": 3}, marker={"color": colors[method], "size": 8},
+                    line_shape="spline", line_smoothing=0.6,
                     text=["bare", *(f"C={row['C']:g}" for row in points)],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>", showlegend=False,
                 ))
