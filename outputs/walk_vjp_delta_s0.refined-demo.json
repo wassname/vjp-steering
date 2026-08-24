@@ -4,7 +4,7 @@
   "method": "vjp_delta",
   "seed": 0,
   "model": "Qwen/Qwen3.5-4B",
-  "grid": "2^(n/6), n=-30..84",
+  "grid": "refined",
   "state": {
     "+C": {
       "streak": 0,
@@ -12,7 +12,7 @@
     },
     "-C": {
       "streak": 2,
-      "boundary": 19
+      "boundary": 35
     }
   },
   "rungs": [
@@ -175,7 +175,7 @@
     {
       "grid_index": 12,
       "coefficient": 0.125,
-      "run_dir": "outputs/run_20260820T092519_vjp_delta_c0p125",
+      "run_dir": "outputs/run_20260822T022625_vjp_delta_s0_c0p125",
       "+C": {
         "breakdown_reasons": [],
         "post_boundary": false
@@ -214,7 +214,7 @@
     {
       "grid_index": 15,
       "coefficient": 0.1767766952966369,
-      "run_dir": "outputs/run_20260820T094556_vjp_delta_c0p1767766952966369",
+      "run_dir": "outputs/run_20260822T022812_vjp_delta_s0_c0p1767766952966369",
       "+C": {
         "breakdown_reasons": [],
         "post_boundary": false
@@ -266,7 +266,7 @@
       }
     },
     {
-      "grid_index": 19,
+      "grid_index": 35,
       "coefficient": 0.28061551207734325,
       "run_dir": "outputs/run_20260821T234144_vjp_delta_s0_c0p28061551207734325",
       "+C": {
@@ -283,7 +283,7 @@
       }
     },
     {
-      "grid_index": 20,
+      "grid_index": 36,
       "coefficient": 0.3149802624737183,
       "run_dir": "outputs/run_20260821T234530_vjp_delta_s0_c0p3149802624737183",
       "+C": {
@@ -298,23 +298,12 @@
         ],
         "post_boundary": true
       }
-    },
-    {
-      "grid_index": 21,
-      "coefficient": 0.3535533905932738,
-      "run_dir": "outputs/run_20260822T023429_vjp_delta_s0_c0p3535533905932738",
-      "+C": {
-        "breakdown_reasons": [],
-        "post_boundary": false
-      },
-      "-C": {
-        "breakdown_reasons": [
-          "repetition",
-          "role_leak",
-          "unfinished"
-        ],
-        "post_boundary": true
-      }
     }
-  ]
+  ],
+  "c_star": 0.25,
+  "refine": {
+    "low": 0.125,
+    "high": 0.3125,
+    "steps": 16
+  }
 }
