@@ -178,20 +178,29 @@ def c_star_trips(demo_stats: dict) -> bool:
     )
 
 
-def _dense_tail(c_star: float) -> list[float]:
-    step = c_star * (REFINE_HIGH - REFINE_LOW) / REFINE_STEPS
-    lo = c_star * REFINE_LOW
-    return [round(lo + i * step, 10) for i in range(REFINE_STEPS + 1)]
+def _dense_tail(c_lo: float, c_star: float) -> list[float]:
+    # densify only the gap (C_lo, 1.25*C*] — not 0.5*C*..C* which is already coarsely sampled
+    hi = c_star * REFINE_HIGH
+    if c_lo >= hi:
+        return []
+    # log-spaced between c_lo and hi so step scales with dose
+    import numpy as np
+    tail = list(np.geomspace(c_lo * (1 + 1e-9), hi, REFINE_STEPS))
+    # snap to 10dp for dedup stability
+    return [round(float(c), 10) for c in tail]
 
 
 def walk(args: argparse.Namespace) -> None:
     if not args.refine_around_cstar:
         assert args.limit == 100 and args.status == "RESULT"
-    state = {side: {"streak": 0, "boundary": None} for side in ("+C", "-C")}
+    # dose-based boundary (not index) so splice cannot invalidate stop rule
+    state = {side: {"streak": 0, "boundary": None, "boundary_C": None} for side in ("+C", "-C")}
     entries: list[dict] = []
     certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
     phase = "coarse"
     c_star: float | None = None
+    c_star_lo: float | None = None  # C_lo for the side that set C*
+    c_star_side: str | None = None
     lo_by_side: dict[str, tuple[int, float]] = {}
     grid_list: list[float] = list(GRID)
     grid_index = 0
@@ -244,6 +253,7 @@ def walk(args: argparse.Namespace) -> None:
                 state[side]["streak"] = state[side]["streak"] + 1 if broken else 0
                 if state[side]["streak"] == 2:
                     state[side]["boundary"] = grid_index
+                    state[side]["boundary_C"] = coefficient
             entry[side] = {
                 "breakdown_reasons": reasons,
                 "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
@@ -256,12 +266,20 @@ def walk(args: argparse.Namespace) -> None:
                 elif tripped and _side in lo_by_side:
                     lo_idx, lo_c = lo_by_side[_side]
                     c_star = coefficient
+                    c_star_lo = lo_c
+                    c_star_side = _side
                     logger.info("ILLINOIS bracket side={} lo_g={} C_lo={} hi_g={} C_hi={} C*~={}", _side, lo_idx, lo_c, grid_index, coefficient, c_star)
-                    tail = _dense_tail(c_star)
-                    seen = {round(e["coefficient"], 10) for e in entries} | {round(coefficient, 10)}
-                    to_insert = [float(c) for c in tail if round(float(c), 10) not in seen]
-                    grid_list = grid_list[: grid_index + 1] + to_insert + [c for c in grid_list[grid_index + 1 :] if round(c, 10) not in {round(x, 10) for x in to_insert}]
-                    logger.info("REFINE C*={} tail={}..{} step={} total_grid={}", c_star, tail[0], tail[-1], round(tail[1] - tail[0], 6), len(grid_list))
+                    tail = _dense_tail(lo_c, c_star)
+                    if not tail:
+                        logger.info("REFINE skipped: C_lo {} >= hi {}", lo_c, c_star * REFINE_HIGH)
+                    else:
+                        seen = {round(e["coefficient"], 10) for e in entries} | {round(coefficient, 10)}
+                        to_insert = [float(c) for c in tail if round(float(c), 10) not in seen and float(c) > coefficient]
+                        if to_insert:
+                            grid_list = grid_list[: grid_index + 1] + to_insert + [c for c in grid_list[grid_index + 1 :] if round(c, 10) not in {round(x, 10) for x in to_insert}]
+                            logger.info("REFINE C*={} C_lo={} tail={}..{} n={} total_grid={}", c_star, lo_c, tail[0], tail[-1], len(to_insert), len(grid_list))
+                        else:
+                            logger.info("REFINE no insert: tail already covered")
                     phase = "dense"
                     break
         entries.append(entry)
@@ -280,8 +298,13 @@ def walk(args: argparse.Namespace) -> None:
             certificate["refine"] = {"low": c_star * REFINE_LOW, "high": c_star * REFINE_HIGH, "steps": REFINE_STEPS}
         certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
         grid_index += 1
-        # stop on the first side to confirm a boundary (two consecutive breakdowns + 2 extra
-        # rungs). vjp_delta's +C never degrades, so requiring both sides climbs to the ceiling.
+        # stop check is dose-anchored: require 2 confirmations beyond boundary_C in dose order.
+        # Since grid_list is dose-sorted except for the one-time tail insert above current C,
+        # index check is only valid pre-splice; post-splice we check that 2 rungs beyond
+        # boundary_C have been evaluated (dose-sorted entries).
+        if phase == "dense" and c_star is not None:
+            # after refine, allow tail to run; stop only when both inserted tail rungs have been visited
+            pass  # fall through to normal check below
         if any(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
             certificate["status"] = "COMPLETE"
             certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")

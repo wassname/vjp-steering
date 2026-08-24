@@ -122,19 +122,24 @@ def plot(rows: list[dict]) -> go.Figure:
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
-            # seed spread is numerical noise, so rung-to-rung jitter is not signal: take a
-            # centered rolling median over dose-ordered seed-means before drawing
+            # log-kernel median: window is fixed in log-C (comparable on coarse vs dense tail)
             if len(points) >= 5:
+                import math
+                logC = [math.log(row["C"]) for row in points]
+                # half-window ~0.15 in log (about one half-octave / log(2)/4) so kernel comparable across grids
+                hw = 0.15
                 smoothed = []
-                for i in range(len(points)):
-                    win = points[max(0, i - 2):i + 3]
-                    smoothed.append({**points[i],
-                                     "effect": median(row["effect"] for row in win),
-                                     "off_axis_perturbation": median(row["off_axis_perturbation"] for row in win)})
+                for i, row in enumerate(points):
+                    win = [points[j] for j, lc in enumerate(logC) if abs(lc - logC[i]) <= hw]
+                    if len(win) < 3:
+                        win = points[max(0, i - 2):i + 3]
+                    smoothed.append({**row,
+                                     "effect": median(r["effect"] for r in win),
+                                     "off_axis_perturbation": median(r["off_axis_perturbation"] for r in win)})
                 points = smoothed
-            # draw a log-spaced subset, endpoints always kept; the CSV keeps every rung
-            if len(points) > 10:
-                idx = sorted({round(i * (len(points) - 1) / 9) for i in range(10)} | {len(points) - 1})
+            # do not decimate below dense resolution near the tip; keep all if tail is dense
+            if len(points) > 16:
+                idx = sorted({round(i * (len(points) - 1) / 15) for i in range(16)} | {len(points) - 1})
                 points = [points[i] for i in idx]
             if points:
                 figure.add_trace(go.Scatter(
