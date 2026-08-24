@@ -1,0 +1,18 @@
+SHOULD: each walk has a boundary g where the walk's 2-rung streak fires; C* is the first C that trips rep>=25 or unf>=50 or leak>=25. Gap is C* offset in grid steps.
+ELSE the cheap rule misses the channel that actually broke.
+| method | seed | side | boundary g | C(boundary) | C* g | C(C*) | gap |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| vjp_delta | 0 | -C | 19 | 0.280616 | 18 | 0.25 | -1 |
+| vjp_delta | 1 | -C | 20 | 0.31498 | 19 | 0.280616 | -1 |
+| vjp_delta | 2 | -C | 19 | 0.280616 | 18 | 0.25 | -1 |
+| mean_diff | 0 | -C | 32 | 1.25992 | 31 | 1.12246 | -1 |
+| mean_diff | 1 | -C | 32 | 1.25992 | 31 | 1.12246 | -1 |
+| mean_diff | 2 | -C | 32 | 1.25992 | 31 | 1.12246 | -1 |
+| pca | 0 | +C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+| pca | 0 | -C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+| pca | 1 | +C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+| pca | 1 | -C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+| pca | 2 | +C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+| pca | 2 | -C | 35 | 1.7818 | 34 | 1.5874 | -1 |
+
+misses outside [-1,+1]: 0
