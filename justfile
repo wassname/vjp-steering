@@ -59,8 +59,8 @@ modal-push:
 	rsync -a --include="*/" --include="*.json" --include="*.jsonl" --exclude="*" outputs/ /tmp/jsteer-push/
 	modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
 
-modal-walks:
-	modal run --detach modal/app.py::main
+modal-walks *args:
+	modal run --detach modal/app.py::main {{args}}
 
 modal-pull:
 	modal volume get --force jsteer-pub-cache outputs .

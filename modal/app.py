@@ -61,15 +61,18 @@ def main(
     seeds: str = ",".join(map(str, SEEDS)),
     batch_size: int = 32,
     extract_batch_size: int = 8,
+    refine_around_cstar: bool = False,
 ):
     # generation: batch 4 leaves an H100 idle, decode is bandwidth bound so a wide batch is nearly free
     # extraction: vjp_delta's backward graph OOMs an 80 GB card at 32
     jobs = [(m, s) for s in seeds.split(",") for m in methods.split(",")]
+    extra = ["--refine-around-cstar"] if refine_around_cstar else []
     handles = {
         job: run.spawn([
             job[0], "--seed", job[1], "--walk",
             "--batch-size", str(batch_size),
             "--extract-batch-size", str(extract_batch_size),
+            *extra,
         ])
         for job in jobs
     }
