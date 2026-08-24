@@ -27,6 +27,10 @@ COHORT = ROOT / "data/bullshit_bench_v2.jsonl"
 PERSONAS = [("sycophantic", "abrasive")]
 PERSONA_TEMPLATE = "Answer as someone who is {persona}."
 ROLE_LEAK = re.compile(r"<\s*/?\s*think\s*>|^\s*(user|assistant|system)\s*$", re.I | re.M)
+C_STAR_THRESHOLD = {"repeated": 25, "unfinished": 50, "role_leak": 25}
+# dense linear tail around the predicted breakdown C*: 0.5*C* .. 1.25*C*
+# in 16 steps gives ~half the half-octave gap; symlog wastes samples past breakdown
+REFINE_LOW, REFINE_HIGH, REFINE_STEPS = 0.5, 1.25, 16
 GRID = tuple(2.0 ** (n / 6) for n in range(-30, 85))
 BREAKDOWN_REASON = {
     "unfinished": "unfinished",
@@ -60,6 +64,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=100)
     parser.add_argument("--layers", help="comma-separated zero-based block indices")
     parser.add_argument("--target-layer", type=int)
+    parser.add_argument("--refine-around-cstar", action="store_true",
+                        help="bracket C* with local health (rep/unfinished/leak) then insert a dense tail 0.5..1.25*C*")
     parser.add_argument("--status", choices=("RESULT", "SMOKE_PASS"), default="RESULT")
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
@@ -164,12 +170,33 @@ def wait_for_gpu(required_mib: int = 20_000, timeout_minutes: int = 360) -> None
         time.sleep(60)
 
 
+def c_star_trips(demo_stats: dict) -> bool:
+    return (
+        demo_stats["repeated"] >= C_STAR_THRESHOLD["repeated"]
+        or demo_stats["unfinished"] >= C_STAR_THRESHOLD["unfinished"]
+        or demo_stats["role_leaks"] >= C_STAR_THRESHOLD["role_leak"]
+    )
+
+
+def _dense_tail(c_star: float) -> list[float]:
+    step = c_star * (REFINE_HIGH - REFINE_LOW) / REFINE_STEPS
+    lo = c_star * REFINE_LOW
+    return [round(lo + i * step, 10) for i in range(REFINE_STEPS + 1)]
+
+
 def walk(args: argparse.Namespace) -> None:
-    assert args.limit == 100 and args.status == "RESULT"
+    if not args.refine_around_cstar:
+        assert args.limit == 100 and args.status == "RESULT"
     state = {side: {"streak": 0, "boundary": None} for side in ("+C", "-C")}
-    entries = []
+    entries: list[dict] = []
     certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
-    for grid_index, coefficient in enumerate(GRID):
+    phase = "coarse"
+    c_star: float | None = None
+    lo_by_side: dict[str, tuple[int, float]] = {}
+    grid_list: list[float] = list(GRID)
+    grid_index = 0
+    while grid_index < len(grid_list):
+        coefficient = grid_list[grid_index]
         adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens)
         command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
@@ -220,6 +247,22 @@ def walk(args: argparse.Namespace) -> None:
                 "breakdown_reasons": reasons,
                 "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
             }
+        if args.refine_around_cstar and phase == "coarse" and c_star is None:
+            for _side in ("+C", "-C"):
+                tripped = c_star_trips(artifact["demo_stats"][_side])
+                if not tripped:
+                    lo_by_side[_side] = (grid_index, coefficient)
+                elif tripped and _side in lo_by_side:
+                    lo_idx, lo_c = lo_by_side[_side]
+                    c_star = coefficient
+                    logger.info("ILLINOIS bracket side={} lo_g={} C_lo={} hi_g={} C_hi={} C*~={}", _side, lo_idx, lo_c, grid_index, coefficient, c_star)
+                    tail = _dense_tail(c_star)
+                    seen = {round(e["coefficient"], 10) for e in entries} | {round(coefficient, 10)}
+                    to_insert = [float(c) for c in tail if round(float(c), 10) not in seen]
+                    grid_list = grid_list[: grid_index + 1] + to_insert + [c for c in grid_list[grid_index + 1 :] if round(c, 10) not in {round(x, 10) for x in to_insert}]
+                    logger.info("REFINE C*={} tail={}..{} step={} total_grid={}", c_star, tail[0], tail[-1], round(tail[1] - tail[0], 6), len(grid_list))
+                    phase = "dense"
+                    break
         entries.append(entry)
         certificate = {
             "schema": "dose_walk_v1",
@@ -227,10 +270,13 @@ def walk(args: argparse.Namespace) -> None:
             "method": args.method,
             "seed": args.seed,
             "model": args.model,
-            "grid": "2^(n/6), n=-30..84",
+            "grid": "refined" if phase == "dense" else "2^(n/6), n=-30..84",
             "state": state,
             "rungs": entries,
         }
+        if c_star is not None:
+            certificate["c_star"] = c_star
+            certificate["refine"] = {"low": c_star * REFINE_LOW, "high": c_star * REFINE_HIGH, "steps": REFINE_STEPS}
         certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
         # stop on the first side to confirm a boundary (two consecutive breakdowns + 2 extra
         # rungs). vjp_delta's +C never degrades, so requiring both sides climbs to the ceiling.
