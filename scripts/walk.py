@@ -201,7 +201,8 @@ def walk(args: argparse.Namespace) -> None:
         command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
             logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
-            return
+            grid_index += 1
+            continue
         if adopted is None:
             wait_for_gpu()
             environment = os.environ.copy()
@@ -278,6 +279,7 @@ def walk(args: argparse.Namespace) -> None:
             certificate["c_star"] = c_star
             certificate["refine"] = {"low": c_star * REFINE_LOW, "high": c_star * REFINE_HIGH, "steps": REFINE_STEPS}
         certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
+        grid_index += 1
         # stop on the first side to confirm a boundary (two consecutive breakdowns + 2 extra
         # rungs). vjp_delta's +C never degrades, so requiring both sides climbs to the ceiling.
         if any(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):

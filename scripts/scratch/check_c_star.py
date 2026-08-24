@@ -47,7 +47,8 @@ for method in ("vjp_delta", "mean_diff", "pca"):
                     art = json.loads((ROOT / rung["run_dir"] / f"{method}.json").read_text())
                     s = art["demo_stats"][side]
                     rep = s.get("repeated", s.get("repeat_count", 0))
-                    if rep >= REP_THRESHOLD or s["unfinished"] >= UNFINISHED_THRESHOLD or s["role_leaks"] >= ROLLEAK_THRESHOLD:
+                    leak = s.get("role_leaks", s.get("role_leak", 0))
+                    if rep >= REP_THRESHOLD or s["unfinished"] >= UNFINISHED_THRESHOLD or leak >= ROLLEAK_THRESHOLD:
                         first_trip = rung["grid_index"]
                         cstar_c_val = rung["coefficient"]
                         break
