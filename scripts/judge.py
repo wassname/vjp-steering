@@ -308,7 +308,12 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             await asyncio.sleep(1.5 * (attempt + 1))
             continue
         if not response.choices:
-            logger.info("retry empty choices cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
+            # empty choices (degenerate/repetitive text) -- skip this cell after 3 tries
+            # per ml-debug llm_as_judge: don't let one bad demo kill the 39k batch
+            logger.warning("empty choices cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
+            if attempt == 2:
+                logger.error("skipping degenerate cell {} after 3 empty", cache_key(row, order, pass_index))
+                return None
             continue
         raw = response.choices[0].message.content
         reasoning = getattr(response.choices[0].message, "reasoning", None)
@@ -347,6 +352,9 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 "cost_usd": float(getattr(response.usage, "cost", 0) or 0),
             }
         logger.info("retry invalid JSON cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
+        if attempt == 2:
+            logger.error("skipping invalid JSON cell {} after 3 tries", cache_key(row, order, pass_index))
+            return None
     raise RuntimeError(f"judge failed contract: {row['run']}/{row['side']}/{row['vignette']}/{order}/{pass_index}")
 
 
@@ -368,6 +376,10 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
         nonlocal done
         async with semaphore:
             record = await judge_one(client, *cell)
+        if record is None:
+            async with lock:
+                done += 1
+            return
         async with lock:
             with CACHE.open("a") as file:
                 file.write(json.dumps(record, sort_keys=True) + "\n")
