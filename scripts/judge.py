@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from loguru import logger
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, APIStatusError, AuthenticationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -254,6 +254,16 @@ Response B:
 {response_b}"""
 
 
+TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
+PARALLEL = 6  # user requested --parallel N=6
+
+
+def _insufficient_credits(err: APIStatusError) -> bool:
+    body = getattr(err, "body", None) or {}
+    text = json.dumps(body).lower() if isinstance(body, dict) else str(body).lower()
+    return err.status_code == 402 or "insufficient" in text or "credit" in text or "quota" in text
+
+
 async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int) -> dict:
     prompt = judge_prompt(row, order)
     raw_attempts = []
@@ -262,22 +272,34 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
         # retries append a format-rescue nudge: on degenerate (repetitive) answers the judge
         # imitates the repetition and never emits JSON; scoring semantics are unchanged
         content = prompt if attempt == 0 else prompt + RETRY_NUDGE
-        response = await client.chat.completions.create(
-            model=MODEL,
-            messages=[{"role": "user", "content": content}],
-            temperature=0.7,
-            max_tokens=1024,
-            response_format=FORMAT,
-            extra_body={
-                "min_p": 0.1,
-                "reasoning": {"enabled": False},
-                "provider": {
-                    "quantizations": ["fp8", "int8", "bf16", "fp16"],
-                    "require_parameters": True,
-                    "ignore": ["AtlasCloud", "DeepInfra"],
+        try:
+            response = await client.chat.completions.create(
+                model=MODEL,
+                messages=[{"role": "user", "content": content}],
+                temperature=0.7,
+                max_tokens=1024,
+                response_format=FORMAT,
+                extra_body={
+                    "min_p": 0.1,
+                    "reasoning": {"enabled": False},
+                    "provider": {
+                        "quantizations": ["fp8", "int8", "bf16", "fp16"],
+                        "require_parameters": True,
+                        "ignore": ["AtlasCloud", "DeepInfra"],
+                    },
                 },
-            },
-        )
+            )
+        except APIStatusError as err:
+            # fail fast on spent credits -- do not retry 3h (per ml-debug llm_as_judge gist
+            # handle_bad_request: 402 is non-retryable). Any 402/insufficient-credits bubbles
+            # up to refresh() which aborts the whole run so the proc ends.
+            if _insufficient_credits(err):
+                logger.error("OPENROUTER out of credits ({}), aborting", err.status_code)
+                raise
+            if err.status_code in TRANSIENT_CODES:
+                logger.warning("transient {} attempt={}/3", err.status_code, attempt + 1)
+                continue
+            raise
         if not response.choices:
             logger.info("retry empty choices cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
             continue
@@ -323,10 +345,14 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
 
 async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     CACHE.parent.mkdir(parents=True, exist_ok=True)
+    api_key = os.environ["OPENROUTER_API_KEY"]
+    assert api_key, "OPENROUTER_API_KEY not set"
+    # deliberately do NOT set a balance pre-check -- a dead key must fail loud via 402,
+    # which judge_one raises without retry so the proc ends (user request).
     client = AsyncOpenAI(
-        api_key=os.environ["OPENROUTER_API_KEY"],
+        api_key=api_key,
         base_url="https://openrouter.ai/api/v1",
-        max_retries=6,
+        max_retries=0,  # we handle retries ourselves; SDK retry on 402 caused the 3h hang
     )
     lock = asyncio.Lock()
     done = 0
@@ -342,7 +368,7 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
             if done % 100 == 0 or done == len(todo):
                 logger.info("judge progress={}/{}", done, len(todo))
 
-    semaphore = asyncio.Semaphore(16)
+    semaphore = asyncio.Semaphore(PARALLEL)
     for start in range(0, len(todo), 500):
         await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
     await client.close()
