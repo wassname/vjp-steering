@@ -10,7 +10,9 @@ Here's a nice way of measuring it: sweep the doses and plot the Pareto frontier.
 
 ![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results.png)
 
-In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence.
+In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence. 
+
+The grey region is the null region where random vector steer. Interestingly it's lop sided, this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training that are show this effect where it's "downhill" towards the RLAIF direction, an "uphill" to avoid it.
 
 The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
