@@ -143,7 +143,7 @@ def place_labels(
         box_height = len(lines) * line_h + 6
         best = None
         for radius in radii:
-            for angle in angles:
+            for angle in point.get("angles", angles):
                 center_x = anchor_x + radius * math.cos(math.radians(angle))
                 center_y = anchor_y - radius * math.sin(math.radians(angle))
                 candidate = (cost(center_x, center_y, box_width, box_height), center_x, center_y)
@@ -246,7 +246,7 @@ def plot(rows: list[dict]) -> go.Figure:
         {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
         {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
         {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-        {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777"},
+        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
     ]
     for annotation in place_labels(
         labels, (-x_limit, x_limit), y_range, obstacles=obstacles,
