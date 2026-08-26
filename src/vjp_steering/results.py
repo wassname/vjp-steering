@@ -170,7 +170,7 @@ def plot(rows: list[dict]) -> go.Figure:
     valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
-    margin = {"l": 90, "r": 15, "t": 45, "b": 70}
+    margin = {"l": 75, "r": 10, "t": 40, "b": 58}
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     random_seeds = sorted({row["seed"] for row in random})
@@ -250,21 +250,21 @@ def plot(rows: list[dict]) -> go.Figure:
     ]
     for annotation in place_labels(
         labels, (-x_limit, x_limit), y_range, obstacles=obstacles,
-        fig_w=1064, fig_h=658, margin=margin, font={"size": 14},
+        fig_w=1064, fig_h=590, margin=margin, font={"size": 15},
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
     figure.add_annotation(
         x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
-        align="center", font={"color": "#666666", "size": 13},
+        align="center", font={"color": "#666666", "size": 14},
     )
-    figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 12})
-    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
-    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=21, font={"color": "#c44e52", "size": 12})
+    figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
+    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
+    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
     figure.update_layout(
         title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
-        width=1064, height=658, margin=margin,
-        font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
+        height=590, margin=margin,
+        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
         yaxis={"title": "off-axis damage (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
     )
@@ -282,11 +282,11 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             table.append([
                 method,
                 side,
+                f"{peak['effect']:+.3f}" if peak else "-",
+                f"{peak['off_axis_perturbation']:.3f}" if peak else "-",
                 str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS) if live else 0),
                 str(len(live)),
                 str(sum(not row["admissible"] for row in group)),
-                f"{peak['effect']:+.3f}" if peak else "-",
-                f"{peak['off_axis_perturbation']:.3f}" if peak else "-",
             ])
     return table
 
@@ -294,11 +294,11 @@ def _summary(rows: list[dict]) -> list[list[str]]:
 HEADERS = [
     "method",
     "steer dir",
+    "peak on-axis↑",
+    "damage↓",
     "seeds",
     "arms",
-    "rejected",
-    "peak on-axis",
-    "damage at peak",
+    "rejected↓",
 ]
 
 
@@ -309,7 +309,7 @@ def _markdown(table: list[list[str]]) -> str:
         "All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.",
         "The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.",
         "",
-        "![Judged effect against off-axis change](results.svg)",
+        "![Judged effect against off-axis change](plot.svg)",
         "",
         "| " + " | ".join(HEADERS) + " |",
         "| " + " | ".join("---" for _ in HEADERS) + " |",
@@ -326,8 +326,9 @@ def _html(table: list[list[str]], figure_html: str) -> str:
     )
     return (
         "<!doctype html><meta charset='utf-8'><title>vjp-steering results</title>"
-        "<style>body{font:16px system-ui;max-width:900px;margin:2rem auto}"
-        "table{border-collapse:collapse}th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
+        "<style>body{font:16px system-ui;max-width:1064px;margin:2rem auto;padding:0 1rem}"
+        ".plotly-graph-div{width:100%!important}table{border-collapse:collapse;width:100%}"
+        "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. Named-method points "
         "are means over three seeds. The figure shows both steering directions. The random cone shows ten vectors until fewer "
@@ -371,7 +372,7 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
     parser = _Cells()
     parser.feed(html_text)
     if markdown_rows != parser.rows:
-        raise AssertionError("results.md and results.html table cells differ")
+        raise AssertionError("results/index.md and results/index.html table cells differ")
 
 
 def main() -> None:
@@ -379,12 +380,20 @@ def main() -> None:
     table = _summary(rows)
     markdown_text = _markdown(table)
     figure = plot(rows)
-    html_text = _html(table, figure.to_html(full_html=False, include_plotlyjs="cdn"))
+    figure_html = figure.to_html(
+        full_html=False,
+        include_plotlyjs="cdn",
+        default_width="100%",
+        config={"responsive": True},
+    )
+    html_text = _html(table, figure_html)
     _check_equivalent(markdown_text, html_text)
-    (ROOT / "results.md").write_text(markdown_text)
-    (ROOT / "results.html").write_text(html_text)
-    figure.write_image(ROOT / "results.svg")
-    figure.write_image(ROOT / "results.png", scale=2)
+    results_dir = ROOT / "results"
+    results_dir.mkdir(exist_ok=True)
+    (results_dir / "index.md").write_text(markdown_text)
+    (results_dir / "index.html").write_text(html_text)
+    figure.write_image(results_dir / "plot.svg", width=1064, height=590)
+    figure.write_image(results_dir / "plot.png", width=1064, height=590, scale=2)
     print(f"wrote {len(table)} table rows from {len(rows)} measured arms")
 
 

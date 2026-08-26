@@ -8,7 +8,7 @@ I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) wo
 
 Here's a nice way of measuring it: sweep the doses and plot the Pareto frontier.
 
-![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results.png)
+![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results/plot.png)
 
 In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence.
 
@@ -16,16 +16,7 @@ The grey region is the null region where random vectors steer. Interestingly it'
 
 The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
-| method | steer dir | seeds | arms | rejected | peak on-axis | damage at peak |
-| --- | --- | --- | --- | --- | --- | --- |
-| vjp_delta | -C | 3 | 18 | 10 | -1.849 | 0.477 |
-| vjp_delta | +C | 3 | 19 | 0 | +2.988 | 0.245 |
-| mean_diff | -C | 3 | 29 | 15 | -1.492 | 0.703 |
-| mean_diff | +C | 3 | 31 | 9 | +4.370 | 0.695 |
-| pca | -C | 3 | 29 | 24 | -1.227 | 0.963 |
-| pca | +C | 3 | 32 | 15 | +4.090 | 1.031 |
-| random | -C | 10 | 30 | 4 | +4.075 | 0.724 |
-| random | +C | 10 | 30 | 1 | +3.851 | 0.470 |
+The generated [results page](results/index.md) has the summary table and exact values.
 
 This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. One caveat on what the seed varies here: the persona-pair pool holds 200 prompts and each walk asks for 256, so every seed exhausts the same pool and only its order changes; generation is greedy. The seed spread therefore measures numerical noise in the extracted vector, not sampling variation over prompt draws. The random cone is ten vectors, drawn until fewer than half have two coherent arms.
 
@@ -33,9 +24,7 @@ Doses are not comparable across methods. These are fixed-C arms; the final expor
 
 ## What J is
 
-I like [Janus's view](https://x.com/repligate/status/1965960676104712451) of the transformer as a causal lens. Here you can see that $J$ is a local linear approximation, summarising many branching paths into one sensitivity.
-
-![the routes from A to B, and the first-order map that stands in for them](jacobian_vjp_causal_graph.svg)
+I like [Janus's view](https://x.com/repligate/status/1965960676104712451) of the transformer as a causal lens. $J$ is a local linear approximation, summarising many branching paths into one sensitivity.
 
 $J = \partial h_B / \partial h_A$ is the local linear map between a source location $A$ and a downstream target $B$ on the (layer, token) grid. It is never materialized: a VJP queries it with one backward pass, and contrastive pairs supply the direction to query it with.
 

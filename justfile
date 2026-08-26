@@ -51,7 +51,7 @@ sweeps: queue-walks
 
 # the same nine walks on Modal, nine GPUs at once instead of one card in series
 modal-smoke:
-	modal run modal/app.py::smoke
+	modal run scripts/run_modal.py::smoke
 
 # seed the Volume with the rungs already on disk so Modal adopts them instead of re-running
 modal-push:
@@ -60,7 +60,7 @@ modal-push:
 	modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
 
 modal-walks *args:
-	modal run --detach modal/app.py::main {{args}}
+	modal run --detach scripts/run_modal.py::main {{args}}
 
 modal-pull:
 	modal volume get --force jsteer-pub-cache outputs .
@@ -70,6 +70,10 @@ queue-judge:
 
 results:
 	uv run python -m vjp_steering.results
+
+publish-results: results
+	git diff --exit-code -- results
+	git subtree push --prefix results origin gh-pages
 
 # keep nbs/demo.py and nbs/demo.ipynb in step; existing outputs in the .ipynb survive
 notebook:

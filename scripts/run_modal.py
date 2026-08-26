@@ -1,8 +1,8 @@
 """Fan the nine dose walks out over Modal GPUs, one container per (method, seed).
 
 Run from the repo root (uv_sync reads ./pyproject.toml + ./uv.lock):
-    modal run modal/app.py::smoke        # tiny random model, one rung, ~minutes
-    modal run --detach modal/app.py      # the nine real walks
+    modal run scripts/run_modal.py::smoke        # tiny random model, one rung, ~minutes
+    modal run --detach scripts/run_modal.py      # the nine real walks
     modal volume get --force jsteer-pub-cache outputs .   # pull artifacts back
 """
 
