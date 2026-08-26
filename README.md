@@ -26,18 +26,21 @@ The grey region is the null region where random vectors can steer the model, so 
 
 The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
+<!-- CODEX: aggregate-score definition and field-source links -->
 <!-- CODEX: generated results table starts -->
-| method | steer dir | peak on-axis↑ | damage↓ | seeds | arms | rejected↓ |
-| --- | --- | --- | --- | --- | --- | --- |
-| vjp_delta | -C | -1.849 | 0.477 | 3 | 18 | 10 |
-| vjp_delta | +C | +2.988 | 0.245 | 3 | 19 | 0 |
-| mean_diff | -C | -1.492 | 0.703 | 3 | 29 | 15 |
-| mean_diff | +C | +4.370 | 0.695 | 3 | 31 | 9 |
-| pca | -C | -1.227 | 0.963 | 3 | 29 | 24 |
-| pca | +C | +4.090 | 1.031 | 3 | 32 | 15 |
-| random | -C | +4.075 | 0.724 | 10 | 30 | 4 |
-| random | +C | +3.851 | 0.470 | 10 | 30 | 1 |
+| method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | arms | rejected↓ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| mean_diff | +2.232 | 1.492 | 0.703 | 4.370 | 0.695 | 3 | 60 | 24 |
+| vjp_delta | +2.057 | 1.849 | 0.477 | 2.988 | 0.245 | 3 | 37 | 10 |
+| pca | +1.662 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
+| random | +0.830 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |
 <!-- CODEX: generated results table ends -->
+
+For method $m$, this table reports one aggregate score across both steering directions:
+
+$$S_m = \frac{1}{2}\sum_{d \in \{-1, +1\}} \left(d \cdot e^*_{m,d} - o^*_{m,d}\right),$$
+
+where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^*_{m,d}, o^*_{m,d})$ is the admissible dose with the greatest target-directed change $d \cdot e_{m,d}$. The table sorts methods by $S_m$.
 
 The generated [results page](https://wassname.github.io/vjp-steering/) has the interactive companion and exact values.
 
@@ -73,13 +76,14 @@ with steer(model, vector, C=-0.18):
 
 Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. 
 
-<-- TODO update this, perhaps introduce steering f1 or SI aggregate score -->
 | column | meaning |
 | --- | --- |
-| `effect` | judged on-axis movement vs bare, -5..+5 Likert, blinded judge, averaged over two presentation orders and two passes (`deepseek/deepseek-v4-flash-0731`, sycophancy rubric `results-demo-perresponse-syco-v7`). Positive is more sycophantic; negative is more abrasive. |
-| `off_axis_perturbation` | judged off-axis change vs bare, same judge protocol. Lower is better. |
+| `effect` | judged on-axis movement versus bare, -5..+5 Likert. Positive is more sycophantic and negative is more abrasive. [`scripts/judge.py`](scripts/judge.py) defines the blinded judge prompts; [`scripts/export.py`](scripts/export.py) combines presentation orders and passes. |
+| `off_axis_perturbation` | absolute judged off-axis change versus bare. Lower is better. |
 | `admissible` | the arm is before the walk boundary, has <50% unfinished replies, <25% role-token leaks, <25% replies over worst-window repetition 0.5, and its steered replies have mean judged off-axis damage <=1.5. A `false` arm is discarded from the plot. |
 | `seed` | the random seed for the persona-pair sample. Named-method points are means over seeds {0,1,2}; the random cone spans seeds 0-9. Seeds reorder one fixed 200-prompt pool rather than redrawing it, so named-method bands are noise bands, not draw-to-draw variation. |
+
+The renderer is [`src/vjp_steering/results.py`](src/vjp_steering/results.py), the steering method is [`src/vjp_steering/vjp.py`](src/vjp_steering/vjp.py), and the aggregate data is [`data/results.csv`](data/results.csv). Per-scenario judge outputs are in [`data/judged_scenarios.csv`](data/judged_scenarios.csv).
 
 ## Citation
 

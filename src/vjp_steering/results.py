@@ -273,29 +273,54 @@ def plot(rows: list[dict]) -> go.Figure:
 
 def _summary(rows: list[dict]) -> list[list[str]]:
     means = _means(rows)
-    table = []
+    scored_rows = []
     for method in METHODS:
-        for side in ("-C", "+C"):
+        peaks = {}
+        arm_count = 0
+        rejected = 0
+        for side, sign in (("-C", -1), ("+C", 1)):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
-            live = [row for row in (means if method != "random" else group) if row["method"] == method and row["side"] == side]
-            peak = max(live, key=lambda row: abs(row["effect"])) if live else None
-            table.append([
-                method,
-                side,
-                f"{peak['effect']:+.3f}" if peak else "-",
-                f"{peak['off_axis_perturbation']:.3f}" if peak else "-",
-                str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS) if live else 0),
-                str(len(live)),
-                str(sum(not row["admissible"] for row in group)),
-            ])
-    return table
+            if method == "random":
+                live = [
+                    {
+                        "C": C,
+                        "effect": mean(row["effect"] for row in arms),
+                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in arms),
+                    }
+                    for C in sorted({row["C"] for row in group})
+                    if (arms := [row for row in group if row["C"] == C and row["admissible"]])
+                ]
+            else:
+                live = [row for row in means if row["method"] == method and row["side"] == side]
+            peaks[side] = max(live, key=lambda row: sign * row["effect"])
+            arm_count += len(live)
+            rejected += sum(not row["admissible"] for row in group)
+
+        score = mean(
+            sign * peaks[side]["effect"] - peaks[side]["off_axis_perturbation"]
+            for side, sign in (("-C", -1), ("+C", 1))
+        )
+        scored_rows.append((score, [
+            method,
+            f"{score:+.3f}",
+            f"{-peaks['-C']['effect']:.3f}",
+            f"{peaks['-C']['off_axis_perturbation']:.3f}",
+            f"{peaks['+C']['effect']:.3f}",
+            f"{peaks['+C']['off_axis_perturbation']:.3f}",
+            str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS)),
+            str(arm_count),
+            str(rejected),
+        ]))
+    return [row for _, row in sorted(scored_rows, key=lambda item: item[0], reverse=True)]
 
 
 HEADERS = [
     "method",
-    "steer dir",
-    "peak on-axis↑",
-    "damage↓",
+    "score↑",
+    "-C on-axis↑",
+    "-C damage↓",
+    "+C on-axis↑",
+    "+C damage↓",
     "seeds",
     "arms",
     "rejected↓",
