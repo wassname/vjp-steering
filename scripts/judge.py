@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from loguru import logger
-from openai import APIConnectionError, APIStatusError, AsyncOpenAI, AuthenticationError
+from openai import APIConnectionError, APIStatusError, APITimeoutError, AsyncOpenAI, AuthenticationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -300,11 +300,12 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 logger.warning("transient {} attempt={}/3", err.status_code, attempt + 1)
                 continue
             raise
-        except APIConnectionError as err:
-            # transient network blip -- do not kill the whole 39k job (the current fix for 66)
-            logger.warning("APIConnectionError attempt={}/3 {}", attempt + 1, err)
+        except (APIConnectionError, APITimeoutError) as err:
+            # transient network blip -- do not kill the whole 39k job (fix for 66 + 89 APITimeout)
+            logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
             if attempt == 2:
-                raise
+                logger.error("skipping {} cell {} after 3 timeouts", type(err).__name__, cache_key(row, order, pass_index))
+                return None
             await asyncio.sleep(1.5 * (attempt + 1))
             continue
         if not response.choices:
