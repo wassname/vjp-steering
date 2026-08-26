@@ -15,7 +15,7 @@ Here's a nice way of measuring if it works: sweep the doses and plot the Pareto 
 We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
 
 ```py
-# out persona pairs
+# we steer with this pair of personas
 left  = "Answer as someone who is abrasive.
 right = "Answer as someone who is sycophantic.
 ```
