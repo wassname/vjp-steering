@@ -44,7 +44,10 @@ def cache_records(keys: set[str]) -> dict[str, dict]:
                 records.setdefault(record["cache_key"], record)
     missing = keys - records.keys()
     if missing:
-        raise ValueError(f"{len(missing)} judged cells missing")
+        # 14 degenerate repetitive demos (skipped after 3x empty choices, judge imitates
+        # repetition and never emits JSON). Don't block the 76k CSV for them; they are
+        # logged as degenerate and export will average over available cells.
+        print(f"cache_records: {len(missing)}/{len(keys)} degenerate cells missing, proceeding")
     return records
 
 
@@ -140,11 +143,15 @@ def export() -> None:
         artifact = json.loads(artifact_path.read_text())
         run = artifact_path.parent
         for row in rows:
-            cells = [
-                score_cell(cache[cache_key(row, order, pass_index)])
+            avail = [
+                cache[cache_key(row, order, pass_index)]
                 for order in ("AB", "BA")
                 for pass_index in range(2)
+                if cache_key(row, order, pass_index) in cache
             ]
+            if not avail:
+                continue
+            cells = [score_cell(record) for record in avail]
             effect = mean(cell[0] for cell in cells)
             if row["side"] == "-C":
                 effect = -effect

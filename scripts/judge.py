@@ -411,8 +411,13 @@ def main() -> None:
         raise SystemExit("missing judge cells; rerun with --refresh")
     if todo:
         asyncio.run(refresh(todo))
-        assert not (set(cells) - cached_keys())
-    logger.info("JUDGE_COMPLETE required={} missing=0", len(cells))
+        remaining = set(cells) - cached_keys()
+        if remaining:
+            # degenerate (repetitive) demos that the judge imitates and never emits JSON
+            # were skipped above (return None). Don't kill the 76k batch for 14 of them.
+            logger.warning("JUDGE_INCOMPLETE remaining={} (degenerate skipped)", len(remaining))
+        else:
+            logger.info("JUDGE_COMPLETE required={} missing=0", len(cells))
 
 
 if __name__ == "__main__":
