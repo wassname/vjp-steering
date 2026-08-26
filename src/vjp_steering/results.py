@@ -177,18 +177,6 @@ def plot(rows: list[dict]) -> go.Figure:
         line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
         hoverinfo="skip", showlegend=False,
     ))
-    random_median = [(0.0, 0.0), *((point[0], point[1]) for point in cone)]
-    for start, end in zip(random_median, random_median[1:]):
-        obstacles.extend(
-            (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
-            for fraction in (0.25, 0.5, 0.75, 1.0)
-        )
-    figure.add_trace(go.Scatter(
-        x=[point[0] for point in random_median], y=[point[1] for point in random_median], mode="lines",
-        line={"color": "#999999", "width": 2}, line_shape="spline", line_smoothing=0.8,
-        hoverinfo="skip", showlegend=False,
-    ))
-
     colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7"}
     for method in METHODS[:-1]:
         method_rows = [row for row in means if row["method"] == method]
@@ -239,18 +227,21 @@ def plot(rows: list[dict]) -> go.Figure:
     vjp_delta_label = max((row for row in means if row["method"] == "vjp_delta"), key=lambda row: row["effect"])
     labels = [
         {"text": "PCA", "anchor": (pca_label["effect"], pca_label["off_axis_perturbation"]), "color": colors["pca"], "preferred_direction": (-1, -1)},
-        {"text": LABELS["mean_diff"], "anchor": (mean_diff_label["effect"], mean_diff_label["off_axis_perturbation"]), "color": colors["mean_diff"], "preferred_direction": (-1, -1)},
-        {"text": LABELS["vjp_delta"], "anchor": (vjp_delta_label["effect"], vjp_delta_label["off_axis_perturbation"]), "color": colors["vjp_delta"], "preferred_direction": (1, -1)},
-        {"text": "null zone: random directions", "anchor": random_median[-1], "color": "#777777", "preferred_direction": (-1, 1)},
+        {"text": "mean difference", "anchor": (mean_diff_label["effect"], mean_diff_label["off_axis_perturbation"]), "color": colors["mean_diff"], "preferred_direction": (-1, -1)},
+        {"text": "VJP-delta", "anchor": (vjp_delta_label["effect"], vjp_delta_label["off_axis_perturbation"]), "color": colors["vjp_delta"], "preferred_direction": (1, -1)},
     ]
     for label in _place_direct_labels(labels, obstacles, (-x_limit, x_limit), y_range, plot_width, plot_height):
         figure.add_annotation(
             x=label["anchor"][0], y=label["anchor"][1], text=label["text"],
             showarrow=True, arrowhead=0, arrowwidth=1, arrowcolor=label["color"],
             ax=label["xshift"], ay=label["yshift"], axref="pixel", ayref="pixel",
-            bgcolor="rgba(255,255,255,0.9)", bordercolor=label["color"], borderwidth=1,
+            bgcolor="rgba(255,255,255,0.9)", borderwidth=0,
             font={"color": label["color"], "size": 14},
         )
+    figure.add_annotation(
+        x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
+        align="center", font={"color": "#666666", "size": 13},
+    )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=46, font={"color": "#777777", "size": 12})
