@@ -4,6 +4,8 @@
 
 I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a [VJP](https://wangkuiyi.github.io/jacobian.html) (20 minutes), and instead of WikiText I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
 
+Try it out with [the notebook](nbs/demo.ipynb)!
+
 ## Measuring it
 
 Here's a nice way of measuring if it works: sweep the doses and plot the Pareto frontier.
@@ -65,24 +67,7 @@ with steer(model, vector, C=-0.18):
     output = model.generate(**inputs)
 ```
 
-No single C transfers across models, personas, and prompts, and the useful magnitude differs per method, so the notebook sweeps a log grid on both signs and you read the dose grid to pick one. The C above is what that grid gave for this model and this persona pair.
-
-Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. `nbs/demo.py` is the jupytext source; `just notebook` syncs the two, and `just notebook-run` executes the notebook on a GPU and stores the outputs. `just notebook-smoke` runs every cell on the tiny random model on CPU in about 15 seconds. Run `just check` for the smoke run and generated results.
-
-## Where the numbers come from
-
-This repo owns the experiment:
-
-```bash
-just smoke
-just walk-dry vjp_delta 0
-just queue-walks
-just queue-judge
-just export
-just results
-```
-
-`scripts/walk.py` resumes the nine method-by-seed walks from matching runs in `outputs/`. `scripts/judge.py` appends blinded judgments to the content-keyed cache. `scripts/export.py` accepts only completed walk arms and writes `data/results.csv`.
+Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. 
 
 | column | meaning |
 | --- | --- |
