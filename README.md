@@ -2,7 +2,7 @@
 
 **Work in progress.** Final results in the next couple of months.
 
-I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jabobian (5 hours on a 4B model) I use vjp (20mins), and instead of wikitext I use persona paris. The hope is that adapting the J-lens work to steering gives a stronger more reliable steering method than can be used for interp and alignment.
+I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a VJP (20 minutes), and instead of wikitext I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
 
 ## Measuring it
 
