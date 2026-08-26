@@ -67,6 +67,8 @@ def score_cell(record: dict) -> tuple[float, float, float]:
 
 
 def judge_diagnostics(cells: list[tuple[float, float, float]]) -> tuple[bool, float]:
+    if len(cells) < 4:
+        return False, (max(cell[0] for cell in cells) - min(cell[0] for cell in cells)) if cells else 0.0
     by_order = (mean(cell[0] for cell in cells[:2]), mean(cell[0] for cell in cells[2:]))
     return by_order[0] * by_order[1] < 0, max(cell[0] for cell in cells) - min(cell[0] for cell in cells)
 
