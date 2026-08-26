@@ -300,6 +300,17 @@ HEADERS = [
     "arms",
     "rejected↓",
 ]
+README_TABLE_START = "<!-- CODEX: generated results table starts -->"
+README_TABLE_END = "<!-- CODEX: generated results table ends -->"
+
+
+def _markdown_table(table: list[list[str]]) -> str:
+    lines = [
+        "| " + " | ".join(HEADERS) + " |",
+        "| " + " | ".join("---" for _ in HEADERS) + " |",
+    ]
+    lines.extend("| " + " | ".join(row) + " |" for row in table)
+    return "\n".join(lines)
 
 
 def _markdown(table: list[list[str]]) -> str:
@@ -311,11 +322,18 @@ def _markdown(table: list[list[str]]) -> str:
         "",
         "![Judged effect against off-axis change](plot.png)",
         "",
-        "| " + " | ".join(HEADERS) + " |",
-        "| " + " | ".join("---" for _ in HEADERS) + " |",
+        _markdown_table(table),
     ]
-    lines.extend("| " + " | ".join(row) + " |" for row in table)
     return "\n".join(lines) + "\n"
+
+
+def _update_readme(table: list[list[str]]) -> None:
+    path = ROOT / "README.md"
+    text = path.read_text()
+    start = text.index(README_TABLE_START)
+    end = text.index(README_TABLE_END) + len(README_TABLE_END)
+    generated = f"{README_TABLE_START}\n{_markdown_table(table)}\n{README_TABLE_END}"
+    path.write_text(text[:start] + generated + text[end:])
 
 
 def _html(table: list[list[str]], figure_html: str) -> str:
@@ -389,6 +407,7 @@ def main() -> None:
     )
     html_text = _html(table, figure_html)
     _check_equivalent(markdown_text, html_text)
+    _update_readme(table)
     results_dir = ROOT / "results"
     results_dir.mkdir(exist_ok=True)
     (results_dir / "index.md").write_text(markdown_text)

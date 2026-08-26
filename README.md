@@ -2,7 +2,7 @@
 
 **Work in progress.** Final results in the next couple of months.
 
-I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a [VJP](https://wangkuiyi.github.io/jacobian.html) (20 minutes), and instead of wikitext I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
+I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a [VJP](https://wangkuiyi.github.io/jacobian.html) (20 minutes), and instead of WikiText I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
 
 ## Measuring it
 
@@ -10,15 +10,28 @@ Here's a nice way of measuring if it works: sweep the doses and plot the Pareto 
 
 ![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results/plot.png)
 
-We are steering bluntness <> sycophancy on bullshit bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both direction we don't want to see unrelated changes (the y axis), or incoherence output (where the steering curves terminate on the graph).
+We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
 
 In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence (in the demos we see garbled and repeating text).
 
-The grey region is the null region where random vectors can steer the model, so any strong steering methods should be able to go outside this region before incoherence. Interestingly it's lopsided this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training show this effect where it's "downhill" towards the RLAIF direction, and "uphill" to avoid it.
+The grey region is the null region where random vectors can steer the model, so any strong steering methods should be able to go outside this region before incoherence. Interestingly it's lopsided; this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training show this effect where it's "downhill" towards the RLAIF direction, and "uphill" to avoid it.
 
 The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
-The generated [results page](results/index.md) has the summary table and exact values.
+<!-- CODEX: generated results table starts -->
+| method | steer dir | peak on-axis↑ | damage↓ | seeds | arms | rejected↓ |
+| --- | --- | --- | --- | --- | --- | --- |
+| vjp_delta | -C | -1.849 | 0.477 | 3 | 18 | 10 |
+| vjp_delta | +C | +2.988 | 0.245 | 3 | 19 | 0 |
+| mean_diff | -C | -1.492 | 0.703 | 3 | 29 | 15 |
+| mean_diff | +C | +4.370 | 0.695 | 3 | 31 | 9 |
+| pca | -C | -1.227 | 0.963 | 3 | 29 | 24 |
+| pca | +C | +4.090 | 1.031 | 3 | 32 | 15 |
+| random | -C | +4.075 | 0.724 | 10 | 30 | 4 |
+| random | +C | +3.851 | 0.470 | 10 | 30 | 1 |
+<!-- CODEX: generated results table ends -->
+
+The generated [results page](results/index.md) has the interactive companion and exact values.
 
 This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. One caveat on what the seed varies here: the persona-pair pool holds 200 prompts and each walk asks for 256, so every seed exhausts the same pool and only its order changes; generation is greedy. The seed spread therefore measures numerical noise in the extracted vector, not sampling variation over prompt draws. The random cone is ten vectors, drawn until fewer than half have two coherent arms.
 
@@ -27,6 +40,8 @@ Doses are not comparable across methods. These are fixed-C arms; the final expor
 ## What J is
 
 I like [Janus's view](https://x.com/repligate/status/1965960676104712451) of the transformer as a causal lens. $J$ is a local linear approximation, summarising many branching paths into one sensitivity.
+
+![The routes from A to B, and the first-order map that stands in for them](docs/img/jacobian_vjp_causal_graph.svg)
 
 $J = \partial h_B / \partial h_A$ is the local linear map between a source location $A$ and a downstream target $B$ on the (layer, token) grid. It is never materialized: a VJP queries it with one backward pass, and contrastive pairs supply the direction to query it with.
 

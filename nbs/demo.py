@@ -24,6 +24,8 @@
 # first order, and it is never materialized: one backward pass gives $J^T c$ for a chosen $c$ at
 # $B$. The contrastive pairs supply that $c$. See the [README](../README.md) for the equations.
 #
+# ![The routes from A to B, and the first-order map that stands in for them](../docs/img/jacobian_vjp_causal_graph.svg)
+#
 # The left pane is drawn after [Janus's information-flow sketch](https://x.com/repligate/status/1965960676104712451).
 
 # %%
