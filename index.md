@@ -3,7 +3,7 @@
 All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.
 The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.
 
-![Judged effect against off-axis change](plot.svg)
+![Judged effect against off-axis change](plot.png)
 
 | method | steer dir | peak on-axis↑ | damage↓ | seeds | arms | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- |
