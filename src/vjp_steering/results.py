@@ -309,7 +309,7 @@ def _markdown(table: list[list[str]]) -> str:
         "All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.",
         "The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.",
         "",
-        "![Judged effect against off-axis change](plot.svg)",
+        "![Judged effect against off-axis change](plot.png)",
         "",
         "| " + " | ".join(HEADERS) + " |",
         "| " + " | ".join("---" for _ in HEADERS) + " |",
@@ -393,7 +393,6 @@ def main() -> None:
     results_dir.mkdir(exist_ok=True)
     (results_dir / "index.md").write_text(markdown_text)
     (results_dir / "index.html").write_text(html_text)
-    figure.write_image(results_dir / "plot.svg", width=1064, height=590)
     figure.write_image(results_dir / "plot.png", width=1064, height=590, scale=2)
     print(f"wrote {len(table)} table rows from {len(rows)} measured arms")
 
