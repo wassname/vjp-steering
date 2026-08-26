@@ -2,6 +2,7 @@
 
 import csv
 import html
+import math
 from statistics import mean, median
 from html.parser import HTMLParser
 from pathlib import Path
@@ -81,11 +82,78 @@ def _means(rows: list[dict]) -> list[dict]:
     return points
 
 
+def _place_direct_labels(
+    labels: list[dict],
+    obstacles: list[tuple[float, float]],
+    x_range: tuple[float, float],
+    y_range: tuple[float, float],
+    plot_width: int,
+    plot_height: int,
+) -> list[dict]:
+    def to_pixels(point: tuple[float, float]) -> tuple[float, float]:
+        x, y = point
+        x_pixel = (x - x_range[0]) / (x_range[1] - x_range[0]) * plot_width
+        y_pixel = (y_range[0] - y) / (y_range[0] - y_range[1]) * plot_height
+        return x_pixel, y_pixel
+
+    obstacle_pixels = [to_pixels(point) for point in obstacles]
+    placed_rectangles = []
+    placed_labels = []
+    directions = [(1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1)]
+    for label in labels:
+        width = 20 + 7.5 * len(label["text"])
+        height = 28
+        anchor_x, anchor_y = to_pixels(label["anchor"])
+        preferred_x, preferred_y = label["preferred_direction"]
+        ranked_directions = sorted(
+            directions,
+            key=lambda direction: direction[0] * preferred_x + direction[1] * preferred_y,
+            reverse=True,
+        )
+        for radius in (38, 58, 82, 112, 148, 188):
+            for direction_x, direction_y in ranked_directions:
+                offset_x = radius * direction_x
+                offset_y = radius * direction_y
+                center_x = anchor_x + offset_x
+                center_y = anchor_y + offset_y
+                rectangle = (
+                    center_x - width / 2,
+                    center_y - height / 2,
+                    center_x + width / 2,
+                    center_y + height / 2,
+                )
+                inside = rectangle[0] >= 0 and rectangle[1] >= 0 and rectangle[2] <= plot_width and rectangle[3] <= plot_height
+                hits_point = any(
+                    rectangle[0] - 10 <= point_x <= rectangle[2] + 10
+                    and rectangle[1] - 10 <= point_y <= rectangle[3] + 10
+                    for point_x, point_y in obstacle_pixels
+                )
+                hits_label = any(
+                    rectangle[0] < placed[2] and rectangle[2] > placed[0]
+                    and rectangle[1] < placed[3] and rectangle[3] > placed[1]
+                    for placed in placed_rectangles
+                )
+                if inside and not hits_point and not hits_label:
+                    placed_rectangles.append(rectangle)
+                    placed_labels.append({**label, "xshift": offset_x, "yshift": offset_y})
+                    break
+            else:
+                continue
+            break
+        else:
+            raise ValueError(f"no collision-free slot for {label['text']}")
+    return placed_labels
+
+
 def plot(rows: list[dict]) -> go.Figure:
     figure = go.Figure()
     means = _means(rows)
     valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
+    y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
+    plot_width = 1064 - 90 - 15
+    plot_height = 658 - 45 - 70
+    obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     random_seeds = sorted({row["seed"] for row in random})
     random_arm = {(row["seed"], row["C"], row["side"]): row for row in random}
@@ -107,11 +175,16 @@ def plot(rows: list[dict]) -> go.Figure:
         y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
         fill="toself", fillcolor="rgba(150,150,150,0.22)",
         line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
-        hoverinfo="skip", name="random directions (10-90% range)", showlegend=True,
-        legendgroup="random",
+        hoverinfo="skip", showlegend=False,
     ))
+    random_median = [(0.0, 0.0), *((point[0], point[1]) for point in cone)]
+    for start, end in zip(random_median, random_median[1:]):
+        obstacles.extend(
+            (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+            for fraction in (0.25, 0.5, 0.75, 1.0)
+        )
     figure.add_trace(go.Scatter(
-        x=[0, *(point[0] for point in cone)], y=[0, *(point[1] for point in cone)], mode="lines",
+        x=[point[0] for point in random_median], y=[point[1] for point in random_median], mode="lines",
         line={"color": "#999999", "width": 2}, line_shape="spline", line_smoothing=0.8,
         hoverinfo="skip", showlegend=False,
     ))
@@ -145,24 +218,49 @@ def plot(rows: list[dict]) -> go.Figure:
             if points:
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
-                    mode="lines+markers", line={"color": colors[method], "width": 3}, marker={"color": colors[method], "size": 8},
+                    mode="lines+markers", line={"color": colors[method], "width": 3},
+                    marker={"color": colors[method], "size": [0, *([8] * (len(points) - 1)), 12], "symbol": ["circle"] * len(points) + ["x"]},
                     line_shape="spline", line_smoothing=0.6,
                     text=["bare", *(f"C={row['C']:g}" for row in points)],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
-                    name=LABELS[method], legendgroup=method, showlegend=side == "+C",
+                    showlegend=False,
                 ))
+                series = [(0.0, 0.0), *((row["effect"], row["off_axis_perturbation"]) for row in points)]
+                for start, end in zip(series, series[1:]):
+                    obstacles.extend(
+                        (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+                        for fraction in (0.25, 0.5, 0.75, 1.0)
+                    )
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
+    pca_label = max((row for row in means if row["method"] == "pca"), key=lambda row: row["effect"])
+    mean_diff_label = min((row for row in means if row["method"] == "mean_diff"), key=lambda row: row["effect"])
+    vjp_delta_label = max((row for row in means if row["method"] == "vjp_delta"), key=lambda row: row["effect"])
+    labels = [
+        {"text": "PCA", "anchor": (pca_label["effect"], pca_label["off_axis_perturbation"]), "color": colors["pca"], "preferred_direction": (-1, -1)},
+        {"text": LABELS["mean_diff"], "anchor": (mean_diff_label["effect"], mean_diff_label["off_axis_perturbation"]), "color": colors["mean_diff"], "preferred_direction": (-1, -1)},
+        {"text": LABELS["vjp_delta"], "anchor": (vjp_delta_label["effect"], vjp_delta_label["off_axis_perturbation"]), "color": colors["vjp_delta"], "preferred_direction": (1, -1)},
+        {"text": "null zone: random directions", "anchor": random_median[-1], "color": "#777777", "preferred_direction": (-1, 1)},
+    ]
+    for label in _place_direct_labels(labels, obstacles, (-x_limit, x_limit), y_range, plot_width, plot_height):
+        figure.add_annotation(
+            x=label["anchor"][0], y=label["anchor"][1], text=label["text"],
+            showarrow=True, arrowhead=0, arrowwidth=1, arrowcolor=label["color"],
+            ax=label["xshift"], ay=label["yshift"], axref="pixel", ayref="pixel",
+            bgcolor="rgba(255,255,255,0.9)", bordercolor=label["color"], borderwidth=1,
+            font={"color": label["color"], "size": 14},
+        )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
+    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=46, font={"color": "#777777", "size": 12})
+    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="x = last coherent measured dose; later doses rejected", showarrow=False, yshift=21, font={"color": "#777777", "size": 12})
     figure.update_layout(
         title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
-        width=1200, height=658, margin={"l": 90, "r": 250, "t": 45, "b": 70},
-        font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white",
-        legend={"x": 1.01, "xanchor": "left", "y": 0.5, "yanchor": "middle", "bgcolor": "rgba(255,255,255,0.94)", "bordercolor": "#cccccc", "borderwidth": 1},
+        width=1064, height=658, margin={"l": 90, "r": 15, "t": 45, "b": 70},
+        font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
-        yaxis={"title": "off-axis damage (lower is better)", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False, "autorange": "reversed"},
+        yaxis={"title": "off-axis damage (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
     )
     return figure
 
