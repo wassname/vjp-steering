@@ -1,10 +1,8 @@
 # vjp-steering
 
-Work in progress. The numbers below are a mid-experiment snapshot, not a result. Final results in the next couple of months.
+**Work in progress.** Final results in the next couple of months.
 
-I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. The question is whether pulling a persona contrast backward through the model gives a cleaner steering direction than the ordinary activation difference.
-
-The hope is a VJP-delta curve outside the random band and not dominated by the baselines. A curve inside the band, or one dominated by a baseline, does not support the method.
+I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jabobian (5 hours on a 4B model) I use vjp (20mins), and instead of wikitext I use persona paris. The hope is that adapting the J-lens work to steering gives a stronger more reliable steering method than can be used for interp and alignment.
 
 ## Measuring it
 
