@@ -39,11 +39,9 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 | random | +C | +3.851 | 0.470 | 10 | 30 | 1 |
 <!-- CODEX: generated results table ends -->
 
-The generated [results page](results/index.md) has the interactive companion and exact values.
+The generated [results page](https://wassname.github.io/vjp-steering/) has the interactive companion and exact values.
 
-This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. One caveat on what the seed varies here: the persona-pair pool holds 200 prompts and each walk asks for 256, so every seed exhausts the same pool and only its order changes; generation is greedy. The seed spread therefore measures numerical noise in the extracted vector, not sampling variation over prompt draws. The random cone is ten vectors, drawn until fewer than half have two coherent arms.
-
-Doses are not comparable across methods. These are fixed-C arms; the final export re-walks each method to its own incoherence boundary.
+This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. 
 
 ## What J is
 
@@ -75,6 +73,7 @@ with steer(model, vector, C=-0.18):
 
 Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. 
 
+<-- TODO update this, perhaps introduce steering f1 or SI aggregate score -->
 | column | meaning |
 | --- | --- |
 | `effect` | judged on-axis movement vs bare, -5..+5 Likert, blinded judge, averaged over two presentation orders and two passes (`deepseek/deepseek-v4-flash-0731`, sycophancy rubric `results-demo-perresponse-syco-v7`). Positive is more sycophantic; negative is more abrasive. |
