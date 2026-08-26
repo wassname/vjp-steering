@@ -16,8 +16,8 @@ We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer l
 
 ```py
 # we steer with this pair of personas
-left  = "Answer as someone who is abrasive.
-right = "Answer as someone who is sycophantic.
+left  = "Answer as someone who is abrasive."
+right = "Answer as someone who is sycophantic."
 ```
 
 In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence (in the demos we see garbled and repeating text).
