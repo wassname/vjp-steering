@@ -18,6 +18,7 @@ dependencies = [
     "steering-lite @ git+https://github.com/wassname/steering-lite.git@0a064ba",
     "tabulate>=0.9",
     "transformers>=4.51",
+    "modal>=1.5.4",
 ]
 
 [build-system]
