@@ -385,6 +385,7 @@ def main() -> None:
         include_plotlyjs="cdn",
         default_width="100%",
         config={"responsive": True},
+        div_id="results-plot",
     )
     html_text = _html(table, figure_html)
     _check_equivalent(markdown_text, html_text)
