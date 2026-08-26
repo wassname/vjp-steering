@@ -14,6 +14,12 @@ Here's a nice way of measuring if it works: sweep the doses and plot the Pareto 
 
 We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
 
+```py
+# out persona pairs
+left  = "Answer as someone who is abrasive.
+right = "Answer as someone who is sycophantic.
+```
+
 In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence (in the demos we see garbled and repeating text).
 
 The grey region is the null region where random vectors can steer the model, so any strong steering methods should be able to go outside this region before incoherence. Interestingly it's lopsided; this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training show this effect where it's "downhill" towards the RLAIF direction, and "uphill" to avoid it.
