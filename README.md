@@ -2,17 +2,19 @@
 
 **Work in progress.** Final results in the next couple of months.
 
-I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a VJP (20 minutes), and instead of wikitext I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
+I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) work into contrastive steering. Instead of a full Jacobian (5 hours on a 4B model) I use a [VJP](https://wangkuiyi.github.io/jacobian.html) (20 minutes), and instead of wikitext I use persona pairs. The hope is that adapting the J-lens work to steering gives a stronger, more reliable steering method that can be used for interp and alignment.
 
 ## Measuring it
 
-Here's a nice way of measuring it: sweep the doses and plot the Pareto frontier.
+Here's a nice way of measuring if it works: sweep the doses and plot the Pareto frontier.
 
 ![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results/plot.png)
 
-In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence.
+We are steering bluntness <> sycophancy on bullshit bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both direction we don't want to see unrelated changes (the y axis), or incoherence output (where the steering curves terminate on the graph).
 
-The grey region is the null region where random vectors steer. Interestingly it's lopsided, this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training show this effect where it's "downhill" towards the RLAIF direction, an "uphill" to avoid it.
+In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence (in the demos we see garbled and repeating text).
+
+The grey region is the null region where random vectors can steer the model, so any strong steering methods should be able to go outside this region before incoherence. Interestingly it's lopsided this means it's easier to steer towards sycophancy than not. Many possible steering directions that occur in post-training show this effect where it's "downhill" towards the RLAIF direction, and "uphill" to avoid it.
 
 The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
