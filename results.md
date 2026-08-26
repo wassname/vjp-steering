@@ -7,11 +7,11 @@ The random cone shows ten vectors until fewer than half have two coherent arms. 
 
 | method | steer dir | seeds | arms | rejected | peak on-axis | damage at peak |
 | --- | --- | --- | --- | --- | --- | --- |
-| vjp_delta | -C | 3 | 17 | 14 | -1.826 | 0.556 |
-| vjp_delta | +C | 3 | 22 | 0 | +3.525 | 0.395 |
-| mean_diff | -C | 3 | 29 | 17 | -1.805 | 0.502 |
-| mean_diff | +C | 3 | 31 | 12 | +4.311 | 0.665 |
-| pca | -C | 3 | 29 | 27 | -1.310 | 0.917 |
-| pca | +C | 3 | 32 | 18 | +4.158 | 0.981 |
+| vjp_delta | -C | 3 | 18 | 10 | -1.849 | 0.477 |
+| vjp_delta | +C | 3 | 19 | 0 | +2.988 | 0.245 |
+| mean_diff | -C | 3 | 29 | 15 | -1.492 | 0.703 |
+| mean_diff | +C | 3 | 31 | 9 | +4.370 | 0.695 |
+| pca | -C | 3 | 29 | 24 | -1.227 | 0.963 |
+| pca | +C | 3 | 32 | 15 | +4.090 | 1.031 |
 | random | -C | 10 | 30 | 4 | +4.075 | 0.724 |
 | random | +C | 10 | 30 | 1 | +3.851 | 0.470 |

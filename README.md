@@ -18,14 +18,14 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
 | method | steer dir | seeds | arms | rejected | peak on-axis | damage at peak |
 | --- | --- | --- | --- | --- | --- | --- |
-| vjp_delta | -C | 3 | 1 | 5 | -1.944 | 0.562 |
-| vjp_delta | +C | 3 | 3 | 0 | +3.502 | 0.406 |
-| mean_diff | -C | 3 | 3 | 0 | -1.223 | 0.871 |
-| mean_diff | +C | 3 | 3 | 0 | +3.715 | 0.521 |
-| pca | -C | 3 | 3 | 0 | -1.360 | 1.495 |
-| pca | +C | 3 | 3 | 0 | +3.939 | 0.830 |
-| random | -C | 10 | 30 | 4 | +4.075 | 0.723 |
-| random | +C | 10 | 30 | 3 | +3.851 | 0.470 |
+| vjp_delta | -C | 3 | 18 | 10 | -1.849 | 0.477 |
+| vjp_delta | +C | 3 | 19 | 0 | +2.988 | 0.245 |
+| mean_diff | -C | 3 | 29 | 15 | -1.492 | 0.703 |
+| mean_diff | +C | 3 | 31 | 9 | +4.370 | 0.695 |
+| pca | -C | 3 | 29 | 24 | -1.227 | 0.963 |
+| pca | +C | 3 | 32 | 15 | +4.090 | 1.031 |
+| random | -C | 10 | 30 | 4 | +4.075 | 0.724 |
+| random | +C | 10 | 30 | 1 | +3.851 | 0.470 |
 
 This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. One caveat on what the seed varies here: the persona-pair pool holds 200 prompts and each walk asks for 256, so every seed exhausts the same pool and only its order changes; generation is greedy. The seed spread therefore measures numerical noise in the extracted vector, not sampling variation over prompt draws. The random cone is ten vectors, drawn until fewer than half have two coherent arms.
 
