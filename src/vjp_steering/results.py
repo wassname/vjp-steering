@@ -107,7 +107,8 @@ def plot(rows: list[dict]) -> go.Figure:
         y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
         fill="toself", fillcolor="rgba(150,150,150,0.22)",
         line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
-        hoverinfo="skip", showlegend=False,
+        hoverinfo="skip", name="random directions (10-90% range)", showlegend=True,
+        legendgroup="random",
     ))
     figure.add_trace(go.Scatter(
         x=[0, *(point[0] for point in cone)], y=[0, *(point[1] for point in cone)], mode="lines",
@@ -115,7 +116,7 @@ def plot(rows: list[dict]) -> go.Figure:
         hoverinfo="skip", showlegend=False,
     ))
 
-    colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#999999"}
+    colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7"}
     for method in METHODS[:-1]:
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
@@ -147,22 +148,19 @@ def plot(rows: list[dict]) -> go.Figure:
                     mode="lines+markers", line={"color": colors[method], "width": 3}, marker={"color": colors[method], "size": 8},
                     line_shape="spline", line_smoothing=0.6,
                     text=["bare", *(f"C={row['C']:g}" for row in points)],
-                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>", showlegend=False,
+                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+                    name=LABELS[method], legendgroup=method, showlegend=side == "+C",
                 ))
-        label = min(method_rows, key=lambda row: row["effect"]) if method == "mean_diff" else max(method_rows, key=lambda row: row["effect"])
-        xshift = -20 if method == "vjp_delta" else 20 if method == "pca" else 8
-        yshift = -8 if method == "pca" else 12
-        figure.add_annotation(x=label["effect"], y=label["off_axis_perturbation"], text=LABELS[method], showarrow=False, xanchor="right" if xshift < 0 else "left", xshift=xshift, yshift=yshift, font={"color": colors[method], "size": 14})
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
-    figure.add_annotation(x=cone[-1][0], y=cone[-1][1], text="random median and range", showarrow=False, xshift=12, yshift=12, font={"color": "#777777", "size": 14})
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 12})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 12})
     figure.update_layout(
         title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
-        width=1064, height=658, margin={"l": 90, "r": 15, "t": 45, "b": 70},
-        font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
+        width=1200, height=658, margin={"l": 90, "r": 250, "t": 45, "b": 70},
+        font={"color": "#111"}, plot_bgcolor="white", paper_bgcolor="white",
+        legend={"x": 1.01, "xanchor": "left", "y": 0.5, "yanchor": "middle", "bgcolor": "rgba(255,255,255,0.94)", "bordercolor": "#cccccc", "borderwidth": 1},
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
         yaxis={"title": "off-axis damage (lower is better)", "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False, "autorange": "reversed"},
     )
