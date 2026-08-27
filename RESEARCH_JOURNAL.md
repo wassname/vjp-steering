@@ -56,3 +56,13 @@ Evidence: [task 134's saved complete log](docs/slop/audit/20260827_task_134_jwor
 Interpretation (Pi): C=0.25 is the selected J-word dose because it is the largest admissible dose and the judge measures target-directed effect on both sides. This is a one-seed result. My read is that it is probable the effect estimates change with a new extraction sample or seed, because the method has no seed replication here.
 
 The completed MLP-up judge pass is the remaining result needed for the combined table and plot.
+
+## 2026-08-27 -- MLP-up judged selection and rendered comparison
+
+This note records the full-cohort MLP-up judge result and its addition to the comparison artifacts.
+
+Evidence: [the saved judge log](docs/slop/audit/20260827_task_139_mlp_up_judge.log) ends `JUDGE_COMPLETE required=4840 missing=0` after naming all fifteen runs. [The raw-output index](docs/slop/audit/20260827_mlp_up_raw_output_index.md) links bare, +C, and -C outputs for every dose and seed. [The rendered table](results/index.md) reports MLP-up VJP score +0.505, with -C on-axis 0.861 at damage 0.356 and +C on-axis 2.027 at damage 0.234. Its seed count is 3 and its candidate count is 10. [The result rows](data/results.csv) record all thirty source arms.
+
+Interpretation (Pi): the MLP-up method has a complete three-seed model-judge measurement with a positive score under the existing per-direction dose selection rule. My read is that the asymmetric directions need an independent judge before a stronger behavioural conclusion, because the selected +C and -C endpoints come from different doses and the current measurements use one judge model.
+
+The table and plot now include the two requested methods alongside the unchanged baselines and random control.

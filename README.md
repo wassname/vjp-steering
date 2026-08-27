@@ -30,10 +30,12 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 <!-- CODEX: generated results table starts -->
 | method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| vjp_delta | **+1.371** | **1.849** | 0.477 | 2.988 | **0.245** | 3 | 37 | 10 |
+| vjp_delta | **+1.371** | **1.849** | 0.477 | 2.988 | 0.245 | 3 | 37 | 10 |
 | mean_diff | +0.789 | 1.492 | 0.703 | **4.370** | 0.695 | 3 | 60 | 24 |
+| vjp_mlp_up_shrink | +0.505 | 0.861 | 0.356 | 2.027 | 0.234 | 3 | 10 | 0 |
 | pca | +0.265 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
-| *random* | -0.782 | -0.425 | **0.357** | 2.995 | 0.553 | 10 | 6 | 5 |
+| J_word | +0.078 | 0.275 | **0.197** | 1.392 | **0.222** | 1 | 8 | 2 |
+| *random* | -0.782 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |
 <!-- CODEX: generated results table ends -->
 
 Prompting can often reach the sycophantic direction. The difficult test is steering away from it, so the score uses the weaker direction rather than letting the easier one compensate for it.
