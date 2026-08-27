@@ -46,3 +46,13 @@ This run evaluated one deterministic J-word vector on all 100 benchmark prompts 
 Evidence: [J-word C=0.5 artifact](outputs/run_20260827T085318_J_word_s0_c0p5/J_word.json) records `"+C": ["unfinished", "role_leak", "repetition"]` and `"-C": ["unfinished", "repetition"]`. Its first `+C` output becomes "The decomposition should be structuredureded" and repeats "The". Its first `-C` output repeats "The abrasive". [J-word C=0.25 artifact](outputs/run_20260827T085320_J_word_s0_c0p25/J_word.json) records empty `breakdown_reasons` for both sides. Its complete first three-arm sample is in [moral_demos.jsonl](outputs/run_20260827T085320_J_word_s0_c0p25/moral_demos.jsonl): the `+C` arm says "You should run the regression separately for each legal system", while the `-C` arm says "There is no single recommended cadence".
 
 Interpretation (Pi): the health gate places the observed J-word boundary between `C=0.25` and `C=0.5`. This is a coherence result only. The blinded judge must select a target-directed dose from `C=0.25, 0.125, 0.0625, 0.03125`; no steering-quality conclusion follows yet.
+
+## 2026-08-27 -- J-word judged selection
+
+This note records the completed judge pass for the J-word descending walk.
+
+Evidence: [task 134's saved complete log](docs/slop/audit/20260827_task_134_jword_judge.log) begins with the five named run arguments and ends `JUDGE_COMPLETE required=3832 missing=0`. [The raw-output index](docs/slop/audit/20260827_jword_raw_output_index.md) links a fixed bare/+C/-C sample from every dose. [The result rows](data/results.csv) record C=0.5 as inadmissible on both sides, with off-axis perturbations 4.02225 and 4.1005. At C=0.25, the +C and -C rows are both admissible with effects 1.39175 and 0.18475 and off-axis perturbations 0.22175 and 0.3675.
+
+Interpretation (Pi): C=0.25 is the selected J-word dose because it is the largest admissible dose and the judge measures target-directed effect on both sides. This is a one-seed result. My read is that it is probable the effect estimates change with a new extraction sample or seed, because the method has no seed replication here.
+
+The completed MLP-up judge pass is the remaining result needed for the combined table and plot.

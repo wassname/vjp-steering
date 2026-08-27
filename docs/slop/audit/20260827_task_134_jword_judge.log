@@ -1,0 +1,42 @@
+uv run python scripts/judge.py --refresh --run run_20260827T085318_J_word_s0_c0p5 --run run_20260827T085320_J_word_s0_c0p25 --run run_20260827T085321_J_word_s0_c0p125 --run run_20260827T085322_J_word_s0_c0p0625 --run run_20260827T085324_J_word_s0_c0p03125
+2026-08-27 21:46:36.173 | INFO     | __main__:manifest:192 - manifest runs=5 demo_sides=1000
+2026-08-27 21:46:41.009 | INFO     | __main__:main:413 - CACHE_CHECK required=3832 cached=1203 missing=2629 API_calls=2629
+2026-08-27 21:47:43.370 | INFO     | __main__:run:399 - judge progress=100/2629
+2026-08-27 21:48:30.595 | INFO     | __main__:run:399 - judge progress=200/2629
+2026-08-27 21:49:21.245 | INFO     | __main__:run:399 - judge progress=300/2629
+2026-08-27 21:50:07.863 | INFO     | __main__:run:399 - judge progress=400/2629
+2026-08-27 21:50:56.049 | INFO     | __main__:run:399 - judge progress=500/2629
+2026-08-27 21:51:43.669 | INFO     | __main__:run:399 - judge progress=600/2629
+2026-08-27 21:52:33.990 | INFO     | __main__:run:399 - judge progress=700/2629
+2026-08-27 21:53:25.761 | INFO     | __main__:run:399 - judge progress=800/2629
+2026-08-27 21:54:08.381 | INFO     | __main__:run:399 - judge progress=900/2629
+2026-08-27 21:55:13.189 | WARNING  | __main__:judge_one:320 - empty choices cell=2987347e78fe74c8e3f95742c54cd18552369e4ce0cb96214f117fa2c09a67d1 attempt=1/3
+2026-08-27 21:55:13.194 | WARNING  | __main__:judge_one:320 - empty choices cell=593abbec4b220f853782fe76c0005188d2d283621b5da8cd9f72c51f560ff7be attempt=1/3
+2026-08-27 21:55:13.268 | WARNING  | __main__:judge_one:320 - empty choices cell=5cbf35510b4938ff8da9fc03d78390b37f3f8f759d51821b19207502a43231be attempt=1/3
+2026-08-27 21:55:13.457 | WARNING  | __main__:judge_one:320 - empty choices cell=1b4b35343fb278aa982ef0f7887ad79083b1acecdf751d2085c836e46bb66fb8 attempt=1/3
+2026-08-27 21:55:21.375 | INFO     | __main__:run:399 - judge progress=1000/2629
+2026-08-27 21:56:09.546 | INFO     | __main__:run:399 - judge progress=1100/2629
+2026-08-27 21:56:55.323 | INFO     | __main__:run:399 - judge progress=1200/2629
+2026-08-27 21:57:50.627 | INFO     | __main__:run:399 - judge progress=1300/2629
+2026-08-27 21:58:37.015 | INFO     | __main__:run:399 - judge progress=1400/2629
+2026-08-27 21:59:19.384 | INFO     | __main__:run:399 - judge progress=1500/2629
+2026-08-27 22:00:08.613 | INFO     | __main__:run:399 - judge progress=1600/2629
+2026-08-27 22:01:04.807 | INFO     | __main__:run:399 - judge progress=1700/2629
+2026-08-27 22:01:53.079 | WARNING  | __main__:judge_one:320 - empty choices cell=f98f68b2651f9a51f97adc9671b34360946450769740ea5b650f956a3128923a attempt=1/3
+2026-08-27 22:02:10.679 | INFO     | __main__:run:399 - judge progress=1800/2629
+2026-08-27 22:02:58.189 | INFO     | __main__:run:399 - judge progress=1900/2629
+2026-08-27 22:03:50.050 | INFO     | __main__:run:399 - judge progress=2000/2629
+2026-08-27 22:04:08.968 | WARNING  | __main__:judge_one:320 - empty choices cell=169134f34bf3b882f4838da55e61af7aaee0ad8ca55124606d4c9fdd3abac6eb attempt=1/3
+2026-08-27 22:04:22.563 | WARNING  | __main__:judge_one:320 - empty choices cell=25c38a1f4693367b9b1be74fb40955d8a91d15534e96b2ae90e7ceb8bafb05c3 attempt=1/3
+2026-08-27 22:05:00.706 | WARNING  | __main__:judge_one:320 - empty choices cell=746739c3ab089d05d1751dab3adfc35405bedaf8e90a8c5e5f193f90811b2e0e attempt=1/3
+2026-08-27 22:05:03.801 | WARNING  | __main__:judge_one:320 - empty choices cell=2d0ff620e2f60a5e1bf0c4bdf5261d690464b143cc744301a161e319f5dd2701 attempt=1/3
+2026-08-27 22:05:04.503 | WARNING  | __main__:judge_one:320 - empty choices cell=680bdeebf4aa0c5edede985722ef6936555c52693ce01d831651aaf1cefd4df5 attempt=1/3
+2026-08-27 22:05:12.576 | INFO     | __main__:run:399 - judge progress=2100/2629
+2026-08-27 22:06:01.160 | INFO     | __main__:run:399 - judge progress=2200/2629
+2026-08-27 22:06:45.778 | INFO     | __main__:run:399 - judge progress=2300/2629
+2026-08-27 22:07:33.007 | INFO     | __main__:run:399 - judge progress=2400/2629
+2026-08-27 22:08:23.008 | INFO     | __main__:run:399 - judge progress=2500/2629
+2026-08-27 22:09:22.085 | WARNING  | __main__:judge_one:320 - empty choices cell=638dbb3646c197d9091f9cfb446ddd05dd6e6b0ef601051ce4e1fceb3da4b5bc attempt=1/3
+2026-08-27 22:09:46.185 | INFO     | __main__:run:399 - judge progress=2600/2629
+2026-08-27 22:09:58.315 | INFO     | __main__:run:399 - judge progress=2629/2629
+2026-08-27 22:10:11.625 | INFO     | __main__:main:430 - JUDGE_COMPLETE required=3832 missing=0
