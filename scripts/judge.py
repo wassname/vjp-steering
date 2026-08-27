@@ -140,13 +140,14 @@ def artifact_paths(run_names: list[str], walks: bool = False) -> list[Path]:
         assert not run_names
         return completed_walk_paths()
     paths = []
-    for path in (ROOT / "outputs").glob("run_*/*.json"):
-        artifact = json.loads(path.read_text())
-        if artifact["method"] not in METHODS or artifact["status"] != "RESULT":
-            continue
-        if run_names and path.parent.name not in run_names:
-            continue
-        paths.append(path)
+    for method in METHODS:
+        for path in (ROOT / "outputs").glob(f"run_*/{method}.json"):
+            artifact = json.loads(path.read_text())
+            if artifact["status"] != "RESULT":
+                continue
+            if run_names and path.parent.name not in run_names:
+                continue
+            paths.append(path)
     return sorted(paths)
 
 
