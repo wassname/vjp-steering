@@ -46,7 +46,13 @@ def _blocks(model):
 
 
 @contextmanager
-def _activations(model, layers: tuple[int, ...], graph_root: int | None = None):
+def _activations(
+    model,
+    layers: tuple[int, ...],
+    graph_root: int | None = None,
+    source_readout: str | None = None,
+    target_layer: int | None = None,
+):
     found = {}
     handles = []
 
@@ -62,7 +68,9 @@ def _activations(model, layers: tuple[int, ...], graph_root: int | None = None):
         return record
 
     for layer in layers:
-        handles.append(_blocks(model)[layer].register_forward_hook(hook(layer)))
+        block = _blocks(model)[layer]
+        module = block if source_readout is None or layer == target_layer else block.get_submodule(source_readout)
+        handles.append(module.register_forward_hook(hook(layer)))
     try:
         yield found
     finally:
@@ -124,6 +132,7 @@ def _batch_gradients(
     cotangent: Float[torch.Tensor, " d"],
     skip_first: int,
     max_length: int,
+    source_readout: str | None = None,
 ) -> tuple[
     dict[int, Float[torch.Tensor, "b s d"]],
     Bool[torch.Tensor, "b s"],
@@ -133,7 +142,13 @@ def _batch_gradients(
     if valid.sum(dim=1).min() == 0:
         raise ValueError(f"a prompt has no valid positions after skip_first={skip_first}")
 
-    with _activations(model, (*layers, target_layer), graph_root=min(layers)) as found:
+    with _activations(
+        model,
+        (*layers, target_layer),
+        graph_root=min(layers),
+        source_readout=source_readout,
+        target_layer=target_layer,
+    ) as found:
         with torch.enable_grad():
             model(**encoded)
             target = found[target_layer]
@@ -175,6 +190,38 @@ def _class_mean_vjp(
             per_prompt = (gradient.float() * valid.unsqueeze(-1)).sum(dim=1) / counts
             totals[layer] += per_prompt.sum(0)
     return {layer: total / len(prompts) for layer, total in totals.items()}
+
+
+def _class_prompt_vjp(
+    model,
+    tokenizer,
+    prompts: list[str],
+    layers: tuple[int, ...],
+    target_layer: int,
+    cotangent: Float[torch.Tensor, " d"],
+    batch_size: int,
+    max_length: int,
+    skip_first: int,
+    source_readout: str,
+) -> dict[int, torch.Tensor]:
+    values = {layer: [] for layer in layers}
+    for start in range(0, len(prompts), batch_size):
+        batch = prompts[start : start + batch_size]
+        gradients, valid = _batch_gradients(
+            model,
+            tokenizer,
+            batch,
+            layers,
+            target_layer,
+            cotangent,
+            skip_first,
+            max_length,
+            source_readout=source_readout,
+        )
+        counts = valid.sum(dim=1, keepdim=True).float()
+        for layer, gradient in gradients.items():
+            values[layer].append((gradient.float() * valid.unsqueeze(-1)).sum(dim=1) / counts)
+    return {layer: torch.cat(layer_values) for layer, layer_values in values.items()}
 
 
 def j_word(
@@ -234,6 +281,70 @@ def j_word(
         "cotangent": f"{J_WORD_POSITIVE} - {J_WORD_NEGATIVE}",
         "cotangent_norm": cotangent.norm().item(),
         "layer_norms": {str(layer): direction.norm().item() for layer, direction in directions.items()},
+    }
+
+
+def vjp_mlp_up_shrink(
+    model,
+    tokenizer,
+    positive_prompts: list[str],
+    negative_prompts: list[str],
+    *,
+    target_layer: int | None = None,
+    batch_size: int = 8,
+    max_length: int = 384,
+    skip_first: int = 16,
+) -> tuple[Vector, dict[str, object]]:
+    """Pull back the persona contrast to every prior MLP up projection."""
+    model.requires_grad_(False)
+    target_layer = len(_blocks(model)) - 3 if target_layer is None else target_layer
+    layers = tuple(range(target_layer))
+    cotangent = _target_mean(
+        model, tokenizer, positive_prompts, target_layer, batch_size, max_length
+    ) - _target_mean(
+        model, tokenizer, negative_prompts, target_layer, batch_size, max_length
+    )
+    positive = _class_prompt_vjp(
+        model, tokenizer, positive_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj",
+    )
+    negative = _class_prompt_vjp(
+        model, tokenizer, negative_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj",
+    )
+    if len(positive_prompts) != len(negative_prompts):
+        raise ValueError("mlp-up shrinkage needs paired persona prompts")
+    paired = {layer: positive[layer] - negative[layer] for layer in layers}
+    weights = {
+        layer: (1 - paired[layer].var(0, unbiased=True) / paired[layer].mean(0).square().clamp(min=1e-30)).clamp(min=0)
+        for layer in layers
+    }
+    directions = {layer: paired[layer].mean(0) * weights[layer] for layer in layers}
+    total_norm = torch.stack([direction.norm() for direction in directions.values()]).norm()
+    if not torch.isfinite(total_norm) or total_norm == 0:
+        raise ValueError("mlp-up shrinkage produced a zero or nonfinite vector")
+    normalized = {layer: direction / total_norm for layer, direction in directions.items()}
+    names = {layer: "mlp.up_proj" for layer in layers}
+    logger.info(
+        "vjp_mlp_up_shrink target={} source_layers={} global_norm={:.3f} live={}",
+        target_layer,
+        len(layers),
+        total_norm,
+        sum(int((weight > 0).sum()) for weight in weights.values()),
+    )
+    vector = Vector(
+        VjpDeltaC(layers=layers, target_submodule="mlp.up_proj", target_layer=target_layer),
+        {f"layers.{layer}.{names[layer]}": {} for layer in layers},
+        {f"layers.{layer}.{names[layer]}": {"v": normalized[layer].unsqueeze(0)} for layer in layers},
+    )
+    return vector, {
+        "source_readout": "mlp.up_proj",
+        "delta_estimator": "shrink_between_pair_std",
+        "normalization": "global",
+        "target_layer": target_layer,
+        "source_layers": list(layers),
+        "global_norm": total_norm.item(),
+        "live_coordinates": {str(layer): int((weight > 0).sum()) for layer, weight in weights.items()},
     }
 
 

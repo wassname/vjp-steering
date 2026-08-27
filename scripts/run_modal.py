@@ -16,7 +16,7 @@ import modal
 
 REPO = Path(__file__).resolve().parents[1]
 MODEL = "Qwen/Qwen3.5-4B"
-METHODS = ("J_word", "vjp_delta", "mean_diff", "pca")
+METHODS = ("J_word", "vjp_delta", "vjp_mlp_up_shrink", "mean_diff", "pca")
 SEEDS = (1, 2, 0)
 
 image = (

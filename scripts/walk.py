@@ -19,7 +19,7 @@ from steering_lite.calibrate import _ngram_rep
 from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from vjp_steering import j_word, vjp_delta
+from vjp_steering import j_word, vjp_delta, vjp_mlp_up_shrink
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,7 +47,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("J_word", "vjp_delta", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -336,6 +336,17 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
     batch_size = args.extract_batch_size or args.batch_size
     if args.method == "J_word":
         vector, metadata = j_word(model, tokenizer, layers, lens_file=args.lens_file)
+    elif args.method == "vjp_mlp_up_shrink":
+        vector, metadata = vjp_mlp_up_shrink(
+            model,
+            tokenizer,
+            positive,
+            negative,
+            target_layer=args.target_layer,
+            batch_size=batch_size,
+            max_length=args.max_length,
+            skip_first=16,
+        )
     elif args.method == "vjp_delta":
         vector = vjp_delta(
             model,
@@ -568,6 +579,8 @@ def run_rung(args: argparse.Namespace) -> None:
         )
         logger.info("=== generation output side={} ===\n{}\n=== end output ===", side, answers[0])
 
+    artifact_layers = extraction_metadata["source_layers"] if args.method == "vjp_mlp_up_shrink" else layers
+    target_layer = vector.cfg.target_layer if args.method in ("vjp_delta", "vjp_mlp_up_shrink") else None
     artifact = {
         "schema": "fixed_c_pair_v1",
         "status": args.status,
@@ -576,8 +589,8 @@ def run_rung(args: argparse.Namespace) -> None:
         "fixed_coefficient_magnitude": args.coefficient,
         "model": args.model,
         "dtype": args.dtype,
-        "layers": layers,
-        "target_layer": vector.cfg.target_layer if args.method == "vjp_delta" else None,
+        "layers": artifact_layers,
+        "target_layer": target_layer,
         "extraction_metadata": extraction_metadata,
         "persona": "sycophancy_abrasive",
         "axis": "sycophancy",
