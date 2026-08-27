@@ -28,3 +28,13 @@ Evidence: wassname specified in this session, "J word should use the two persona
 Interpretation (Pi): use the unembedding contrast `sycophantic - abrasive`, rather than a broad list of positive words. This makes the J-word readout match the two persona labels while remaining a lexical probe.
 
 The public implementation will log the token ids and the full lens provenance with this contrast.
+
+## 2026-08-27 -- Real-model smoke for the new methods
+
+This smoke checked the deployed path for the two new steering methods.
+
+Evidence: `uv run modal run scripts/run_modal.py::smoke` exited zero. Its log recorded the published Qwen3.5-4B lens with `n_prompts=1000` and the `sycophantic - abrasive` cotangent. The MLP-up method recorded target layer 29, 29 source layers, global norm 16.579, and 142094 live coordinates. Source: `docs/slop/audit/20260827_modal_new_methods_smoke.md`.
+
+Interpretation (Pi): both methods execute on the real model. The J-word smoke was already incoherent at `C=1`, while the MLP-up smoke generated distinct but eight-token-truncated text. Neither two-item smoke supports a steering-quality claim.
+
+The next run must use coherent doses and the full evaluation cohort before judging.
