@@ -40,10 +40,9 @@ COHORT_FIELDS = (
     "prompt_template",
     "data_hash",
     "eval_cohort",
-    "layers",
 )
-# batch_size stays a reported column but not a cohort key: bare and steered always share a
-# batch within a rung, so it only shifts padding numerics, and rungs ran at 4 and at 32
+# Layers and batch size are reported per method. They differ between method implementations but
+# do not change the prompts, model, or judge cohort being compared.
 
 
 def _rows(path: Path = DATA) -> list[dict]:
