@@ -290,6 +290,14 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                     },
                 },
             )
+        except (APIConnectionError, APITimeoutError) as err:
+            # A network failure has no HTTP status code, so handle it before generic HTTP errors.
+            logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
+            if attempt == 2:
+                logger.error("skipping {} cell {} after 3 timeouts", type(err).__name__, cache_key(row, order, pass_index))
+                return None
+            await asyncio.sleep(1.5 * (attempt + 1))
+            continue
         except Exception as err:
             status_code = getattr(err, "status_code", None)
             if status_code is None:
@@ -306,14 +314,6 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 await asyncio.sleep(1.5 * (attempt + 1))
                 continue
             raise
-        except (APIConnectionError, APITimeoutError) as err:
-            # transient network blip -- do not kill the whole 39k job (fix for 66 + 89 APITimeout)
-            logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
-            if attempt == 2:
-                logger.error("skipping {} cell {} after 3 timeouts", type(err).__name__, cache_key(row, order, pass_index))
-                return None
-            await asyncio.sleep(1.5 * (attempt + 1))
-            continue
         if not response.choices:
             # empty choices (degenerate/repetitive text) -- skip this cell after 3 tries
             # per ml-debug llm_as_judge: don't let one bad demo kill the 39k batch
