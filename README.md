@@ -38,9 +38,11 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
 Prompting can often reach the sycophantic direction. The difficult test is steering away from it, so the score uses the weaker direction rather than letting the easier one compensate for it.
 
-$$S_m = \min_{d \in \{-1, +1\}} \left(d \cdot e^{*}_{m,d} - o^{*}_{m,d}\right),$$
+$$
+S_m = \min_{d \in \{-1, +1\}} \left(d \cdot e^\star_{m,d} - o^\star_{m,d}\right)
+$$
 
-where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^*_{m,d}, o^*_{m,d})$ is the admissible dose with the greatest target-directed change $d \cdot e_{m,d}$. The table sorts methods by $S_m$.
+where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^\star_{m,d}, o^\star_{m,d})$ is the admissible dose with the greatest target-directed change $d \cdot e_{m,d}$. The table sorts methods by $S_m$.
 
 The generated [results page](https://wassname.github.io/vjp-steering/) has the interactive companion and exact values.
 
