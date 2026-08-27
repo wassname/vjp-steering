@@ -20,8 +20,8 @@ walk-dry method seed:
 judge-dry:
 	uv run python scripts/judge.py
 
-judge:
-	uv run python scripts/judge.py --refresh
+judge *args:
+	uv run python scripts/judge.py --refresh {{args}}
 
 judge-walks-dry:
 	uv run python scripts/judge.py --walks
