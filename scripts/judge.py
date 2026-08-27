@@ -322,6 +322,10 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
         raw_attempts.append(raw)
         reasoning_attempts.append(reasoning)
         if raw is None:
+            logger.warning("empty content cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
+            if attempt == 2:
+                logger.error("skipping degenerate cell {} after 3 empty contents", cache_key(row, order, pass_index))
+                return None
             continue
         try:
             judgment = json.loads(raw)
