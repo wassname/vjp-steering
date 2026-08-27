@@ -16,7 +16,7 @@ import modal
 
 REPO = Path(__file__).resolve().parents[1]
 MODEL = "Qwen/Qwen3.5-4B"
-METHODS = ("vjp_delta", "mean_diff", "pca")
+METHODS = ("J_word", "vjp_delta", "mean_diff", "pca")
 SEEDS = (1, 2, 0)
 
 image = (
@@ -65,7 +65,12 @@ def main(
 ):
     # generation: batch 4 leaves an H100 idle, decode is bandwidth bound so a wide batch is nearly free
     # extraction: vjp_delta's backward graph OOMs an 80 GB card at 32
-    jobs = [(m, s) for s in seeds.split(",") for m in methods.split(",")]
+    jobs = [
+        (method, seed)
+        for method in methods.split(",")
+        for seed in seeds.split(",")
+        if method != "J_word" or seed == "0"
+    ]
     extra = ["--refine-around-cstar"] if refine_around_cstar else []
     handles = {
         job: run.spawn([

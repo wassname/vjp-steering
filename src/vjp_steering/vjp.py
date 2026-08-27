@@ -10,10 +10,35 @@ positions. Each source-layer result is normalized before steering.
 """
 
 from contextlib import contextmanager
+from dataclasses import dataclass
+import hashlib
+from pathlib import Path
 
 import torch
+from loguru import logger
 from jaxtyping import Bool, Float, Int
 from steering_lite import Vector, VjpDeltaC
+from steering_lite.config import register, register_config
+from steering_lite.variants.vjp_delta import VjpDelta
+
+
+@register_config
+@dataclass
+class JWordC(VjpDeltaC):
+    method: str = "J_word"
+
+
+@register
+class JWord:
+    name = "J_word"
+    apply = staticmethod(VjpDelta.apply)
+
+
+J_WORD_LENS_REPO = "neuronpedia/jacobian-lens"
+J_WORD_LENS_REVISION = "qwen-n1000"
+J_WORD_LENS_FILE = "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
+J_WORD_POSITIVE = "sycophantic"
+J_WORD_NEGATIVE = "abrasive"
 
 
 def _blocks(model):
@@ -150,6 +175,66 @@ def _class_mean_vjp(
             per_prompt = (gradient.float() * valid.unsqueeze(-1)).sum(dim=1) / counts
             totals[layer] += per_prompt.sum(0)
     return {layer: total / len(prompts) for layer, total in totals.items()}
+
+
+def j_word(
+    model,
+    tokenizer,
+    layers: tuple[int, ...],
+    *,
+    lens_file: Path | None = None,
+) -> tuple[Vector, dict[str, object]]:
+    """Steer the persona-word contrast through a cached full Jacobian lens."""
+    if lens_file is None:
+        from huggingface_hub import hf_hub_download
+
+        lens_file = Path(
+            hf_hub_download(
+                repo_id=J_WORD_LENS_REPO,
+                revision=J_WORD_LENS_REVISION,
+                filename=J_WORD_LENS_FILE,
+            )
+        )
+    checkpoint = torch.load(lens_file, map_location="cpu", weights_only=True, mmap=True)
+    assert set(checkpoint) == {"J", "n_prompts", "source_layers", "d_model"}
+    assert checkpoint["d_model"] == model.config.hidden_size
+    assert set(layers) <= set(checkpoint["source_layers"])
+
+    unembedding = model.lm_head.weight
+
+    def word_embedding(word: str) -> tuple[torch.Tensor, list[int]]:
+        token_ids = tokenizer(" " + word, add_special_tokens=False).input_ids
+        return unembedding[torch.tensor(token_ids, device=unembedding.device)].float().mean(0), token_ids
+
+    positive, positive_ids = word_embedding(J_WORD_POSITIVE)
+    negative, negative_ids = word_embedding(J_WORD_NEGATIVE)
+    cotangent = positive - negative
+    directions = {
+        layer: cotangent.cpu() @ checkpoint["J"][layer].float() for layer in layers
+    }
+    logger.info(
+        "J_word lens={} n_prompts={} words={} ids={} - {} ids={} cotangent_norm={:.3f}",
+        lens_file,
+        checkpoint["n_prompts"],
+        J_WORD_POSITIVE,
+        positive_ids,
+        J_WORD_NEGATIVE,
+        negative_ids,
+        cotangent.norm(),
+    )
+    vector = Vector(
+        JWordC(layers=layers),
+        {layer: {} for layer in layers},
+        {layer: {"v": (direction / direction.norm()).unsqueeze(0)} for layer, direction in directions.items()},
+    )
+    return vector, {
+        "lens_file": str(lens_file),
+        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "lens_n_prompts": checkpoint["n_prompts"],
+        "cotangent": f"{J_WORD_POSITIVE} - {J_WORD_NEGATIVE}",
+        "cotangent_norm": cotangent.norm().item(),
+        "layer_norms": {str(layer): direction.norm().item() for layer, direction in directions.items()},
+    }
 
 
 def vjp_delta(

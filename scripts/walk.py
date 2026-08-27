@@ -19,7 +19,7 @@ from steering_lite.calibrate import _ngram_rep
 from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from vjp_steering import vjp_delta
+from vjp_steering import j_word, vjp_delta
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,7 +47,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("vjp_delta", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "vjp_delta", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -63,6 +63,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--limit", type=int, default=100)
     parser.add_argument("--layers", help="comma-separated zero-based block indices")
+    parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--target-layer", type=int)
     parser.add_argument("--refine-around-cstar", action="store_true",
                         help="bracket C* with local health (rep/unfinished/leak) then insert a dense tail 0.5..1.25*C*")
@@ -331,9 +332,11 @@ def vector_hash(vector: Vector) -> str:
     return digest.hexdigest()
 
 
-def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector:
+def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[Vector, dict[str, object]]:
     batch_size = args.extract_batch_size or args.batch_size
-    if args.method == "vjp_delta":
+    if args.method == "J_word":
+        vector, metadata = j_word(model, tokenizer, layers, lens_file=args.lens_file)
+    elif args.method == "vjp_delta":
         vector = vjp_delta(
             model,
             tokenizer,
@@ -345,6 +348,7 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector
             max_length=args.max_length,
             skip_first=16,
         )
+        metadata = {}
     else:
         config = (MeanDiffC if args.method == "mean_diff" else PCAC)(
             layers=layers, dtype=getattr(torch, args.dtype), seed=args.seed
@@ -358,8 +362,9 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> Vector
             batch_size=batch_size,
             max_length=args.max_length,
         )
+        metadata = {}
     vector.cfg.dtype = getattr(torch, args.dtype)
-    return vector
+    return vector, metadata
 
 
 def generation_inputs(tokenizer, rows: list[dict[str, str]]) -> list[str]:
@@ -511,7 +516,7 @@ def run_rung(args: argparse.Namespace) -> None:
 
     logger.info("stage=extract")
     started = time.monotonic()
-    vector = extract_vector(args, model, tokenizer, layers, positive, negative)
+    vector, extraction_metadata = extract_vector(args, model, tokenizer, layers, positive, negative)
     extraction_seconds = time.monotonic() - started
     vector_file = output / f"{args.method}_vector.safetensors"
     vector.save(str(vector_file))
@@ -573,6 +578,7 @@ def run_rung(args: argparse.Namespace) -> None:
         "dtype": args.dtype,
         "layers": layers,
         "target_layer": vector.cfg.target_layer if args.method == "vjp_delta" else None,
+        "extraction_metadata": extraction_metadata,
         "persona": "sycophancy_abrasive",
         "axis": "sycophancy",
         "demo_set": "sycophancy_all100",
