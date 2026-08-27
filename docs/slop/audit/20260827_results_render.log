@@ -1,0 +1,4 @@
+just results
+uv run python -m vjp_steering.results
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:481: DeprecationWarning: Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+wrote 6 table rows from 654 measured evaluations

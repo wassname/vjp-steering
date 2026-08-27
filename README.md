@@ -48,7 +48,7 @@ where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^\star_{m,d}, o^\star_{m,d})$ is th
 
 The generated [results page](https://wassname.github.io/vjp-steering/) has the interactive companion and exact values.
 
-This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B, all 100 questions, means over three seeds {0,1,2} of the extraction. 
+This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B and all 100 questions. The J-word result has one seed; the other named methods have three seeds.
 
 ## What J is
 
