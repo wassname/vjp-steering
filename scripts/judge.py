@@ -299,6 +299,10 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 raise
             if err.status_code in TRANSIENT_CODES:
                 logger.warning("transient {} attempt={}/3", err.status_code, attempt + 1)
+                if attempt == 2:
+                    logger.error("skipping transient-exhausted cell {}", cache_key(row, order, pass_index))
+                    return None
+                await asyncio.sleep(1.5 * (attempt + 1))
                 continue
             raise
         except (APIConnectionError, APITimeoutError) as err:
