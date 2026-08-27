@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from loguru import logger
-from openai import APIConnectionError, APIStatusError, APITimeoutError, AsyncOpenAI, AuthenticationError
+from openai import APIConnectionError, APITimeoutError, AsyncOpenAI, AuthenticationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -259,10 +259,10 @@ TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
 PARALLEL = 6  # user requested --parallel N=6
 
 
-def _insufficient_credits(err: APIStatusError) -> bool:
+def _insufficient_credits(err: Exception, status_code: int | None) -> bool:
     body = getattr(err, "body", None) or {}
     text = json.dumps(body).lower() if isinstance(body, dict) else str(body).lower()
-    return err.status_code == 402 or "insufficient" in text or "credit" in text or "quota" in text
+    return status_code == 402 or "insufficient" in text or "credit" in text or "quota" in text
 
 
 async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int) -> dict:
@@ -290,15 +290,16 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                     },
                 },
             )
-        except APIStatusError as err:
-            # fail fast on spent credits -- do not retry 3h (per ml-debug llm_as_judge gist
-            # handle_bad_request: 402 is non-retryable). Any 402/insufficient-credits bubbles
-            # up to refresh() which aborts the whole run so the proc ends.
-            if _insufficient_credits(err):
-                logger.error("OPENROUTER out of credits ({}), aborting", err.status_code)
+        except Exception as err:
+            status_code = getattr(err, "status_code", None)
+            if status_code is None:
                 raise
-            if err.status_code in TRANSIENT_CODES:
-                logger.warning("transient {} attempt={}/3", err.status_code, attempt + 1)
+            # Fail fast on spent credits. Every other HTTP status outside the transient set is a bug.
+            if _insufficient_credits(err, status_code):
+                logger.error("OPENROUTER out of credits ({}), aborting", status_code)
+                raise
+            if status_code in TRANSIENT_CODES:
+                logger.warning("transient {} attempt={}/3", status_code, attempt + 1)
                 if attempt == 2:
                     logger.error("skipping transient-exhausted cell {}", cache_key(row, order, pass_index))
                     return None
