@@ -13,9 +13,15 @@ import plotly.graph_objects as go
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-METHODS = ("vjp_delta", "mean_diff", "pca", "random")
+METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "random")
 RANDOM_SEEDS = 10
-NAMED_SEEDS = {0, 1, 2}
+METHOD_SEEDS = {
+    "vjp_delta": {0, 1, 2},
+    "mean_diff": {0, 1, 2},
+    "pca": {0, 1, 2},
+    "J_word": {0},
+    "vjp_mlp_up_shrink": {0, 1, 2},
+}
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
@@ -25,6 +31,8 @@ LABELS = {
     "vjp_delta": "vjp_delta (ours)",
     "mean_diff": "mean_diff (baseline)",
     "pca": "PCA",
+    "J_word": "J-word",
+    "vjp_mlp_up_shrink": "MLP-up VJP",
 }
 COHORT_FIELDS = (
     "model",
@@ -60,9 +68,9 @@ def _rows(path: Path = DATA) -> list[dict]:
         row["admissible"] = row["admissible"].lower() == "true"
     if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
         raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
-    for method in METHODS[:-1]:
-        if {row["seed"] for row in rows if row["method"] == method} != NAMED_SEEDS:
-            raise ValueError(f"{method} needs exactly seeds {sorted(NAMED_SEEDS)}")
+    for method, seeds in METHOD_SEEDS.items():
+        if {row["seed"] for row in rows if row["method"] == method} != seeds:
+            raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
     return rows
 
 
@@ -76,7 +84,7 @@ def _means(rows: list[dict]) -> list[dict]:
                     if row["method"] == method and row["C"] == C and row["side"] == side
                     and row["admissible"]
                 ]
-                if {row["seed"] for row in rows_at_dose} == NAMED_SEEDS:
+                if {row["seed"] for row in rows_at_dose} == METHOD_SEEDS[method]:
                     points.append({"method": method, "C": C, "side": side,
                                    "effect": mean(row["effect"] for row in rows_at_dose),
                                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
@@ -195,7 +203,10 @@ def plot(rows: list[dict]) -> go.Figure:
         line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
         hoverinfo="skip", showlegend=False,
     ))
-    colors = {"vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7"}
+    colors = {
+        "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
+        "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
+    }
     displayed_endpoints = {}
     for method in METHODS[:-1]:
         method_rows = [row for row in means if row["method"] == method]
@@ -248,6 +259,17 @@ def plot(rows: list[dict]) -> go.Figure:
         {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
         {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
     ]
+    labels.extend(
+        {
+            "x": displayed_endpoints[method, side][0],
+            "y": displayed_endpoints[method, side][1],
+            "text": f"{LABELS[method]} {side}",
+            "color": colors[method],
+        }
+        for method in ("J_word", "vjp_mlp_up_shrink")
+        for side in ("+C", "-C")
+        if (method, side) in displayed_endpoints
+    )
     for annotation in place_labels(
         labels, (-x_limit, x_limit), y_range, obstacles=obstacles,
         fig_w=1064, fig_h=590, margin=margin, font={"size": 15},
@@ -307,7 +329,7 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             f"{peaks['-C']['off_axis_perturbation']:.3f}",
             f"{peaks['+C']['effect']:.3f}",
             f"{peaks['+C']['off_axis_perturbation']:.3f}",
-            str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS)),
+            str(RANDOM_SEEDS if method == "random" else len(METHOD_SEEDS[method])),
             str(candidate_count),
             str(rejected),
         ]))
@@ -355,7 +377,7 @@ def _markdown(table: list[list[str]]) -> str:
     lines = [
         "# Results",
         "",
-        "All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.",
+        "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
         "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
         "",
         "![Judged effect against off-axis change](plot.png)",
@@ -393,8 +415,8 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         ".plotly-graph-div{width:100%!important}table{border-collapse:collapse;width:100%}"
         "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
-        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. Named-method points "
-        "are means over three seeds. The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
+        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
         f"than half have two coherent directions. The table reports rejected evaluations.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )

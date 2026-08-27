@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from statistics import mean
 
-from judge import MODEL, RUBRIC, cache_key, completed_walk_paths, demo_rows, valid
+from judge import MODEL, RUBRIC, artifact_paths, cache_key, demo_rows, valid
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +31,7 @@ SCENARIO_FIELDS = (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--run", action="append", default=[])
     parser.add_argument("--self-test", action="store_true")
     return parser.parse_args()
 
@@ -73,17 +74,11 @@ def judge_diagnostics(cells: list[tuple[float, float, float]]) -> tuple[bool, fl
     return by_order[0] * by_order[1] < 0, max(cell[0] for cell in cells) - min(cell[0] for cell in cells)
 
 
-def walk_metadata() -> dict[tuple[str, str], dict]:
-    metadata = {}
-    for method in ("vjp_delta", "mean_diff", "pca"):
-        for seed in (0, 1, 2):
-            certificate = json.loads((ROOT / "outputs" / f"walk_{method}_s{seed}.json").read_text())
-            assert certificate["status"] == "COMPLETE"
-            for rung in certificate["rungs"]:
-                run = Path(rung["run_dir"]).name
-                for side in ("+C", "-C"):
-                    metadata[run, side] = rung[side]
-    return metadata
+def artifact_health(artifact: dict, side: str) -> dict:
+    return {
+        "breakdown_reasons": artifact["breakdown_reasons"][side],
+        "post_boundary": False,
+    }
 
 
 def batch_size(run: Path, artifact: dict) -> int:
@@ -126,9 +121,10 @@ def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
     return rows, scenarios
 
 
-def export() -> None:
-    paths = completed_walk_paths()
-    metadata = walk_metadata()
+def export(run_names: list[str]) -> None:
+    assert run_names
+    paths = artifact_paths(run_names)
+    assert {path.parent.name for path in paths} == set(run_names)
     demos = {path: demo_rows(path) for path in paths}
     keys = {
         cache_key(row, order, pass_index)
@@ -174,7 +170,7 @@ def export() -> None:
         for side in ("+C", "-C"):
             selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
             steered_off_axis = mean(row["steered_off_axis"] for row in selected)
-            health = metadata[run.name, side]
+            health = artifact_health(artifact, side)
             result_rows.append({
                 "model": artifact["model"],
                 "tokenizer": artifact["model"],
@@ -197,18 +193,21 @@ def export() -> None:
                     and steered_off_axis <= 1.5
                 ),
             })
-    random_result_rows, random_scenario_rows = random_rows(data_hash)
-    result_rows.extend(random_result_rows)
-    scenario_rows.extend(random_scenario_rows)
+    with RESULTS.open(newline="") as file:
+        existing_result_rows = list(csv.DictReader(file))
+    with SCENARIOS.open(newline="") as file:
+        existing_scenario_rows = list(csv.DictReader(file))
+    existing_runs = {row["source_run"] for row in existing_result_rows}
+    assert not existing_runs & {row["source_run"] for row in result_rows}
     with RESULTS.open("w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=FIELDS, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(result_rows)
+        writer.writerows([*existing_result_rows, *result_rows])
     with SCENARIOS.open("w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=SCENARIO_FIELDS, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(scenario_rows)
-    print(f"wrote {len(result_rows)} result arms and {len(scenario_rows)} scenario scores")
+        writer.writerows([*existing_scenario_rows, *scenario_rows])
+    print(f"added {len(result_rows)} result arms and {len(scenario_rows)} scenario scores")
 
 
 def self_test() -> None:
@@ -221,7 +220,7 @@ def self_test() -> None:
 
 def main() -> None:
     args = parse_args()
-    self_test() if args.self_test else export()
+    self_test() if args.self_test else export(args.run)
 
 
 if __name__ == "__main__":
