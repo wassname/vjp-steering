@@ -90,6 +90,20 @@ def main(
 
 
 @app.local_entrypoint()
+def descending(method: str, coefficients: str, seed: int = 0):
+    """Run full-cohort doses from a known incoherent point back toward zero."""
+    handles = {
+        coefficient: run.spawn([
+            method, "--seed", str(seed), "--coefficient", coefficient,
+            "--batch-size", "32", "--extract-batch-size", "8",
+        ])
+        for coefficient in coefficients.split(",")
+    }
+    for coefficient, handle in handles.items():
+        print(f"{method}\tC={coefficient}\t{handle.get()[:200]}")
+
+
+@app.local_entrypoint()
 def smoke():
     """Run both new methods on the real model through the deployed container path."""
     commands = (
