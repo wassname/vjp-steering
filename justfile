@@ -62,6 +62,9 @@ modal-push:
 modal-walks *args:
 	uv run modal run --detach scripts/run_modal.py::main {{args}}
 
+modal-follow app:
+	uv run modal app logs {{app}} --follow --timestamps
+
 modal-pull:
 	uv run modal volume get --force jsteer-pub-cache outputs .
 
