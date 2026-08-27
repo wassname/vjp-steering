@@ -89,7 +89,7 @@ Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, s
 | `score` | the weaker directional score, $S_m$ above. Higher is better. |
 | `-C on-axis`, `+C on-axis` | target-directed judged movement at the selected dose. Higher is better. |
 | `-C damage`, `+C damage` | absolute judged off-axis change at that dose. Lower is better. |
-| `seeds` | persona-pair seeds averaged before selecting the dose, three for named methods and ten for random. |
+| `seeds` | persona-pair seeds averaged before selecting the dose. J-word has one, other named methods have three, and random has ten. |
 | `N` | admissible dose points considered across both directions. |
 | `rejected` | raw evaluations excluded by the walk health gate. |
 
