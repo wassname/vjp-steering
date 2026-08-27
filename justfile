@@ -51,19 +51,19 @@ sweeps: queue-walks
 
 # the same nine walks on Modal, nine GPUs at once instead of one card in series
 modal-smoke:
-	modal run scripts/run_modal.py::smoke
+	uv run modal run scripts/run_modal.py::smoke
 
 # seed the Volume with the rungs already on disk so Modal adopts them instead of re-running
 modal-push:
 	rm -rf /tmp/jsteer-push && mkdir -p /tmp/jsteer-push
 	rsync -a --include="*/" --include="*.json" --include="*.jsonl" --exclude="*" outputs/ /tmp/jsteer-push/
-	modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
+	uv run modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
 
 modal-walks *args:
-	modal run --detach scripts/run_modal.py::main {{args}}
+	uv run modal run --detach scripts/run_modal.py::main {{args}}
 
 modal-pull:
-	modal volume get --force jsteer-pub-cache outputs .
+	uv run modal volume get --force jsteer-pub-cache outputs .
 
 queue-judge:
 	pueue add --group api -l "why: judge every arm in the nine completed public walks; resolve: all content cells are cached and judge reports zero missing" -w "$PWD" -- just judge-walks
