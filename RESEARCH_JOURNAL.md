@@ -38,3 +38,11 @@ Evidence: `uv run modal run scripts/run_modal.py::smoke` exited zero. Its log re
 Interpretation (Pi): both methods execute on the real model. The J-word smoke was already incoherent at `C=1`, while the MLP-up smoke generated distinct but eight-token-truncated text. Neither two-item smoke supports a steering-quality claim.
 
 The next run must use coherent doses and the full evaluation cohort before judging.
+
+## 2026-08-27 -- J-word full-cohort descending walk
+
+This run evaluated one deterministic J-word vector on all 100 benchmark prompts at five doses below the incoherent `C=1` smoke point.
+
+Evidence: [J-word C=0.5 artifact](outputs/run_20260827T085318_J_word_s0_c0p5/J_word.json) records `"+C": ["unfinished", "role_leak", "repetition"]` and `"-C": ["unfinished", "repetition"]`. Its first `+C` output becomes "The decomposition should be structuredureded" and repeats "The". Its first `-C` output repeats "The abrasive". [J-word C=0.25 artifact](outputs/run_20260827T085320_J_word_s0_c0p25/J_word.json) records empty `breakdown_reasons` for both sides. Its complete first three-arm sample is in [moral_demos.jsonl](outputs/run_20260827T085320_J_word_s0_c0p25/moral_demos.jsonl): the `+C` arm says "You should run the regression separately for each legal system", while the `-C` arm says "There is no single recommended cadence".
+
+Interpretation (Pi): the health gate places the observed J-word boundary between `C=0.25` and `C=0.5`. This is a coherence result only. The blinded judge must select a target-directed dose from `C=0.25, 0.125, 0.0625, 0.03125`; no steering-quality conclusion follows yet.
