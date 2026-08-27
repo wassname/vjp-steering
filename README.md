@@ -28,17 +28,17 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 
 <!-- CODEX: aggregate-score definition and field-source links -->
 <!-- CODEX: generated results table starts -->
-| method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | arms | rejected↓ |
+| method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| mean_diff | +2.232 | 1.492 | 0.703 | 4.370 | 0.695 | 3 | 60 | 24 |
-| vjp_delta | +2.057 | 1.849 | 0.477 | 2.988 | 0.245 | 3 | 37 | 10 |
-| pca | +1.662 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
-| random | +0.830 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |
+| vjp_delta | **+1.371** | **1.849** | 0.477 | 2.988 | **0.245** | 3 | 37 | 10 |
+| mean_diff | +0.789 | 1.492 | 0.703 | **4.370** | 0.695 | 3 | 60 | 24 |
+| pca | +0.265 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
+| *random* | -0.782 | -0.425 | **0.357** | 2.995 | 0.553 | 10 | 6 | 5 |
 <!-- CODEX: generated results table ends -->
 
-For method $m$, this table reports one aggregate score across both steering directions:
+Prompting can often reach the sycophantic direction. The difficult test is steering away from it, so the score uses the weaker direction rather than letting the easier one compensate for it.
 
-$$S_m = \frac{1}{2}\sum_{d \in \{-1, +1\}} \left(d \cdot e^*_{m,d} - o^*_{m,d}\right),$$
+$$S_m = \min_{d \in \{-1, +1\}} \left(d \cdot e^{*}_{m,d} - o^{*}_{m,d}\right),$$
 
 where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^*_{m,d}, o^*_{m,d})$ is the admissible dose with the greatest target-directed change $d \cdot e_{m,d}$. The table sorts methods by $S_m$.
 
@@ -54,13 +54,17 @@ I like [Janus's view](https://x.com/repligate/status/1965960676104712451) of the
 
 $J = \partial h_B / \partial h_A$ is the local linear map between a source location $A$ and a downstream target $B$ on the (layer, token) grid. It is never materialized: a VJP queries it with one backward pass, and contrastive pairs supply the direction to query it with.
 
-Start with the usual target-layer contrast, where source layers precede the target layer:
+For prompt $x$, let $\ell(x)$ be its final unpadded token and $V(x)$ be its valid positions after the first 16 tokens and before the final token. Start with the target-layer contrast:
 
-$$c = \mathbb{E}[h_T^+] - \mathbb{E}[h_T^-].$$
+$$c = \mathbb{E}_{x^+}[h_{T,\ell(x^+)}] - \mathbb{E}_{x^-}[h_{T,\ell(x^-)}].$$
 
-Pull that contrast back to each source layer and subtract the two prompt classes:
+For each prompt, apply $c$ at every valid target position, then average its source-position gradients:
 
-$$v_L = \mathbb{E}_{x^+}[J_{L \to T}(x)^T c] - \mathbb{E}_{x^-}[J_{L \to T}(x)^T c].$$
+$$s(x) = \sum_{t \in V(x)} c^T h_{T,t}(x), \qquad g_L(x) = \frac{1}{|V(x)|}\sum_{s \in V(x)} \frac{\partial s(x)}{\partial h_{L,s}(x)}.$$
+
+The steering vector at source layer $L$ is the normalized class difference:
+
+$$v_L = \frac{\mathbb{E}_{x^+}[g_L(x^+)] - \mathbb{E}_{x^-}[g_L(x^-)]}{\left\|\mathbb{E}_{x^+}[g_L(x^+)] - \mathbb{E}_{x^-}[g_L(x^-)]\right\|_2}.$$
 
 This also draws on [AntiPaSTO](https://github.com/wassname/AntiPaSTO_concepts/tree/main#incomplete-contrastive-pairs). The shared vector, hook, mean-difference, PCA, and random-direction code comes from [`steering-lite`](https://github.com/wassname/steering-lite).
 
@@ -76,14 +80,16 @@ with steer(model, vector, C=-0.18):
 
 Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. 
 
-| column | meaning |
+| results table column | meaning |
 | --- | --- |
-| `effect` | judged on-axis movement versus bare, -5..+5 Likert. Positive is more sycophantic and negative is more abrasive. [`scripts/judge.py`](scripts/judge.py) defines the blinded judge prompts; [`scripts/export.py`](scripts/export.py) combines presentation orders and passes. |
-| `off_axis_perturbation` | absolute judged off-axis change versus bare. Lower is better. |
-| `admissible` | the arm is before the walk boundary, has <50% unfinished replies, <25% role-token leaks, <25% replies over worst-window repetition 0.5, and its steered replies have mean judged off-axis damage <=1.5. A `false` arm is discarded from the plot. |
-| `seed` | the random seed for the persona-pair sample. Named-method points are means over seeds {0,1,2}; the random cone spans seeds 0-9. Seeds reorder one fixed 200-prompt pool rather than redrawing it, so named-method bands are noise bands, not draw-to-draw variation. |
+| `score` | the weaker directional score, $S_m$ above. Higher is better. |
+| `-C on-axis`, `+C on-axis` | target-directed judged movement at the selected dose. Higher is better. |
+| `-C damage`, `+C damage` | absolute judged off-axis change at that dose. Lower is better. |
+| `seeds` | persona-pair seeds averaged before selecting the dose, three for named methods and ten for random. |
+| `N` | admissible dose points considered across both directions. |
+| `rejected` | raw evaluations excluded by the walk health gate. |
 
-The renderer is [`src/vjp_steering/results.py`](src/vjp_steering/results.py), the steering method is [`src/vjp_steering/vjp.py`](src/vjp_steering/vjp.py), and the aggregate data is [`data/results.csv`](data/results.csv). Per-scenario judge outputs are in [`data/judged_scenarios.csv`](data/judged_scenarios.csv).
+[`scripts/judge.py`](scripts/judge.py) defines the blinded judge prompts, [`scripts/export.py`](scripts/export.py) combines presentation orders and passes, and [`src/vjp_steering/results.py`](src/vjp_steering/results.py) renders this table from [`data/results.csv`](data/results.csv). Per-scenario judge outputs are in [`data/judged_scenarios.csv`](data/judged_scenarios.csv); the steering method is [`src/vjp_steering/vjp.py`](src/vjp_steering/vjp.py).
 
 ## Citation
 

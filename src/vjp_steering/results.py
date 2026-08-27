@@ -71,15 +71,15 @@ def _means(rows: list[dict]) -> list[dict]:
     for method in METHODS[:-1]:
         for C in sorted({row["C"] for row in rows if row["method"] == method}):
             for side in ("+C", "-C"):
-                arms = [
+                rows_at_dose = [
                     row for row in rows
                     if row["method"] == method and row["C"] == C and row["side"] == side
                     and row["admissible"]
                 ]
-                if {row["seed"] for row in arms} == NAMED_SEEDS:
+                if {row["seed"] for row in rows_at_dose} == NAMED_SEEDS:
                     points.append({"method": method, "C": C, "side": side,
-                                   "effect": mean(row["effect"] for row in arms),
-                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in arms)})
+                                   "effect": mean(row["effect"] for row in rows_at_dose),
+                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
     return points
 
 
@@ -174,17 +174,17 @@ def plot(rows: list[dict]) -> go.Figure:
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     random_seeds = sorted({row["seed"] for row in random})
-    random_arm = {(row["seed"], row["C"], row["side"]): row for row in random}
+    random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
     cone = [(0.0, 0.0, 0.0, 0.0)]
     for C in sorted({row["C"] for row in random}):
         coherent = [
             seed for seed in random_seeds
-            if (seed, C, "+C") in random_arm and (seed, C, "-C") in random_arm
-            and random_arm[seed, C, "+C"]["admissible"] and random_arm[seed, C, "-C"]["admissible"]
+            if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
+            and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
         ]
         if len(coherent) < RANDOM_SEEDS // 2:
             break
-        points = [random_arm[seed, C, side] for seed in coherent for side in ("+C", "-C")]
+        points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
         effects = sorted(row["effect"] for row in points)
         cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
                      effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
@@ -276,7 +276,7 @@ def _summary(rows: list[dict]) -> list[list[str]]:
     scored_rows = []
     for method in METHODS:
         peaks = {}
-        arm_count = 0
+        candidate_count = 0
         rejected = 0
         for side, sign in (("-C", -1), ("+C", 1)):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
@@ -284,19 +284,19 @@ def _summary(rows: list[dict]) -> list[list[str]]:
                 live = [
                     {
                         "C": C,
-                        "effect": mean(row["effect"] for row in arms),
-                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in arms),
+                        "effect": mean(row["effect"] for row in rows_at_dose),
+                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
                     }
                     for C in sorted({row["C"] for row in group})
-                    if (arms := [row for row in group if row["C"] == C and row["admissible"]])
+                    if (rows_at_dose := [row for row in group if row["C"] == C and row["admissible"]])
                 ]
             else:
                 live = [row for row in means if row["method"] == method and row["side"] == side]
             peaks[side] = max(live, key=lambda row: sign * row["effect"])
-            arm_count += len(live)
+            candidate_count += len(live)
             rejected += sum(not row["admissible"] for row in group)
 
-        score = mean(
+        score = min(
             sign * peaks[side]["effect"] - peaks[side]["off_axis_perturbation"]
             for side, sign in (("-C", -1), ("+C", 1))
         )
@@ -308,7 +308,7 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             f"{peaks['+C']['effect']:.3f}",
             f"{peaks['+C']['off_axis_perturbation']:.3f}",
             str(RANDOM_SEEDS if method == "random" else len(NAMED_SEEDS)),
-            str(arm_count),
+            str(candidate_count),
             str(rejected),
         ]))
     return [row for _, row in sorted(scored_rows, key=lambda item: item[0], reverse=True)]
@@ -322,11 +322,24 @@ HEADERS = [
     "+C on-axis↑",
     "+C damage↓",
     "seeds",
-    "arms",
+    "N",
     "rejected↓",
 ]
 README_TABLE_START = "<!-- CODEX: generated results table starts -->"
 README_TABLE_END = "<!-- CODEX: generated results table ends -->"
+
+
+def _display_table(table: list[list[str]]) -> list[list[str]]:
+    display = [row.copy() for row in table]
+    for column, reverse in ((1, True), (2, True), (3, False), (4, True), (5, False)):
+        best = sorted(display, key=lambda row: float(row[column]), reverse=reverse)[0][column]
+        for row in display:
+            if row[column] == best:
+                row[column] = f"**{row[column]}**"
+    for row in display:
+        if row[0] == "random":
+            row[0] = "*random*"
+    return display
 
 
 def _markdown_table(table: list[list[str]]) -> str:
@@ -343,7 +356,7 @@ def _markdown(table: list[list[str]]) -> str:
         "# Results",
         "",
         "All rows use the same all-100 evaluation cohort. Named-method points are means over three seeds.",
-        "The random cone shows ten vectors until fewer than half have two coherent arms. The table reports rejected arms.",
+        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
         "",
         "![Judged effect against off-axis change](plot.png)",
         "",
@@ -362,9 +375,16 @@ def _update_readme(table: list[list[str]]) -> None:
 
 
 def _html(table: list[list[str]], figure_html: str) -> str:
+    def cell(cell: str) -> str:
+        if cell.startswith("**") and cell.endswith("**"):
+            return f"<strong>{html.escape(cell[2:-2])}</strong>"
+        if cell.startswith("*") and cell.endswith("*"):
+            return f"<em>{html.escape(cell[1:-1])}</em>"
+        return html.escape(cell)
+
     head = "".join(f"<th>{html.escape(cell)}</th>" for cell in HEADERS)
     body = "".join(
-        "<tr>" + "".join(f"<td>{html.escape(cell)}</td>" for cell in row) + "</tr>"
+        "<tr>" + "".join(f"<td>{cell(value)}</td>" for value in row) + "</tr>"
         for row in table
     )
     return (
@@ -375,7 +395,7 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. Named-method points "
         "are means over three seeds. The figure shows both steering directions. The random cone shows ten vectors until fewer "
-        f"than half have two coherent arms. The table reports rejected arms.</p>{figure_html}"
+        f"than half have two coherent directions. The table reports rejected evaluations.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
@@ -408,7 +428,7 @@ class _Cells(HTMLParser):
 
 def _check_equivalent(markdown_text: str, html_text: str) -> None:
     markdown_rows = [
-        [cell.strip() for cell in line.strip("|").split("|")]
+        [cell.strip().strip("*") for cell in line.strip("|").split("|")]
         for line in markdown_text.splitlines()
         if line.startswith("|") and "---" not in line
     ]
@@ -420,7 +440,7 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
 
 def main() -> None:
     rows = _rows()
-    table = _summary(rows)
+    table = _display_table(_summary(rows))
     markdown_text = _markdown(table)
     figure = plot(rows)
     figure_html = figure.to_html(
@@ -438,7 +458,7 @@ def main() -> None:
     (results_dir / "index.md").write_text(markdown_text)
     (results_dir / "index.html").write_text(html_text)
     figure.write_image(results_dir / "plot.png", width=1064, height=590, scale=2)
-    print(f"wrote {len(table)} table rows from {len(rows)} measured arms")
+    print(f"wrote {len(table)} table rows from {len(rows)} measured evaluations")
 
 
 if __name__ == "__main__":
