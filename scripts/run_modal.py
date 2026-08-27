@@ -91,9 +91,12 @@ def main(
 
 @app.local_entrypoint()
 def smoke():
-    """Same image, mounts and Volume as the real fan-out, on the tiny random model."""
-    print(run.remote(
-        "vjp_delta --seed 0 --coefficient 16 --model wassname/qwen3-5lyr-tiny-random"
-        " --dtype float32 --n-pairs 2 --batch-size 2 --max-length 128 --max-new-tokens 8"
-        " --limit 2 --layers 1 --target-layer 4 --status SMOKE_PASS".split()
-    ) or "SMOKE_PASS: rung finished, no walk certificate expected")
+    """Run both new methods on the real model through the deployed container path."""
+    commands = (
+        "J_word --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
+        " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS",
+        "vjp_mlp_up_shrink --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
+        " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS",
+    )
+    for command in commands:
+        print(run.remote(command.split()) or "SMOKE_PASS: rung finished")
