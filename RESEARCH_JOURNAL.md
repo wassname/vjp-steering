@@ -18,3 +18,13 @@ Future work from wassname's session request:
 - [ ] Add VJP steering that intervenes on `mlp.up` rather than the residual stream. Use all layers and account for extraction noise with the standard deviation between samples. The accumulated layer interventions may build up and cause incoherence at lower doses, so compare the coherence boundary as well as target-directed movement. It seems more powerful in preliminary observation, but no comparison is recorded here.
 
 The next walk should test this selection rule against a full grid before it replaces the current procedure.
+
+## 2026-08-27 -- J-word persona contrast
+
+This note records the word choice for the public J-word comparison.
+
+Evidence: wassname specified in this session, "J word should use the two persona words only" so it is directly comparable to the extraction personas. The public runner defines those personas as `sycophantic` and `abrasive` in `scripts/walk.py:24-26`.
+
+Interpretation (Pi): use the unembedding contrast `sycophantic - abrasive`, rather than a broad list of positive words. This makes the J-word readout match the two persona labels while remaining a lexical probe.
+
+The public implementation will log the token ids and the full lens provenance with this contrast.
