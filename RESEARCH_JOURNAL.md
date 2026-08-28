@@ -82,3 +82,9 @@ Evidence: `just modal-pull` recovered four `COMPLETE` certificates: [J-word seed
 The fresh-only manifest contains 185 runs and 37,000 demo sides. [Pueue task 5 audit](docs/slop/audit/20260828_task_5_api_judge_credential_failure.md) quotes its complete log: it computed 34,400 required content cells, with 33,380 missing, then failed at `KeyError: 'OPENROUTER_API_KEY'` before an API request or a judge output. Task 5 ran `uv run python scripts/judge.py` directly, which bypassed `justfile`'s `set dotenv-load` and therefore the existing ignored `.env` key.
 
 Interpretation (Pi): the fresh walks satisfy the requested artifact provenance and dose-grid conditions. There is no corrected behavioral result yet. The failure was a queue-command error, not a missing credential: requeue `just judge --walk-id validity-20260828-r2`, require `JUDGE_COMPLETE missing=0`, inspect raw A/B records, then export and render the replacement public artifacts. Manual rows remain invalid and must not enter the export.
+
+## 2026-08-28 -- User-approved sweep grid algorithm
+
+Evidence: user decision in this session, not a measured result. For every method and seed, solve the maximum coherent coefficient independently for `+C` and `-C` with a bounded Illinois/Newton search. Keep the previous `C` definition and configuration so results remain comparable. Construct the previous log grid through each direction's solved `C`, but generate and judge only `grid[ceil(0.66 * len(grid)):]`, the final third of that direction's grid.
+
+Interpretation (Pi): fixed shared-grid comparison rows are invalid under this decision. Rerun every compared method with independent directional endpoints and final-third generation and judging. This entry specifies the requested procedure only; it reports no behavioral or measurement result.
