@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from statistics import mean
 
-from judge import MODEL, RUBRIC, artifact_paths, cache_key, demo_rows, valid
+from judge import MODEL, RUBRIC, artifact_paths, cache_key, demo_rows, valid, validity_walk_rungs
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +32,7 @@ SCENARIO_FIELDS = (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", action="append", default=[])
+    parser.add_argument("--walk-id")
     parser.add_argument("--self-test", action="store_true")
     return parser.parse_args()
 
@@ -121,10 +122,13 @@ def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
     return rows, scenarios
 
 
-def export(run_names: list[str]) -> None:
-    assert run_names
-    paths = artifact_paths(run_names)
-    assert {path.parent.name for path in paths} == set(run_names)
+def export(run_names: list[str], walk_id: str | None = None) -> None:
+    assert bool(run_names) != (walk_id is not None)
+    validity_entries = validity_walk_rungs(walk_id) if walk_id else []
+    paths = [path for path, _ in validity_entries] if validity_entries else artifact_paths(run_names)
+    if run_names:
+        assert {path.parent.name for path in paths} == set(run_names)
+    rung_health = {path: rung for path, rung in validity_entries}
     demos = {path: demo_rows(path) for path in paths}
     keys = {
         cache_key(row, order, pass_index)
@@ -170,7 +174,7 @@ def export(run_names: list[str]) -> None:
         for side in ("+C", "-C"):
             selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
             steered_off_axis = mean(row["steered_off_axis"] for row in selected)
-            health = artifact_health(artifact, side)
+            health = rung_health[artifact_path][side] if walk_id else artifact_health(artifact, side)
             result_rows.append({
                 "model": artifact["model"],
                 "tokenizer": artifact["model"],
@@ -197,6 +201,10 @@ def export(run_names: list[str]) -> None:
         existing_result_rows = list(csv.DictReader(file))
     with SCENARIOS.open(newline="") as file:
         existing_scenario_rows = list(csv.DictReader(file))
+    if walk_id:
+        replaced_methods = {"J_word", "vjp_mlp_up_shrink"}
+        existing_result_rows = [row for row in existing_result_rows if row["method"] not in replaced_methods]
+        existing_scenario_rows = [row for row in existing_scenario_rows if row["method"] not in replaced_methods]
     existing_runs = {row["source_run"] for row in existing_result_rows}
     assert not existing_runs & {row["source_run"] for row in result_rows}
     with RESULTS.open("w", newline="") as file:
@@ -220,7 +228,7 @@ def self_test() -> None:
 
 def main() -> None:
     args = parse_args()
-    self_test() if args.self_test else export(args.run)
+    self_test() if args.self_test else export(args.run, args.walk_id)
 
 
 if __name__ == "__main__":
