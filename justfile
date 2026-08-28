@@ -77,9 +77,6 @@ modal-continue method seed continuation_id:
 modal-continuations continuation_id:
 	uv run modal run scripts/run_modal.py::continuations --continuation-id {{continuation_id}}
 
-modal-endpoint-tail-judge:
-	uv run modal run scripts/run_modal.py::endpoint_tail_judge
-
 modal-walks *args:
 	uv run modal run --detach scripts/run_modal.py::main {{args}}
 
