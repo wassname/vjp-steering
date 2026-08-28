@@ -4,11 +4,9 @@ import argparse
 import hashlib
 import json
 import math
-import os
-import shlex
-import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -179,29 +177,22 @@ def adopted_rung(args: argparse.Namespace, endpoint: dict, coefficient: float) -
     return matches[0] if matches else None
 
 
-def rung_command(args: argparse.Namespace, coefficient: float, phase: str) -> list[str]:
-    return [
-        sys.executable, str(Path(__file__).resolve()), args.method,
-        "--seed", str(args.seed), "--side", args.side,
-        "--continuation-id", args.continuation_id,
-        "--coefficient", str(coefficient), "--phase", phase,
-        "--device", args.device,
-    ]
+@dataclass
+class RungContext:
+    config: dict
+    rows: list[dict]
+    tokenizer: object
+    model: object
+    vector: object
+    extraction_metadata: dict
+    prompts: list[object]
 
 
-def run_command(command: list[str]) -> None:
-    environment = os.environ.copy()
-    environment["HF_HUB_OFFLINE"] = "1"
-    environment["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-    subprocess.run(command, cwd=ROOT, env=environment, check=True)
-
-
-def probe(args: argparse.Namespace, endpoint: dict, coefficient: float, phase: str) -> dict:
+def probe(args: argparse.Namespace, endpoint: dict, context: RungContext, coefficient: float, phase: str) -> dict:
     adopted = adopted_rung(args, endpoint, coefficient)
-    command = rung_command(args, coefficient, phase)
     if adopted is None:
-        logger.info("run side={} phase={} C={} command={}", args.side, phase, coefficient, shlex.join(command))
-        run_command(command)
+        logger.info("run side={} phase={} C={} in-process", args.side, phase, coefficient)
+        write_rung(args, endpoint, context, coefficient, phase)
         adopted = adopted_rung(args, endpoint, coefficient)
         assert adopted is not None
     run_dir, artifact = adopted
@@ -218,11 +209,11 @@ def probe(args: argparse.Namespace, endpoint: dict, coefficient: float, phase: s
     }
 
 
-def search_boundary(args: argparse.Namespace, endpoint: dict) -> dict:
+def search_boundary(args: argparse.Namespace, endpoint: dict, context: RungContext) -> dict:
     trace: list[dict] = []
 
     def observe(coefficient: float) -> dict:
-        entry = probe(args, endpoint, coefficient, "search")
+        entry = probe(args, endpoint, context, coefficient, "search")
         trace.append(entry)
         assert_monotone_health(trace)
         return entry
@@ -296,11 +287,12 @@ def write_certificate(args: argparse.Namespace, endpoint: dict, boundary: dict, 
 def walk_side(args: argparse.Namespace) -> None:
     assert args.continuation_id and args.side == "+C"
     endpoint = reused_minus_endpoint(args.method, args.seed, require_missing_plus=True)
-    boundary = search_boundary(args, endpoint)
+    context = load_rung_context(args, endpoint)
+    boundary = search_boundary(args, endpoint, context)
     rungs = []
     _, _, tail = old_grid_tail(boundary["C_lo"])
     for tail_index, coefficient in enumerate(tail):
-        entry = probe(args, endpoint, coefficient, "tail")
+        entry = probe(args, endpoint, context, coefficient, "tail")
         assert entry["health_clean"], f"tail has a health failure: {args.side} {coefficient}"
         entry["tail_index"] = tail_index
         rungs.append(entry)
@@ -309,18 +301,8 @@ def walk_side(args: argparse.Namespace) -> None:
     logger.info("CONTINUATION_COMPLETE method={} seed={} side={} certificate={}", args.method, args.seed, args.side, continuation_certificate_path(args))
 
 
-def run_rung(args: argparse.Namespace) -> None:
-    assert args.continuation_id and args.side and args.coefficient is not None and args.phase
-    endpoint = reused_minus_endpoint(args.method, args.seed)
+def load_rung_context(args: argparse.Namespace, endpoint: dict) -> RungContext:
     config = endpoint["config"]
-    stamp = time.strftime("%Y%m%dT%H%M%S")
-    coefficient_slug = str(args.coefficient).replace(".", "p")
-    output = args.output or ROOT / "outputs" / f"run_{stamp}_{args.method}_s{args.seed}_{args.side[0]}c{coefficient_slug}"
-    output.mkdir(parents=True, exist_ok=False)
-    logger.remove()
-    logger.add(sys.stderr, format="{time:HH:mm:ss} | {message}")
-    logger.add(output / "run.log", format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}")
-
     rows, cohort_sha256 = walk.read_cohort(100)
     assert cohort_sha256 == config["cohort_sha256"] and config["cohort_size"] == len(rows)
     tokenizer = AutoTokenizer.from_pretrained(config["model"])
@@ -354,30 +336,61 @@ def run_rung(args: argparse.Namespace) -> None:
         seed=args.seed,
     )
     vector, extraction_metadata = walk.extract_vector(extraction_args, model, tokenizer, layers, positive, negative)
+    return RungContext(
+        config=config,
+        rows=rows,
+        tokenizer=tokenizer,
+        model=model,
+        vector=vector,
+        extraction_metadata=extraction_metadata,
+        prompts=walk.generation_inputs(tokenizer, rows),
+    )
+
+
+def write_rung(
+    args: argparse.Namespace,
+    endpoint: dict,
+    context: RungContext,
+    coefficient: float,
+    phase: str,
+) -> None:
+    stamp = time.strftime("%Y%m%dT%H%M%S")
+    coefficient_slug = str(coefficient).replace(".", "p")
+    output = args.output or ROOT / "outputs" / f"run_{stamp}_{args.method}_s{args.seed}_{args.side[0]}c{coefficient_slug}"
+    output.mkdir(parents=True, exist_ok=False)
+    logger.remove()
+    logger.add(sys.stderr, format="{time:HH:mm:ss} | {message}")
+    logger.add(output / "run.log", format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {message}")
+
     vector_file = output / f"{args.method}_vector.safetensors"
-    vector.save(str(vector_file))
-    prompts = walk.generation_inputs(tokenizer, rows)
-    signed_coefficient = args.coefficient if args.side == "+C" else -args.coefficient
-    walk.assert_hook_changes_logits(model, tokenizer, vector, prompts[0], signed_coefficient)
-    with vector(model, C=signed_coefficient):
-        steered = walk.generate(model, tokenizer, prompts, config["batch_size"], config["max_new_tokens"])
-    assert any(a != b["text"] for a, b in zip(steered, endpoint["bare"], strict=True))
+    context.vector.save(str(vector_file))
+    signed_coefficient = coefficient if args.side == "+C" else -coefficient
+    walk.assert_hook_changes_logits(context.model, context.tokenizer, context.vector, context.prompts[0], signed_coefficient)
+    with context.vector(context.model, C=signed_coefficient):
+        steered = walk.generate(
+            context.model,
+            context.tokenizer,
+            context.prompts,
+            context.config["batch_size"],
+            context.config["max_new_tokens"],
+        )
+    assert any(answer != row["text"] for answer, row in zip(steered, endpoint["bare"], strict=True))
 
     demo_path = output / "moral_demos.jsonl"
     with demo_path.open("w") as file:
         for row in endpoint["bare"]:
             file.write(json.dumps(row, ensure_ascii=False) + "\n")
-        for row, answer in zip(rows, steered, strict=True):
+        for row, answer in zip(context.rows, steered, strict=True):
             file.write(json.dumps({
                 "label": args.method,
-                "point_id": f"{args.method}_s{args.seed}_c{args.coefficient:g}",
+                "point_id": f"{args.method}_s{args.seed}_c{coefficient:g}",
                 "steer_direction": args.side,
                 "coefficient": signed_coefficient,
                 "scenario": row["scenario"],
                 "prompt": row["prompt"],
                 "text": answer,
             }, ensure_ascii=False) + "\n")
-    stats, reasons = walk.health(tokenizer, steered)
+    stats, reasons = walk.health(context.tokenizer, steered)
     logger.info(
         "SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond health failure. side={} stats={} breakdown={}",
         args.side, stats, reasons,
@@ -386,17 +399,17 @@ def run_rung(args: argparse.Namespace) -> None:
         "schema": PROCEDURE,
         "status": "RESULT",
         "continuation_id": args.continuation_id,
-        "walk_phase": args.phase,
+        "walk_phase": phase,
         "generated_side": args.side,
         "coefficient_units": "historical fixed_coefficient_magnitude",
         "method": args.method,
         "seed": args.seed,
-        "fixed_coefficient_magnitude": args.coefficient,
-        **config,
-        "extraction_metadata": extraction_metadata,
+        "fixed_coefficient_magnitude": coefficient,
+        **context.config,
+        "extraction_metadata": context.extraction_metadata,
         "vector_file": vector_file.name,
         "vector_sha256": hashlib.sha256(vector_file.read_bytes()).hexdigest(),
-        "vector_content_sha256": walk.vector_hash(vector),
+        "vector_content_sha256": walk.vector_hash(context.vector),
         "health_rule": HEALTH_RULE,
         "demo_stats": {args.side: stats},
         "breakdown_reasons": {args.side: reasons},
@@ -407,6 +420,13 @@ def run_rung(args: argparse.Namespace) -> None:
         "provenance": endpoint["provenance"],
     }
     (output / f"{args.method}.json").write_text(json.dumps(artifact, indent=2) + "\n")
+
+
+def run_rung(args: argparse.Namespace) -> None:
+    assert args.continuation_id and args.side and args.coefficient is not None and args.phase
+    endpoint = reused_minus_endpoint(args.method, args.seed)
+    context = load_rung_context(args, endpoint)
+    write_rung(args, endpoint, context, args.coefficient, args.phase)
 
 
 def self_test() -> None:
