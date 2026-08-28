@@ -77,3 +77,7 @@ Root cause: `adopted_rung` treated an old manual artifact as an interchangeable 
 ## 01:50 restart
 
 Started Modal app `ap-F3YSFaOp1hNKAwpaNFwEEs` with `walk_id=validity-20260828-r2`, methods `J_word,vjp_mlp_up_shrink`, and seeds `0,1,2`. The first log lines show all four required walks executing grid 0 at C=0.03125 with the new identifier in their rung commands. No judge has been queued; it must wait for four `COMPLETE` certificates that carry this identifier.
+
+## 01:54 monitor
+
+The isolated rerun is active. MLP-up seed 2 completed grid 1 at C=0.035076939009667914 with zero unfinished, role-leak, and repetition counts for bare, +C, and -C. It started grid 2 at C=0.03937253280921478. This output has the required `validity-20260828-r2` walk identifier. No remote failure appears.
