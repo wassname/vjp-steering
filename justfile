@@ -44,6 +44,9 @@ judge-walks:
 endpoint-tail-judge:
 	uv run python scripts/judge.py --endpoint-tail-manifest outputs/endpoint_tail_manifest.json --refresh
 
+endpoint-tail-cache-audit:
+	PYTHONDONTWRITEBYTECODE=1 uv run python scripts/scratch/audit_endpoint_tail_cache.py
+
 judge-walks-faulthandler:
 	uv run python -X faulthandler scripts/judge.py --walks --refresh
 
