@@ -55,20 +55,18 @@ def run(argv: list[str]) -> str:
     return certificate.read_text() if certificate.exists() else ""
 
 
-@app.local_entrypoint()
-def main(
+@app.function(image=image, timeout=8 * 60 * 60)
+def complete_cohort(
     walk_id: str,
-    methods: str = ",".join(METHODS),
-    seeds: str = ",".join(map(str, SEEDS)),
-    batch_size: int = 32,
-    extract_batch_size: int = 8,
-):
-    # generation: batch 4 leaves an H100 idle, decode is bandwidth bound so a wide batch is nearly free
-    # extraction: vjp_delta's backward graph OOMs an 80 GB card at 32
+    methods: tuple[str, ...],
+    seeds: tuple[str, ...],
+    batch_size: int,
+    extract_batch_size: int,
+) -> list[dict]:
     jobs = [
         (method, seed)
-        for method in methods.split(",")
-        for seed in seeds.split(",")
+        for method in methods
+        for seed in seeds
         if method != "J_word" or seed == "0"
     ]
     handles = {
@@ -79,26 +77,31 @@ def main(
         ])
         for job in jobs
     }
-    for (method, seed), handle in handles.items():
+    certificates = []
+    for handle in handles.values():
         certificate = json.loads(handle.get())
         assert certificate["schema"] == "per_side_coherence_walk_v2"
         assert certificate["status"] == "COMPLETE"
-        print(f"{method}\ts{seed}\t{certificate['status']}\ttail_rungs={len(certificate['rungs'])}")
+        certificates.append(certificate)
+    return certificates
 
 
 @app.local_entrypoint()
-def descending(method: str, coefficients: str, seeds: str = "0"):
-    """Run full-cohort doses from a known incoherent point back toward zero."""
-    handles = {
-        (coefficient, seed): run.spawn([
-            method, "--seed", seed, "--coefficient", coefficient,
-            "--batch-size", "32", "--extract-batch-size", "8",
-        ])
-        for coefficient in coefficients.split(",")
-        for seed in seeds.split(",")
-    }
-    for (coefficient, seed), handle in handles.items():
-        print(f"{method}\ts={seed}\tC={coefficient}\t{handle.get()[:200]}")
+def main(
+    walk_id: str,
+    methods: str = ",".join(METHODS),
+    seeds: str = ",".join(map(str, SEEDS)),
+    batch_size: int = 32,
+    extract_batch_size: int = 8,
+):
+    certificates = complete_cohort.remote(
+        walk_id, tuple(methods.split(",")), tuple(seeds.split(",")), batch_size, extract_batch_size
+    )
+    for certificate in certificates:
+        print(
+            f"{certificate['method']}\ts{certificate['seed']}\t{certificate['status']}\t"
+            f"tail_rungs={len(certificate['rungs'])}"
+        )
 
 
 @app.local_entrypoint()
