@@ -31,3 +31,7 @@ The app is still running. Latest observed rungs:
 - MLP-up seed 0 started C=0.09921256574801246.
 
 All observed health values satisfy the walk's stated gate. No remote error or completion certificate appears in the latest Modal log.
+
+## 00:24 monitor
+
+The app is still running. MLP-up seed 1 completed C=0.15749013123685915 with zero unfinished, role-leak, and repetition counts for both steered sides. It then started the next sixth-octave rung, C=0.1767766952966369. No error or `WALK_COMPLETE` line appears in the latest log.
