@@ -41,6 +41,9 @@ judge-walks-dry:
 judge-walks:
 	uv run python scripts/judge.py --walks --refresh
 
+endpoint-tail-judge:
+	uv run python scripts/judge.py --endpoint-tail-manifest outputs/endpoint_tail_manifest.json --refresh
+
 judge-walks-faulthandler:
 	uv run python -X faulthandler scripts/judge.py --walks --refresh
 
