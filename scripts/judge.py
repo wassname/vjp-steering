@@ -341,12 +341,21 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 logger.error("OPENROUTER out of credits ({}), aborting", status_code)
                 raise
             if status_code in TRANSIENT_CODES:
-                logger.warning("transient {} attempt={}/3", status_code, attempt + 1)
+                if status_code == 429:
+                    retry_seconds = err.body["error"]["metadata"]["retry_after_seconds"]
+                else:
+                    retry_seconds = 1.5 * (attempt + 1)
+                logger.warning(
+                    "transient {} attempt={}/3 retry_seconds={}",
+                    status_code,
+                    attempt + 1,
+                    retry_seconds,
+                )
                 if attempt == 2:
                     raise RuntimeError(
                         f"transient {status_code} after 3 attempts for {cache_key(row, order, pass_index)}"
                     ) from err
-                await asyncio.sleep(1.5 * (attempt + 1))
+                await asyncio.sleep(retry_seconds)
                 continue
             raise
         if not response.choices:
