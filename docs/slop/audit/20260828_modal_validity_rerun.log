@@ -118,3 +118,9 @@ The isolated rerun remains active. MLP-up seed 1 adopted grid 47, C=7.1271897451
 ## 03:14 monitor
 
 The isolated rerun remains active. MLP-up seed 1 adopted grid 51, C=11.313708498984761. Its -C arm had 42 unfinished, 32 role leaks, and 21 repeated outputs of 100, so `role_leak` crossed the 25% health gate. It started grid 52, C=12.699208415745595. MLP-up seed 0 adopted grid 50, C=10.079368399158986. Its -C arm had 24 unfinished, 21 role leaks, and 15 repeated outputs of 100, all below the gate; it started grid 51, C=11.313708498984761. No remote failure appears.
+
+## 03:24 monitor
+
+The requested app `ap-c8wV0flWrodaoxL0nChKOu` is terminal and remains invalid because its artifacts predate the isolated `walk_id`. Its final log shows MLP-up seed 1 completing at the sixth-octave grid-52 boundary, C=12.699208415745595, but this cannot be used.
+
+The isolated replacement `ap-F3YSFaOp1hNKAwpaNFwEEs` remains active with `walk_id=validity-20260828-r2`. MLP-up seed 0 completed: grid 52, C=12.699208415745595 is its -C boundary. At grid 53, C=14.25437949024543, -C had 62 unfinished, 42 role leaks, and 40 repeated outputs of 100. MLP-up seed 2 adopted grid 49, C=8.979696386474982; its -C arm had 18 unfinished, 16 role leaks, and 10 repeated outputs, below the gate, and it started grid 50, C=10.079368399158986. No remote failure appears. The complete displayed bare/+C/-C examples differ and show the -C arm repeating after breakdown, consistent with the health counters.
