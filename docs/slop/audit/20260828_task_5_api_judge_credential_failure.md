@@ -85,3 +85,7 @@ This establishes the provenance condition checked for every manifest artifact. I
 - Highest-information clues: the exact `KeyError`; the full-log count `34 of 34`; and the fresh-only manifest count `185`.
 - Missing evidence, in order: approved scoped credential at the API worker; `JUDGE_COMPLETE missing=0`; complete raw A/B judgment records; exported CSV and rendered result artifacts.
 - Recommended sequence: provide the approved scoped credential through the project’s secret-delivery mechanism, restart task 5, wait for `JUDGE_COMPLETE missing=0`, then export with `--walk-id validity-20260828-r2`, inspect raw A/B records, and update public artifacts. Do not use or restore manual rows.
+
+## Credential-delivery check
+
+The agent shell, `bash -lc`, `zsh -lc`, `mise exec`, and `direnv exec` each report that `OPENROUTER_API_KEY` is absent. The vault CLI `passage` is not installed. These checks did not read any secret file or print a credential. This rules out a pueue-only environment loss and leaves secure credential delivery as the first missing stage.
