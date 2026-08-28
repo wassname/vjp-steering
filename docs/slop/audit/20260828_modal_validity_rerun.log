@@ -114,3 +114,7 @@ The isolated rerun remains active. MLP-up seed 2 adopted grid 35, C=1.7817974362
 ## 03:04 monitor
 
 The isolated rerun remains active. MLP-up seed 1 adopted grid 47, C=7.127189745122715. Bare and +C had zero unfinished, role-leak, and repetition counts. -C had 6 unfinished, 1 role leak, and 4 repeated outputs of 100, which remain below the stated health gate. It started grid 48, C=8.0. No remote failure appears.
+
+## 03:14 monitor
+
+The isolated rerun remains active. MLP-up seed 1 adopted grid 51, C=11.313708498984761. Its -C arm had 42 unfinished, 32 role leaks, and 21 repeated outputs of 100, so `role_leak` crossed the 25% health gate. It started grid 52, C=12.699208415745595. MLP-up seed 0 adopted grid 50, C=10.079368399158986. Its -C arm had 24 unfinished, 21 role leaks, and 15 repeated outputs of 100, all below the gate; it started grid 51, C=11.313708498984761. No remote failure appears.
