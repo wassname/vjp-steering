@@ -62,6 +62,9 @@ modal-push:
 	rsync -a --include="*/" --include="*.json" --include="*.jsonl" --exclude="*" outputs/ /tmp/jsteer-push/
 	uv run modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
 
+modal-continue method seed continuation_id:
+	uv run modal run --detach scripts/run_modal.py::continuation {{method}} {{seed}} {{continuation_id}}
+
 modal-walks *args:
 	uv run modal run --detach scripts/run_modal.py::main {{args}}
 

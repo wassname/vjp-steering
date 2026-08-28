@@ -38,7 +38,7 @@ cache = modal.Volume.from_name("jsteer-pub-cache", create_if_missing=True)
     timeout=24 * 60 * 60,
 )
 def run(argv: list[str]) -> str:
-    """One walk (or one rung) of scripts/walk.py, with outputs/ living on the Volume."""
+    """One historical paired walk (or rung), with outputs/ on the Volume."""
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
@@ -53,6 +53,39 @@ def run(argv: list[str]) -> str:
     method, seed = argv[0], argv[argv.index("--seed") + 1] if "--seed" in argv else "0"
     certificate = Path(f"/cache/outputs/walk_{method}_s{seed}.json")
     return certificate.read_text() if certificate.exists() else ""
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=24 * 60 * 60,
+)
+def continue_side(argv: list[str]) -> str:
+    """One independent +C continuation, with outputs/ on the Volume."""
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    snapshot_download(MODEL)
+    try:
+        subprocess.run([sys.executable, "scripts/continue_side.py", *argv], cwd="/repo", check=True)
+    finally:
+        cache.commit()
+    method, seed = argv[0], argv[argv.index("--seed") + 1]
+    continuation_id = argv[argv.index("--continuation-id") + 1]
+    certificate = next(Path("/cache/outputs").glob(f"continuation_{method}_s{seed}_plus_{continuation_id}.json"))
+    return certificate.read_text()
+
+
+@app.local_entrypoint()
+def continuation(method: str, seed: int, continuation_id: str) -> None:
+    certificate = json.loads(continue_side.remote([
+        method, "--seed", str(seed), "--side", "+C", "--walk",
+        "--continuation-id", continuation_id,
+    ]))
+    assert certificate["status"] == "COMPLETE"
+    print(f"{method}\ts{seed}\t+C\t{certificate['status']}\ttail_rungs={len(certificate['rungs'])}")
 
 
 @app.local_entrypoint()
