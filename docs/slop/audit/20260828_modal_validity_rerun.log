@@ -97,3 +97,12 @@ The isolated rerun remains active. MLP-up seed 2 completed C=0.25 with zero unfi
 ## 02:34 monitor
 
 The isolated rerun remains active. MLP-up seed 1 completed C=0.7937005259840998 with zero unfinished, role-leak, and repetition counts in all three arms. It started C=0.8908987181403393. No remote failure appears.
+
+## 02:44 monitor
+
+The original app `ap-c8wV0flWrodaoxL0nChKOu` is terminal and has its old, contaminated certificate. It remains invalid. The isolated replacement app `ap-F3YSFaOp1hNKAwpaNFwEEs` is active with `walk_id=validity-20260828-r2`.
+
+- MLP-up seed 0 adopted grid 33, C=1.4142135623730951, with zero unfinished, role-leak, and repetition counts in bare, +C, and -C. It started grid 34, C=1.5874010519681994.
+- MLP-up seed 1 adopted grid 35, C=1.7817974362806785, with zero unfinished, role-leak, and repetition counts in bare, +C, and -C. It started grid 36, C=2.0.
+
+No remote failure appears. J-word seed 0 and MLP-up seed 2 remain active but have no newer completed-rung line in this log tail.
