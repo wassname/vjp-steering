@@ -305,16 +305,11 @@ def _insufficient_credits(err: Exception, status_code: int | None) -> bool:
     return status_code == 402 or "insufficient" in text or "credit" in text or "quota" in text
 
 
-async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int) -> dict:
-    prompt = judge_prompt(row, order)
-    raw_attempts = []
-    reasoning_attempts = []
-    for attempt in range(3):
-        # retries append a format-rescue nudge: on degenerate (repetitive) answers the judge
-        # imitates the repetition and never emits JSON; scoring semantics are unchanged
-        content = prompt if attempt == 0 else prompt + RETRY_NUDGE
+async def request_with_rate_limit(client: AsyncOpenAI, content: str):
+    rate_limit_attempt = 0
+    while True:
         try:
-            response = await client.chat.completions.create(
+            return await client.chat.completions.create(
                 model=MODEL,
                 messages=[{"role": "user", "content": content}],
                 temperature=0.7,
@@ -326,6 +321,30 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                     "provider": PROVIDER,
                 },
             )
+        except Exception as err:
+            status_code = getattr(err, "status_code", None)
+            if status_code != 429 or _insufficient_credits(err, status_code):
+                raise
+            rate_limit_attempt += 1
+            retry_seconds = err.body["metadata"]["retry_after_seconds"]
+            logger.warning(
+                "rate limited attempt={} retry_seconds={}",
+                rate_limit_attempt,
+                retry_seconds,
+            )
+            await asyncio.sleep(retry_seconds)
+
+
+async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int) -> dict:
+    prompt = judge_prompt(row, order)
+    raw_attempts = []
+    reasoning_attempts = []
+    for attempt in range(3):
+        # retries append a format-rescue nudge: on degenerate (repetitive) answers the judge
+        # imitates the repetition and never emits JSON; scoring semantics are unchanged
+        content = prompt if attempt == 0 else prompt + RETRY_NUDGE
+        try:
+            response = await request_with_rate_limit(client, content)
         except (APIConnectionError, APITimeoutError) as err:
             # A network failure has no HTTP status code, so handle it before generic HTTP errors.
             logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
@@ -344,10 +363,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 logger.error("OPENROUTER out of credits ({}), aborting", status_code)
                 raise
             if status_code in TRANSIENT_CODES:
-                if status_code == 429:
-                    retry_seconds = err.body["metadata"]["retry_after_seconds"]
-                else:
-                    retry_seconds = 1.5 * (attempt + 1)
+                retry_seconds = 1.5 * (attempt + 1)
                 logger.warning(
                     "transient {} attempt={}/3 retry_seconds={}",
                     status_code,
