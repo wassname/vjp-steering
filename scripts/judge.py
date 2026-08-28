@@ -345,7 +345,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 raise
             if status_code in TRANSIENT_CODES:
                 if status_code == 429:
-                    retry_seconds = err.body["error"]["metadata"]["retry_after_seconds"]
+                    retry_seconds = err.body["metadata"]["retry_after_seconds"]
                 else:
                     retry_seconds = 1.5 * (attempt + 1)
                 logger.warning(
