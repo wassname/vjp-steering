@@ -128,3 +128,9 @@ The isolated replacement `ap-F3YSFaOp1hNKAwpaNFwEEs` remains active with `walk_i
 ## 03:34 monitor
 
 The isolated replacement remains active. MLP-up seed 2 adopted grid 52, C=12.699208415745595. Its -C arm had 53 unfinished, 24 role leaks, and 36 repeated outputs of 100; unfinished and repetition crossed the health gate. It started grid 53, C=14.25437949024543. MLP-up seed 0 remains complete. No remote failure appears. The displayed -C output at seed 2 grid 52 repeats the same sentence and leaks `user`/`assistant` markers, independently matching the aggregate health failures. J-word seed 0 is still not certified complete in this log tail.
+
+## 03:48 completion and judge failure
+
+`just modal-pull` recovered four `COMPLETE` certificates for `J_word` seed 0 and MLP-up seeds 0, 1, and 2. Each declares the required `2^(n/6), n=-30..84` grid. Their rung artifacts carry `walk_id=validity-20260828-r2`; the isolated manifest contains 185 artifacts and excludes manual rows. MLP-up seed 2 completed with its -C boundary at grid 52, C=12.699208415745595, after grid 53 had 61 unfinished, 43 role leaks, and 36 repetitions of 100.
+
+Pueue task 5 attempted the fresh-only API judge. It constructed `required=34400`, `cached=1020`, `missing=33380` cells, then stopped before an API request with `KeyError: 'OPENROUTER_API_KEY'`. This is a local credential-delivery failure, not a Modal failure. The full audit is `docs/slop/audit/20260828_task_5_api_judge_credential_failure.md`. No corrected manual, judge, export, table, or plot result is claimed.

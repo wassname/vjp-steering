@@ -74,3 +74,11 @@ Evidence: the Modal app `ap-c8wV0flWrodaoxL0nChKOu` stopped with MLP-up seed 0 a
 Interpretation (Pi): the stopped rerun adopted manual artifacts by matching method, seed, dose, and configuration. This makes the certificates unable to establish a single fresh validity run. The two C=4 MLP-up seed-0 artifacts also differ in generated text and health statistics, so choosing one would add an unrecorded selection rule. The existing manual rows are invalid for the requested corrected comparison.
 
 Action: walk artifacts now carry a required `walk_id`; a walk adopts only artifacts with its exact identifier. The four requested walks will restart under `validity-20260828-r2` before any API judge or public artifact update.
+
+## 2026-08-28 -- Isolated sixth-octave walks complete; judge blocked before API access
+
+Evidence: `just modal-pull` recovered four `COMPLETE` certificates: [J-word seed 0](outputs/walk_J_word_s0.json) and [MLP-up seeds 0, 1, and 2](outputs/walk_vjp_mlp_up_shrink_s0.json). Each records the `2^(n/6), n=-30..84` grid. The first rung artifacts record `walk_id: validity-20260828-r2`, for example [J-word C=0.03125](outputs/run_20260828T015026_J_word_s0_c0p03125/J_word.json). MLP-up's three seed certificates place the -C boundary at grid 52, C=12.699208415745595; J-word's certificate places it at grid 21, C=0.3535533905932738.
+
+The fresh-only manifest contains 185 runs and 37,000 demo sides. [Pueue task 5 audit](docs/slop/audit/20260828_task_5_api_judge_credential_failure.md) quotes its complete log: it computed 34,400 required content cells, with 33,380 missing, then failed at `KeyError: 'OPENROUTER_API_KEY'` before an API request or a judge output.
+
+Interpretation (Pi): the fresh walks satisfy the requested artifact provenance and dose-grid conditions. There is no corrected behavioral result yet because the API worker lacks its scoped credential. Manual rows remain invalid and must not enter the export. Once the credential is delivered safely to the worker, rerun the exact fresh-only judge, require `JUDGE_COMPLETE missing=0`, inspect raw A/B records, then export and render the replacement public artifacts.
