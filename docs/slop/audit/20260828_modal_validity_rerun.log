@@ -47,3 +47,7 @@ The app is still running. MLP-up seed 1 completed C=0.7071067811865476 with zero
 ## 00:54 monitor
 
 The app is still running. MLP-up seed 1 is extracting C=1.7817974362806785. Its prior observed health checks passed. The latest output is generation progress for this rung, so it has not reached a new health-gate result. No remote error or `WALK_COMPLETE` line appears.
+
+## 01:04 monitor
+
+The app is still running. MLP-up seed 2 completed C=5.656854249492381: bare and +C had zero unfinished, role-leak, and repetition counts; -C had one unfinished and one repeated output, below the stated 25% health thresholds. It then started C=6.3496042078727974. No remote error or `WALK_COMPLETE` line appears.
