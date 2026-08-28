@@ -27,3 +27,4 @@
 ## Log
 
 - 2026-08-28: Initial code read finds `scripts/run_modal.py` defaults `refine_around_cstar=False`; new MLP-up and J-word publication rows came from `descending`, not `walk`.
+- 2026-08-28: Audit found unequal sampling. Started Modal app `ap-c8wV0flWrodaoxL0nChKOu` for a sixth-octave `walk` rerun of J-word seed 0 and MLP-up seeds 0, 1, and 2. [Launch evidence](../audit/20260828_modal_validity_rerun.log).

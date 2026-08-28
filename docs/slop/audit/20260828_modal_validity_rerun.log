@@ -1,0 +1,23 @@
+# Modal validity rerun launch log
+
+Prepared by PI on 2026-08-28.
+
+Command:
+
+```sh
+just modal-walks --methods J_word,vjp_mlp_up_shrink --seeds 0,1,2
+```
+
+Modal application: `ap-c8wV0flWrodaoxL0nChKOu`
+
+The launcher printed this application URL:
+
+> `https://modal.com/apps/wassname/main/ap-c8wV0flWrodaoxL0nChKOu`
+
+The launcher exceeded the local five-minute tool limit while remote functions continued. Modal logs observed after that limit include:
+
+> `RESULT	vjp_mlp_up_shrink	1	0.035076939009667914	[]	[]	[]`
+>
+> `run grid=2 C=0.03937253280921478 attempt=1/3 command=/.uv/.venv/bin/python /repo/scripts/walk.py vjp_mlp_up_shrink --seed 1 --coefficient 0.03937253280921478 ...`
+
+This shows that the remote run is executing the requested sixth-octave grid, including C=0.035076939009667914 and C=0.03937253280921478. Completion remains unverified. The scheduled monitor `FoToe3sDFr` owns follow-up.
