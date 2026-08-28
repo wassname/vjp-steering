@@ -11,6 +11,8 @@ from pathlib import Path
 from loguru import logger
 from openai import APIConnectionError, APITimeoutError, AsyncOpenAI, AuthenticationError
 
+import endpoint_tail_manifest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
@@ -85,6 +87,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--walks", action="store_true")
     parser.add_argument("--walk-id")
     parser.add_argument("--run", action="append", default=[])
+    parser.add_argument("--endpoint-tail-manifest", type=Path)
     return parser.parse_args()
 
 
@@ -445,7 +448,12 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
 
 def main() -> None:
     args = parse_args()
-    rows = manifest(args.run, args.walks, args.walk_id)
+    assert sum((bool(args.run), args.walks, args.walk_id is not None, args.endpoint_tail_manifest is not None)) <= 1
+    rows = (
+        endpoint_tail_manifest.judge_rows(args.endpoint_tail_manifest)
+        if args.endpoint_tail_manifest is not None
+        else manifest(args.run, args.walks, args.walk_id)
+    )
     cells = required_cells(rows)
     cached = cached_keys()
     todo = [cell for key, cell in cells.items() if key not in cached]

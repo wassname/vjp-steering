@@ -14,6 +14,15 @@ smoke:
 walk-self-test:
 	uv run python scripts/continue_side.py --self-test
 
+endpoint-tail-self-test:
+	uv run python scripts/endpoint_tail_manifest.py --self-test
+
+endpoint-tail-stage-manifest:
+	uv run python scripts/endpoint_tail_manifest.py --allow-missing-continuations
+
+endpoint-tail-manifest:
+	uv run python scripts/endpoint_tail_manifest.py
+
 walk method seed:
 	HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True uv run python scripts/walk.py {{method}} --seed {{seed}} --walk
 
