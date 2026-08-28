@@ -55,3 +55,7 @@ The app is still running. MLP-up seed 2 completed C=5.656854249492381: bare and 
 ## 01:14 monitor
 
 The app is still running. MLP-up seed 2 completed grid 50 at C=10.079368399158986. The bare and +C arms had zero health failures. The -C arm had 21 unfinished, 22 role-leak, and 13 repeated outputs, each below the stated 25% gate for 100 answers. It adopted this rung and started grid 51, C=11.313708498984761. No remote error or `WALK_COMPLETE` line appears.
+
+## 01:22 monitor
+
+MLP-up seed 2 completed: `WALK_COMPLETE` reports a -C breakdown boundary at grid 52, C=12.699208415745595, after its next rung, C=14.25437949024543, had `unfinished=61`, `role_leaks=43`, and `repeated=36` of 100. The certificate is `/repo/outputs/walk_vjp_mlp_up_shrink_s2.json`. MLP-up seed 1 continues at C=12.699208415745595. No remote function failed. The other required certificates remain pending.
