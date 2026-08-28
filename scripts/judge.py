@@ -287,9 +287,9 @@ Response B:
 
 
 TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
-PARALLEL = 6  # user requested --parallel N=6
+PARALLEL = 2
 PROVIDER = {
-    "order": ["deepinfra"],
+    "order": ["mancer"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
     "require_parameters": True,
@@ -327,8 +327,9 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             # A network failure has no HTTP status code, so handle it before generic HTTP errors.
             logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
             if attempt == 2:
-                logger.error("skipping {} cell {} after 3 timeouts", type(err).__name__, cache_key(row, order, pass_index))
-                return None
+                raise RuntimeError(
+                    f"{type(err).__name__} after 3 attempts for {cache_key(row, order, pass_index)}"
+                ) from err
             await asyncio.sleep(1.5 * (attempt + 1))
             continue
         except Exception as err:
@@ -342,8 +343,9 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             if status_code in TRANSIENT_CODES:
                 logger.warning("transient {} attempt={}/3", status_code, attempt + 1)
                 if attempt == 2:
-                    logger.error("skipping transient-exhausted cell {}", cache_key(row, order, pass_index))
-                    return None
+                    raise RuntimeError(
+                        f"transient {status_code} after 3 attempts for {cache_key(row, order, pass_index)}"
+                    ) from err
                 await asyncio.sleep(1.5 * (attempt + 1))
                 continue
             raise
@@ -352,8 +354,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             # per ml-debug llm_as_judge: don't let one bad demo kill the 39k batch
             logger.warning("empty choices cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
             if attempt == 2:
-                logger.error("skipping degenerate cell {} after 3 empty", cache_key(row, order, pass_index))
-                return None
+                raise RuntimeError(f"empty choices after 3 attempts for {cache_key(row, order, pass_index)}")
             continue
         raw = response.choices[0].message.content
         reasoning = getattr(response.choices[0].message, "reasoning", None)
@@ -362,8 +363,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
         if raw is None:
             logger.warning("empty content cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
             if attempt == 2:
-                logger.error("skipping degenerate cell {} after 3 empty contents", cache_key(row, order, pass_index))
-                return None
+                raise RuntimeError(f"empty content after 3 attempts for {cache_key(row, order, pass_index)}")
             continue
         try:
             judgment = json.loads(raw)
@@ -397,8 +397,9 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             }
         logger.info("retry invalid JSON cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
         if attempt == 2:
-            logger.error("skipping invalid JSON cell {} after 3 tries", cache_key(row, order, pass_index))
-            return None
+            raise RuntimeError(
+                f"invalid JSON after 3 attempts for {cache_key(row, order, pass_index)}: {raw!r}"
+            )
     raise RuntimeError(f"judge failed contract: {row['run']}/{row['side']}/{row['vignette']}/{order}/{pass_index}")
 
 
@@ -420,10 +421,6 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
         nonlocal done
         async with semaphore:
             record = await judge_one(client, *cell)
-        if record is None:
-            async with lock:
-                done += 1
-            return
         async with lock:
             with CACHE.open("a") as file:
                 file.write(json.dumps(record, sort_keys=True) + "\n")
@@ -455,12 +452,8 @@ def main() -> None:
     if todo:
         asyncio.run(refresh(todo))
         remaining = set(cells) - cached_keys()
-        if remaining:
-            # degenerate (repetitive) demos that the judge imitates and never emits JSON
-            # were skipped above (return None). Don't kill the 76k batch for 14 of them.
-            logger.warning("JUDGE_INCOMPLETE remaining={} (degenerate skipped)", len(remaining))
-        else:
-            logger.info("JUDGE_COMPLETE required={} missing=0", len(cells))
+        assert not remaining, f"JUDGE_INCOMPLETE missing={len(remaining)}"
+        logger.info("JUDGE_COMPLETE required={} missing=0", len(cells))
 
 
 if __name__ == "__main__":

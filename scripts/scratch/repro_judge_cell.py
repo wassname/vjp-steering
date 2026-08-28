@@ -11,9 +11,8 @@ import os
 
 
 async def main() -> None:
-    rows = judge.manifest([], walks=True)
-    cells = judge.required_cells(rows)
-    row, order, pass_index = cells["d1f63507328ae816d47e2e871e1013e47305d112ad43a93684fad7eb65697e9d"]
+    rows = judge.manifest([], walk_id="validity-20260828-r2")
+    row, order, pass_index = next(iter(judge.required_cells(rows).values()))
     client = AsyncOpenAI(
         api_key=os.environ["OPENROUTER_API_KEY"],
         base_url="https://openrouter.ai/api/v1",
@@ -37,11 +36,7 @@ async def main() -> None:
                 extra_body={
                     "min_p": 0.1,
                     "reasoning": {"enabled": False},
-                    "provider": {
-                        "quantizations": ["fp8", "int8", "bf16", "fp16"],
-                        "require_parameters": True,
-                        "ignore": ["AtlasCloud", "DeepInfra"],
-                    },
+                    "provider": judge.PROVIDER,
                 },
             )
         except Exception as exc:
@@ -55,6 +50,7 @@ async def main() -> None:
         except Exception:
             pass
         print(f"--- attempt {attempt} temp={temp} finish={response.choices[0].finish_reason} len={len(raw or '')} VALID={ok}")
+        print("error:", getattr(response, "error", None))
         print(repr(raw)[:400])
     await client.close()
 
