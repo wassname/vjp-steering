@@ -18,6 +18,7 @@ REPO = Path(__file__).resolve().parents[1]
 MODEL = "Qwen/Qwen3.5-4B"
 METHODS = ("J_word", "vjp_delta", "vjp_mlp_up_shrink", "mean_diff", "pca")
 SEEDS = (1, 2, 0)
+JUDGE_CHUNK_CELLS = 250
 
 image = (
     modal.Image.debian_slim(python_version="3.13")
@@ -127,23 +128,35 @@ def continuations(continuation_id: str) -> None:
     timeout=24 * 60 * 60,
 )
 def judge_endpoint_tail() -> str:
-    """Build and judge the complete endpoint-tail manifest on the Modal Volume."""
+    """Judge the endpoint-tail manifest in committed cache checkpoints."""
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
     if not Path("/repo/outputs").exists():
         os.symlink("/cache/outputs", "/repo/outputs")
     try:
         subprocess.run([sys.executable, "scripts/endpoint_tail_manifest.py"], cwd="/repo", check=True)
-        subprocess.run(
-            [
-                sys.executable, "scripts/judge.py", "--endpoint-tail-manifest",
-                "outputs/endpoint_tail_manifest.json", "--refresh",
-            ],
-            cwd="/repo",
-            check=True,
-        )
+        while True:
+            completed = subprocess.run(
+                [
+                    sys.executable, "scripts/judge.py", "--endpoint-tail-manifest",
+                    "outputs/endpoint_tail_manifest.json", "--refresh", "--max-cells",
+                    str(JUDGE_CHUNK_CELLS),
+                ],
+                cwd="/repo",
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            sys.stdout.write(completed.stdout)
+            sys.stderr.write(completed.stderr)
+            result = json.loads(completed.stdout.splitlines()[-1])
+            assert result["status"] in {"JUDGE_CHECKPOINT", "JUDGE_COMPLETE"}
+            cache.commit()
+            if result["status"] == "JUDGE_COMPLETE":
+                return json.dumps(result, sort_keys=True)
+            assert result["processed"] == JUDGE_CHUNK_CELLS
+            assert result["remaining"] > 0
     finally:
         cache.commit()
-    return "ENDPOINT_TAIL_JUDGE_COMPLETE"
 
 
 @app.local_entrypoint()

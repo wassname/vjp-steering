@@ -88,7 +88,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--walk-id")
     parser.add_argument("--run", action="append", default=[])
     parser.add_argument("--endpoint-tail-manifest", type=Path)
-    return parser.parse_args()
+    parser.add_argument("--max-cells", type=int)
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.max_cells is not None:
+        assert args.max_cells > 0
+    return args
 
 
 def sha(text: str) -> str:
@@ -234,6 +239,13 @@ def required_cells(rows: list[dict]) -> dict[str, tuple[dict, str, int]]:
             for pass_index in range(2):
                 cells.setdefault(cache_key(row, order, pass_index), (row, order, pass_index))
     return cells
+
+
+def select_missing_cells(
+    cells: dict[str, tuple[dict, str, int]], cached: set[str], max_cells: int | None,
+) -> tuple[list[tuple[dict, str, int]], int]:
+    missing = [cell for key, cell in cells.items() if key not in cached]
+    return missing if max_cells is None else missing[:max_cells], len(missing)
 
 
 def cached_keys() -> set[str]:
@@ -462,8 +474,24 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     await client.close()
 
 
+def self_test() -> None:
+    cells = {
+        key: ({"cell": key}, "AB", 0)
+        for key in ("key-0", "key-1", "key-2", "key-3", "key-4")
+    }
+    selected, missing = select_missing_cells(cells, {"key-1"}, max_cells=2)
+    expected_missing = [cell for key, cell in cells.items() if key != "key-1"]
+    assert missing == len(expected_missing)
+    assert selected == expected_missing[:2]
+    assert all(cell != cells["key-1"] for cell in selected)
+    print("JUDGE_SELF_TEST_PASS cached=key-1 missing=4 selected=key-0,key-2")
+
+
 def main() -> None:
     args = parse_args()
+    if args.self_test:
+        self_test()
+        return
     assert sum((bool(args.run), args.walks, args.walk_id is not None, args.endpoint_tail_manifest is not None)) <= 1
     rows = (
         endpoint_tail_manifest.judge_rows(args.endpoint_tail_manifest)
@@ -472,21 +500,27 @@ def main() -> None:
     )
     cells = required_cells(rows)
     cached = cached_keys()
-    todo = [cell for key, cell in cells.items() if key not in cached]
+    todo, missing = select_missing_cells(cells, cached, args.max_cells)
     logger.info(
         "CACHE_CHECK required={} cached={} missing={} API_calls={}",
         len(cells),
-        len(cells) - len(todo),
-        len(todo),
+        len(cells) - missing,
+        missing,
         len(todo) if args.refresh else 0,
     )
     if todo and not args.refresh:
         raise SystemExit("missing judge cells; rerun with --refresh")
     if todo:
         asyncio.run(refresh(todo))
-        remaining = set(cells) - cached_keys()
-        assert not remaining, f"JUDGE_INCOMPLETE missing={len(remaining)}"
-        logger.info("JUDGE_COMPLETE required={} missing=0", len(cells))
+    remaining = sum(key not in cached_keys() for key in cells)
+    result = {
+        "status": "JUDGE_COMPLETE" if remaining == 0 else "JUDGE_CHECKPOINT",
+        "required": len(cells),
+        "processed": len(todo),
+        "remaining": remaining,
+    }
+    logger.info("{} required={} processed={} remaining={}", *result.values())
+    print(json.dumps(result, sort_keys=True))
 
 
 if __name__ == "__main__":

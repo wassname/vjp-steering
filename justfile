@@ -29,6 +29,9 @@ walk method seed:
 walk-dry method seed:
 	uv run python scripts/walk.py {{method}} --seed {{seed}} --walk --dry-run
 
+judge-self-test:
+	uv run python scripts/judge.py --self-test
+
 judge-dry:
 	uv run python scripts/judge.py
 
