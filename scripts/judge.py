@@ -289,7 +289,7 @@ Response B:
 TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
 PARALLEL = 6  # user requested --parallel N=6
 PROVIDER = {
-    "order": ["parasail"],
+    "order": ["deepinfra"],
     "allow_fallbacks": False,
     "quantizations": ["fp8"],
     "require_parameters": True,
