@@ -11,17 +11,20 @@ smoke:
 	done
 	uv run python scripts/export.py --self-test
 
+walk-self-test:
+	uv run python scripts/walk.py J_word --self-test
+
 walk method seed:
 	HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True uv run python scripts/walk.py {{method}} --seed {{seed}} --walk
-
-walk-dry method seed:
-	uv run python scripts/walk.py {{method}} --seed {{seed}} --walk --dry-run
 
 judge-dry:
 	uv run python scripts/judge.py
 
-judge *args:
-	uv run python scripts/judge.py --refresh {{args}}
+judge-boundary walk_id:
+	uv run python scripts/judge.py --walk-id {{walk_id}} --refresh
+
+export-boundary walk_id:
+	uv run python scripts/export.py --walk-id {{walk_id}}
 
 judge-walks-dry:
 	uv run python scripts/judge.py --walks
@@ -37,17 +40,6 @@ judge-cell-repro:
 
 export:
 	uv run python scripts/export.py
-
-queue-walks:
-	#!/usr/bin/env bash
-	set -euo pipefail
-	for seed in 1 2 0; do
-		for method in vjp_delta mean_diff pca; do
-			pueue add --group default --priority=-9 -l "why: complete the public all-100 $method seed $seed dose walk; resolve: walk certificate is COMPLETE after either direction crosses two breakdowns plus two rungs" -w "$PWD" -- just walk "$method" "$seed"
-		done
-	done
-
-sweeps: queue-walks
 
 # the same nine walks on Modal, nine GPUs at once instead of one card in series
 modal-smoke:
@@ -67,9 +59,6 @@ modal-follow app:
 
 modal-pull:
 	uv run modal volume get --force jsteer-pub-cache outputs .
-
-queue-judge:
-	pueue add --group api -l "why: judge every arm in the nine completed public walks; resolve: all content cells are cached and judge reports zero missing" -w "$PWD" -- just judge-walks
 
 results:
 	uv run python -m vjp_steering.results
@@ -93,4 +82,4 @@ notebook-smoke:
 	VJP_STEER_BATCH_SIZE=2 VJP_STEER_MAX_LENGTH=128 VJP_STEER_TOKENS=8 VJP_STEER_RUNGS=11 \
 	uv run jupytext --to ipynb --execute -o outputs/demo_smoke.ipynb nbs/demo.py
 
-check: smoke results notebook-smoke notebook
+check: walk-self-test smoke results notebook-smoke notebook

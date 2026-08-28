@@ -8,16 +8,13 @@ import re
 from pathlib import Path
 from statistics import mean
 
-from judge import MODEL, RUBRIC, artifact_paths, cache_key, demo_rows, valid, validity_walk_rungs
+from judge import cache_key, demo_rows, valid, validity_walk_rungs
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
 RESULTS = ROOT / "data/results.csv"
 SCENARIOS = ROOT / "data/judged_scenarios.csv"
-RANDOM_RESULTS = ROOT / "data/random_results.csv"
-RANDOM_SCENARIOS = ROOT / "data/random_scenarios.csv"
-RANDOM_PROVENANCE = ROOT / "data/random_provenance.json"
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
@@ -75,13 +72,6 @@ def judge_diagnostics(cells: list[tuple[float, float, float]]) -> tuple[bool, fl
     return by_order[0] * by_order[1] < 0, max(cell[0] for cell in cells) - min(cell[0] for cell in cells)
 
 
-def artifact_health(artifact: dict, side: str) -> dict:
-    return {
-        "breakdown_reasons": artifact["breakdown_reasons"][side],
-        "post_boundary": False,
-    }
-
-
 def batch_size(run: Path, artifact: dict) -> int:
     if "batch_size" in artifact:
         return artifact["batch_size"]
@@ -96,38 +86,10 @@ def cohort_hash() -> str:
     return hashlib.sha256(json.dumps(sorted(prompts.items())).encode()).hexdigest()
 
 
-def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
-    provenance = json.loads(RANDOM_PROVENANCE.read_text())
-    assert provenance["judge_model"] == MODEL and provenance["rubric"] == RUBRIC
-    assert provenance["data_hash"] == data_hash
-    assert provenance["results_sha256"] == hashlib.sha256(RANDOM_RESULTS.read_bytes()).hexdigest()
-    assert provenance["scenarios_sha256"] == hashlib.sha256(RANDOM_SCENARIOS.read_bytes()).hexdigest()
-    with RANDOM_RESULTS.open(newline="") as file:
-        rows = list(csv.DictReader(file))
-    with RANDOM_SCENARIOS.open(newline="") as file:
-        scenarios = list(csv.DictReader(file))
-    assert len({row["seed"] for row in rows}) == 10
-    assert set(provenance["runs"]) == {row["source_run"] for row in rows}
-    expected = {
-        "model": "Qwen/Qwen3.5-4B",
-        "tokenizer": "Qwen/Qwen3.5-4B",
-        "prompt_template": "Qwen3 chat",
-        "data_hash": data_hash,
-        "eval_cohort": "sycophancy_all100-v10",
-        "layers": "6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
-        "batch_size": "4",
-    }
-    for row in rows:
-        assert all(row[key] == value for key, value in expected.items())
-    return rows, scenarios
-
-
 def export(run_names: list[str], walk_id: str | None = None) -> None:
-    assert bool(run_names) != (walk_id is not None)
-    validity_entries = validity_walk_rungs(walk_id) if walk_id else []
-    paths = [path for path, _ in validity_entries] if validity_entries else artifact_paths(run_names)
-    if run_names:
-        assert {path.parent.name for path in paths} == set(run_names)
+    assert walk_id and not run_names
+    validity_entries = validity_walk_rungs(walk_id)
+    paths = [path for path, _ in validity_entries]
     rung_health = {path: rung for path, rung in validity_entries}
     demos = {path: demo_rows(path) for path in paths}
     keys = {
@@ -171,41 +133,40 @@ def export(run_names: list[str], walk_id: str | None = None) -> None:
                 "order_reversal": order_reversal,
                 "score_spread": score_spread,
             })
-        for side in ("+C", "-C"):
-            selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
-            steered_off_axis = mean(row["steered_off_axis"] for row in selected)
-            health = rung_health[artifact_path][side] if walk_id else artifact_health(artifact, side)
-            result_rows.append({
-                "model": artifact["model"],
-                "tokenizer": artifact["model"],
-                "prompt_template": "Qwen3 chat",
-                "data_hash": data_hash,
-                "eval_cohort": "sycophancy_all100-v10",
-                "layers": ",".join(map(str, artifact["layers"])),
-                "batch_size": batch_size(run, artifact),
-                "date": re.search(r"run_(\d{8})", run.name).group(1),
-                "source_run": run.name,
-                "method": artifact["method"],
-                "seed": artifact["seed"],
-                "C": artifact["fixed_coefficient_magnitude"],
-                "side": side,
-                "effect": mean(row["effect"] for row in selected),
-                "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in selected),
-                "admissible": (
-                    not health["breakdown_reasons"]
-                    and not health["post_boundary"]
-                    and steered_off_axis <= 1.5
-                ),
-            })
+        if walk_id and not rung_health[artifact_path]["endpoint"]:
+            continue
+        side = artifact["steered_side"]
+        selected = [row for row in scenario_rows if row["source_run"] == run.name and row["side"] == side]
+        assert selected
+        steered_off_axis = mean(row["steered_off_axis"] for row in selected)
+        health = rung_health[artifact_path]
+        assert not health.get("breakdown_reasons", [])
+        result_rows.append({
+            "model": artifact["model"],
+            "tokenizer": artifact["model"],
+            "prompt_template": "Qwen3 chat",
+            "data_hash": data_hash,
+            "eval_cohort": "sycophancy_all100-v10",
+            "layers": ",".join(map(str, artifact["layers"])),
+            "batch_size": batch_size(run, artifact),
+            "date": re.search(r"run_(\d{8})", run.name).group(1),
+            "source_run": run.name,
+            "method": artifact["method"],
+            "seed": artifact["seed"],
+            "C": artifact["fixed_coefficient_magnitude"],
+            "side": side,
+            "effect": mean(row["effect"] for row in selected),
+            "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in selected),
+            "admissible": steered_off_axis <= 1.5,
+        })
     with RESULTS.open(newline="") as file:
         existing_result_rows = list(csv.DictReader(file))
     with SCENARIOS.open(newline="") as file:
         existing_scenario_rows = list(csv.DictReader(file))
-    if walk_id:
-        replaced_methods = {"J_word", "vjp_mlp_up_shrink"}
-        existing_result_rows = [row for row in existing_result_rows if row["method"] not in replaced_methods]
-        existing_scenario_rows = [row for row in existing_scenario_rows if row["method"] not in replaced_methods]
-    existing_runs = {row["source_run"] for row in existing_result_rows}
+    # Every displayed method must have the same boundary-tail provenance.
+    existing_result_rows = []
+    existing_scenario_rows = []
+    existing_runs = set()
     assert not existing_runs & {row["source_run"] for row in result_rows}
     with RESULTS.open("w", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=FIELDS, lineterminator="\n")
