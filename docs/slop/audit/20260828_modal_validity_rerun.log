@@ -35,3 +35,7 @@ All observed health values satisfy the walk's stated gate. No remote error or co
 ## 00:24 monitor
 
 The app is still running. MLP-up seed 1 completed C=0.15749013123685915 with zero unfinished, role-leak, and repetition counts for both steered sides. It then started the next sixth-octave rung, C=0.1767766952966369. No error or `WALK_COMPLETE` line appears in the latest log.
+
+## 00:34 monitor
+
+The app is still running. MLP-up seed 2 completed C=0.3535533905932738 with no health-gate reason, then started C=0.3968502629920499. MLP-up seed 1 has reached extraction at C=0.3535533905932738. No remote error or `WALK_COMPLETE` line appears.
