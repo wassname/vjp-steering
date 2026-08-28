@@ -93,3 +93,7 @@ The isolated rerun remains active. MLP-up seed 0 completed C=0.15749013123685915
 ## 02:24 monitor
 
 The isolated rerun remains active. MLP-up seed 2 completed C=0.25 with zero unfinished, role-leak, and repetition counts in bare, +C, and -C. It started C=0.28061551207734325. No remote failure appears.
+
+## 02:34 monitor
+
+The isolated rerun remains active. MLP-up seed 1 completed C=0.7937005259840998 with zero unfinished, role-leak, and repetition counts in all three arms. It started C=0.8908987181403393. No remote failure appears.
