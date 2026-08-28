@@ -66,3 +66,11 @@ Evidence: [the saved judge log](docs/slop/audit/20260827_task_139_mlp_up_judge.l
 Interpretation (Pi): the MLP-up method has a complete three-seed model-judge measurement with a positive score under the existing per-direction dose selection rule. My read is that the asymmetric directions need an independent judge before a stronger behavioural conclusion, because the selected +C and -C endpoints come from different doses and the current measurements use one judge model.
 
 The table and plot now include the two requested methods alongside the unchanged baselines and random control.
+
+## 2026-08-28 -- Invalidated Modal validity rerun
+
+Evidence: the Modal app `ap-c8wV0flWrodaoxL0nChKOu` stopped with MLP-up seed 0 at C=3.563594872561357. Its complete server log ends `AssertionError: duplicate rung: method='vjp_mlp_up_shrink' seed=0 coefficient=4.0`. The pulled certificate [outputs/walk_vjp_mlp_up_shrink_s0.json](outputs/walk_vjp_mlp_up_shrink_s0.json) has `status: RUNNING`. The other pulled certificates include run directories dated 2026-08-27, such as the first J-word rung `outputs/run_20260827T085324_J_word_s0_c0p03125`.
+
+Interpretation (Pi): the stopped rerun adopted manual artifacts by matching method, seed, dose, and configuration. This makes the certificates unable to establish a single fresh validity run. The two C=4 MLP-up seed-0 artifacts also differ in generated text and health statistics, so choosing one would add an unrecorded selection rule. The existing manual rows are invalid for the requested corrected comparison.
+
+Action: walk artifacts now carry a required `walk_id`; a walk adopts only artifacts with its exact identifier. The four requested walks will restart under `validity-20260828-r2` before any API judge or public artifact update.

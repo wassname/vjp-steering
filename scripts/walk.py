@@ -51,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
+    parser.add_argument("--walk-id")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--device", default="cuda")
@@ -90,7 +91,7 @@ def semantic_reasons(reasons: list[str]) -> list[str]:
     return sorted({BREAKDOWN_REASON[reason] for reason in reasons if reason in BREAKDOWN_REASON})
 
 
-def adopted_rung(method: str, seed: int, coefficient: float, model: str, max_new_tokens: int) -> tuple[Path, dict] | None:
+def adopted_rung(method: str, seed: int, coefficient: float, model: str, max_new_tokens: int, walk_id: str) -> tuple[Path, dict] | None:
     cohort, cohort_sha256 = read_cohort(100)
     expected = [(row["scenario"], row["prompt"]) for row in cohort]
     matches = []
@@ -110,6 +111,8 @@ def adopted_rung(method: str, seed: int, coefficient: float, model: str, max_new
             # the cap sets answer length, which the judge scores as an off-axis confound,
             # so a rung from the old 4096 default is not the same measurement
             and artifact.get("max_new_tokens") == max_new_tokens
+            and "walk_id" in artifact
+            and artifact["walk_id"] == walk_id
         )
         if not identity:
             continue
@@ -131,6 +134,8 @@ def rung_command(args: argparse.Namespace, coefficient: float) -> list[str]:
         args.method,
         "--seed",
         str(args.seed),
+        "--walk-id",
+        args.walk_id,
         "--coefficient",
         str(coefficient),
         "--model",
@@ -192,6 +197,7 @@ def _dense_tail(c_lo: float, c_star: float) -> list[float]:
 
 
 def walk(args: argparse.Namespace) -> None:
+    assert args.walk_id
     if not args.refine_around_cstar:
         assert args.limit == 100 and args.status == "RESULT"
     # dose-based boundary (not index) so splice cannot invalidate stop rule
@@ -207,7 +213,7 @@ def walk(args: argparse.Namespace) -> None:
     grid_index = 0
     while grid_index < len(grid_list):
         coefficient = grid_list[grid_index]
-        adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens)
+        adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
         command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
             logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
@@ -242,7 +248,7 @@ def walk(args: argparse.Namespace) -> None:
                     wait_for_gpu()
                     continue
                 raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
-            adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens)
+            adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
             assert adopted is not None
         run_dir, artifact = adopted
         logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
@@ -584,6 +590,7 @@ def run_rung(args: argparse.Namespace) -> None:
     artifact = {
         "schema": "fixed_c_pair_v1",
         "status": args.status,
+        "walk_id": args.walk_id,
         "method": args.method,
         "seed": args.seed,
         "fixed_coefficient_magnitude": args.coefficient,

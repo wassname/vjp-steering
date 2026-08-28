@@ -57,6 +57,7 @@ def run(argv: list[str]) -> str:
 
 @app.local_entrypoint()
 def main(
+    walk_id: str,
     methods: str = ",".join(METHODS),
     seeds: str = ",".join(map(str, SEEDS)),
     batch_size: int = 32,
@@ -74,7 +75,7 @@ def main(
     extra = ["--refine-around-cstar"] if refine_around_cstar else []
     handles = {
         job: run.spawn([
-            job[0], "--seed", job[1], "--walk",
+            job[0], "--seed", job[1], "--walk", "--walk-id", walk_id,
             "--batch-size", str(batch_size),
             "--extract-batch-size", str(extract_batch_size),
             *extra,
