@@ -59,3 +59,7 @@ The app is still running. MLP-up seed 2 completed grid 50 at C=10.07936839915898
 ## 01:22 monitor
 
 MLP-up seed 2 completed: `WALK_COMPLETE` reports a -C breakdown boundary at grid 52, C=12.699208415745595, after its next rung, C=14.25437949024543, had `unfinished=61`, `role_leaks=43`, and `repeated=36` of 100. The certificate is `/repo/outputs/walk_vjp_mlp_up_shrink_s2.json`. MLP-up seed 1 continues at C=12.699208415745595. No remote function failed. The other required certificates remain pending.
+
+## 01:27 monitor
+
+MLP-up seed 1 completed: `WALK_COMPLETE` reports the same -C breakdown boundary, grid 52 at C=12.699208415745595. Its next rung, C=14.25437949024543, had `unfinished=59`, `role_leaks=39`, and `repeated=39` of 100. The certificate is `/repo/outputs/walk_vjp_mlp_up_shrink_s1.json`. No remote function failed. J-word seed 0 and MLP-up seed 0 remain pending.
