@@ -288,6 +288,12 @@ Response B:
 
 TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
 PARALLEL = 6  # user requested --parallel N=6
+PROVIDER = {
+    "order": ["parasail"],
+    "allow_fallbacks": False,
+    "quantizations": ["fp8"],
+    "require_parameters": True,
+}
 
 
 def _insufficient_credits(err: Exception, status_code: int | None) -> bool:
@@ -314,11 +320,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 extra_body={
                     "min_p": 0.1,
                     "reasoning": {"enabled": False},
-                    "provider": {
-                        "quantizations": ["fp8", "int8", "bf16", "fp16"],
-                        "require_parameters": True,
-                        "ignore": ["AtlasCloud", "DeepInfra"],
-                    },
+                    "provider": PROVIDER,
                 },
             )
         except (APIConnectionError, APITimeoutError) as err:
