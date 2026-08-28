@@ -73,3 +73,7 @@ The Modal application is stopped. `just modal-pull` retrieved `outputs/walk_vjp_
 The two matching C=4 artifacts are `outputs/run_20260827T085538_vjp_mlp_up_shrink_s0_c4p0` and `outputs/run_20260827T090901_vjp_mlp_up_shrink_s0_c4p0`. Both satisfy the old adoption identity but differ in `moral_demos.jsonl` and `demo_stats`. The other certificates also begin with 2026-08-27 artifact paths. Therefore the existing J-word and MLP-up seed-1/2 certificates do not prove a fresh rerun and are invalid for publication.
 
 Root cause: `adopted_rung` treated an old manual artifact as an interchangeable rung. Fix: every new artifact stores `walk_id`; a walk asserts one identifier and adopts only artifacts carrying the exact same identifier. A dry walk with `validity-20260828-r2` reported every sixth-octave rung missing, including C=4, which proves that it rejects the old artifacts. This is the required provenance isolation, not a selection fallback. Restart all four certificates, because all were contaminated by manual artifacts.
+
+## 01:50 restart
+
+Started Modal app `ap-F3YSFaOp1hNKAwpaNFwEEs` with `walk_id=validity-20260828-r2`, methods `J_word,vjp_mlp_up_shrink`, and seeds `0,1,2`. The first log lines show all four required walks executing grid 0 at C=0.03125 with the new identifier in their rung commands. No judge has been queued; it must wait for four `COMPLETE` certificates that carry this identifier.
