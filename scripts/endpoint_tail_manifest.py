@@ -426,10 +426,15 @@ def self_test() -> None:
     validate_manifest(manifest, allow_missing_continuations=True)
     historical_sides = {(row["method"], row["seed"], row["sign"]) for row in manifest["cells"] if row["source_kind"] == "historical_bracket"}
     continuation_sides = {(row["method"], row["seed"], row["sign"]) for row in manifest["cells"] if row["source_kind"] == "continuation_certificate"}
+    expected_continuation_sides = set(CONTINUATION_SIDES)
     assert historical_sides == set(HISTORICAL_SIDES)
-    assert continuation_sides == {("J_word", 0, "+C")}
-    assert len(manifest["missing_continuation_sides"]) == 9
-    assert manifest["status"] == "STAGED"
+    assert {("J_word", 0, "+C")} <= continuation_sides <= expected_continuation_sides
+    assert manifest["missing_continuation_sides"] == [
+        {"method": method, "seed": seed, "sign": sign}
+        for method, seed, sign in CONTINUATION_SIDES
+        if (method, seed, sign) not in continuation_sides
+    ]
+    assert manifest["status"] == ("COMPLETE" if continuation_sides == expected_continuation_sides else "STAGED")
     cohort_rows, _ = cohort()
     judgeable_rows = materialize_judge_rows(manifest, cohort_rows)
     assert len(judgeable_rows) == 100 * len(manifest["cells"])
@@ -445,7 +450,13 @@ def self_test() -> None:
             canonical_by_scenario = {row["scenario"]: row for row in canonical_bare(resolve(cell["canonical_bare_source"]), cohort_rows)[0]}
             assert judged["bare"] == canonical_by_scenario[scenario]["text"]
     assert historical_bare_differences > 0
-    print(f"ENDPOINT_TAIL_SELF_TEST_PASS historical_sides={len(historical_sides)} J_word_tail_cells={sum(row['method'] == 'J_word' and row['sign'] == '+C' for row in manifest['cells'])} historical_bare_differences={historical_bare_differences} missing_continuations=9")
+    print(
+        "ENDPOINT_TAIL_SELF_TEST_PASS "
+        f"historical_sides={len(historical_sides)} "
+        f"continuation_sides={len(continuation_sides)} "
+        f"historical_bare_differences={historical_bare_differences} "
+        f"missing_continuations={len(manifest['missing_continuation_sides'])}"
+    )
 
 
 def main() -> None:
