@@ -11,6 +11,9 @@ smoke:
 	done
 	uv run python scripts/export.py --self-test
 
+walk-self-test:
+	uv run python scripts/continue_side.py --self-test
+
 walk method seed:
 	HF_HUB_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True uv run python scripts/walk.py {{method}} --seed {{seed}} --walk
 
