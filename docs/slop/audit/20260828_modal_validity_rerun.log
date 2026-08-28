@@ -21,3 +21,13 @@ The launcher exceeded the local five-minute tool limit while remote functions co
 > `run grid=2 C=0.03937253280921478 attempt=1/3 command=/.uv/.venv/bin/python /repo/scripts/walk.py vjp_mlp_up_shrink --seed 1 --coefficient 0.03937253280921478 ...`
 
 This shows that the remote run is executing the requested sixth-octave grid, including C=0.035076939009667914 and C=0.03937253280921478. Completion remains unverified. The scheduled monitor `FoToe3sDFr` owns follow-up.
+
+## 00:14 monitor
+
+The app is still running. Latest observed rungs:
+
+- J-word seed 0 started C=0.19842513149602492.
+- MLP-up seed 2 completed C=0.07874506561842957 with `unfinished=0`, `role_leaks=0`, and `repeated=0` on both steered sides, then started C=0.08838834764831845.
+- MLP-up seed 0 started C=0.09921256574801246.
+
+All observed health values satisfy the walk's stated gate. No remote error or completion certificate appears in the latest Modal log.
