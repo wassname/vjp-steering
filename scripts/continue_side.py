@@ -23,7 +23,6 @@ import walk
 ROOT = Path(__file__).resolve().parents[1]
 PROCEDURE = "continuation_side_health_v1"
 HEALTH_RULE = "health_v1: unfinished<0.5, role_leak<0.25, repetition<0.25"
-SEARCH_START = 1.0
 SEARCH_MAX_STEPS = 16
 SEARCH_LOG_TOLERANCE = math.log(2.0) / 6.0
 TAIL_FRACTION = 0.66
@@ -83,7 +82,7 @@ def first_failure(rungs: list[dict], side: str) -> int:
     return index
 
 
-def reused_minus_endpoint(method: str, seed: int) -> dict:
+def reused_minus_endpoint(method: str, seed: int, require_missing_plus: bool = False) -> dict:
     certificate_path = ROOT / "outputs" / f"walk_{method}_s{seed}.json"
     certificate = json.loads(certificate_path.read_text())
     assert certificate["status"] == "COMPLETE"
@@ -110,6 +109,10 @@ def reused_minus_endpoint(method: str, seed: int) -> dict:
         (row["scenario"], row["prompt"]) for row in cohort
     ]
     assert source_artifact["cohort_sha256"] == cohort_sha256
+    if require_missing_plus:
+        assert not any(rung["+C"]["breakdown_reasons"] for rung in certificate["rungs"]), (
+            f"{method} seed {seed} already has a +C health failure; continuation is only for missing +C evidence"
+        )
     config_keys = (
         "model", "dtype", "layers", "target_layer", "n_pairs_requested", "n_pairs",
         "batch_size", "max_length", "max_new_tokens", "cohort_sha256", "cohort_size",
@@ -128,6 +131,7 @@ def reused_minus_endpoint(method: str, seed: int) -> dict:
         "provenance": {
             "historical_certificate": str(certificate_path.relative_to(ROOT)),
             "historical_certificate_sha256": hashlib.sha256(certificate_path.read_bytes()).hexdigest(),
+            "historical_shared_stop_plus_health_clean_C": certificate["rungs"][-1]["coefficient"],
             "reused_minus_health_clean_C_lo": lo_rung["coefficient"],
             "reused_minus_health_failing_C_hi": hi_rung["coefficient"],
             "reused_minus_health_clean_run": lo_rung["run_dir"],
@@ -223,7 +227,7 @@ def search_boundary(args: argparse.Namespace, endpoint: dict) -> dict:
         assert_monotone_health(trace)
         return entry
 
-    current = observe(SEARCH_START)
+    current = observe(endpoint["provenance"]["historical_shared_stop_plus_health_clean_C"])
     if current["health_clean"]:
         lo = current
         for _ in range(SEARCH_MAX_STEPS):
@@ -290,8 +294,8 @@ def write_certificate(args: argparse.Namespace, endpoint: dict, boundary: dict, 
 
 
 def walk_side(args: argparse.Namespace) -> None:
-    assert args.continuation_id and args.side
-    endpoint = reused_minus_endpoint(args.method, args.seed)
+    assert args.continuation_id and args.side == "+C"
+    endpoint = reused_minus_endpoint(args.method, args.seed, require_missing_plus=True)
     boundary = search_boundary(args, endpoint)
     rungs = []
     _, _, tail = old_grid_tail(boundary["C_lo"])
@@ -421,9 +425,18 @@ def self_test() -> None:
         {"-C": {"breakdown_reasons": []}},
         {"-C": {"breakdown_reasons": ["repetition"]}},
     ], "-C") == 1
-    endpoint = reused_minus_endpoint("vjp_delta", 0)
-    assert len(endpoint["bare"]) == 100
-    assert endpoint["provenance"]["reused_minus_health_clean_C_lo"] < endpoint["provenance"]["reused_minus_health_failing_C_hi"]
+    for method, seeds in {
+        "vjp_delta": (0, 1, 2),
+        "mean_diff": (0, 1, 2),
+        "pca": (0, 1, 2),
+        "J_word": (0,),
+        "vjp_mlp_up_shrink": (0, 1, 2),
+    }.items():
+        for seed in seeds:
+            endpoint = reused_minus_endpoint(method, seed)
+            assert len(endpoint["bare"]) == 100
+            assert endpoint["provenance"]["reused_minus_health_clean_C_lo"] < endpoint["provenance"]["reused_minus_health_failing_C_hi"]
+            assert endpoint["provenance"]["historical_shared_stop_plus_health_clean_C"] > 0
     try:
         assert_monotone_health([
             {"coefficient": 0.5, "health_clean": False},
