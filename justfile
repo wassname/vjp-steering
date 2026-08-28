@@ -63,7 +63,7 @@ modal-push:
 	uv run modal volume put -f jsteer-pub-cache /tmp/jsteer-push outputs
 
 modal-continue method seed continuation_id:
-	uv run modal run --detach scripts/run_modal.py::continuation {{method}} {{seed}} {{continuation_id}}
+	uv run modal run --detach scripts/run_modal.py::continuation --method {{method}} --seed {{seed}} --continuation-id {{continuation_id}}
 
 modal-walks *args:
 	uv run modal run --detach scripts/run_modal.py::main {{args}}
