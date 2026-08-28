@@ -11,7 +11,7 @@ Provenance: pueue task 5 ran in `/workspace/2026/jspace/j-steer_pub` after commi
 | Certificate recovery | Four complete fresh walks | All four certificates are `COMPLETE` and declare `grid: 2^(n/6), n=-30..84` | yes | `outputs/walk_J_word_s0.json`; `outputs/walk_vjp_mlp_up_shrink_s{0,1,2}.json` | none | The required walk artifacts exist locally. |
 | Fresh-artifact check | All judged artifacts carry the new identifier | Judge manifest accepted 185 runs | yes | `scripts/judge.py --walk-id validity-20260828-r2`: `manifest runs=185 demo_sides=37000` | Certificate-level `walk_id` field, currently checked per artifact | Manual artifacts are excluded from this task. |
 | Judge cache | Identify required content cells | `required=34400 cached=1020 missing=33380` | yes | task 5 log | judge scores for 33,380 cells | No behavioral score exists for the corrected artifacts. |
-| API execution | Start OpenRouter requests | Crashed before the first request | no | `KeyError: 'OPENROUTER_API_KEY'` | provider call and raw A/B judgments | Export and public results must wait. |
+| API execution | Start OpenRouter requests through `just` | Crashed before the first request | no | Task 5 used `uv run python scripts/judge.py`, bypassing `justfile`'s `set dotenv-load` | provider call and raw A/B judgments | Requeue the exact manifest through `just judge`; export and public results wait for it. |
 
 ## Primary evidence
 
@@ -27,7 +27,7 @@ Provenance: pueue task 5 ran in `/workspace/2026/jspace/j-steer_pub` after commi
 
 epistemic context: primary stdout/stderr of the exact queued process; it records program state before any API request.
 
-This establishes that the missing variable stopped the process before evaluation. It does not establish an API, model, or judge-format fault.
+This establishes that the missing variable stopped the process before evaluation. The failed command was `uv run python scripts/judge.py --walk-id validity-20260828-r2 --refresh`; it bypassed `justfile` line 1, `set dotenv-load`, which is the established project credential loader. It does not establish an API, model, or judge-format fault.
 
 ### Corrected walk artifact — local result file
 
@@ -51,11 +51,11 @@ This establishes the provenance condition checked for every manifest artifact. I
 
 ### H1 [harness | Almost Certain | 95%]
 
-- Mechanism: the pueue daemon environment lacks the OpenRouter credential.
-- Evidence: `KeyError: 'OPENROUTER_API_KEY'` occurs before `asyncio.run(refresh(todo))` can create a client.
-- Contrary evidence: the task log does not inspect the daemon environment itself.
-- Discriminating test: run the same queued command only after the approved scoped credential is available to the daemon; a healthy run emits judge progress after `CACHE_CHECK`.
-- Fix/action: provision the existing approved scoped OpenRouter credential to the pueue API worker without placing a secret in command arguments, committed files, or logs.
+- Mechanism: task 5 bypassed the project `just` recipe, so `set dotenv-load` never loaded the existing ignored `.env` credential.
+- Evidence: `KeyError: 'OPENROUTER_API_KEY'` occurs before `asyncio.run(refresh(todo))`, while task 5's recorded command begins `uv run python scripts/judge.py` rather than `just judge`.
+- Contrary evidence: task 5 did not test the `just` recipe, so this remains a command-path diagnosis until the rerun reaches API progress.
+- Discriminating test: queue `just judge --walk-id validity-20260828-r2`; a healthy run emits judge progress after `CACHE_CHECK` without exposing a credential.
+- Fix/action: requeue the same manifest through `just judge`, not direct `uv run`.
 - Interpretability: no, for behavioral scores; yes, for the manifest count and missing-cell count.
 
 ### H2 [data | Highly Unlikely | 5%]
@@ -84,8 +84,8 @@ This establishes the provenance condition checked for every manifest artifact. I
 - Validity: the corrected walks are valid inputs for the intended evaluation, but the requested judged result is **inconclusive**. `P(judged-result-is-invalid)=1` because no judged result exists.
 - Highest-information clues: the exact `KeyError`; the full-log count `34 of 34`; and the fresh-only manifest count `185`.
 - Missing evidence, in order: approved scoped credential at the API worker; `JUDGE_COMPLETE missing=0`; complete raw A/B judgment records; exported CSV and rendered result artifacts.
-- Recommended sequence: provide the approved scoped credential through the project’s secret-delivery mechanism, restart task 5, wait for `JUDGE_COMPLETE missing=0`, then export with `--walk-id validity-20260828-r2`, inspect raw A/B records, and update public artifacts. Do not use or restore manual rows.
+- Recommended sequence: requeue through `just judge --walk-id validity-20260828-r2`, wait for `JUDGE_COMPLETE missing=0`, then export with `--walk-id validity-20260828-r2`, inspect raw A/B records, and update public artifacts. Do not use or restore manual rows.
 
-## Credential-delivery check
+## Correction
 
-The agent shell, `bash -lc`, `zsh -lc`, `mise exec`, and `direnv exec` each report that `OPENROUTER_API_KEY` is absent. The vault CLI `passage` is not installed. These checks did not read any secret file or print a credential. This rules out a pueue-only environment loss and leaves secure credential delivery as the first missing stage.
+The previous claim that the credential needed delivery to the pueue daemon was wrong. The project already supplies it through the ignored `.env` when `just` runs a recipe. The shell checks established only that direct `uv run` cannot see the key; they did not test the required `just` command path.

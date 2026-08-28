@@ -4,7 +4,7 @@
   - UAT: [the four certificate headers](../../../outputs/) state `COMPLETE` and `grid: 2^(n/6), n=-30..84`; their rung artifacts assert the exact walk ID.
 - [ ] goal: Judge every arm in the four fresh walks without reading manual artifacts.
   - UAT: [the pueue task log](../audit/20260828_task_5_api_judge_credential_failure.md) ends `JUDGE_COMPLETE required=34400 missing=0` for `--walk-id validity-20260828-r2`.
-  - Current blocker: pueue task 5, the agent shell, both login shells, mise, and direnv have no `OPENROUTER_API_KEY`; the audit documents the exact pre-request failure.
+  - Current blocker: task 5 bypassed `justfile`'s `set dotenv-load`. Requeue the same manifest through `just judge --walk-id validity-20260828-r2`.
 - [ ] goal: Export only fresh J-word and MLP-up rows, inspect complete raw A/B outputs, and update the public table and plot.
   - UAT: `data/results.csv`, `data/judged_scenarios.csv`, and `results/` contain only fresh source runs for these two methods; the audit links complete A/B raw records and the renderer succeeds.
 
