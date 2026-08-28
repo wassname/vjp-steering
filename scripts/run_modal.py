@@ -1,8 +1,8 @@
-"""Fan independent per-side coherence walks out over Modal GPUs, one container per (method, seed).
+"""Fan the nine dose walks out over Modal GPUs, one container per (method, seed).
 
 Run from the repo root (uv_sync reads ./pyproject.toml + ./uv.lock):
     modal run scripts/run_modal.py::smoke        # tiny random model, one rung, ~minutes
-    modal run --detach scripts/run_modal.py      # all real walks
+    modal run --detach scripts/run_modal.py      # the nine real walks
     modal volume get --force jsteer-pub-cache outputs .   # pull artifacts back
 """
 
@@ -62,6 +62,7 @@ def main(
     seeds: str = ",".join(map(str, SEEDS)),
     batch_size: int = 32,
     extract_batch_size: int = 8,
+    refine_around_cstar: bool = False,
 ):
     # generation: batch 4 leaves an H100 idle, decode is bandwidth bound so a wide batch is nearly free
     # extraction: vjp_delta's backward graph OOMs an 80 GB card at 32
@@ -71,19 +72,22 @@ def main(
         for seed in seeds.split(",")
         if method != "J_word" or seed == "0"
     ]
+    extra = ["--refine-around-cstar"] if refine_around_cstar else []
     handles = {
         job: run.spawn([
             job[0], "--seed", job[1], "--walk", "--walk-id", walk_id,
             "--batch-size", str(batch_size),
             "--extract-batch-size", str(extract_batch_size),
+            *extra,
         ])
         for job in jobs
     }
     for (method, seed), handle in handles.items():
-        certificate = json.loads(handle.get())
-        assert certificate["schema"] == "per_side_coherence_walk_v2"
-        assert certificate["status"] == "COMPLETE"
-        print(f"{method}\ts{seed}\t{certificate['status']}\ttail_rungs={len(certificate['rungs'])}")
+        try:
+            certificate = json.loads(handle.get())
+            print(f"{method}\ts{seed}\t{certificate['status']}\trungs={len(certificate['rungs'])}")
+        except Exception as error:  # one dead walk must not hide the other eight
+            print(f"{method}\ts{seed}\tFAILED\t{error}")
 
 
 @app.local_entrypoint()

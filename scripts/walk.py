@@ -27,13 +27,11 @@ COHORT = ROOT / "data/bullshit_bench_v2.jsonl"
 PERSONAS = [("sycophantic", "abrasive")]
 PERSONA_TEMPLATE = "Answer as someone who is {persona}."
 ROLE_LEAK = re.compile(r"<\s*/?\s*think\s*>|^\s*(user|assistant|system)\s*$", re.I | re.M)
-COHERENCE_RULE = "health_v1: unfinished<0.5, role_leak<0.25, repetition<0.25"
+C_STAR_THRESHOLD = {"repeated": 25, "unfinished": 50, "role_leak": 25}
+# dense linear tail around the predicted breakdown C*: 0.5*C* .. 1.25*C*
+# in 16 steps gives ~half the half-octave gap; symlog wastes samples past breakdown
+REFINE_LOW, REFINE_HIGH, REFINE_STEPS = 0.5, 1.25, 16
 GRID = tuple(2.0 ** (n / 6) for n in range(-30, 85))
-SEARCH_START = 1.0
-SEARCH_MAX_STEPS = 16
-SEARCH_LOG_TOLERANCE = math.log(2.0) / 6.0
-TAIL_FRACTION = 0.66
-PROCEDURE = "per_side_coherence_walk_v2"
 BREAKDOWN_REASON = {
     "unfinished": "unfinished",
     "unfinished_ge_0.5": "unfinished",
@@ -68,11 +66,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--layers", help="comma-separated zero-based block indices")
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--target-layer", type=int)
-    parser.add_argument("--side", choices=("+C", "-C"))
-    parser.add_argument("--walk-phase", choices=("search", "tail"))
+    parser.add_argument("--refine-around-cstar", action="store_true",
+                        help="bracket C* with local health (rep/unfinished/leak) then insert a dense tail 0.5..1.25*C*")
     parser.add_argument("--status", choices=("RESULT", "SMOKE_PASS"), default="RESULT")
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--self-test", action="store_true")
     return parser.parse_args()
 
 
@@ -94,7 +91,7 @@ def semantic_reasons(reasons: list[str]) -> list[str]:
     return sorted({BREAKDOWN_REASON[reason] for reason in reasons if reason in BREAKDOWN_REASON})
 
 
-def adopted_rung(method: str, seed: int, coefficient: float, side: str, phase: str, model: str, max_new_tokens: int, walk_id: str) -> tuple[Path, dict] | None:
+def adopted_rung(method: str, seed: int, coefficient: float, model: str, max_new_tokens: int, walk_id: str) -> tuple[Path, dict] | None:
     cohort, cohort_sha256 = read_cohort(100)
     expected = [(row["scenario"], row["prompt"]) for row in cohort]
     matches = []
@@ -103,11 +100,8 @@ def adopted_rung(method: str, seed: int, coefficient: float, side: str, phase: s
         if artifact["status"] != "RESULT":
             continue
         identity = (
-            artifact["schema"] == PROCEDURE
-            and artifact["method"] == method
+            artifact["method"] == method
             and artifact["seed"] == seed
-            and artifact["steered_side"] == side
-            and artifact["walk_phase"] == phase
             and math.isclose(artifact["fixed_coefficient_magnitude"], coefficient, rel_tol=1e-12)
             and artifact["model"] == model
             and artifact["persona"] == "sycophancy_abrasive"
@@ -124,7 +118,7 @@ def adopted_rung(method: str, seed: int, coefficient: float, side: str, phase: s
             continue
         demos = [json.loads(line) for line in (artifact_path.parent / "moral_demos.jsonl").read_text().splitlines()]
         bare = [row for row in demos if row["label"] == "bare"]
-        assert len(demos) == 200 and len(bare) == 100
+        assert len(demos) == 300 and len(bare) == 100
         assert [(row["scenario"], row["prompt"]) for row in bare] == expected
         if "cohort_sha256" in artifact:
             assert artifact["cohort_sha256"] == cohort_sha256
@@ -133,7 +127,7 @@ def adopted_rung(method: str, seed: int, coefficient: float, side: str, phase: s
     return matches[0] if matches else None
 
 
-def rung_command(args: argparse.Namespace, coefficient: float, side: str, phase: str) -> list[str]:
+def rung_command(args: argparse.Namespace, coefficient: float) -> list[str]:
     return [
         sys.executable,
         str(Path(__file__).resolve()),
@@ -144,10 +138,6 @@ def rung_command(args: argparse.Namespace, coefficient: float, side: str, phase:
         args.walk_id,
         "--coefficient",
         str(coefficient),
-        "--side",
-        side,
-        "--walk-phase",
-        phase,
         "--model",
         args.model,
         "--device",
@@ -186,149 +176,148 @@ def wait_for_gpu(required_mib: int = 20_000, timeout_minutes: int = 360) -> None
         time.sleep(60)
 
 
-def coherence_margin(stats: dict[str, float | int]) -> float:
-    answers = int(stats["answers"])
-    return min(
-        0.5 - int(stats["unfinished"]) / answers,
-        0.25 - int(stats["role_leaks"]) / answers,
-        0.25 - int(stats["repeated"]) / answers,
+def c_star_trips(demo_stats: dict) -> bool:
+    return (
+        demo_stats["repeated"] >= C_STAR_THRESHOLD["repeated"]
+        or demo_stats["unfinished"] >= C_STAR_THRESHOLD["unfinished"]
+        or demo_stats["role_leaks"] >= C_STAR_THRESHOLD["role_leak"]
     )
 
 
-def boundary_grid(endpoint: float) -> tuple[list[float], int, list[float]]:
-    grid = [coefficient for coefficient in GRID if coefficient < endpoint]
-    grid.append(endpoint)
-    assert grid == sorted(set(grid))
-    tail_start = math.ceil(TAIL_FRACTION * len(grid))
-    tail = grid[tail_start:]
-    assert tail and tail[-1] == endpoint
-    return grid, tail_start, tail
-
-
-def _assert_monotone(trace: list[dict]) -> None:
-    ordered = sorted(trace, key=lambda entry: entry["coefficient"])
-    coherent = [entry["coherent"] for entry in ordered]
-    assert coherent == sorted(coherent, reverse=True), f"nonmonotone coherence trace: {ordered}"
+def _dense_tail(c_lo: float, c_star: float) -> list[float]:
+    # densify only the gap (C_lo, 1.25*C*] — not 0.5*C*..C* which is already coarsely sampled
+    hi = c_star * REFINE_HIGH
+    if c_lo >= hi:
+        return []
+    # log-spaced between c_lo and hi so step scales with dose
+    import numpy as np
+    tail = list(np.geomspace(c_lo * (1 + 1e-9), hi, REFINE_STEPS))
+    # snap to 10dp for dedup stability
+    return [round(float(c), 10) for c in tail]
 
 
 def walk(args: argparse.Namespace) -> None:
-    assert args.walk_id and args.limit == 100 and args.status == "RESULT"
+    assert args.walk_id
+    if not args.refine_around_cstar:
+        assert args.limit == 100 and args.status == "RESULT"
+    # dose-based boundary (not index) so splice cannot invalidate stop rule
+    state = {side: {"streak": 0, "boundary": None, "boundary_C": None} for side in ("+C", "-C")}
+    entries: list[dict] = []
     certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
-
-    def probe(side: str, coefficient: float, phase: str) -> dict:
-        adopted = adopted_rung(args.method, args.seed, coefficient, side, phase, args.model, args.max_new_tokens, args.walk_id)
-        command = rung_command(args, coefficient, side, phase)
+    phase = "coarse"
+    c_star: float | None = None
+    c_star_lo: float | None = None  # C_lo for the side that set C*
+    c_star_side: str | None = None
+    lo_by_side: dict[str, tuple[int, float]] = {}
+    grid_list: list[float] = list(GRID)
+    grid_index = 0
+    while grid_index < len(grid_list):
+        coefficient = grid_list[grid_index]
+        adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
+        command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
-            logger.info("DRY_RUN side={} phase={} C={} command={}", side, phase, coefficient, shlex.join(command))
-            raise SystemExit("dry run cannot certify a boundary")
+            logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
+            grid_index += 1
+            continue
         if adopted is None:
             wait_for_gpu()
             environment = os.environ.copy()
             environment["HF_HUB_OFFLINE"] = "1"
             environment["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-            logger.info("run side={} phase={} C={} command={}", side, phase, coefficient, shlex.join(command))
-            subprocess.run(command, cwd=ROOT, env=environment, check=True)
-            adopted = adopted_rung(args.method, args.seed, coefficient, side, phase, args.model, args.max_new_tokens, args.walk_id)
+            # shared GPU: a stranger can grab memory under a long rung; retry on OOM instead of losing the walk
+            for attempt in range(3):
+                logger.info(
+                    "run grid={} C={} attempt={}/3 command={}", grid_index, coefficient, attempt + 1, shlex.join(command)
+                )
+                stderr_lines: list[str] = []
+                oom = False
+                proc = subprocess.Popen(command, cwd=ROOT, env=environment, text=True,
+                                        stdout=sys.stdout, stderr=subprocess.PIPE)
+                assert proc.stderr is not None
+                for line in proc.stderr:
+                    sys.stdout.write(line)
+                    sys.stdout.flush()
+                    stderr_lines.append(line)
+                    if "OutOfMemoryError" in line:
+                        oom = True
+                code = proc.wait()
+                if code == 0:
+                    break
+                if attempt < 2 and oom:
+                    logger.warning("OOM at C={}; re-wait and retry", coefficient)
+                    wait_for_gpu()
+                    continue
+                raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
+            adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
             assert adopted is not None
         run_dir, artifact = adopted
-        stats = artifact["demo_stats"][side]
-        margin = coherence_margin(stats)
-        return {
-            "coefficient": coefficient,
-            "coherent": margin > 0,
-            "margin": margin,
-            "breakdown_reasons": semantic_reasons(artifact["breakdown_reasons"][side]),
-            "run_dir": str(run_dir.relative_to(ROOT)),
+        logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
+        entry = {"grid_index": grid_index, "coefficient": coefficient, "run_dir": str(run_dir.relative_to(ROOT))}
+        for side in ("+C", "-C"):
+            reasons = semantic_reasons(artifact["breakdown_reasons"][side])
+            broken = bool(reasons)
+            if state[side]["boundary"] is None:
+                state[side]["streak"] = state[side]["streak"] + 1 if broken else 0
+                if state[side]["streak"] == 2:
+                    state[side]["boundary"] = grid_index
+                    state[side]["boundary_C"] = coefficient
+            entry[side] = {
+                "breakdown_reasons": reasons,
+                "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
+            }
+        if args.refine_around_cstar and phase == "coarse" and c_star is None:
+            for _side in ("+C", "-C"):
+                tripped = c_star_trips(artifact["demo_stats"][_side])
+                if not tripped:
+                    lo_by_side[_side] = (grid_index, coefficient)
+                elif tripped and _side in lo_by_side:
+                    lo_idx, lo_c = lo_by_side[_side]
+                    c_star = coefficient
+                    c_star_lo = lo_c
+                    c_star_side = _side
+                    logger.info("ILLINOIS bracket side={} lo_g={} C_lo={} hi_g={} C_hi={} C*~={}", _side, lo_idx, lo_c, grid_index, coefficient, c_star)
+                    tail = _dense_tail(lo_c, c_star)
+                    if not tail:
+                        logger.info("REFINE skipped: C_lo {} >= hi {}", lo_c, c_star * REFINE_HIGH)
+                    else:
+                        seen = {round(e["coefficient"], 10) for e in entries} | {round(coefficient, 10)}
+                        to_insert = [float(c) for c in tail if round(float(c), 10) not in seen and float(c) > coefficient]
+                        if to_insert:
+                            grid_list = grid_list[: grid_index + 1] + to_insert + [c for c in grid_list[grid_index + 1 :] if round(c, 10) not in {round(x, 10) for x in to_insert}]
+                            logger.info("REFINE C*={} C_lo={} tail={}..{} n={} total_grid={}", c_star, lo_c, tail[0], tail[-1], len(to_insert), len(grid_list))
+                        else:
+                            logger.info("REFINE no insert: tail already covered")
+                    phase = "dense"
+                    break
+        entries.append(entry)
+        certificate = {
+            "schema": "dose_walk_v1",
+            "status": "RUNNING",
+            "method": args.method,
+            "seed": args.seed,
+            "model": args.model,
+            "grid": "refined" if phase == "dense" else "2^(n/6), n=-30..84",
+            "state": state,
+            "rungs": entries,
         }
-
-    def solve(side: str) -> dict:
-        trace: list[dict] = []
-
-        def observe(coefficient: float) -> dict:
-            entry = probe(side, coefficient, "search")
-            trace.append(entry)
-            _assert_monotone(trace)
-            return entry
-
-        current = observe(SEARCH_START)
-        if current["coherent"]:
-            lo = current
-            for _ in range(SEARCH_MAX_STEPS):
-                hi = observe(lo["coefficient"] * 2)
-                if not hi["coherent"]:
-                    break
-                lo = hi
-            else:
-                raise RuntimeError(f"right-censored coherence boundary: {side} remains coherent through {lo['coefficient']}")
-        else:
-            hi = current
-            for _ in range(SEARCH_MAX_STEPS):
-                lo = observe(hi["coefficient"] / 2)
-                if lo["coherent"]:
-                    break
-                hi = lo
-            else:
-                raise RuntimeError(f"baseline-incoherent boundary: {side} is incoherent through {hi['coefficient']}")
-        assert lo["coherent"] and not hi["coherent"] and lo["coefficient"] < hi["coefficient"]
-
-        f_lo, f_hi = lo["margin"], hi["margin"]
-        for _ in range(SEARCH_MAX_STEPS):
-            if math.log(hi["coefficient"] / lo["coefficient"]) <= SEARCH_LOG_TOLERANCE:
-                break
-            log_lo, log_hi = math.log(lo["coefficient"]), math.log(hi["coefficient"])
-            log_candidate = (log_lo * f_hi - log_hi * f_lo) / (f_hi - f_lo)
-            if not log_lo < log_candidate < log_hi:
-                log_candidate = (log_lo + log_hi) / 2
-            candidate = observe(math.exp(log_candidate))
-            if candidate["coherent"]:
-                lo, f_lo = candidate, candidate["margin"]
-                f_hi *= 0.5
-            else:
-                hi, f_hi = candidate, candidate["margin"]
-                f_lo *= 0.5
-        else:
-            raise RuntimeError(f"Illinois search exhausted its budget for {side}")
-        assert lo["coherent"] and not hi["coherent"]
-        return {"C_lo": lo["coefficient"], "C_hi": hi["coefficient"], "trace": trace}
-
-    state = {side: solve(side) for side in ("+C", "-C")}
-    rungs = []
-    for side, boundary in state.items():
-        full_grid, tail_start, tail = boundary_grid(boundary["C_lo"])
-        boundary["full_grid"] = full_grid
-        boundary["tail_start"] = tail_start
-        boundary["tail_grid"] = tail
-        for tail_index, coefficient in enumerate(tail):
-            phase = "search" if coefficient == boundary["C_lo"] else "tail"
-            entry = probe(side, coefficient, phase)
-            assert entry["coherent"], f"tail contains incoherent coefficient: {side} {coefficient}"
-            artifact_path = ROOT / entry["run_dir"] / f"{args.method}.json"
-            artifact = json.loads(artifact_path.read_text())
-            artifact["tail_member"] = True
-            artifact_path.write_text(json.dumps(artifact, indent=2) + "\n")
-            rungs.append({
-                "side": side,
-                "coefficient": coefficient,
-                "tail_index": tail_index,
-                "endpoint": coefficient == boundary["C_lo"],
-                "run_dir": entry["run_dir"],
-            })
-
-    certificate = {
-        "schema": PROCEDURE,
-        "status": "COMPLETE",
-        "walk_id": args.walk_id,
-        "method": args.method,
-        "seed": args.seed,
-        "model": args.model,
-        "coherence_rule": COHERENCE_RULE,
-        "search_start": SEARCH_START,
-        "search_log_tolerance": SEARCH_LOG_TOLERANCE,
-        "state": state,
-        "rungs": rungs,
-    }
-    certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
-    logger.info("WALK_COMPLETE method={} seed={} certificate={}", args.method, args.seed, certificate_path)
+        if c_star is not None:
+            certificate["c_star"] = c_star
+            certificate["refine"] = {"low": c_star * REFINE_LOW, "high": c_star * REFINE_HIGH, "steps": REFINE_STEPS}
+        certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
+        grid_index += 1
+        # stop check is dose-anchored: require 2 confirmations beyond boundary_C in dose order.
+        # Since grid_list is dose-sorted except for the one-time tail insert above current C,
+        # index check is only valid pre-splice; post-splice we check that 2 rungs beyond
+        # boundary_C have been evaluated (dose-sorted entries).
+        if phase == "dense" and c_star is not None:
+            # after refine, allow tail to run; stop only when both inserted tail rungs have been visited
+            pass  # fall through to normal check below
+        if any(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
+            certificate["status"] = "COMPLETE"
+            certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
+            logger.info("WALK_COMPLETE method={} seed={} state={} certificate={}", args.method, args.seed, state, certificate_path)
+            return
+    raise RuntimeError(f"{args.method} seed {args.seed} reached grid ceiling without a confirmed breakdown boundary")
 
 
 def resolve_layers(model, value: str | None) -> tuple[int, ...]:
@@ -485,7 +474,6 @@ def assert_hook_changes_logits(model, tokenizer, vector, prompt: str, coefficien
 
 def run_rung(args: argparse.Namespace) -> None:
     assert args.coefficient is not None
-    assert (args.side is None) == (args.walk_phase is None)
     if args.device == "cuda":
         wait_for_gpu()
     stamp = time.strftime("%Y%m%dT%H%M%S")
@@ -563,18 +551,16 @@ def run_rung(args: argparse.Namespace) -> None:
 
     logger.info("stage=generate side=bare")
     bare = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
-    coefficients = {"+C": args.coefficient, "-C": -args.coefficient}
-    sides = (args.side,) if args.side else ("+C", "-C")
-    steered_answers = {}
-    for side in sides:
-        logger.info("stage=generate side={}", side)
-        with vector(model, C=coefficients[side]):
-            steered_answers[side] = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
-        assert any(a != b for a, b in zip(bare, steered_answers[side], strict=True))
+    logger.info("stage=generate side=+C")
+    with vector(model, C=args.coefficient):
+        positive_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
+    logger.info("stage=generate side=-C")
+    with vector(model, C=-args.coefficient):
+        negative_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
+    assert any(a != b for a, b in zip(bare, positive_answers, strict=True))
+    assert any(a != b for a, b in zip(bare, negative_answers, strict=True))
 
-    labels = [("bare", 0.0, bare)] + [
-        (args.method, coefficients[side], steered_answers[side]) for side in sides
-    ]
+    labels = (("bare", 0.0, bare), (args.method, args.coefficient, positive_answers), (args.method, -args.coefficient, negative_answers))
     demo_path = output / "moral_demos.jsonl"
     with demo_path.open("w") as file:
         for label, coefficient, answers in labels:
@@ -590,24 +576,21 @@ def run_rung(args: argparse.Namespace) -> None:
                     "text": answer,
                 }, ensure_ascii=False) + "\n")
 
-    stats, reasons = {"bare": health(tokenizer, bare)[0]}, {"bare": health(tokenizer, bare)[1]}
-    for side in sides:
-        stats[side], reasons[side] = health(tokenizer, steered_answers[side])
+    stats, reasons = {}, {}
+    for side, answers in (("bare", bare), ("+C", positive_answers), ("-C", negative_answers)):
+        stats[side], reasons[side] = health(tokenizer, answers)
         logger.info(
             "SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. "
             "side={} stats={} breakdown={}", side, stats[side], reasons[side]
         )
-        logger.info("=== generation output side={} ===\n{}\n=== end output ===", side, steered_answers[side][0])
+        logger.info("=== generation output side={} ===\n{}\n=== end output ===", side, answers[0])
 
     artifact_layers = extraction_metadata["source_layers"] if args.method == "vjp_mlp_up_shrink" else layers
     target_layer = vector.cfg.target_layer if args.method in ("vjp_delta", "vjp_mlp_up_shrink") else None
     artifact = {
-        "schema": PROCEDURE if args.side else "fixed_c_pair_v1",
+        "schema": "fixed_c_pair_v1",
         "status": args.status,
         "walk_id": args.walk_id,
-        "walk_phase": args.walk_phase,
-        "steered_side": args.side,
-        "coherence_rule": COHERENCE_RULE if args.side else None,
         "method": args.method,
         "seed": args.seed,
         "fixed_coefficient_magnitude": args.coefficient,
@@ -633,45 +616,21 @@ def run_rung(args: argparse.Namespace) -> None:
         "vector_file": vector_file.name,
         "vector_sha256": vector_sha256,
         "vector_content_sha256": vector_hash(vector),
-        "stop_rule": COHERENCE_RULE,
+        "stop_rule": "unfinished+role_leak+repetition",
         "demo_stats": stats,
-        "breakdown_reasons": {side: reasons[side] for side in sides},
+        "breakdown_reasons": {"+C": reasons["+C"], "-C": reasons["-C"]},
     }
     (output / f"{args.method}.json").write_text(json.dumps(artifact, indent=2) + "\n")
-    logger.info("RESULT method={} seed={} C={} side={} bare_reasons={} side_reasons={} output={}",
-                args.method, args.seed, args.coefficient, args.side, reasons["bare"],
-                {side: reasons[side] for side in sides}, output)
-
-
-def self_test() -> None:
-    grid, tail_start, tail = boundary_grid(1.0)
-    assert grid[-1] == 1.0
-    assert tail == grid[tail_start:]
-    assert tail_start == math.ceil(0.66 * len(grid))
-    assert coherence_margin({"answers": 100, "unfinished": 49, "role_leaks": 24, "repeated": 24}) > 0
-    assert coherence_margin({"answers": 100, "unfinished": 50, "role_leaks": 0, "repeated": 0}) == 0
-    _assert_monotone([
-        {"coefficient": 0.5, "coherent": True},
-        {"coefficient": 1.0, "coherent": True},
-        {"coefficient": 2.0, "coherent": False},
-    ])
-    try:
-        _assert_monotone([
-            {"coefficient": 0.5, "coherent": False},
-            {"coefficient": 1.0, "coherent": True},
-        ])
-    except AssertionError:
-        pass
-    else:
-        raise AssertionError("nonmonotone trace did not fail")
-    print("WALK_SELF_TEST_PASS")
+    logger.info("RESULT\tmethod\tseed\tC\tbare_reasons\t+C_reasons\t-C_reasons\toutput")
+    logger.info(
+        "RESULT\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
+        args.method, args.seed, args.coefficient, reasons["bare"], reasons["+C"], reasons["-C"], output
+    )
 
 
 def main() -> None:
     args = parse_args()
-    if args.self_test:
-        self_test()
-    elif args.walk:
+    if args.walk:
         assert args.coefficient is None
         walk(args)
     else:

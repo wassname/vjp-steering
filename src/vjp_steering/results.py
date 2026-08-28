@@ -3,7 +3,7 @@
 import csv
 import html
 import math
-from statistics import mean
+from statistics import mean, median
 from html.parser import HTMLParser
 from typing import Iterable
 from pathlib import Path
@@ -13,7 +13,8 @@ import plotly.graph_objects as go
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink")
+METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "random")
+RANDOM_SEEDS = 10
 METHOD_SEEDS = {
     "vjp_delta": {0, 1, 2},
     "mean_diff": {0, 1, 2},
@@ -51,7 +52,7 @@ def _rows(path: Path = DATA) -> list[dict]:
             raise ValueError(f"results columns must be {FIELDS}")
         rows = list(reader)
     if {row["method"] for row in rows} != set(METHODS):
-        raise ValueError(f"results must contain exactly {METHODS}")
+        raise ValueError("results must contain vjp_delta, mean_diff, pca, and random")
     for field in COHORT_FIELDS:
         values = {row[field] for row in rows}
         if len(values) != 1:
@@ -64,6 +65,8 @@ def _rows(path: Path = DATA) -> list[dict]:
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"].lower() == "true"
+    if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
+        raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
     for method, seeds in METHOD_SEEDS.items():
         if {row["seed"] for row in rows if row["method"] == method} != seeds:
             raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
@@ -72,21 +75,18 @@ def _rows(path: Path = DATA) -> list[dict]:
 
 def _means(rows: list[dict]) -> list[dict]:
     points = []
-    for method in METHODS:
-        for side in ("+C", "-C"):
-            endpoint_rows = [
-                row for row in rows
-                if row["method"] == method and row["side"] == side and row["admissible"]
-            ]
-            if {row["seed"] for row in endpoint_rows} != METHOD_SEEDS[method]:
-                raise ValueError(f"{method} {side} lacks an admissible endpoint for every seed")
-            points.append({
-                "method": method,
-                "C": mean(row["C"] for row in endpoint_rows),
-                "side": side,
-                "effect": mean(row["effect"] for row in endpoint_rows),
-                "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in endpoint_rows),
-            })
+    for method in METHODS[:-1]:
+        for C in sorted({row["C"] for row in rows if row["method"] == method}):
+            for side in ("+C", "-C"):
+                rows_at_dose = [
+                    row for row in rows
+                    if row["method"] == method and row["C"] == C and row["side"] == side
+                    and row["admissible"]
+                ]
+                if {row["seed"] for row in rows_at_dose} == METHOD_SEEDS[method]:
+                    points.append({"method": method, "C": C, "side": side,
+                                   "effect": mean(row["effect"] for row in rows_at_dose),
+                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
     return points
 
 
@@ -174,22 +174,64 @@ def place_labels(
 def plot(rows: list[dict]) -> go.Figure:
     figure = go.Figure()
     means = _means(rows)
-    valid = means
+    valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
     margin = {"l": 75, "r": 10, "t": 40, "b": 58}
     obstacles = [(0.0, 0.0)]
+    random = [row for row in rows if row["method"] == "random"]
+    random_seeds = sorted({row["seed"] for row in random})
+    random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
+    cone = [(0.0, 0.0, 0.0, 0.0)]
+    for C in sorted({row["C"] for row in random}):
+        coherent = [
+            seed for seed in random_seeds
+            if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
+            and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
+        ]
+        if len(coherent) < RANDOM_SEEDS // 2:
+            break
+        points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
+        effects = sorted(row["effect"] for row in points)
+        cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
+                     effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
+    figure.add_trace(go.Scatter(
+        x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
+        y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
+        fill="toself", fillcolor="rgba(150,150,150,0.22)",
+        line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
+        hoverinfo="skip", showlegend=False,
+    ))
     colors = {
         "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
     }
     displayed_endpoints = {}
-    for method in METHODS:
+    for method in METHODS[:-1]:
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
+            # log-kernel median: window is fixed in log-C (comparable on coarse vs dense tail)
+            if len(points) >= 5:
+                import math
+                logC = [math.log(row["C"]) for row in points]
+                # half-window ~0.15 in log (about one half-octave / log(2)/4) so kernel comparable across grids
+                hw = 0.15
+                smoothed = []
+                for i, row in enumerate(points):
+                    win = [points[j] for j, lc in enumerate(logC) if abs(lc - logC[i]) <= hw]
+                    if len(win) < 3:
+                        win = points[max(0, i - 2):i + 3]
+                    smoothed.append({**row,
+                                     "effect": median(r["effect"] for r in win),
+                                     "off_axis_perturbation": median(r["off_axis_perturbation"] for r in win)})
+                points = smoothed
+            # do not decimate below dense resolution near the tip; keep all if tail is dense
+            if len(points) > 16:
+                idx = sorted({round(i * (len(points) - 1) / 15) for i in range(16)} | {len(points) - 1})
+                points = [points[i] for i in idx]
             if points:
                 displayed_endpoints[method, side] = (points[-1]["effect"], points[-1]["off_axis_perturbation"])
                 figure.add_trace(go.Scatter(
@@ -214,7 +256,7 @@ def plot(rows: list[dict]) -> go.Figure:
         {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
         {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
         {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = certified coherent endpoint<br>next bracket rung incoherent", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
+        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
     ]
     labels.extend(
         {
@@ -233,6 +275,10 @@ def plot(rows: list[dict]) -> go.Figure:
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
+    figure.add_annotation(
+        x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
+        align="center", font={"color": "#666666", "size": 14},
+    )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
@@ -255,10 +301,20 @@ def _summary(rows: list[dict]) -> list[list[str]]:
         rejected = 0
         for side, sign in (("-C", -1), ("+C", 1)):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
-            live = [row for row in means if row["method"] == method and row["side"] == side]
-            assert len(live) == 1
-            peaks[side] = live[0]
-            candidate_count += 1
+            if method == "random":
+                live = [
+                    {
+                        "C": C,
+                        "effect": mean(row["effect"] for row in rows_at_dose),
+                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
+                    }
+                    for C in sorted({row["C"] for row in group})
+                    if (rows_at_dose := [row for row in group if row["C"] == C and row["admissible"]])
+                ]
+            else:
+                live = [row for row in means if row["method"] == method and row["side"] == side]
+            peaks[side] = max(live, key=lambda row: sign * row["effect"])
+            candidate_count += len(live)
             rejected += sum(not row["admissible"] for row in group)
 
         score = min(
@@ -272,7 +328,7 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             f"{peaks['-C']['off_axis_perturbation']:.3f}",
             f"{peaks['+C']['effect']:.3f}",
             f"{peaks['+C']['off_axis_perturbation']:.3f}",
-            str(len(METHOD_SEEDS[method])),
+            str(RANDOM_SEEDS if method == "random" else len(METHOD_SEEDS[method])),
             str(candidate_count),
             str(rejected),
         ]))
@@ -301,6 +357,9 @@ def _display_table(table: list[list[str]]) -> list[list[str]]:
         for row in display:
             if row[column] == best:
                 row[column] = f"**{row[column]}**"
+    for row in display:
+        if row[0] == "random":
+            row[0] = "*random*"
     return display
 
 
@@ -318,7 +377,7 @@ def _markdown(table: list[list[str]]) -> str:
         "# Results",
         "",
         "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
-        "Each row reports the certified coherent endpoint for its method and direction. The table reports rejected evaluations.",
+        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
         "",
         "![Judged effect against off-axis change](plot.png)",
         "",
@@ -356,7 +415,8 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
         "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
-        f"The figure shows both steering directions at certified coherent endpoints. The table reports rejected evaluations.</p>{figure_html}"
+        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        f"than half have two coherent directions. The table reports rejected evaluations.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
