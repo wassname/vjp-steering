@@ -65,6 +65,9 @@ modal-push:
 modal-continue method seed continuation_id:
 	uv run modal run --detach scripts/run_modal.py::continuation --method {{method}} --seed {{seed}} --continuation-id {{continuation_id}}
 
+modal-continuations continuation_id:
+	uv run modal run scripts/run_modal.py::continuations --continuation-id {{continuation_id}}
+
 modal-walks *args:
 	uv run modal run --detach scripts/run_modal.py::main {{args}}
 

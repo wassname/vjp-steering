@@ -88,6 +88,38 @@ def continuation(method: str, seed: int, continuation_id: str) -> None:
     print(f"{method}\ts{seed}\t+C\t{certificate['status']}\ttail_rungs={len(certificate['rungs'])}")
 
 
+@app.function(timeout=8 * 60 * 60)
+def complete_continuations(continuation_id: str) -> list[dict]:
+    jobs = [
+        (method, seed)
+        for method in ("vjp_delta", "mean_diff", "vjp_mlp_up_shrink")
+        for seed in (0, 1, 2)
+    ]
+    handles = {
+        job: continue_side.spawn([
+            job[0], "--seed", str(job[1]), "--side", "+C", "--walk",
+            "--continuation-id", continuation_id,
+        ])
+        for job in jobs
+    }
+    certificates = []
+    for handle in handles.values():
+        certificate = json.loads(handle.get())
+        assert certificate["status"] == "COMPLETE"
+        certificates.append(certificate)
+    return certificates
+
+
+@app.local_entrypoint()
+def continuations(continuation_id: str) -> None:
+    certificates = complete_continuations.remote(continuation_id)
+    for certificate in certificates:
+        print(
+            f"{certificate['method']}\ts{certificate['seed']}\t+C\t{certificate['status']}\t"
+            f"tail_rungs={len(certificate['rungs'])}"
+        )
+
+
 @app.local_entrypoint()
 def main(
     walk_id: str,
