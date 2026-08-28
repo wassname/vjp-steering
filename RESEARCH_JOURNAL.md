@@ -85,6 +85,6 @@ Interpretation (Pi): the fresh walks satisfy the requested artifact provenance a
 
 ## 2026-08-28 -- User-approved sweep grid algorithm
 
-Evidence: user decision in this session, not a measured result. For every method and seed, solve the maximum coherent coefficient independently for `+C` and `-C` with a bounded Illinois/Newton search. Keep the previous `C` definition and configuration so results remain comparable. Construct the previous log grid through each direction's solved `C`, but generate and judge only `grid[ceil(0.66 * len(grid)):]`, the final third of that direction's grid.
+Evidence: user decision in this session, not a measured result. For every method and seed, bracket the maximum coherent coefficient independently for `+C` and `-C` with a bounded Illinois/Newton search. Keep the previous `C` definition and configuration so results remain comparable. Publish the largest generated coherent lower bracket, not an ungenerated numerical root. Construct the previous log grid through that bound, but generate and judge only `grid[ceil(0.66 * len(grid)):]`, the final third of that direction's grid.
 
 Interpretation (Pi): fixed shared-grid comparison rows are invalid under this decision. Rerun every compared method with independent directional endpoints and final-third generation and judging. This entry specifies the requested procedure only; it reports no behavioral or measurement result.
