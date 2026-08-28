@@ -74,7 +74,7 @@ def continue_side(argv: list[str]) -> str:
         cache.commit()
     method, seed = argv[0], argv[argv.index("--seed") + 1]
     continuation_id = argv[argv.index("--continuation-id") + 1]
-    certificate = next(Path("/cache/outputs").glob(f"continuation_{method}_s{seed}_plus_{continuation_id}.json"))
+    certificate = next(Path("/cache/outputs").glob(f"continuation_{method}_s{seed}_plusC_{continuation_id}.json"))
     return certificate.read_text()
 
 
