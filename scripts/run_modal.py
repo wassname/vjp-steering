@@ -30,6 +30,7 @@ image = (
 )
 app = modal.App("jsteer-pub", image=image)
 cache = modal.Volume.from_name("jsteer-pub-cache", create_if_missing=True)
+judge_secret = modal.Secret.from_dict({"OPENROUTER_API_KEY": os.environ["OPENROUTER_API_KEY"]})
 
 
 @app.function(
@@ -118,6 +119,36 @@ def continuations(continuation_id: str) -> None:
             f"{certificate['method']}\ts{certificate['seed']}\t+C\t{certificate['status']}\t"
             f"tail_rungs={len(certificate['rungs'])}"
         )
+
+
+@app.function(
+    volumes={"/cache": cache},
+    secrets=[judge_secret],
+    timeout=24 * 60 * 60,
+)
+def judge_endpoint_tail() -> str:
+    """Build and judge the complete endpoint-tail manifest on the Modal Volume."""
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    try:
+        subprocess.run([sys.executable, "scripts/endpoint_tail_manifest.py"], cwd="/repo", check=True)
+        subprocess.run(
+            [
+                sys.executable, "scripts/judge.py", "--endpoint-tail-manifest",
+                "outputs/endpoint_tail_manifest.json", "--refresh",
+            ],
+            cwd="/repo",
+            check=True,
+        )
+    finally:
+        cache.commit()
+    return "ENDPOINT_TAIL_JUDGE_COMPLETE"
+
+
+@app.local_entrypoint()
+def endpoint_tail_judge() -> None:
+    print(judge_endpoint_tail.remote())
 
 
 @app.local_entrypoint()
