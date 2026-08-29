@@ -53,6 +53,12 @@ endpoint-tail-export-self-test:
 endpoint-tail-export:
 	uv run python scripts/export_endpoint_tail.py
 
+endpoint-tail-render-self-test:
+	uv run python scripts/render_endpoint_tail.py --self-test
+
+endpoint-tail-results: endpoint-tail-export
+	uv run python scripts/render_endpoint_tail.py
+
 judge-walks-faulthandler:
 	uv run python -X faulthandler scripts/judge.py --walks --refresh
 
