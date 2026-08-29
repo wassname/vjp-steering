@@ -13,6 +13,8 @@ import plotly.graph_objects as go
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
+SELECTED_ENDPOINTS = ROOT / "data" / "endpoint_tail" / "selected.csv"
+RANDOM_DATA = ROOT / "data" / "random_results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "random")
 RANDOM_SEEDS = 10
 METHOD_SEEDS = {
@@ -45,48 +47,56 @@ COHORT_FIELDS = (
 # do not change the prompts, model, or judge cohort being compared.
 
 
-def _rows(path: Path = DATA) -> list[dict]:
-    with path.open(newline="") as handle:
+def _rows() -> list[dict]:
+    with RANDOM_DATA.open(newline="") as handle:
         reader = csv.DictReader(handle)
         if set(reader.fieldnames or ()) != set(FIELDS):
-            raise ValueError(f"results columns must be {FIELDS}")
-        rows = list(reader)
-    if {row["method"] for row in rows} != set(METHODS):
-        raise ValueError("results must contain vjp_delta, mean_diff, pca, and random")
-    for field in COHORT_FIELDS:
-        values = {row[field] for row in rows}
-        if len(values) != 1:
-            raise ValueError(f"mixed {field}: {sorted(values)}")
+            raise ValueError(f"random results columns must be {FIELDS}")
+        random_rows = list(reader)
+    if {row["method"] for row in random_rows} != {"random"}:
+        raise ValueError("random_results.csv must contain only random controls")
+
+    with SELECTED_ENDPOINTS.open(newline="") as handle:
+        selected_rows = list(csv.DictReader(handle))
+    expected = {(method, seed, side) for method, seeds in METHOD_SEEDS.items() for seed in seeds for side in ("+C", "-C")}
+    found = {(row["method"], int(row["seed"]), row["side"]) for row in selected_rows}
+    if found != expected or len(selected_rows) != len(expected):
+        raise ValueError("selected endpoints must contain exactly one row for each method, seed, and sign")
+    template = random_rows[0]
+    endpoint_rows = []
+    for row in selected_rows:
+        if row["accepted"] != "True" or row["health_clean"] != "True":
+            raise ValueError("every named endpoint must be accepted and health-clean")
+        endpoint_rows.append({
+            **{field: template[field] for field in FIELDS[:7]},
+            "date": "20260829", "source_run": row["source_run"],
+            "method": row["method"], "seed": row["seed"], "C": row["C"], "side": row["side"],
+            "effect": row["effect"], "off_axis_perturbation": row["off_axis_perturbation"], "admissible": "True",
+        })
+    rows = endpoint_rows + random_rows
     for row in rows:
-        if not row["date"] or not row["source_run"]:
-            raise ValueError("each measured row needs date and source_run")
         row["seed"] = int(row["seed"])
         row["C"] = float(row["C"])
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"].lower() == "true"
-    if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
+    if {row["seed"] for row in rows if row["method"] == "random"} != set(range(RANDOM_SEEDS)):
         raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
-    for method, seeds in METHOD_SEEDS.items():
-        if {row["seed"] for row in rows if row["method"] == method} != seeds:
-            raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
     return rows
 
 
 def _means(rows: list[dict]) -> list[dict]:
     points = []
     for method in METHODS[:-1]:
-        for C in sorted({row["C"] for row in rows if row["method"] == method}):
-            for side in ("+C", "-C"):
-                rows_at_dose = [
-                    row for row in rows
-                    if row["method"] == method and row["C"] == C and row["side"] == side
-                    and row["admissible"]
-                ]
-                if {row["seed"] for row in rows_at_dose} == METHOD_SEEDS[method]:
-                    points.append({"method": method, "C": C, "side": side,
-                                   "effect": mean(row["effect"] for row in rows_at_dose),
-                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
+        for side in ("+C", "-C"):
+            rows_at_endpoint = [
+                row for row in rows
+                if row["method"] == method and row["side"] == side and row["admissible"]
+            ]
+            if {row["seed"] for row in rows_at_endpoint} == METHOD_SEEDS[method]:
+                points.append({"method": method, "C": mean(row["C"] for row in rows_at_endpoint), "side": side,
+                               "effect": mean(row["effect"] for row in rows_at_endpoint),
+                               "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_endpoint)})
     return points
 
 
