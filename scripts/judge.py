@@ -362,38 +362,39 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
     prompt = judge_prompt(row, order)
     raw_attempts = []
     reasoning_attempts = []
-    for attempt in range(3):
-        # retries append a format-rescue nudge: on degenerate (repetitive) answers the judge
-        # imitates the repetition and never emits JSON; scoring semantics are unchanged
-        content = prompt if attempt == 0 else prompt + RETRY_NUDGE
+    format_attempt = 0
+    empty_choice_attempt = 0
+    while format_attempt < 3:
+        # PI: Retry provider-empty responses without counting them as a model-format sample.
+        content = prompt if format_attempt == 0 else prompt + RETRY_NUDGE
         try:
             response = await request_with_rate_limit(client, content)
         except (APIConnectionError, APITimeoutError) as err:
-            # A network failure has no HTTP status code, so handle it before generic HTTP errors.
-            logger.warning("{} attempt={}/3 {}", type(err).__name__, attempt + 1, err)
-            if attempt == 2:
+            # PI: Network failures have no HTTP status code, so handle them before HTTP errors.
+            logger.warning("{} attempt={}/3 {}", type(err).__name__, format_attempt + 1, err)
+            if format_attempt == 2:
                 raise RuntimeError(
                     f"{type(err).__name__} after 3 attempts for {cache_key(row, order, pass_index)}"
                 ) from err
-            await asyncio.sleep(1.5 * (attempt + 1))
+            await asyncio.sleep(1.5 * (format_attempt + 1))
             continue
         except Exception as err:
             status_code = getattr(err, "status_code", None)
             if status_code is None:
                 raise
-            # Fail fast on spent credits. Every other HTTP status outside the transient set is a bug.
+            # PI: Fail fast on spent credits. Other HTTP statuses outside the transient set are bugs.
             if _insufficient_credits(err, status_code):
                 logger.error("OPENROUTER out of credits ({}), aborting", status_code)
                 raise
             if status_code in TRANSIENT_CODES:
-                retry_seconds = 1.5 * (attempt + 1)
+                retry_seconds = 1.5 * (format_attempt + 1)
                 logger.warning(
                     "transient {} attempt={}/3 retry_seconds={}",
                     status_code,
-                    attempt + 1,
+                    format_attempt + 1,
                     retry_seconds,
                 )
-                if attempt == 2:
+                if format_attempt == 2:
                     raise RuntimeError(
                         f"transient {status_code} after 3 attempts for {cache_key(row, order, pass_index)}"
                     ) from err
@@ -401,20 +402,30 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 continue
             raise
         if not response.choices:
-            # empty choices (degenerate/repetitive text) -- skip this cell after 3 tries
-            # per ml-debug llm_as_judge: don't let one bad demo kill the 39k batch
-            logger.warning("empty choices cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
-            if attempt == 2:
-                raise RuntimeError(f"empty choices after 3 attempts for {cache_key(row, order, pass_index)}")
+            empty_choice_attempt += 1
+            retry_seconds = min(120, 15 * empty_choice_attempt)
+            logger.warning(
+                "empty choices cell={} attempt={} retry_seconds={}",
+                cache_key(row, order, pass_index),
+                empty_choice_attempt,
+                retry_seconds,
+            )
+            await asyncio.sleep(retry_seconds)
             continue
         raw = response.choices[0].message.content
         reasoning = getattr(response.choices[0].message, "reasoning", None)
         raw_attempts.append(raw)
         reasoning_attempts.append(reasoning)
         if raw is None:
-            logger.warning("empty content cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
-            if attempt == 2:
-                raise RuntimeError(f"empty content after 3 attempts for {cache_key(row, order, pass_index)}")
+            empty_choice_attempt += 1
+            retry_seconds = min(120, 15 * empty_choice_attempt)
+            logger.warning(
+                "empty content cell={} attempt={} retry_seconds={}",
+                cache_key(row, order, pass_index),
+                empty_choice_attempt,
+                retry_seconds,
+            )
+            await asyncio.sleep(retry_seconds)
             continue
         try:
             judgment = json.loads(raw)
@@ -446,8 +457,9 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
                 "quant": ["fp8", "int8", "bf16", "fp16"],
                 "cost_usd": float(getattr(response.usage, "cost", 0) or 0),
             }
-        logger.info("retry invalid JSON cell={} attempt={}/3", cache_key(row, order, pass_index), attempt + 1)
-        if attempt == 2:
+        format_attempt += 1
+        logger.info("retry invalid JSON cell={} attempt={}/3", cache_key(row, order, pass_index), format_attempt)
+        if format_attempt == 3:
             raise RuntimeError(
                 f"invalid JSON after 3 attempts for {cache_key(row, order, pass_index)}: {raw!r}"
             )
