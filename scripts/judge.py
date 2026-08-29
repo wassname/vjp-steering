@@ -293,9 +293,14 @@ Response B:
 
 TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
 PARALLEL = 2
+EMPTY_STORM_LIMIT = 4
 
 
 class DeferredCell(Exception):
+    pass
+
+
+class ProviderEmptyStorm(Exception):
     pass
 
 
@@ -474,6 +479,12 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
     raise RuntimeError(f"judge failed contract: {row['run']}/{row['side']}/{row['vignette']}/{order}/{pass_index}")
 
 
+def write_deferred(records: list[dict]) -> None:
+    with DEFERRED.open("a") as file:
+        for record in records:
+            file.write(json.dumps(record, sort_keys=True) + "\n")
+
+
 async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     api_key = os.environ["OPENROUTER_API_KEY"]
@@ -511,6 +522,8 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
                     "order": order,
                     "pass": pass_index,
                 })
+                if len(deferred) >= EMPTY_STORM_LIMIT:
+                    raise ProviderEmptyStorm(f"provider-empty storm: deferred={len(deferred)}")
             return
         async with lock:
             with CACHE.open("a") as file:
@@ -523,12 +536,13 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     try:
         for start in range(0, len(todo), 500):
             await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
+    except ProviderEmptyStorm as error:
+        write_deferred(deferred)
+        raise RuntimeError(f"JUDGE_PROVIDER_EMPTY_STORM cells={len(deferred)} report={DEFERRED}") from error
     finally:
         await client.close()
     if deferred:
-        with DEFERRED.open("a") as file:
-            for record in deferred:
-                file.write(json.dumps(record, sort_keys=True) + "\n")
+        write_deferred(deferred)
         raise RuntimeError(f"JUDGE_DEFERRED cells={len(deferred)} report={DEFERRED}")
 
 

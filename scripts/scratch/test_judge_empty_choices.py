@@ -98,6 +98,35 @@ async def run() -> None:
         record = json.loads((Path(temporary_directory) / "deferred.jsonl").read_text())
     assert record["cache_key"] and record["timestamp"] and record["reason"]
 
+    original_client = judge.AsyncOpenAI
+    original_judge_one = judge.judge_one
+    original_deferred = judge.DEFERRED
+    original_limit = judge.EMPTY_STORM_LIMIT
+    original_api_key = os.environ.get("OPENROUTER_API_KEY")
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        judge.AsyncOpenAI = lambda **_kwargs: Client()
+        judge.judge_one = deferred_judge
+        judge.DEFERRED = Path(temporary_directory) / "deferred.jsonl"
+        judge.EMPTY_STORM_LIMIT = 1
+        os.environ["OPENROUTER_API_KEY"] = "test"
+        try:
+            try:
+                await judge.refresh([(row, "AB", 0)])
+            except RuntimeError as error:
+                assert str(error).startswith("JUDGE_PROVIDER_EMPTY_STORM cells=1")
+            else:
+                raise AssertionError("provider-empty storm did not stop refresh")
+        finally:
+            judge.AsyncOpenAI = original_client
+            judge.judge_one = original_judge_one
+            judge.DEFERRED = original_deferred
+            judge.EMPTY_STORM_LIMIT = original_limit
+            if original_api_key is None:
+                del os.environ["OPENROUTER_API_KEY"]
+            else:
+                os.environ["OPENROUTER_API_KEY"] = original_api_key
+        assert len((Path(temporary_directory) / "deferred.jsonl").read_text().splitlines()) == 1
+
 
 asyncio.run(run())
 print("JUDGE_EMPTY_CHOICES_SELF_TEST_PASS")
