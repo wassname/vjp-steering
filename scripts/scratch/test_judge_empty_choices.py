@@ -2,7 +2,9 @@
 
 import asyncio
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -61,6 +63,40 @@ async def run() -> None:
     finally:
         judge.request_with_rate_limit = original_request
         judge.asyncio.sleep = original_sleep
+
+    class Client:
+        async def close(self):
+            return None
+
+    async def deferred_judge(_client, _row, _order, _pass_index):
+        raise judge.DeferredCell("empty choices after 3 attempts")
+
+    original_client = judge.AsyncOpenAI
+    original_judge_one = judge.judge_one
+    original_deferred = judge.DEFERRED
+    original_api_key = os.environ.get("OPENROUTER_API_KEY")
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        judge.AsyncOpenAI = lambda **_kwargs: Client()
+        judge.judge_one = deferred_judge
+        judge.DEFERRED = Path(temporary_directory) / "deferred.jsonl"
+        os.environ["OPENROUTER_API_KEY"] = "test"
+        try:
+            try:
+                await judge.refresh([(row, "AB", 0)])
+            except RuntimeError as error:
+                assert str(error).startswith("JUDGE_DEFERRED cells=1")
+            else:
+                raise AssertionError("deferred cell did not fail refresh")
+        finally:
+            judge.AsyncOpenAI = original_client
+            judge.judge_one = original_judge_one
+            judge.DEFERRED = original_deferred
+            if original_api_key is None:
+                del os.environ["OPENROUTER_API_KEY"]
+            else:
+                os.environ["OPENROUTER_API_KEY"] = original_api_key
+        record = json.loads((Path(temporary_directory) / "deferred.jsonl").read_text())
+    assert record["cache_key"] and record["timestamp"] and record["reason"]
 
 
 asyncio.run(run())
