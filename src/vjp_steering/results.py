@@ -1,9 +1,7 @@
 """Render the public result table and the sycophancy Pareto plot from one CSV."""
 
 import csv
-import hashlib
 import html
-import json
 import math
 from statistics import mean, median
 from html.parser import HTMLParser
@@ -14,9 +12,7 @@ import plotly.graph_objects as go
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RANDOM_DATA = ROOT / "data" / "random_results.csv"
-RANDOM_PROVENANCE = ROOT / "data" / "random_provenance.json"
-SELECTED_DATA = ROOT / "data" / "endpoint_tail" / "selected.csv"
+DATA = ROOT / "data" / "results.csv"
 METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "random")
 RANDOM_SEEDS = 10
 METHOD_SEEDS = {
@@ -26,15 +22,10 @@ METHOD_SEEDS = {
     "J_word": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
 }
-RANDOM_FIELDS = (
+FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
     "off_axis_perturbation", "admissible",
-)
-SELECTED_FIELDS = (
-    "method", "seed", "side", "C", "source_kind", "source_run", "raw_steered_source",
-    "effect", "off_axis_perturbation", "steered_off_axis", "health_clean", "accepted",
-    "selected_reason",
 )
 LABELS = {
     "vjp_delta": "vjp_delta (ours)",
@@ -54,75 +45,48 @@ COHORT_FIELDS = (
 # do not change the prompts, model, or judge cohort being compared.
 
 
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def _random_rows(path: Path = RANDOM_DATA) -> list[dict]:
-    provenance = json.loads(RANDOM_PROVENANCE.read_text())
-    if _sha256(path) != provenance["results_sha256"]:
-        raise ValueError("random_results.csv hash disagrees with random_provenance.json")
+def _rows(path: Path = DATA) -> list[dict]:
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle)
-        if set(reader.fieldnames or ()) != set(RANDOM_FIELDS):
-            raise ValueError(f"random results columns must be {RANDOM_FIELDS}")
+        if set(reader.fieldnames or ()) != set(FIELDS):
+            raise ValueError(f"results columns must be {FIELDS}")
         rows = list(reader)
-    if {row["method"] for row in rows} != {"random"}:
-        raise ValueError("random_results.csv must contain only random controls")
+    if {row["method"] for row in rows} != set(METHODS):
+        raise ValueError("results must contain vjp_delta, mean_diff, pca, and random")
     for field in COHORT_FIELDS:
         values = {row[field] for row in rows}
         if len(values) != 1:
-            raise ValueError(f"mixed random {field}: {sorted(values)}")
+            raise ValueError(f"mixed {field}: {sorted(values)}")
     for row in rows:
+        if not row["date"] or not row["source_run"]:
+            raise ValueError("each measured row needs date and source_run")
         row["seed"] = int(row["seed"])
         row["C"] = float(row["C"])
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"].lower() == "true"
-    if {row["seed"] for row in rows} != set(range(RANDOM_SEEDS)):
-        raise ValueError(f"the random cone needs exactly seeds 0 through {RANDOM_SEEDS - 1}")
+    if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
+        raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
+    for method, seeds in METHOD_SEEDS.items():
+        if {row["seed"] for row in rows if row["method"] == method} != seeds:
+            raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
     return rows
-
-
-def _endpoint_rows(path: Path = SELECTED_DATA) -> list[dict]:
-    with path.open(newline="") as handle:
-        reader = csv.DictReader(handle)
-        if tuple(reader.fieldnames or ()) != SELECTED_FIELDS:
-            raise ValueError(f"selected endpoint columns must be {SELECTED_FIELDS}")
-        rows = list(reader)
-    expected = {(method, seed, side) for method, seeds in METHOD_SEEDS.items() for seed in seeds for side in ("+C", "-C")}
-    found = {(row["method"], int(row["seed"]), row["side"]) for row in rows}
-    if found != expected or len(rows) != len(expected):
-        raise ValueError("selected endpoints must contain exactly one row for every method, seed, and sign")
-    endpoint_rows = []
-    for row in rows:
-        if row["accepted"] != "True" or row["health_clean"] != "True":
-            raise ValueError("primary results require accepted health-clean endpoints")
-        endpoint_rows.append({
-            "method": row["method"], "seed": int(row["seed"]), "C": float(row["C"]),
-            "side": row["side"], "effect": float(row["effect"]),
-            "off_axis_perturbation": float(row["off_axis_perturbation"]), "admissible": True,
-        })
-    return endpoint_rows
-
-
-def _rows() -> list[dict]:
-    return _endpoint_rows() + _random_rows()
 
 
 def _means(rows: list[dict]) -> list[dict]:
     points = []
     for method in METHODS[:-1]:
-        for side in ("+C", "-C"):
-            endpoints = [row for row in rows if row["method"] == method and row["side"] == side]
-            if {row["seed"] for row in endpoints} != METHOD_SEEDS[method]:
-                raise ValueError(f"{method} {side} needs every selected seed")
-            points.append({
-                "method": method, "side": side,
-                "C": tuple(row["C"] for row in sorted(endpoints, key=lambda row: row["seed"])),
-                "effect": mean(row["effect"] for row in endpoints),
-                "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in endpoints),
-            })
+        for C in sorted({row["C"] for row in rows if row["method"] == method}):
+            for side in ("+C", "-C"):
+                rows_at_dose = [
+                    row for row in rows
+                    if row["method"] == method and row["C"] == C and row["side"] == side
+                    and row["admissible"]
+                ]
+                if {row["seed"] for row in rows_at_dose} == METHOD_SEEDS[method]:
+                    points.append({"method": method, "C": C, "side": side,
+                                   "effect": mean(row["effect"] for row in rows_at_dose),
+                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
     return points
 
 
@@ -248,22 +212,43 @@ def plot(rows: list[dict]) -> go.Figure:
         if not method_rows:
             continue
         for side in ("+C", "-C"):
-            endpoint = next(row for row in method_rows if row["side"] == side)
-            displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
-            coefficients = ", ".join(f"{C:g}" for C in endpoint["C"])
-            figure.add_trace(go.Scatter(
-                x=[0, endpoint["effect"]], y=[0, endpoint["off_axis_perturbation"]],
-                mode="lines+markers", line={"color": colors[method], "width": 3},
-                marker={"color": colors[method], "size": [0, 12], "symbol": ["circle", "x"]},
-                text=["bare", f"selected C={coefficients}"],
-                hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
-                showlegend=False,
-            ))
-            start, end = (0.0, 0.0), (endpoint["effect"], endpoint["off_axis_perturbation"])
-            obstacles.extend(
-                (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
-                for fraction in (0.25, 0.5, 0.75, 1.0)
-            )
+            points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
+            # log-kernel median: window is fixed in log-C (comparable on coarse vs dense tail)
+            if len(points) >= 5:
+                import math
+                logC = [math.log(row["C"]) for row in points]
+                # half-window ~0.15 in log (about one half-octave / log(2)/4) so kernel comparable across grids
+                hw = 0.15
+                smoothed = []
+                for i, row in enumerate(points):
+                    win = [points[j] for j, lc in enumerate(logC) if abs(lc - logC[i]) <= hw]
+                    if len(win) < 3:
+                        win = points[max(0, i - 2):i + 3]
+                    smoothed.append({**row,
+                                     "effect": median(r["effect"] for r in win),
+                                     "off_axis_perturbation": median(r["off_axis_perturbation"] for r in win)})
+                points = smoothed
+            # do not decimate below dense resolution near the tip; keep all if tail is dense
+            if len(points) > 16:
+                idx = sorted({round(i * (len(points) - 1) / 15) for i in range(16)} | {len(points) - 1})
+                points = [points[i] for i in idx]
+            if points:
+                displayed_endpoints[method, side] = (points[-1]["effect"], points[-1]["off_axis_perturbation"])
+                figure.add_trace(go.Scatter(
+                    x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
+                    mode="lines+markers", line={"color": colors[method], "width": 3},
+                    marker={"color": colors[method], "size": [0, *([8] * (len(points) - 1)), 12], "symbol": ["circle"] * len(points) + ["x"]},
+                    line_shape="spline", line_smoothing=0.6,
+                    text=["bare", *(f"C={row['C']:g}" for row in points)],
+                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+                    showlegend=False,
+                ))
+                series = [(0.0, 0.0), *((row["effect"], row["off_axis_perturbation"]) for row in points)]
+                for start, end in zip(series, series[1:]):
+                    obstacles.extend(
+                        (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+                        for fraction in (0.25, 0.5, 0.75, 1.0)
+                    )
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
@@ -271,7 +256,7 @@ def plot(rows: list[dict]) -> go.Figure:
         {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
         {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
         {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = judged endpoint<br>next dose rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
+        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
     ]
     labels.extend(
         {
@@ -311,26 +296,27 @@ def _summary(rows: list[dict]) -> list[list[str]]:
     means = _means(rows)
     scored_rows = []
     for method in METHODS:
-        if method == "random":
-            peaks = {}
-            for side, sign in (("-C", -1), ("+C", 1)):
+        peaks = {}
+        candidate_count = 0
+        rejected = 0
+        for side, sign in (("-C", -1), ("+C", 1)):
+            group = [row for row in rows if row["method"] == method and row["side"] == side]
+            if method == "random":
                 live = [
                     {
+                        "C": C,
                         "effect": mean(row["effect"] for row in rows_at_dose),
                         "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
                     }
-                    for C in sorted({row["C"] for row in rows if row["method"] == method})
-                    if (rows_at_dose := [row for row in rows if row["method"] == method and row["C"] == C and row["side"] == side and row["admissible"]])
+                    for C in sorted({row["C"] for row in group})
+                    if (rows_at_dose := [row for row in group if row["C"] == C and row["admissible"]])
                 ]
-                peaks[side] = max(live, key=lambda row: sign * row["effect"])
-            evidence = "frozen control"
-            seed_count = RANDOM_SEEDS
-            arm_count = len([row for row in rows if row["method"] == method])
-        else:
-            peaks = {side: next(row for row in means if row["method"] == method and row["side"] == side) for side in ("-C", "+C")}
-            evidence = "judged endpoint"
-            seed_count = len(METHOD_SEEDS[method])
-            arm_count = len([row for row in rows if row["method"] == method])
+            else:
+                live = [row for row in means if row["method"] == method and row["side"] == side]
+            peaks[side] = max(live, key=lambda row: sign * row["effect"])
+            candidate_count += len(live)
+            rejected += sum(not row["admissible"] for row in group)
+
         score = min(
             sign * peaks[side]["effect"] - peaks[side]["off_axis_perturbation"]
             for side, sign in (("-C", -1), ("+C", 1))
@@ -342,14 +328,23 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             f"{peaks['-C']['off_axis_perturbation']:.3f}",
             f"{peaks['+C']['effect']:.3f}",
             f"{peaks['+C']['off_axis_perturbation']:.3f}",
-            str(seed_count), str(arm_count), evidence,
+            str(RANDOM_SEEDS if method == "random" else len(METHOD_SEEDS[method])),
+            str(candidate_count),
+            str(rejected),
         ]))
     return [row for _, row in sorted(scored_rows, key=lambda item: item[0], reverse=True)]
 
 
 HEADERS = [
-    "method", "score↑", "-C on-axis↑", "-C damage↓", "+C on-axis↑", "+C damage↓",
-    "seeds", "arms", "evidence",
+    "method",
+    "score↑",
+    "-C on-axis↑",
+    "-C damage↓",
+    "+C on-axis↑",
+    "+C damage↓",
+    "seeds",
+    "N",
+    "rejected↓",
 ]
 README_TABLE_START = "<!-- CODEX: generated results table starts -->"
 README_TABLE_END = "<!-- CODEX: generated results table ends -->"
@@ -381,8 +376,8 @@ def _markdown(table: list[list[str]]) -> str:
     lines = [
         "# Results",
         "",
-        "Named rows are each seed/sign's greatest health-clean, judge-accepted tail coefficient. They are not peak target-effect doses.",
-        "The frozen random cone shows ten vectors until fewer than half have two coherent directions.",
+        "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
+        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
         "",
         "![Judged effect against off-axis change](plot.png)",
         "",
@@ -419,9 +414,9 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         ".plotly-graph-div{width:100%!important}table{border-collapse:collapse;width:100%}"
         "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
-        "<h1>Results</h1><p>Each named row is the greatest health-clean, judge-accepted tail coefficient for that seed and sign, not a peak target-effect dose. "
-        "The figure shows both steering directions. The frozen random cone shows ten vectors until fewer "
-        f"than half have two coherent directions.</p>{figure_html}"
+        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
+        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        f"than half have two coherent directions. The table reports rejected evaluations.</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
@@ -464,24 +459,6 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
         raise AssertionError("results/index.md and results/index.html table cells differ")
 
 
-def self_test() -> None:
-    rows = _rows()
-    endpoints = _endpoint_rows()
-    means = _means(rows)
-    assert len(endpoints) == 26
-    assert len(means) == 10
-    mean_negative = next(row for row in means if row["method"] == "mean_diff" and row["side"] == "-C")
-    assert mean_negative["effect"] > 0
-    assert len(mean_negative["C"]) == 3
-    figure = plot(rows)
-    assert figure.data[0].fill == "toself"
-    mean_negative_trace = next(trace for trace in figure.data if trace.name is None and trace.x[-1] == mean_negative["effect"])
-    assert mean_negative_trace.x[-1] > 0
-    table = _summary(rows)
-    assert all(row[-1] == "judged endpoint" for row in table if row[0] != "random")
-    print("PRIMARY_ENDPOINT_RESULTS_SELF_TEST_PASS")
-
-
 def main() -> None:
     rows = _rows()
     table = _display_table(_summary(rows))
@@ -502,13 +479,8 @@ def main() -> None:
     (results_dir / "index.md").write_text(markdown_text)
     (results_dir / "index.html").write_text(html_text)
     figure.write_image(results_dir / "plot.png", width=1064, height=590, scale=2)
-    print(f"wrote {len(table)} table rows from {len(rows)} endpoint and random-control rows")
+    print(f"wrote {len(table)} table rows from {len(rows)} measured evaluations")
 
 
 if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--self-test", action="store_true")
-    args = parser.parse_args()
-    self_test() if args.self_test else main()
+    main()

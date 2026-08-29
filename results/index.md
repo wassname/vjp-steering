@@ -1,15 +1,15 @@
 # Results
 
-Named rows are each seed/sign's greatest health-clean, judge-accepted tail coefficient. They are not peak target-effect doses.
-The frozen random cone shows ten vectors until fewer than half have two coherent directions.
+All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
+The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.
 
 ![Judged effect against off-axis change](plot.png)
 
-| method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | arms | evidence |
+| method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| J_word | **-0.123** | **0.340** | 0.463 | 2.075 | 0.626 | 1 | 2 | judged endpoint |
-| *random* | -0.782 | -0.425 | 0.357 | 2.995 | **0.553** | 10 | 60 | frozen control |
-| vjp_mlp_up_shrink | -1.030 | -0.758 | 0.272 | 3.508 | 0.624 | 3 | 6 | judged endpoint |
-| pca | -1.600 | -1.149 | 0.452 | 4.085 | 0.848 | 3 | 6 | judged endpoint |
-| vjp_delta | -1.756 | -1.485 | **0.271** | 3.715 | 0.697 | 3 | 6 | judged endpoint |
-| mean_diff | -1.831 | -1.393 | 0.438 | **4.363** | 0.830 | 3 | 6 | judged endpoint |
+| vjp_delta | **+1.371** | **1.849** | 0.477 | 2.988 | 0.245 | 3 | 37 | 10 |
+| mean_diff | +0.789 | 1.492 | 0.703 | **4.370** | 0.695 | 3 | 60 | 24 |
+| vjp_mlp_up_shrink | +0.505 | 0.861 | 0.356 | 2.027 | 0.234 | 3 | 10 | 0 |
+| pca | +0.265 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
+| J_word | +0.078 | 0.275 | **0.197** | 1.392 | **0.222** | 1 | 8 | 2 |
+| *random* | -0.782 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |

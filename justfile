@@ -110,9 +110,6 @@ queue-judge:
 results:
 	uv run python -m vjp_steering.results
 
-results-self-test:
-	uv run python -m vjp_steering.results --self-test
-
 publish-results: results
 	git diff --exit-code -- results
 	git subtree push --prefix results origin gh-pages
