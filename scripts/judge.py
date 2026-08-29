@@ -299,14 +299,27 @@ PROVIDER = {
 }
 
 
-def _insufficient_credits(err: Exception, status_code: int | None) -> bool:
+def _error_text(err: Exception) -> str:
     body = getattr(err, "body", None) or {}
-    text = json.dumps(body).lower() if isinstance(body, dict) else str(body).lower()
-    return status_code == 402 or "insufficient" in text or "credit" in text or "quota" in text
+    return json.dumps(body).lower() if isinstance(body, dict) else str(body).lower()
+
+
+def _insufficient_credits(err: Exception, status_code: int | None) -> bool:
+    text = _error_text(err)
+    return status_code == 402 or any(
+        message in text
+        for message in ("insufficient credits", "out of credits", "quota exceeded", "credit limit exceeded")
+    )
+
+
+def _model_offline(err: Exception, status_code: int | None) -> bool:
+    text = _error_text(err)
+    return status_code == 503 and ("model_offline" in text or "model is currently busy" in text)
 
 
 async def request_with_rate_limit(client: AsyncOpenAI, content: str):
     rate_limit_attempt = 0
+    provider_unavailable_attempt = 0
     while True:
         try:
             return await client.chat.completions.create(
@@ -323,6 +336,16 @@ async def request_with_rate_limit(client: AsyncOpenAI, content: str):
             )
         except Exception as err:
             status_code = getattr(err, "status_code", None)
+            if _model_offline(err, status_code):
+                provider_unavailable_attempt += 1
+                retry_seconds = min(120, 15 * provider_unavailable_attempt)
+                logger.warning(
+                    "provider model offline attempt={} retry_seconds={}",
+                    provider_unavailable_attempt,
+                    retry_seconds,
+                )
+                await asyncio.sleep(retry_seconds)
+                continue
             if status_code != 429 or _insufficient_credits(err, status_code):
                 raise
             rate_limit_attempt += 1
