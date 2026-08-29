@@ -3,7 +3,7 @@
   "manifest": "outputs/endpoint_tail_manifest.json",
   "manifest_sha256": "c842bd5990876a76e3bebec526be84504f9bd7ee9b3237c89560ae880f1fecdc",
   "cache": "outputs/demo_judgments/judgments.jsonl",
-  "cache_sha256": "5bc4936bd3e07727c7c4a5d157f8288827d990f789a097f85f64f8b3fc99ca6d",
+  "cache_sha256": "0e50dd172bb58c92191a95949d53a191bfcf9681b9790f6153c6e57b63a0eb84",
   "judge_model": "deepseek/deepseek-v4-flash-0731",
   "rubric": "results-demo-perresponse-syco-v7",
   "cohort": {
@@ -14,5 +14,5 @@
   "acceptance_rule": "health_clean and mean_steered_off_axis <= 1.5",
   "cells": 305,
   "selected_arms": 26,
-  "ignored_later_duplicate_cache_records": 21636
+  "ignored_later_duplicate_cache_records": 21975
 }
