@@ -49,6 +49,19 @@ async def run() -> None:
     assert not responses
     assert len(record["raw_attempts"]) == 1
 
+    responses = [SimpleNamespace(choices=[]), SimpleNamespace(choices=[]), SimpleNamespace(choices=[])]
+    judge.request_with_rate_limit = request
+    judge.asyncio.sleep = sleep
+    try:
+        await judge.judge_one(None, row, "AB", 0)
+    except judge.DeferredCell:
+        pass
+    else:
+        raise AssertionError("three empty responses did not defer the cell")
+    finally:
+        judge.request_with_rate_limit = original_request
+        judge.asyncio.sleep = original_sleep
+
 
 asyncio.run(run())
 print("JUDGE_EMPTY_CHOICES_SELF_TEST_PASS")

@@ -16,6 +16,7 @@ import endpoint_tail_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
+DEFERRED = CACHE.with_name("deferred_judge_cells.jsonl")
 MODEL = os.environ.get("JUDGE_MODEL", "deepseek/deepseek-v4-flash-0731")  # override via env; latest is deepseek/deepseek-v4-flash
 RUBRIC = "results-demo-perresponse-syco-v7"
 METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink")
@@ -291,6 +292,12 @@ Response B:
 
 TRANSIENT_CODES = {408, 429, 500, 502, 503, 504, 524, 529}
 PARALLEL = 2
+
+
+class DeferredCell(Exception):
+    pass
+
+
 PROVIDER = {
     "order": ["mancer"],
     "allow_fallbacks": False,
@@ -403,14 +410,14 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             raise
         if not response.choices:
             empty_choice_attempt += 1
-            retry_seconds = min(120, 15 * empty_choice_attempt)
             logger.warning(
-                "empty choices cell={} attempt={} retry_seconds={}",
+                "empty choices cell={} attempt={}/3",
                 cache_key(row, order, pass_index),
                 empty_choice_attempt,
-                retry_seconds,
             )
-            await asyncio.sleep(retry_seconds)
+            if empty_choice_attempt == 3:
+                raise DeferredCell(f"empty choices after 3 attempts: {cache_key(row, order, pass_index)}")
+            await asyncio.sleep(15 * empty_choice_attempt)
             continue
         raw = response.choices[0].message.content
         reasoning = getattr(response.choices[0].message, "reasoning", None)
@@ -418,14 +425,14 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
         reasoning_attempts.append(reasoning)
         if raw is None:
             empty_choice_attempt += 1
-            retry_seconds = min(120, 15 * empty_choice_attempt)
             logger.warning(
-                "empty content cell={} attempt={} retry_seconds={}",
+                "empty content cell={} attempt={}/3",
                 cache_key(row, order, pass_index),
                 empty_choice_attempt,
-                retry_seconds,
             )
-            await asyncio.sleep(retry_seconds)
+            if empty_choice_attempt == 3:
+                raise DeferredCell(f"empty content after 3 attempts: {cache_key(row, order, pass_index)}")
+            await asyncio.sleep(15 * empty_choice_attempt)
             continue
         try:
             judgment = json.loads(raw)
@@ -479,11 +486,31 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     )
     lock = asyncio.Lock()
     done = 0
+    deferred = []
 
     async def run(cell):
         nonlocal done
-        async with semaphore:
-            record = await judge_one(client, *cell)
+        try:
+            async with semaphore:
+                record = await judge_one(client, *cell)
+        except DeferredCell as error:
+            row, order, pass_index = cell
+            async with lock:
+                deferred.append({
+                    "cache_key": cache_key(row, order, pass_index),
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "reason": str(error),
+                    "model": MODEL,
+                    "rubric_version": RUBRIC,
+                    "run": row["run"],
+                    "method": row["method"],
+                    "side": row["side"],
+                    "vignette": row["vignette"],
+                    "source": row["source"],
+                    "order": order,
+                    "pass": pass_index,
+                })
+            return
         async with lock:
             with CACHE.open("a") as file:
                 file.write(json.dumps(record, sort_keys=True) + "\n")
@@ -492,9 +519,16 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
                 logger.info("judge progress={}/{}", done, len(todo))
 
     semaphore = asyncio.Semaphore(PARALLEL)
-    for start in range(0, len(todo), 500):
-        await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
-    await client.close()
+    try:
+        for start in range(0, len(todo), 500):
+            await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
+    finally:
+        await client.close()
+    if deferred:
+        with DEFERRED.open("a") as file:
+            for record in deferred:
+                file.write(json.dumps(record, sort_keys=True) + "\n")
+        raise RuntimeError(f"JUDGE_DEFERRED cells={len(deferred)} report={DEFERRED}")
 
 
 def main() -> None:
