@@ -51,8 +51,9 @@ def score(record: dict) -> tuple[float, float, float]:
     )
 
 
-def cached_records(expected: dict[str, tuple[dict, str, int]]) -> dict[str, dict]:
+def cached_records(expected: dict[str, tuple[dict, str, int]]) -> tuple[dict[str, dict], int]:
     records = {}
+    duplicate_records = 0
     with CACHE.open() as file:
         for line in file:
             record = json.loads(line)
@@ -63,11 +64,14 @@ def cached_records(expected: dict[str, tuple[dict, str, int]]) -> dict[str, dict
             assert record["model"] == MODEL
             assert record["rubric_version"] == RUBRIC
             assert record["order"] == order and record["pass"] == pass_index
-            previous = records.setdefault(key, record)
-            assert previous["judgment"] == record["judgment"], f"conflicting cached judgment: {key}"
+            if key in records:
+                # PI: Use the first append-only record, not a later extra sample.
+                duplicate_records += 1
+                continue
+            records[key] = record
     missing = set(expected) - records.keys()
     assert not missing, f"endpoint cache incomplete: missing={len(missing)}"
-    return records
+    return records, duplicate_records
 
 
 def logical_cells(manifest_path: Path) -> tuple[dict, list[dict], dict[str, tuple[dict, str, int]]]:
@@ -98,7 +102,7 @@ def logical_cells(manifest_path: Path) -> tuple[dict, list[dict], dict[str, tupl
 
 def summarize(manifest_path: Path) -> tuple[dict, list[dict], list[dict]]:
     manifest, manifest_cells, expected = logical_cells(manifest_path)
-    cache = cached_records(expected)
+    cache, duplicate_records = cached_records(expected)
     judge_rows = endpoint_tail_manifest.materialize_judge_rows(manifest, endpoint_tail_manifest.cohort()[0])
     rows_by_cell = defaultdict(list)
     for row in judge_rows:
@@ -138,7 +142,7 @@ def summarize(manifest_path: Path) -> tuple[dict, list[dict], list[dict]]:
         endpoint["selected_reason"] = "greatest C with health_clean and mean_steered_off_axis <= 1.5"
         selected.append(endpoint)
     assert len(selected) == len(endpoint_tail_manifest.HISTORICAL_SIDES) + len(endpoint_tail_manifest.CONTINUATION_SIDES)
-    return manifest, cells, sorted(selected, key=lambda row: (row["method"], row["seed"], row["side"]))
+    return manifest, cells, sorted(selected, key=lambda row: (row["method"], row["seed"], row["side"])), duplicate_records
 
 
 def write_csv(path: Path, fields: tuple[str, ...], rows: list[dict]) -> None:
@@ -149,7 +153,7 @@ def write_csv(path: Path, fields: tuple[str, ...], rows: list[dict]) -> None:
 
 
 def export(manifest_path: Path, output_dir: Path) -> None:
-    manifest, cells, selected = summarize(manifest_path)
+    manifest, cells, selected, duplicate_records = summarize(manifest_path)
     output_dir.mkdir(parents=True, exist_ok=True)
     write_csv(output_dir / "cells.csv", CELL_FIELDS, cells)
     write_csv(output_dir / "selected.csv", SELECTED_FIELDS, selected)
@@ -165,6 +169,7 @@ def export(manifest_path: Path, output_dir: Path) -> None:
         "acceptance_rule": "health_clean and mean_steered_off_axis <= 1.5",
         "cells": len(cells),
         "selected_arms": len(selected),
+        "ignored_later_duplicate_cache_records": duplicate_records,
     }
     (output_dir / "provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     print(f"ENDPOINT_TAIL_EXPORT cells={len(cells)} selected_arms={len(selected)} output={output_dir}")
@@ -191,6 +196,14 @@ def self_test() -> None:
             assert str(error) == "endpoint cache incomplete: missing=1"
         else:
             raise AssertionError("missing judge cell did not fail")
+        first = {
+            "cache_key": "present", "model": MODEL, "rubric_version": RUBRIC, "order": "AB", "pass": 0,
+            "judgment": {"evidence": "first", "on_axis_A": 0.0, "on_axis_B": 0.0, "off_axis_A": 0.0, "off_axis_B": 0.0},
+        }
+        later = {**first, "judgment": {**first["judgment"], "evidence": "later", "on_axis_A": 1.0}}
+        CACHE.write_text("\n".join(json.dumps(record) for record in (first, later)) + "\n")
+        records, duplicates = cached_records({"present": ({}, "AB", 0)})
+        assert records["present"]["judgment"] == first["judgment"] and duplicates == 1
     CACHE = original_cache
     print("ENDPOINT_TAIL_EXPORT_SELF_TEST_PASS")
 
