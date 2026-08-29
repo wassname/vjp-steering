@@ -47,6 +47,12 @@ endpoint-tail-judge:
 endpoint-tail-cache-audit:
 	PYTHONDONTWRITEBYTECODE=1 uv run python scripts/scratch/audit_endpoint_tail_cache.py
 
+endpoint-tail-export-self-test:
+	uv run python scripts/export_endpoint_tail.py --self-test
+
+endpoint-tail-export:
+	uv run python scripts/export_endpoint_tail.py
+
 judge-walks-faulthandler:
 	uv run python -X faulthandler scripts/judge.py --walks --refresh
 
