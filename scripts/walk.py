@@ -20,6 +20,7 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from vjp_steering import j_word, vjp_delta, vjp_mlp_up_shrink
+from vjp_steering.vjp import vjp_mlp_up_left_right_shrink
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,7 +48,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -353,6 +354,17 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
             max_length=args.max_length,
             skip_first=16,
         )
+    elif args.method == "vjp_mlp_up_left_right_shrink":
+        vector, metadata = vjp_mlp_up_left_right_shrink(
+            model,
+            tokenizer,
+            positive,
+            negative,
+            target_layer=args.target_layer,
+            batch_size=batch_size,
+            max_length=args.max_length,
+            skip_first=16,
+        )
     elif args.method == "vjp_delta":
         vector = vjp_delta(
             model,
@@ -380,7 +392,8 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
             max_length=args.max_length,
         )
         metadata = {}
-    vector.cfg.dtype = getattr(torch, args.dtype)
+    for extracted_vector in vector.values() if isinstance(vector, dict) else (vector,):
+        extracted_vector.cfg.dtype = getattr(torch, args.dtype)
     return vector, metadata
 
 
@@ -533,11 +546,19 @@ def run_rung(args: argparse.Namespace) -> None:
 
     logger.info("stage=extract")
     started = time.monotonic()
-    vector, extraction_metadata = extract_vector(args, model, tokenizer, layers, positive, negative)
+    extracted, extraction_metadata = extract_vector(args, model, tokenizer, layers, positive, negative)
     extraction_seconds = time.monotonic() - started
-    vector_file = output / f"{args.method}_vector.safetensors"
-    vector.save(str(vector_file))
-    vector_sha256 = hashlib.sha256(vector_file.read_bytes()).hexdigest()
+    vectors = extracted if isinstance(extracted, dict) else {"+C": extracted, "-C": extracted}
+    vector_files = {}
+    vector_sha256 = {}
+    vector_content_sha256 = {}
+    for side, vector in vectors.items():
+        side_slug = side.replace("+", "plus").replace("-", "minus")
+        vector_file = output / f"{args.method}_{side_slug}_vector.safetensors"
+        vector.save(str(vector_file))
+        vector_files[side] = vector_file.name
+        vector_sha256[side] = hashlib.sha256(vector_file.read_bytes()).hexdigest()
+        vector_content_sha256[side] = vector_hash(vector)
 
     prompts = generation_inputs(tokenizer, rows)
     first_length = len(tokenizer(prompts[0], add_special_tokens=False)["input_ids"])
@@ -547,15 +568,16 @@ def run_rung(args: argparse.Namespace) -> None:
         "ELSE generation scores are invalid.\n=== generation input 0 ===\n{}\n=== end input ===",
         prompts[0],
     )
-    assert_hook_changes_logits(model, tokenizer, vector, prompts[0], args.coefficient)
+    assert_hook_changes_logits(model, tokenizer, vectors["+C"], prompts[0], args.coefficient)
+    assert_hook_changes_logits(model, tokenizer, vectors["-C"], prompts[0], -args.coefficient)
 
     logger.info("stage=generate side=bare")
     bare = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     logger.info("stage=generate side=+C")
-    with vector(model, C=args.coefficient):
+    with vectors["+C"](model, C=args.coefficient):
         positive_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     logger.info("stage=generate side=-C")
-    with vector(model, C=-args.coefficient):
+    with vectors["-C"](model, C=-args.coefficient):
         negative_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     assert any(a != b for a, b in zip(bare, positive_answers, strict=True))
     assert any(a != b for a, b in zip(bare, negative_answers, strict=True))
@@ -585,8 +607,8 @@ def run_rung(args: argparse.Namespace) -> None:
         )
         logger.info("=== generation output side={} ===\n{}\n=== end output ===", side, answers[0])
 
-    artifact_layers = extraction_metadata["source_layers"] if args.method == "vjp_mlp_up_shrink" else layers
-    target_layer = vector.cfg.target_layer if args.method in ("vjp_delta", "vjp_mlp_up_shrink") else None
+    artifact_layers = extraction_metadata["source_layers"] if args.method in ("vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink") else layers
+    target_layer = vectors["+C"].cfg.target_layer if args.method in ("vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink") else None
     artifact = {
         "schema": "fixed_c_pair_v1",
         "status": args.status,
@@ -613,9 +635,9 @@ def run_rung(args: argparse.Namespace) -> None:
         "max_new_tokens": args.max_new_tokens,
         "extraction_sample_id": sample_id,
         "extraction_seconds": extraction_seconds,
-        "vector_file": vector_file.name,
+        "vector_files": vector_files,
         "vector_sha256": vector_sha256,
-        "vector_content_sha256": vector_hash(vector),
+        "vector_content_sha256": vector_content_sha256,
         "stop_rule": "unfinished+role_leak+repetition",
         "demo_stats": stats,
         "breakdown_reasons": {"+C": reasons["+C"], "-C": reasons["-C"]},

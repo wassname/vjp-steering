@@ -1,5 +1,6 @@
 """Render the public result table and the sycophancy Pareto plot from one CSV."""
 
+import argparse
 import csv
 import html
 import math
@@ -9,6 +10,8 @@ from typing import Iterable
 from pathlib import Path
 
 import plotly.graph_objects as go
+
+from vjp_steering.experiment import DEV, FULL, METHOD, data_dir, results_dir
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +36,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "vjp_mlp_up_shrink": "MLP-up VJP",
+    "vjp_mlp_up_left_right_shrink": "MLP-up per-side VJP",
 }
 COHORT_FIELDS = (
     "model",
@@ -45,14 +49,18 @@ COHORT_FIELDS = (
 # do not change the prompts, model, or judge cohort being compared.
 
 
-def _rows(path: Path = DATA) -> list[dict]:
+def _rows(
+    path: Path = DATA,
+    methods: tuple[str, ...] = METHODS,
+    method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+) -> list[dict]:
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle)
         if set(reader.fieldnames or ()) != set(FIELDS):
             raise ValueError(f"results columns must be {FIELDS}")
         rows = list(reader)
-    if {row["method"] for row in rows} != set(METHODS):
-        raise ValueError("results must contain vjp_delta, mean_diff, pca, and random")
+    if {row["method"] for row in rows} != set(methods):
+        raise ValueError(f"results methods differ from expected {methods}")
     for field in COHORT_FIELDS:
         values = {row[field] for row in rows}
         if len(values) != 1:
@@ -65,17 +73,21 @@ def _rows(path: Path = DATA) -> list[dict]:
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"].lower() == "true"
-    if len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
+    if "random" in methods and len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
         raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
-    for method, seeds in METHOD_SEEDS.items():
+    for method, seeds in method_seeds.items():
         if {row["seed"] for row in rows if row["method"] == method} != seeds:
             raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
     return rows
 
 
-def _means(rows: list[dict]) -> list[dict]:
+def _means(
+    rows: list[dict],
+    methods: tuple[str, ...] = METHODS,
+    method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+) -> list[dict]:
     points = []
-    for method in METHODS[:-1]:
+    for method in (method for method in methods if method != "random"):
         for C in sorted({row["C"] for row in rows if row["method"] == method}):
             for side in ("+C", "-C"):
                 rows_at_dose = [
@@ -83,7 +95,7 @@ def _means(rows: list[dict]) -> list[dict]:
                     if row["method"] == method and row["C"] == C and row["side"] == side
                     and row["admissible"]
                 ]
-                if {row["seed"] for row in rows_at_dose} == METHOD_SEEDS[method]:
+                if {row["seed"] for row in rows_at_dose} == method_seeds[method]:
                     points.append({"method": method, "C": C, "side": side,
                                    "effect": mean(row["effect"] for row in rows_at_dose),
                                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
@@ -171,43 +183,50 @@ def place_labels(
     return annotations
 
 
-def plot(rows: list[dict]) -> go.Figure:
+def plot(
+    rows: list[dict],
+    methods: tuple[str, ...] = METHODS,
+    method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+    title: str = "VJP steering on Bullshit Bench v2",
+) -> go.Figure:
     figure = go.Figure()
-    means = _means(rows)
+    means = _means(rows, methods, method_seeds)
     valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
     margin = {"l": 75, "r": 10, "t": 40, "b": 58}
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
-    random_seeds = sorted({row["seed"] for row in random})
-    random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
-    cone = [(0.0, 0.0, 0.0, 0.0)]
-    for C in sorted({row["C"] for row in random}):
-        coherent = [
-            seed for seed in random_seeds
-            if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
-            and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
-        ]
-        if len(coherent) < RANDOM_SEEDS // 2:
-            break
-        points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
-        effects = sorted(row["effect"] for row in points)
-        cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
-                     effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
-    figure.add_trace(go.Scatter(
-        x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
-        y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
-        fill="toself", fillcolor="rgba(150,150,150,0.22)",
-        line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
-        hoverinfo="skip", showlegend=False,
-    ))
+    if random:
+        random_seeds = sorted({row["seed"] for row in random})
+        random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
+        cone = [(0.0, 0.0, 0.0, 0.0)]
+        for C in sorted({row["C"] for row in random}):
+            coherent = [
+                seed for seed in random_seeds
+                if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
+                and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
+            ]
+            if len(coherent) < RANDOM_SEEDS // 2:
+                break
+            points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
+            effects = sorted(row["effect"] for row in points)
+            cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
+                         effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
+        figure.add_trace(go.Scatter(
+            x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
+            y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
+            fill="toself", fillcolor="rgba(150,150,150,0.22)",
+            line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
+            hoverinfo="skip", showlegend=False,
+        ))
     colors = {
         "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
+        "vjp_mlp_up_left_right_shrink": "#6f4aa8",
     }
     displayed_endpoints = {}
-    for method in METHODS[:-1]:
+    for method in (method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
             continue
@@ -252,12 +271,17 @@ def plot(rows: list[dict]) -> go.Figure:
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
-    labels = [
-        {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
-        {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
-        {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-        {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
-    ]
+    if methods == METHODS:
+        labels = [
+            {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
+            {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
+            {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
+            {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
+        ]
+        label_methods = ("J_word", "vjp_mlp_up_shrink")
+    else:
+        labels = []
+        label_methods = tuple(method for method in methods if method != "random")
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
@@ -265,7 +289,7 @@ def plot(rows: list[dict]) -> go.Figure:
             "text": f"{LABELS[method]} {side}",
             "color": colors[method],
         }
-        for method in ("J_word", "vjp_mlp_up_shrink")
+        for method in label_methods
         for side in ("+C", "-C")
         if (method, side) in displayed_endpoints
     )
@@ -275,15 +299,16 @@ def plot(rows: list[dict]) -> go.Figure:
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
-    figure.add_annotation(
-        x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
-        align="center", font={"color": "#666666", "size": 14},
-    )
+    if random:
+        figure.add_annotation(
+            x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
+            align="center", font={"color": "#666666", "size": 14},
+        )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
     figure.update_layout(
-        title={"text": "VJP steering on Bullshit Bench v2", "x": 0.5, "xanchor": "center"},
+        title={"text": title, "x": 0.5, "xanchor": "center"},
         height=590, margin=margin,
         font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
@@ -292,10 +317,14 @@ def plot(rows: list[dict]) -> go.Figure:
     return figure
 
 
-def _summary(rows: list[dict]) -> list[list[str]]:
-    means = _means(rows)
+def _summary(
+    rows: list[dict],
+    methods: tuple[str, ...] = METHODS,
+    method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+) -> list[list[str]]:
+    means = _means(rows, methods, method_seeds)
     scored_rows = []
-    for method in METHODS:
+    for method in methods:
         peaks = {}
         candidate_count = 0
         rejected = 0
@@ -328,7 +357,7 @@ def _summary(rows: list[dict]) -> list[list[str]]:
             f"{peaks['-C']['off_axis_perturbation']:.3f}",
             f"{peaks['+C']['effect']:.3f}",
             f"{peaks['+C']['off_axis_perturbation']:.3f}",
-            str(RANDOM_SEEDS if method == "random" else len(METHOD_SEEDS[method])),
+            str(RANDOM_SEEDS if method == "random" else len(method_seeds[method])),
             str(candidate_count),
             str(rejected),
         ]))
@@ -372,12 +401,17 @@ def _markdown_table(table: list[list[str]]) -> str:
     return "\n".join(lines)
 
 
-def _markdown(table: list[list[str]]) -> str:
+def _markdown(
+    table: list[list[str]],
+    intro: tuple[str, ...] = (
+        "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
+        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+    ),
+) -> str:
     lines = [
         "# Results",
         "",
-        "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
-        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+        *intro,
         "",
         "![Judged effect against off-axis change](plot.png)",
         "",
@@ -395,7 +429,15 @@ def _update_readme(table: list[list[str]]) -> None:
     path.write_text(text[:start] + generated + text[end:])
 
 
-def _html(table: list[list[str]], figure_html: str) -> str:
+def _html(
+    table: list[list[str]],
+    figure_html: str,
+    intro: str = (
+        "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
+        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
+        "than half have two coherent directions. The table reports rejected evaluations."
+    ),
+) -> str:
     def cell(cell: str) -> str:
         if cell.startswith("**") and cell.endswith("**"):
             return f"<strong>{html.escape(cell[2:-2])}</strong>"
@@ -414,9 +456,7 @@ def _html(table: list[list[str]], figure_html: str) -> str:
         ".plotly-graph-div{width:100%!important}table{border-collapse:collapse;width:100%}"
         "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
-        "<h1>Results</h1><p>All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
-        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
-        f"than half have two coherent directions. The table reports rejected evaluations.</p>{figure_html}"
+        f"<h1>Results</h1><p>{intro}</p>{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
     )
 
@@ -459,7 +499,60 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
         raise AssertionError("results/index.md and results/index.html table cells differ")
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--experiment-id")
+    parser.add_argument("--profile", choices=("dev", "full"))
+    return parser.parse_args()
+
+
+def render_experiment(experiment_id: str, profile_name: str) -> None:
+    profile_ = DEV if profile_name == "dev" else FULL
+    methods = (METHOD,)
+    method_seeds = {METHOD: {0}}
+    rows = _rows(data_dir(profile_, experiment_id) / "results.csv", methods, method_seeds)
+    table = _display_table(_summary(rows, methods, method_seeds))
+    status = "DEV" if profile_name == "dev" else "FORMATIVE"
+    intro_line = (
+        f"{status} evidence for {METHOD}: {profile_.cohort_size} questions, "
+        f"orders={','.join(profile_.orders)}, passes={profile_.passes}."
+    )
+    markdown_text = _markdown(table, (intro_line, "This output is separate from the primary publication result."))
+    figure = plot(
+        rows,
+        methods,
+        method_seeds,
+        title=f"{status}: per-side MLP-up steering",
+    )
+    figure_html = figure.to_html(
+        full_html=False,
+        include_plotlyjs="cdn",
+        default_width="100%",
+        config={"responsive": True},
+        div_id=f"{profile_name}-results-plot",
+    )
+    html_text = _html(table, figure_html, intro_line + " This output is separate from the primary publication result.")
+    _check_equivalent(markdown_text, html_text)
+    output = results_dir(profile_, experiment_id)
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "index.md").write_text(markdown_text)
+    (output / "index.html").write_text(html_text)
+    figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+    print(
+        f"EXPERIMENT_RENDER_COMPLETE id={experiment_id} profile={profile_name} "
+        f"rows={len(rows)} output={output}"
+    )
+
+
 def main() -> None:
+    args = parse_args()
+    if args.experiment_id is not None:
+        if args.profile is None:
+            raise ValueError("experiment render needs --experiment-id and --profile")
+        render_experiment(args.experiment_id, args.profile)
+        return
+    if args.profile is not None:
+        raise ValueError("--profile requires --experiment-id")
     rows = _rows()
     table = _display_table(_summary(rows))
     markdown_text = _markdown(table)
@@ -474,11 +567,11 @@ def main() -> None:
     html_text = _html(table, figure_html)
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)
-    results_dir = ROOT / "results"
-    results_dir.mkdir(exist_ok=True)
-    (results_dir / "index.md").write_text(markdown_text)
-    (results_dir / "index.html").write_text(html_text)
-    figure.write_image(results_dir / "plot.png", width=1064, height=590, scale=2)
+    output = ROOT / "results"
+    output.mkdir(exist_ok=True)
+    (output / "index.md").write_text(markdown_text)
+    (output / "index.html").write_text(html_text)
+    figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
     print(f"wrote {len(table)} table rows from {len(rows)} measured evaluations")
 
 

@@ -34,6 +34,18 @@ class JWord:
     apply = staticmethod(VjpDelta.apply)
 
 
+@register_config
+@dataclass
+class VjpMlpUpLeftRightShrinkC(VjpDeltaC):
+    method: str = "vjp_mlp_up_left_right_shrink"
+
+
+@register
+class VjpMlpUpLeftRightShrink:
+    name = "vjp_mlp_up_left_right_shrink"
+    apply = staticmethod(VjpDelta.apply)
+
+
 J_WORD_LENS_REPO = "neuronpedia/jacobian-lens"
 J_WORD_LENS_REVISION = "qwen-n1000"
 J_WORD_LENS_FILE = "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
@@ -136,6 +148,7 @@ def _batch_gradients(
 ) -> tuple[
     dict[int, Float[torch.Tensor, "b s d"]],
     Bool[torch.Tensor, "b s"],
+    dict[int, Float[torch.Tensor, "b s d"]],
 ]:
     encoded = _encode(model, tokenizer, prompts, max_length)
     valid = _valid_mask(encoded["attention_mask"], skip_first)
@@ -158,7 +171,8 @@ def _batch_gradients(
                 [found[layer] for layer in layers],
                 grad_outputs=expanded * valid.unsqueeze(-1),
             )
-    return dict(zip(layers, gradients, strict=True)), valid
+            activations = {layer: found[layer].detach() for layer in layers}
+    return dict(zip(layers, gradients, strict=True)), valid, activations
 
 
 def _class_mean_vjp(
@@ -175,7 +189,7 @@ def _class_mean_vjp(
     totals = {layer: torch.zeros_like(cotangent, dtype=torch.float32) for layer in layers}
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
-        gradients, valid = _batch_gradients(
+        gradients, valid, _ = _batch_gradients(
             model,
             tokenizer,
             batch,
@@ -207,7 +221,7 @@ def _class_prompt_vjp(
     values = {layer: [] for layer in layers}
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
-        gradients, valid = _batch_gradients(
+        gradients, valid, _ = _batch_gradients(
             model,
             tokenizer,
             batch,
@@ -222,6 +236,62 @@ def _class_prompt_vjp(
         for layer, gradient in gradients.items():
             values[layer].append((gradient.float() * valid.unsqueeze(-1)).sum(dim=1) / counts)
     return {layer: torch.cat(layer_values) for layer, layer_values in values.items()}
+
+
+def _class_prompt_vjp_scale(
+    model,
+    tokenizer,
+    prompts: list[str],
+    layers: tuple[int, ...],
+    target_layer: int,
+    cotangent: Float[torch.Tensor, " d"],
+    batch_size: int,
+    max_length: int,
+    skip_first: int,
+    source_readout: str,
+) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor]]:
+    gradients_by_layer = {layer: [] for layer in layers}
+    activation_sum = {layer: None for layer in layers}
+    activation_square_sum = {layer: None for layer in layers}
+    activation_count = 0
+    for start in range(0, len(prompts), batch_size):
+        batch = prompts[start : start + batch_size]
+        gradients, valid, activations = _batch_gradients(
+            model,
+            tokenizer,
+            batch,
+            layers,
+            target_layer,
+            cotangent,
+            skip_first,
+            max_length,
+            source_readout=source_readout,
+        )
+        mask = valid.unsqueeze(-1)
+        counts = valid.sum(dim=1, keepdim=True).float()
+        activation_count += int(valid.sum())
+        for layer in layers:
+            gradient = gradients[layer].float()
+            gradients_by_layer[layer].append((gradient * mask).sum(dim=1) / counts)
+            activation = activations[layer].double()
+            double_mask = mask.to(dtype=torch.float64)
+            batch_sum = (activation * double_mask).sum(dim=(0, 1)).cpu()
+            batch_square_sum = (activation.square() * double_mask).sum(dim=(0, 1)).cpu()
+            activation_sum[layer] = batch_sum if activation_sum[layer] is None else activation_sum[layer] + batch_sum
+            activation_square_sum[layer] = (
+                batch_square_sum
+                if activation_square_sum[layer] is None
+                else activation_square_sum[layer] + batch_square_sum
+            )
+    if activation_count == 0:
+        raise ValueError("mlp-up activation scale has no valid positions")
+    prompt_gradients = {layer: torch.cat(values).cpu() for layer, values in gradients_by_layer.items()}
+    activation_scale = {}
+    for layer in layers:
+        mean = activation_sum[layer] / activation_count
+        variance = activation_square_sum[layer] / activation_count - mean.square()
+        activation_scale[layer] = variance.clamp(min=0).sqrt().float()
+    return prompt_gradients, activation_scale
 
 
 def j_word(
@@ -346,6 +416,145 @@ def vjp_mlp_up_shrink(
         "global_norm": total_norm.item(),
         "live_coordinates": {str(layer): int((weight > 0).sum()) for layer, weight in weights.items()},
     }
+
+
+def _layer_tensor_sha256(tensors: dict[int, torch.Tensor]) -> str:
+    digest = hashlib.sha256()
+    for layer, tensor in sorted(tensors.items()):
+        value = tensor.detach().contiguous().cpu()
+        digest.update(f"{layer}:{value.dtype}:{tuple(value.shape)}".encode())
+        digest.update(value.view(torch.uint8).numpy().tobytes())
+    return digest.hexdigest()
+
+
+def vjp_mlp_up_left_right_shrink(
+    model,
+    tokenizer,
+    positive_prompts: list[str],
+    negative_prompts: list[str],
+    *,
+    target_layer: int | None = None,
+    batch_size: int = 8,
+    max_length: int = 384,
+    skip_first: int = 16,
+) -> tuple[dict[str, Vector], dict[str, object]]:
+    """Extract origin-conditioned MLP-up rays with per-side shrinkage and scale."""
+    model.requires_grad_(False)
+    if len(positive_prompts) != len(negative_prompts) or len(positive_prompts) < 2:
+        raise ValueError("per-side shrinkage needs at least two paired persona prompts")
+    target_layer = len(_blocks(model)) - 3 if target_layer is None else target_layer
+    layers = tuple(range(target_layer))
+    cotangent = _target_mean(
+        model, tokenizer, positive_prompts, target_layer, batch_size, max_length
+    ) - _target_mean(
+        model, tokenizer, negative_prompts, target_layer, batch_size, max_length
+    )
+    positive, positive_scale = _class_prompt_vjp_scale(
+        model, tokenizer, positive_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj",
+    )
+    negative, negative_scale = _class_prompt_vjp_scale(
+        model, tokenizer, negative_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj",
+    )
+    samples = {"+C": negative, "-C": positive}
+    scales = {"+C": negative_scale, "-C": positive_scale}
+    vectors = {}
+    metadata = {
+        "source_readout": "mlp.up_proj",
+        "delta_estimator": "origin_conditioned_per_side_shrink",
+        "normalization": "global_activation_scaled",
+        "target_layer": target_layer,
+        "source_layers": list(layers),
+        "sides": {},
+    }
+    names = {layer: "mlp.up_proj" for layer in layers}
+    flattened = {}
+    for side in ("+C", "-C"):
+        means = {layer: samples[side][layer].mean(0) for layer in layers}
+        weights = {
+            layer: (
+                1
+                - samples[side][layer].var(0, unbiased=True)
+                / means[layer].square().clamp(min=1e-30)
+            ).clamp(min=0)
+            for layer in layers
+        }
+        raw = {layer: means[layer] * weights[layer] for layer in layers}
+        activation_norm = torch.stack(
+            [(scales[side][layer] * raw[layer]).norm() for layer in layers]
+        ).norm()
+        if not torch.isfinite(activation_norm) or activation_norm == 0:
+            raise ValueError(f"mlp-up {side} activation-scaled norm is zero or nonfinite")
+        directions = {
+            layer: scales[side][layer].square() * raw[layer] / activation_norm
+            for layer in layers
+        }
+        if not all(torch.isfinite(direction).all() for direction in directions.values()):
+            raise ValueError(f"mlp-up {side} direction is nonfinite")
+        vectors[side] = Vector(
+            VjpMlpUpLeftRightShrinkC(
+                layers=layers,
+                target_submodule="mlp.up_proj",
+                target_layer=target_layer,
+            ),
+            {f"layers.{layer}.{names[layer]}": {} for layer in layers},
+            {
+                f"layers.{layer}.{names[layer]}": {"v": directions[layer].unsqueeze(0)}
+                for layer in layers
+            },
+        )
+        flattened[side] = torch.cat([directions[layer].flatten() for layer in layers])
+        energy = torch.cat([direction.square().flatten() for direction in directions.values()])
+        standardized_energy = torch.cat([
+            torch.where(
+                scales[side][layer] > 0,
+                (directions[layer] / scales[side][layer]).square(),
+                torch.zeros_like(directions[layer]),
+            ).flatten()
+            for layer in layers
+        ])
+        sorted_energy = energy.sort(descending=True).values
+        total_energy = energy.sum()
+        standardized_total = standardized_energy.sum()
+        metadata["sides"][side] = {
+            "conditioning_class": "negative" if side == "+C" else "positive",
+            "activation_weighted_gradient_norm": activation_norm.item(),
+            "shrinkage_weight_sha256": _layer_tensor_sha256(weights),
+            "activation_scale_sha256": _layer_tensor_sha256(scales[side]),
+            "direction_sha256": _layer_tensor_sha256(directions),
+            "live_coordinates": {
+                str(layer): int((weights[layer] > 0).sum()) for layer in layers
+            },
+            "activation_scale_mean": {
+                str(layer): scales[side][layer].mean().item() for layer in layers
+            },
+            "standardized_intervention_norm": standardized_total.sqrt().item(),
+            "layer_energy": {
+                str(layer): (directions[layer].square().sum() / total_energy).item()
+                for layer in layers
+            },
+            "top_coordinate_energy": {
+                "top1": (sorted_energy[:1].sum() / total_energy).item(),
+                "top10": (sorted_energy[:10].sum() / total_energy).item(),
+                "top100": (sorted_energy[:100].sum() / total_energy).item(),
+                "top1000": (sorted_energy[:1000].sum() / total_energy).item(),
+            },
+        }
+    metadata["stored_ray_cosine_descriptive_only"] = torch.nn.functional.cosine_similarity(
+        flattened["+C"], flattened["-C"], dim=0
+    ).item()
+    metadata["applied_side_cosine_descriptive_only"] = torch.nn.functional.cosine_similarity(
+        flattened["+C"], -flattened["-C"], dim=0
+    ).item()
+    logger.info(
+        "vjp_mlp_up_left_right_shrink target={} layers={} live_plus={} live_minus={}",
+        target_layer,
+        len(layers),
+        sum(metadata["sides"]["+C"]["live_coordinates"].values()),
+        sum(metadata["sides"]["-C"]["live_coordinates"].values()),
+    )
+    return vectors, metadata
 
 
 def vjp_delta(

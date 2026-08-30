@@ -49,6 +49,61 @@ def run(argv: list[str]) -> str:
     return certificate.read_text() if certificate.exists() else ""
 
 
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=24 * 60 * 60,
+)
+def run_experiment(argv: list[str]) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    model = argv[argv.index("--model") + 1]
+    snapshot_download(model)
+    try:
+        subprocess.run(
+            [sys.executable, "scripts/experiment.py", "vjp_mlp_up_left_right_shrink", "--gpu-stage", *argv],
+            cwd="/repo",
+            check=True,
+        )
+    finally:
+        cache.commit()
+    experiment_id = argv[argv.index("--experiment-id") + 1]
+    return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
+
+
+@app.local_entrypoint()
+def experiment(
+    experiment_id: str,
+    profile: str,
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    n_pairs: int = 256,
+    batch_size: int = 32,
+    extract_batch_size: int = 8,
+    max_length: int = 384,
+    max_new_tokens: int = 512,
+):
+    if profile not in {"dev", "full"}:
+        raise ValueError("profile must be dev or full")
+    argv = [
+        "--experiment-id", experiment_id,
+        "--model", model,
+        "--dtype", dtype,
+        "--n-pairs", str(n_pairs),
+        "--batch-size", str(batch_size),
+        "--extract-batch-size", str(extract_batch_size),
+        "--max-length", str(max_length),
+        "--max-new-tokens", str(max_new_tokens),
+    ]
+    if profile == "dev":
+        argv.append("--dev")
+    manifest = json.loads(run_experiment.remote(argv))
+    print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={sum(len(x) for x in manifest['cells'].values())}")
+
+
 @app.local_entrypoint()
 def main(
     walk_id: str,

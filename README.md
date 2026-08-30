@@ -95,7 +95,16 @@ just export <walk-id>        # outputs + judge cache -> data/results.csv
 just results                 # data/results.csv -> README + results/
 ```
 
-Use `just modal-sweeps <walk-id>` instead of `just queue-sweeps` to generate on Modal. `data/results.csv` is the committed input to the publication renderer. Completed endpoint-tail correction code and evidence are isolated under `scripts/scratch/endpoint_tail/` and `docs/slop/audit/20260829_endpoint_tail/`.
+Use `just modal-sweeps <walk-id>` instead of `just queue-sweeps` to generate on Modal. `data/results.csv` is the committed input to the publication renderer. Completed endpoint-tail correction code and evidence are isolated under `docs/slop/audit/20260829_endpoint_tail/`.
+
+New formative methods use one resumable entrypoint:
+
+```bash
+just experiment vjp_mlp_up_left_right_shrink --dev  # 15-question DEV plot and table
+just experiment vjp_mlp_up_left_right_shrink        # resume DEV, then confirm full endpoints
+```
+
+The command runs GPU extraction and generation on Modal, then judges locally through OpenRouter. DEV and formative outputs stay separate from `data/results.csv` and the primary figure.
 
 <!-- PI: updated the repository path and extraction-seed caveat on 2026-08-29. -->
 

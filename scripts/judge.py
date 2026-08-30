@@ -12,6 +12,8 @@ from pathlib import Path
 from loguru import logger
 from openai import APIConnectionError, APITimeoutError, AsyncOpenAI, AuthenticationError
 
+from vjp_steering.experiment import DEV, FULL, data_dir, experiment_dir
+
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
 DEFERRED = CACHE.with_name("deferred_judge_cells.jsonl")
@@ -85,6 +87,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--walks", action="store_true")
     parser.add_argument("--walk-id")
     parser.add_argument("--run", action="append", default=[])
+    parser.add_argument("--experiment-id")
+    parser.add_argument("--profile", choices=("dev", "full"))
+    parser.add_argument("--side", choices=("+C", "-C"))
+    parser.add_argument("--coefficient", type=float)
     return parser.parse_args()
 
 
@@ -218,11 +224,87 @@ def manifest(run_names: list[str], walks: bool = False, walk_id: str | None = No
     return rows
 
 
-def required_cells(rows: list[dict]) -> dict[str, tuple[dict, str, int]]:
+def experiment_rows(
+    experiment_id: str,
+    profile_name: str,
+    side_filter: str | None = None,
+    coefficient_filter: float | None = None,
+) -> list[dict]:
+    profile_ = DEV if profile_name == "dev" else FULL
+    root = experiment_dir(experiment_id)
+    manifest = json.loads((root / "manifest.json").read_text())
+    bare_records = [json.loads(line) for line in (root / manifest["bare"]["path"]).read_text().splitlines()]
+    bare = {record["scenario"]: record for record in bare_records[: profile_.cohort_size]}
+    if len(bare) != profile_.cohort_size:
+        raise ValueError(f"{profile_name} bare cohort is incomplete")
+    if profile_name == "dev":
+        candidates = {
+            side: [cell["coefficient"] for cell in manifest["cells"][side].values()]
+            for side in ("+C", "-C")
+        }
+    else:
+        selected = json.loads((data_dir(DEV, experiment_id) / "selected.json").read_text())
+        candidates = {
+            side: [selected["sides"][side]["selected_C"]]
+            for side in ("+C", "-C")
+        }
+    if side_filter is not None:
+        candidates = {side_filter: candidates[side_filter]}
+    if coefficient_filter is not None:
+        if side_filter is None:
+            raise ValueError("--coefficient requires --side")
+        candidates = {side_filter: [coefficient_filter]}
+    rows = []
+    for side, coefficients in candidates.items():
+        for coefficient in sorted(set(coefficients)):
+            cell = min(
+                manifest["cells"][side].values(),
+                key=lambda value: abs(value["coefficient"] - coefficient),
+            )
+            if not isclose(cell["coefficient"], coefficient, rel_tol=1e-10):
+                raise ValueError(f"missing generated cell {side} C={coefficient}")
+            records = [
+                json.loads(line)
+                for line in (root / cell["path"]).read_text().splitlines()
+            ][: profile_.cohort_size]
+            if len(records) != profile_.cohort_size:
+                raise ValueError(f"incomplete {profile_name} cell {side} C={coefficient}")
+            for record in records:
+                bare_record = bare[record["scenario"]]
+                rows.append({
+                    "run": experiment_id,
+                    "method": manifest["method"],
+                    "side": side,
+                    "coefficient": coefficient,
+                    "vignette": record["scenario"],
+                    "prompt": bare_record["prompt"],
+                    "bare": bare_record["text"],
+                    "steered": record["text"],
+                    "source": str(root / cell["path"]),
+                    "profile": profile_name,
+                })
+    expected = sum(len(values) for values in candidates.values()) * profile_.cohort_size
+    if len(rows) != expected:
+        raise ValueError(f"experiment manifest produced {len(rows)} rows, expected {expected}")
+    logger.info(
+        "experiment manifest id={} profile={} cells={} demo_sides={}",
+        experiment_id,
+        profile_name,
+        sum(len(values) for values in candidates.values()),
+        len(rows),
+    )
+    return rows
+
+
+def required_cells(
+    rows: list[dict],
+    orders: tuple[str, ...] = ("AB", "BA"),
+    passes: int = 2,
+) -> dict[str, tuple[dict, str, int]]:
     cells = {}
     for row in rows:
-        for order in ("AB", "BA"):
-            for pass_index in range(2):
+        for order in orders:
+            for pass_index in range(passes):
                 cells.setdefault(cache_key(row, order, pass_index), (row, order, pass_index))
     return cells
 
@@ -537,10 +619,23 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
 
 def main() -> None:
     args = parse_args()
-    if sum((bool(args.run), args.walks, args.walk_id is not None)) != 1:
-        raise ValueError("select exactly one of --run, --walks, or --walk-id")
-    rows = manifest(args.run, args.walks, args.walk_id)
-    cells = required_cells(rows)
+    legacy_selection = sum((bool(args.run), args.walks, args.walk_id is not None))
+    if args.experiment_id is not None:
+        if legacy_selection or args.profile is None:
+            raise ValueError("experiment judging needs --experiment-id and --profile only")
+        profile_ = DEV if args.profile == "dev" else FULL
+        rows = experiment_rows(
+            args.experiment_id,
+            args.profile,
+            side_filter=args.side,
+            coefficient_filter=args.coefficient,
+        )
+        cells = required_cells(rows, profile_.orders, profile_.passes)
+    else:
+        if legacy_selection != 1 or args.profile is not None or args.side is not None:
+            raise ValueError("select exactly one of --run, --walks, or --walk-id")
+        rows = manifest(args.run, args.walks, args.walk_id)
+        cells = required_cells(rows)
     cached = cached_keys()
     todo = [cell for key, cell in cells.items() if key not in cached]
     logger.info(
