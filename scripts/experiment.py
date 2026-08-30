@@ -7,8 +7,10 @@ import math
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import torch
 from loguru import logger
@@ -618,7 +620,23 @@ def self_test() -> None:
     ]
     assert len(required_cells(quick_rows, DEV.orders, DEV.passes)) == 270
     assert len(required_cells(full_rows, FULL.orders, FULL.passes)) == 400
-    print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400")
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "bare.jsonl").write_text("{}\n" * DEV.cohort_size)
+        manifest = {
+            "profiles": {"dev": {"generated": True}},
+            "bare": {"path": "bare.jsonl"},
+            "grid": {side: local_grid(1.0) for side in ("+C", "-C")},
+            "cells": {side: {} for side in ("+C", "-C")},
+        }
+        for side in ("+C", "-C"):
+            for coefficient in manifest["grid"][side]:
+                path = root / f"{side}_{coefficient}.jsonl"
+                path.write_text("{}\n" * DEV.cohort_size)
+                manifest["cells"][side][f"{coefficient:.12g}"] = {"path": path.name}
+        args = SimpleNamespace(dev=True, coefficients_plus="", coefficients_minus="")
+        assert completed_profile_cell_count(args, manifest, root, "dev", DEV.cohort_size) == GRID_POINTS * 2
+    print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
 
 def main() -> None:

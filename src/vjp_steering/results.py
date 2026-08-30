@@ -331,6 +331,7 @@ def _summary(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+    endpoint_coefficients: dict[str, float] | None = None,
 ) -> list[list[str]]:
     means = _means(rows, methods, method_seeds)
     scored_rows = []
@@ -352,7 +353,10 @@ def _summary(
                 ]
             else:
                 live = [row for row in means if row["method"] == method and row["side"] == side]
-            peaks[side] = max(live, key=lambda row: sign * row["effect"])
+            if endpoint_coefficients is None:
+                peaks[side] = max(live, key=lambda row: sign * row["effect"])
+            else:
+                peaks[side] = min(live, key=lambda row: abs(row["C"] - endpoint_coefficients[side]))
             candidate_count += len(live)
             rejected += sum(not row["admissible"] for row in group)
 
@@ -521,18 +525,18 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
     methods = (METHOD,)
     method_seeds = {METHOD: {0}}
     rows = _rows(data_dir(profile_, experiment_id) / "results.csv", methods, method_seeds)
-    table = _display_table(_summary(rows, methods, method_seeds))
+    selected = json.loads((data_dir(profile_, experiment_id) / "selected.json").read_text())
+    endpoint_coefficients = {
+        side: selected["sides"][side]["selected_C"]
+        for side in ("+C", "-C")
+    }
+    table = _display_table(_summary(rows, methods, method_seeds, endpoint_coefficients))
     status = "DEV" if profile_name == "dev" else "FORMATIVE"
     intro_line = (
         f"{status} evidence for {METHOD}: {profile_.cohort_size} questions, "
         f"orders={','.join(profile_.orders)}, passes={profile_.passes}."
     )
     markdown_text = _markdown(table, (intro_line, "This output is separate from the primary publication result."))
-    selected = json.loads((data_dir(profile_, experiment_id) / "selected.json").read_text())
-    endpoint_coefficients = {
-        side: selected["sides"][side]["selected_C"]
-        for side in ("+C", "-C")
-    }
     figure = plot(
         rows,
         methods,
