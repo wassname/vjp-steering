@@ -48,7 +48,7 @@ where $d=-1$ is `-C`, $d=+1$ is `+C`, and $(e^\star_{m,d}, o^\star_{m,d})$ is th
 
 The generated [results page](https://wassname.github.io/vjp-steering/) has the interactive companion and exact values.
 
-This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B and all 100 questions. The J-word result has one seed; the other named methods have three seeds.
+This uses petergpt's great [Bullshit Benchmark v2](https://github.com/petergpt/bullshit-benchmark) for measuring sycophancy. Qwen3.5-4B and all 100 questions. J-word has one extraction. The other named methods use seed labels 0, 1, and 2. For MLP-up, those labels permute the same 256 persona-pair set and produce numerically almost identical vectors.
 
 ## What J is
 
@@ -82,14 +82,29 @@ with steer(model, vector, C=-0.18):
     output = model.generate(**inputs)
 ```
 
-Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example. 
+Read [the notebook](nbs/demo.ipynb) on GitHub for the complete extract, steer, sweep, and plot example.
+
+## Reproducing the figure
+
+The measured path is `sweep -> judge -> export -> results`:
+
+```bash
+just queue-sweeps <walk-id>  # GPU generation through pueue
+just judge <walk-id>         # local API judging
+just export <walk-id>        # outputs + judge cache -> data/results.csv
+just results                 # data/results.csv -> README + results/
+```
+
+Use `just modal-sweeps <walk-id>` instead of `just queue-sweeps` to generate on Modal. `data/results.csv` is the committed input to the publication renderer. Completed endpoint-tail correction code and evidence are isolated under `scripts/scratch/endpoint_tail/` and `docs/slop/audit/20260829_endpoint_tail/`.
+
+<!-- PI: updated the repository path and extraction-seed caveat on 2026-08-29. -->
 
 | results table column | meaning |
 | --- | --- |
 | `score` | the weaker directional score, $S_m$ above. Higher is better. |
 | `-C on-axis`, `+C on-axis` | target-directed judged movement at the selected dose. Higher is better. |
 | `-C damage`, `+C damage` | absolute judged off-axis change at that dose. Lower is better. |
-| `seeds` | persona-pair seeds averaged before selecting the dose. J-word has one, other named methods have three, and random has ten. |
+| `seeds` | configured extraction seed labels averaged before selecting the dose. J-word has one, other named methods have three, and random has ten. |
 | `N` | admissible dose points considered across both directions. |
 | `rejected` | raw evaluations excluded by the walk health gate. |
 

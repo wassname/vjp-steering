@@ -312,7 +312,7 @@ def walk(args: argparse.Namespace) -> None:
         if phase == "dense" and c_star is not None:
             # after refine, allow tail to run; stop only when both inserted tail rungs have been visited
             pass  # fall through to normal check below
-        if any(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
+        if all(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
             certificate["status"] = "COMPLETE"
             certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
             logger.info("WALK_COMPLETE method={} seed={} state={} certificate={}", args.method, args.seed, state, certificate_path)

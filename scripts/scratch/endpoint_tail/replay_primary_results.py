@@ -3,9 +3,9 @@
 import csv
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 RESULTS = ROOT / "data" / "results.csv"
-CELLS = ROOT / "data" / "endpoint_tail" / "cells.csv"
+CELLS = ROOT / "docs/slop/audit/20260829_endpoint_tail/data/cells.csv"
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",

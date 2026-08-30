@@ -1,10 +1,4 @@
-"""Fan the nine dose walks out over Modal GPUs, one container per (method, seed).
-
-Run from the repo root (uv_sync reads ./pyproject.toml + ./uv.lock):
-    modal run scripts/run_modal.py::smoke        # tiny random model, one rung, ~minutes
-    modal run --detach scripts/run_modal.py      # the nine real walks
-    modal volume get --force jsteer-pub-cache outputs .   # pull artifacts back
-"""
+"""Run dose sweeps on Modal, one container per method and extraction seed."""
 
 import json
 import os
@@ -38,7 +32,7 @@ cache = modal.Volume.from_name("jsteer-pub-cache", create_if_missing=True)
     timeout=24 * 60 * 60,
 )
 def run(argv: list[str]) -> str:
-    """One historical paired walk (or rung), with outputs/ on the Volume."""
+    """Run one sweep or one fixed-dose evaluation."""
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
@@ -53,71 +47,6 @@ def run(argv: list[str]) -> str:
     method, seed = argv[0], argv[argv.index("--seed") + 1] if "--seed" in argv else "0"
     certificate = Path(f"/cache/outputs/walk_{method}_s{seed}.json")
     return certificate.read_text() if certificate.exists() else ""
-
-
-@app.function(
-    gpu=os.environ.get("JSTEER_GPU", "H100"),
-    volumes={"/cache": cache},
-    timeout=24 * 60 * 60,
-)
-def continue_side(argv: list[str]) -> str:
-    """One independent +C continuation, with outputs/ on the Volume."""
-    from huggingface_hub import snapshot_download
-
-    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
-    if not Path("/repo/outputs").exists():
-        os.symlink("/cache/outputs", "/repo/outputs")
-    snapshot_download(MODEL)
-    try:
-        subprocess.run([sys.executable, "scripts/continue_side.py", *argv], cwd="/repo", check=True)
-    finally:
-        cache.commit()
-    method, seed = argv[0], argv[argv.index("--seed") + 1]
-    continuation_id = argv[argv.index("--continuation-id") + 1]
-    certificate = next(Path("/cache/outputs").glob(f"continuation_{method}_s{seed}_plusC_{continuation_id}.json"))
-    return certificate.read_text()
-
-
-@app.local_entrypoint()
-def continuation(method: str, seed: int, continuation_id: str) -> None:
-    certificate = json.loads(continue_side.remote([
-        method, "--seed", str(seed), "--side", "+C", "--walk",
-        "--continuation-id", continuation_id,
-    ]))
-    assert certificate["status"] == "COMPLETE"
-    print(f"{method}\ts{seed}\t+C\t{certificate['status']}\ttail_rungs={len(certificate['rungs'])}")
-
-
-@app.function(timeout=8 * 60 * 60)
-def complete_continuations(continuation_id: str) -> list[dict]:
-    jobs = [
-        (method, seed)
-        for method in ("vjp_delta", "mean_diff", "vjp_mlp_up_shrink")
-        for seed in (0, 1, 2)
-    ]
-    handles = {
-        job: continue_side.spawn([
-            job[0], "--seed", str(job[1]), "--side", "+C", "--walk",
-            "--continuation-id", continuation_id,
-        ])
-        for job in jobs
-    }
-    certificates = []
-    for handle in handles.values():
-        certificate = json.loads(handle.get())
-        assert certificate["status"] == "COMPLETE"
-        certificates.append(certificate)
-    return certificates
-
-
-@app.local_entrypoint()
-def continuations(continuation_id: str) -> None:
-    certificates = complete_continuations.remote(continuation_id)
-    for certificate in certificates:
-        print(
-            f"{certificate['method']}\ts{certificate['seed']}\t+C\t{certificate['status']}\t"
-            f"tail_rungs={len(certificate['rungs'])}"
-        )
 
 
 @app.local_entrypoint()
@@ -153,21 +82,6 @@ def main(
             print(f"{method}\ts{seed}\t{certificate['status']}\trungs={len(certificate['rungs'])}")
         except Exception as error:  # one dead walk must not hide the other eight
             print(f"{method}\ts{seed}\tFAILED\t{error}")
-
-
-@app.local_entrypoint()
-def descending(method: str, coefficients: str, seeds: str = "0"):
-    """Run full-cohort doses from a known incoherent point back toward zero."""
-    handles = {
-        (coefficient, seed): run.spawn([
-            method, "--seed", seed, "--coefficient", coefficient,
-            "--batch-size", "32", "--extract-batch-size", "8",
-        ])
-        for coefficient in coefficients.split(",")
-        for seed in seeds.split(",")
-    }
-    for (coefficient, seed), handle in handles.items():
-        print(f"{method}\ts={seed}\tC={coefficient}\t{handle.get()[:200]}")
 
 
 @app.local_entrypoint()

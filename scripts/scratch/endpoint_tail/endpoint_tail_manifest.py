@@ -7,7 +7,7 @@ import math
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 SCHEMA = "endpoint_tail_manifest_v1"
 TAIL_FRACTION = 0.66
 COHORT_PATH = Path("data/bullshit_bench_v2.jsonl")

@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).parents[2]
+ROOT = Path(__file__).parents[3]
 OUTPUT = ROOT / "docs/slop/audit/20260829_existing_walk_coverage.md"
 
 

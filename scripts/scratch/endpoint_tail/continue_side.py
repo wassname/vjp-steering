@@ -15,10 +15,10 @@ from loguru import logger
 from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "scripts"))
+
 import walk
-
-
-ROOT = Path(__file__).resolve().parents[1]
 PROCEDURE = "continuation_side_health_v1"
 HEALTH_RULE = "health_v1: unfinished<0.5, role_leak<0.25, repetition<0.25"
 SEARCH_MAX_STEPS = 16

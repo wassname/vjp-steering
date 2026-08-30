@@ -10,7 +10,7 @@ from collections import defaultdict
 from pathlib import Path
 from statistics import mean
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import endpoint_tail_manifest
@@ -18,7 +18,7 @@ from judge import MODEL, RUBRIC, cache_key, valid
 
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
 MANIFEST = ROOT / "outputs/endpoint_tail_manifest.json"
-OUTPUT = ROOT / "data/endpoint_tail"
+OUTPUT = ROOT / "docs/slop/audit/20260829_endpoint_tail/data"
 ORDERS = ("AB", "BA")
 PASSES = range(2)
 CELL_FIELDS = (

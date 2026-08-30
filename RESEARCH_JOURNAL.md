@@ -88,3 +88,17 @@ Interpretation (Pi): the fresh walks satisfy the requested artifact provenance a
 Evidence: user decision in this session, not a measured result. For every method and seed, bracket the maximum coherent coefficient independently for `+C` and `-C` with a bounded Illinois/Newton search. Keep the previous `C` definition and configuration so results remain comparable. Publish the largest generated coherent lower bracket, not an ungenerated numerical root. Construct the previous log grid through that bound, but generate and judge only `grid[ceil(0.66 * len(grid)):]`, the final third of that direction's grid.
 
 Interpretation (Pi): fixed shared-grid comparison rows are invalid under this decision. Rerun every compared method with independent directional endpoints and final-third generation and judging. This entry specifies the requested procedure only; it reports no behavioral or measurement result.
+
+## 2026-08-29 -- MLP-up asymmetry and judge cost
+
+This note records why the MLP-up comparison is asymmetric and why the endpoint rerun required many judge requests.
+
+Evidence: [`src/vjp_steering/vjp.py:317-326`](src/vjp_steering/vjp.py) computes one paired positive-minus-negative vector and applies one shrinkage weight before global normalization. The coefficient sign therefore selects `v` or `-v`; uncertainty weighting is not direction-specific. The stored vectors have 267,264 coordinates, of which 59,666 are nonzero. The largest coordinate carries 1.38 percent of vector energy, the top one hundred carry 23.7 percent, and the top one thousand carry 55.0 percent. The three configured extraction seeds have cosine approximately 1.000000 because they permute the same 256-pair set. The commands and full concentration table are in [`docs/slop/audit/20260829_mlp_up_and_judge_cost_audit.md`](docs/slop/audit/20260829_mlp_up_and_judge_cost_audit.md).
+
+The same audit records the judge expansion verbatim: `logical_dose_sides 305`, `theoretical_calls 122000`, and `required_calls 57724` after exact-response caching. The selected cache records had zero reasoning characters and a median reply length of 259 characters. `scripts/judge.py:223-226` creates two presentation orders and two stochastic passes for every question and dose.
+
+Interpretation (Pi): my read is that the lopsided result does not show a per-side uncertainty bug in the current estimator, because one bipolar vector cannot have sign-dependent variance weights. A class-conditioned left/right pair is a separate plausible method. The dense dose grid and four judge samples per question explain the request count; response length and hidden reasoning do not.
+
+The next MLP-up run should compare the published bipolar vector with a class-conditioned left/right vector, log split-half cosine without interpreting it as behavioral evidence, record activation-scaled concentration diagnostics, and reserve full-cohort repeated judging for endpoint candidates.
+
+<!-- PI: journal entry written 2026-08-29. -->

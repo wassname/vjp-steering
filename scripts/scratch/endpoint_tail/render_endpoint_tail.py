@@ -9,9 +9,10 @@ from statistics import mean
 
 import plotly.graph_objects as go
 
-ROOT = Path(__file__).resolve().parents[1]
-INPUT = ROOT / "data/endpoint_tail/selected.csv"
-OUTPUT = ROOT / "results/endpoint_tail"
+ROOT = Path(__file__).resolve().parents[3]
+ARCHIVE = ROOT / "docs/slop/audit/20260829_endpoint_tail"
+INPUT = ARCHIVE / "data/selected.csv"
+OUTPUT = ARCHIVE / "results"
 METHOD_SEEDS = {
     "vjp_delta": {0, 1, 2},
     "mean_diff": {0, 1, 2},
