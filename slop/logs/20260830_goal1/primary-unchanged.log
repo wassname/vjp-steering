@@ -1,0 +1,3 @@
+COMMAND: git diff --exit-code HEAD -- data/results.csv results/index.md results/index.html results/plot.png
+PRIMARY_PUBLICATION_UNCHANGED=true
+EXIT_STATUS=0

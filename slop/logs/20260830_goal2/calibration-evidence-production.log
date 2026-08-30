@@ -1,0 +1,3 @@
+COMMAND: uv run python scripts/scratch/audit_mlp_up_calibration.py
+EXIT_STATUS: 0
+OUTPUT: slop/logs/20260830_goal2/calibration-evidence.json

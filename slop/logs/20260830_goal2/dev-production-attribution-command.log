@@ -1,0 +1,4 @@
+COMMAND: provenance wrapper written by the bash command recorded in this agent transcript
+EXIT_STATUS: 0
+OUTPUT: slop/logs/20260830_goal2/dev-production.attributed.log
+4b786a4c631177d7e88af250bfc326ce074fd2b698feed28bbbd8b1a0f4f6eed  slop/logs/20260830_goal2/dev-production.attributed.log

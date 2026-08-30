@@ -1,0 +1,31 @@
+COMMAND: set -a; source .env; set +a; exec uv run python scripts/judge.py --experiment-id mlp-up-left-right-formative-v1 --profile full --refresh --side=-C --coefficient 37.79313705919071
+PROCESS: proc_741b (jsteer-v5-minus-judge-parasail-r2)
+EXIT_STATUS: 0
+--- EXACT COMBINED OUTPUT ---
+2:2026-08-30 15:55:32.728 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v1 profile=full cells=1 demo_sides=100
+2:2026-08-30 15:55:33.352 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2:2026-08-30 15:55:33.778 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2:2026-08-30 15:55:34.263 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2:2026-08-30 15:55:34.749 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2:2026-08-30 15:55:35.209 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2:2026-08-30 15:55:35.652 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2:2026-08-30 15:55:36.054 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2:2026-08-30 15:55:36.457 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2:2026-08-30 15:55:36.807 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2:2026-08-30 15:55:37.162 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2:2026-08-30 15:55:37.565 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2:2026-08-30 15:55:37.742 | INFO     | __main__:main:640 - CACHE_CHECK required=200 cached=15 missing=185 API_calls=185
+2:2026-08-30 15:56:22.050 | INFO     | __main__:run:603 - judge progress=100/185
+2:2026-08-30 15:56:58.127 | INFO     | __main__:run:603 - judge progress=185/185
+2:2026-08-30 15:56:58.749 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2:2026-08-30 15:56:59.261 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2:2026-08-30 15:56:59.786 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2:2026-08-30 15:57:00.398 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2:2026-08-30 15:57:00.915 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2:2026-08-30 15:57:01.391 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2:2026-08-30 15:57:01.855 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2:2026-08-30 15:57:02.329 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2:2026-08-30 15:57:02.720 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2:2026-08-30 15:57:03.112 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2:2026-08-30 15:57:03.480 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2:2026-08-30 15:57:03.643 | INFO     | __main__:main:653 - JUDGE_COMPLETE required=200 missing=0

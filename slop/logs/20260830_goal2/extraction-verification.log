@@ -1,0 +1,48 @@
+COMMAND: just experiment vjp_mlp_up_left_right_shrink --verify-extraction
+PROCESS: proc_00dc (jsteer-v5-extraction-verify)
+EXIT_STATUS: 0
+--- EXACT COMBINED OUTPUT ---
+2:uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink --verify-extraction
+1:✓ Initialized. View run at 
+1:https://modal.com/apps/wassname/main/ap-hKLI3OJRB2SgOqWMygo5tZ
+1:✓ Created objects.
+1:├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+1:├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+1:├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+1:├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+1:├── 🔨 Created function run.
+1:└── 🔨 Created function run_experiment.
+1:
+1:[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+1:[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1142.57it/s]
+1:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+1:
+1:[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+1:[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 655.10it/s]
+1:[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+1:
+1:[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+1:[1ALoading weights:   5%|▍         | 21/426 [00:00<00:02, 195.21it/s]
+1:[1ALoading weights:  10%|█         | 43/426 [00:00<00:01, 204.08it/s]
+1:[1ALoading weights:  15%|█▌        | 64/426 [00:00<00:02, 143.33it/s]
+1:[1ALoading weights:  22%|██▏       | 94/426 [00:00<00:01, 190.73it/s]
+1:[1ALoading weights:  27%|██▋       | 116/426 [00:00<00:01, 196.18it/s]
+1:[1ALoading weights:  35%|███▌      | 151/426 [00:00<00:01, 233.88it/s]
+1:[1ALoading weights:  41%|████▏     | 176/426 [00:00<00:01, 234.13it/s]
+1:[1ALoading weights:  47%|████▋     | 201/426 [00:00<00:00, 236.10it/s]
+1:[1ALoading weights:  55%|█████▍    | 234/426 [00:01<00:00, 255.49it/s]
+1:[1ALoading weights:  62%|██████▏   | 262/426 [00:01<00:00, 260.29it/s]
+1:[1ALoading weights:  69%|██████▊   | 292/426 [00:01<00:00, 269.24it/s]
+1:[1ALoading weights:  75%|███████▌  | 321/426 [00:01<00:00, 275.08it/s]
+1:[1ALoading weights:  82%|████████▏ | 349/426 [00:01<00:00, 242.35it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 280.97it/s]
+1:2026-08-30 07:55:21.363 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+1:2026-08-30 07:55:21.427 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+1:/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+1:  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+1:2026-08-30 07:56:15.403 | INFO     | vjp_steering.vjp:vjp_mlp_up_left_right_shrink:557 - vjp_mlp_up_left_right_shrink target=29 layers=29 live_plus=68677 live_minus=65126
+1:2026-08-30 07:56:15.408 | INFO     | __main__:verify_extraction:212 - EXTRACTION_VERIFICATION_COMPLETE experiment=mlp-up-left-right-formative-v1 n_pairs=200 hashes_match=true path=/repo/outputs/experiments/mlp-up-left-right-formative-v1/extraction/verification.json
+1:EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev cells=18
+1:Stopping app - local entrypoint completed.
+1:✓ App completed. View run at 
+1:https://modal.com/apps/wassname/main/ap-hKLI3OJRB2SgOqWMygo5tZ
+1:✓ Finished downloading files to local!

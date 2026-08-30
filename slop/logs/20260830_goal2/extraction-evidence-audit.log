@@ -1,0 +1,8 @@
+COMMAND: python extraction evidence audit (verification.json + dev-production.stdout.log)
+hashes_match_generation=True n_pairs=200
+production_extraction_log_count=1 completed_generation_cells=39
+shrinkage_distinct=True +C=787f7ff08d907856e5b5d8c293d86f997158cf1be992118bf0be731a8eb8c35e -C=9a428bdf952b7f20328eb2497666b29e5b7392347a600471c9ba0e7759c32689
+activation_scale_distinct=True +C=ececda3616e910c624e6c4b2ef6b1202a5dcf2387ce26b0c25ff8d216e033bf5 -C=7faf0bee6fecd9d8cc7688fa99503459e9ac8eee92b87ce399a8ceec784c3c8d
++C top1_energy=0.308924347 top_coordinate_activation_scale=0.971326709 activation_scale_percentile=0.999700665 live_coordinates=68677
+-C top1_energy=0.192648947 top_coordinate_activation_scale=0.945714831 activation_scale_percentile=0.999659538 live_coordinates=65126
+EXIT_STATUS=0

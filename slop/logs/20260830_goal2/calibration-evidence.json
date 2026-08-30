@@ -1,0 +1,77 @@
+{
+  "status": "FORMATIVE_CALIBRATION_EVIDENCE",
+  "producing_command": "uv run python scripts/scratch/audit_mlp_up_calibration.py",
+  "source_paths": {
+    "metadata": "outputs/experiments/mlp-up-left-right-formative-v1/extraction/metadata.json",
+    "verification": "outputs/experiments/mlp-up-left-right-formative-v1/extraction/verification.json",
+    "manifest": "outputs/experiments/mlp-up-left-right-formative-v1/manifest.json",
+    "dev_selected": "data/dev/mlp-up-left-right-formative-v1/selected.json",
+    "production_log": "slop/logs/20260830_goal2/dev-production.attributed.log"
+  },
+  "source_sha256": {
+    "metadata": "adee652c6a22b489a763ddb4d5c03165fa3a2b12a0a59664dd2b079c4b5ebbe3",
+    "verification": "d96c9f9854da715c2abedc1033e9c868c13f0e36d9cba48768f71aa850de4fcb",
+    "manifest": "a04452785731d186fefb8e289e2976de14c86938cc2b86bcc542e4b08554dc63",
+    "dev_selected": "219d2c018a69c80dcb5cd5c3f0912e1bf9cb492dcf557c187b2819c96a8b0e4c",
+    "production_log": "4b786a4c631177d7e88af250bfc326ce074fd2b698feed28bbbd8b1a0f4f6eed"
+  },
+  "n_pairs": 200,
+  "hashes_match_generation": true,
+  "production_extraction_log_count": 1,
+  "completed_generation_cells": 39,
+  "stored_ray_cosine_descriptive_only": 0.7864518761634827,
+  "sides": {
+    "+C": {
+      "conditioning_class": "negative",
+      "vector_content_sha256": "ab82b4d03156d4a012391fbf707cbc5d88463dfedb82bd55eeaa94ec78ee9fe3",
+      "shrinkage_weight_sha256": "787f7ff08d907856e5b5d8c293d86f997158cf1be992118bf0be731a8eb8c35e",
+      "activation_scale_sha256": "ececda3616e910c624e6c4b2ef6b1202a5dcf2387ce26b0c25ff8d216e033bf5",
+      "live_coordinates": 68677,
+      "top_coordinate_energy_share": 0.3089243471622467,
+      "top_coordinate_activation_scale": 0.9713267087936401,
+      "top_coordinate_activation_scale_percentile": 0.999700665473938,
+      "C_approx": 25.898995144704962,
+      "health_probes": 10,
+      "grid": [
+        17.093336795505277,
+        19.262377638874316,
+        21.431418482243355,
+        23.6004593256124,
+        25.76950016898144,
+        27.93854101235048,
+        30.10758185571952,
+        32.27662269908856,
+        34.4456635424576
+      ],
+      "selected_C": 23.6004593256124,
+      "selected_effect": 0.05333333333333322,
+      "selected_off_axis_perturbation": 0.5866666666666667
+    },
+    "-C": {
+      "conditioning_class": "positive",
+      "vector_content_sha256": "202c3279fbaad57b40323e67bc8e5db9d32d4ea7b9d1e12b4b78fa22c8a491f9",
+      "shrinkage_weight_sha256": "9a428bdf952b7f20328eb2497666b29e5b7392347a600471c9ba0e7759c32689",
+      "activation_scale_sha256": "7faf0bee6fecd9d8cc7688fa99503459e9ac8eee92b87ce399a8ceec784c3c8d",
+      "live_coordinates": 65126,
+      "top_coordinate_energy_share": 0.19264894723892212,
+      "top_coordinate_activation_scale": 0.9457148313522339,
+      "top_coordinate_activation_scale_percentile": 0.999659538269043,
+      "C_approx": 45.67146472409754,
+      "health_probes": 10,
+      "grid": [
+        30.14316671790438,
+        33.968151888547546,
+        37.79313705919071,
+        41.61812222983389,
+        45.443107400477054,
+        49.26809257112023,
+        53.093077741763395,
+        56.91806291240656,
+        60.74304808304973
+      ],
+      "selected_C": 37.79313705919071,
+      "selected_effect": -0.5533333333333333,
+      "selected_off_axis_perturbation": 0.29333333333333333
+    }
+  }
+}

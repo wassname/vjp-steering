@@ -1,0 +1,20 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-A1SxVccUEkOuDUboohs5fy
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1310.11it/s]
+2026-08-30 03:34:49.674 | INFO     | __main__:gpu_stage:395 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v1 profile=dev cells=18 reused=true
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-A1SxVccUEkOuDUboohs5fy
+✓ Finished downloading files to local!
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev arms=18 scenarios=270
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-left-right-formative-v1

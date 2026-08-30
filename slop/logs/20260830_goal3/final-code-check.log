@@ -1,0 +1,3 @@
+COMMAND: uv run python -m py_compile scripts/experiment.py scripts/judge.py scripts/run_modal.py scripts/scratch/audit_mlp_up_calibration.py scripts/scratch/audit_mlp_up_full.py src/vjp_steering/results.py src/vjp_steering/vjp.py && uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink --self-test && git diff --check
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+EXIT_STATUS=0

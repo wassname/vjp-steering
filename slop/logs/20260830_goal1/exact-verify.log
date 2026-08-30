@@ -1,0 +1,344 @@
+COMMAND: just smoke && just experiment vjp_mlp_up_left_right_shrink --dev
+16:11:43 | stage=load model=wassname/qwen3-5lyr-tiny-random device=cpu dtype=float32
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 6459.05it/s]
+16:11:46 | resolved method=vjp_delta seed=0 C=16.0 cohort=2/100 layers=(1,) target=4 pairs=2 batch=2 tokens=8
+16:11:46 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+16:11:46 | Persona-branching pairs: n=2 from 1 persona pairs
+16:11:46 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+16:11:46 | stage=extract
+16:11:46 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+16:11:46 | stage=generate side=bare
+16:11:46 | generation 2/2
+16:11:46 | stage=generate side=+C
+16:11:46 | generation 2/2
+16:11:46 | stage=generate side=-C
+16:11:46 | generation 2/2
+16:11:46 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:11:46 | === generation output side=bare ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:11:46 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 4.0} breakdown=['unfinished']
+16:11:46 | === generation output side=+C ===
+villagers经贸 CallingConvention_time startXevt面具┉
+=== end output ===
+16:11:46 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 4.0} breakdown=['unfinished']
+16:11:46 | === generation output side=-C ===
+颎� anc список・・สมัครสมาชิก・・ Tos
+=== end output ===
+16:11:46 | RESULT	method	seed	C	bare_reasons	+C_reasons	-C_reasons	output
+16:11:46 | RESULT	vjp_delta	0	16.0	['unfinished']	['unfinished']	['unfinished']	/workspace/2026/jspace/j-steer_pub/outputs/run_20260830T161143_vjp_delta_s0_c16p0
+16:11:50 | stage=load model=wassname/qwen3-5lyr-tiny-random device=cpu dtype=float32
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5029.88it/s]
+16:11:54 | resolved method=mean_diff seed=0 C=16.0 cohort=2/100 layers=(1,) target=4 pairs=2 batch=2 tokens=8
+16:11:54 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+16:11:54 | Persona-branching pairs: n=2 from 1 persona pairs
+16:11:54 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+16:11:54 | stage=extract
+16:11:54 | EXPECT: POS and NEG share user_msg + suffix; differ only in system persona; chat template applied; special tokens (e.g. <|im_start|>) visible.
+=== EXTRACT demo trace ===
+POS[0]:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+---
+NEG[0]:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== /EXTRACT ===
+16:11:54 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+16:11:55 | stage=generate side=bare
+16:11:55 | generation 2/2
+16:11:55 | stage=generate side=+C
+16:11:55 | generation 2/2
+16:11:55 | stage=generate side=-C
+16:11:55 | generation 2/2
+16:11:55 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:11:55 | === generation output side=bare ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:11:55 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:11:55 | === generation output side=+C ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:11:55 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 3.5} breakdown=['unfinished']
+16:11:55 | === generation output side=-C ===
+尥 startX.sl拄뷔number []*并与
+=== end output ===
+16:11:55 | RESULT	method	seed	C	bare_reasons	+C_reasons	-C_reasons	output
+16:11:55 | RESULT	mean_diff	0	16.0	['unfinished']	['unfinished']	['unfinished']	/workspace/2026/jspace/j-steer_pub/outputs/run_20260830T161150_mean_diff_s0_c16p0
+16:12:01 | stage=load model=wassname/qwen3-5lyr-tiny-random device=cpu dtype=float32
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 8749.01it/s]
+16:12:04 | resolved method=pca seed=0 C=16.0 cohort=2/100 layers=(1,) target=4 pairs=2 batch=2 tokens=8
+16:12:04 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+16:12:04 | Persona-branching pairs: n=2 from 1 persona pairs
+16:12:04 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+16:12:04 | stage=extract
+16:12:04 | EXPECT: POS and NEG share user_msg + suffix; differ only in system persona; chat template applied; special tokens (e.g. <|im_start|>) visible.
+=== EXTRACT demo trace ===
+POS[0]:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+---
+NEG[0]:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== /EXTRACT ===
+16:12:04 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+16:12:05 | stage=generate side=bare
+16:12:05 | generation 2/2
+16:12:05 | stage=generate side=+C
+16:12:05 | generation 2/2
+16:12:05 | stage=generate side=-C
+16:12:05 | generation 2/2
+16:12:05 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:12:05 | === generation output side=bare ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:12:05 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:12:05 | === generation output side=+C ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:12:05 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 4.0} breakdown=['unfinished']
+16:12:05 | === generation output side=-C ===
+尥 startXהתחיל KPиндивиду Lansshots汫
+=== end output ===
+16:12:05 | RESULT	method	seed	C	bare_reasons	+C_reasons	-C_reasons	output
+16:12:05 | RESULT	pca	0	16.0	['unfinished']	['unfinished']	['unfinished']	/workspace/2026/jspace/j-steer_pub/outputs/run_20260830T161201_pca_s0_c16p0
+16:12:09 | stage=load model=wassname/qwen3-5lyr-tiny-random device=cpu dtype=float32
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 9593.71it/s]
+16:12:12 | resolved method=vjp_mlp_up_left_right_shrink seed=0 C=1.0 cohort=2/100 layers=(2,) target=None pairs=2 batch=2 tokens=8
+16:12:12 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+16:12:12 | Persona-branching pairs: n=2 from 1 persona pairs
+16:12:12 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+16:12:12 | stage=extract
+16:12:12 | vjp_mlp_up_left_right_shrink target=2 layers=2 live_plus=155 live_minus=151
+16:12:12 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+16:12:12 | stage=generate side=bare
+16:12:12 | generation 2/2
+16:12:12 | stage=generate side=+C
+16:12:12 | generation 2/2
+16:12:12 | stage=generate side=-C
+16:12:12 | generation 2/2
+16:12:12 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+16:12:12 | === generation output side=bare ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+16:12:12 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 3.0} breakdown=['unfinished']
+16:12:12 | === generation output side=+C ===
+典雅メイン>} Evangel_motDestroyedastro_ctx
+=== end output ===
+16:12:12 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 3.0} breakdown=['unfinished']
+16:12:12 | === generation output side=-C ===
+尥 startX・・_publishednumber []*Gear Jeep
+=== end output ===
+16:12:12 | RESULT	method	seed	C	bare_reasons	+C_reasons	-C_reasons	output
+16:12:12 | RESULT	vjp_mlp_up_left_right_shrink	0	1.0	['unfinished']	['unfinished']	['unfinished']	/workspace/2026/jspace/j-steer_pub/outputs/run_20260830T161209_vjp_mlp_up_left_right_shrink_s0_c1p0
+EXPORT_SELF_TEST_PASS
+uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink --dev
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-3ClM9Iog8tK5rghYPDNtbX
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 965.32it/s]
+2026-08-30 08:12:35.654 | INFO     | __main__:gpu_stage:440 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v1 profile=dev cells=18 reused=true
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-3ClM9Iog8tK5rghYPDNtbX
+✓ Finished downloading files to local!
+2026-08-30 16:12:45.399 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v1 profile=dev cells=18 demo_sides=270
+2026-08-30 16:12:45.997 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-08-30 16:12:46.827 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-08-30 16:12:47.358 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-08-30 16:12:47.876 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-08-30 16:12:48.346 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-08-30 16:12:48.848 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-08-30 16:12:49.300 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-08-30 16:12:49.774 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-08-30 16:12:50.131 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-08-30 16:12:50.465 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-08-30 16:12:50.808 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-08-30 16:12:50.969 | INFO     | __main__:main:640 - CACHE_CHECK required=266 cached=266 missing=0 API_calls=0
+2026-08-30 16:12:53.179 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v1 profile=dev cells=18 demo_sides=270
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev arms=18 scenarios=270
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:619: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-left-right-formative-v1
+EXIT_STATUS=0

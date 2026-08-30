@@ -1,0 +1,3 @@
+COMMAND: uv run python scripts/scratch/audit_mlp_up_full.py
+EXIT_STATUS: 0
+OUTPUT: slop/audits/20260830_mlp_up_full_endpoint.json

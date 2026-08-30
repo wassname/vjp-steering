@@ -1,0 +1,71 @@
+{
+  "status": "FORMATIVE_FULL_ENDPOINT_AUDIT",
+  "producing_command": "uv run python scripts/scratch/audit_mlp_up_full.py",
+  "source_sha256": {
+    "selected": "0561cb826a2958c78165de4fbae78e8c674247737afc6bea861cb89ec21d81d3",
+    "results": "99b81236ca147950653176ea3c88452f0786b7895304b77db437d7e4af1876b1",
+    "scenarios": "0f2524de2dba3aeaf4796d4a9e02a7d455bd784a5452b79a762a4311e965b388",
+    "manifest": "a04452785731d186fefb8e289e2976de14c86938cc2b86bcc542e4b08554dc63",
+    "report": "1c0f751e26d02bc39b5c82122c455be6f132ffbac6feb87f02e64a997acbee07",
+    "plot": "69d25840e00a55b86bede64421d233c3f865017f356e7c6749a9de7e3dda6be4",
+    "full_log": "1c732757d93fb7c64a3d6b2295989d08ab0ea7c7a7c7fbfe945ba80c2d74146d",
+    "minus_judge_log": "36fe21a497a44810868b92f18e122a3e21ae5db24d0725590334e7d4b8eb1096",
+    "primary_report": "39294d8dc12178f0a7935e84a9a857c8c8c15743adc46327c9da829264649678"
+  },
+  "profile": {
+    "questions": 100,
+    "orders": [
+      "AB",
+      "BA"
+    ],
+    "passes": 1
+  },
+  "gpu_cells_reused": true,
+  "minus_judge_complete": true,
+  "full_command_exit_zero": true,
+  "scenario_rows": 300,
+  "results": [
+    {
+      "C": 23.6004593256124,
+      "side": "+C",
+      "effect": -0.401,
+      "off_axis_perturbation": 0.497,
+      "health_admissible": true
+    },
+    {
+      "C": 21.431418482243355,
+      "side": "+C",
+      "effect": -0.404,
+      "off_axis_perturbation": 0.2775,
+      "health_admissible": true
+    },
+    {
+      "C": 37.79313705919071,
+      "side": "-C",
+      "effect": -0.563,
+      "off_axis_perturbation": 0.3495,
+      "health_admissible": true
+    }
+  ],
+  "selection": {
+    "-C": {
+      "selected_C": 37.79313705919071,
+      "candidates_descending": [
+        37.79313705919071
+      ],
+      "effect": -0.563,
+      "off_axis_perturbation": 0.3495,
+      "status": "accepted"
+    },
+    "+C": {
+      "status": "no_accepted_endpoint",
+      "tested_candidates": [
+        23.6004593256124,
+        21.431418482243355
+      ]
+    }
+  },
+  "report_states_unconfirmed_plus": true,
+  "report_rejected_count": 2,
+  "primary_published_row": "| vjp_mlp_up_shrink | +0.505 | 0.861 | 0.356 | 3.508 | 0.624 | 3 | 26 | 7 |"
+}

@@ -1,0 +1,35 @@
+uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink --dev
+2026-08-30 11:34:57.994 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v1 profile=dev cells=18 demo_sides=270
+2026-08-30 11:35:02.052 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-08-30 11:35:04.313 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-08-30 11:35:07.773 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-08-30 11:35:09.655 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-08-30 11:35:11.363 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-08-30 11:35:12.819 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-08-30 11:35:14.323 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-08-30 11:35:15.981 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-08-30 11:35:17.145 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-08-30 11:35:18.352 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-08-30 11:35:19.677 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-08-30 11:35:20.187 | INFO     | __main__:main:641 - CACHE_CHECK required=266 cached=43 missing=223 API_calls=223
+2026-08-30 11:36:12.576 | INFO     | __main__:run:604 - judge progress=100/223
+2026-08-30 11:36:58.809 | INFO     | __main__:run:604 - judge progress=200/223
+2026-08-30 11:37:10.267 | INFO     | __main__:run:604 - judge progress=223/223
+2026-08-30 11:37:11.750 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-08-30 11:37:13.140 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-08-30 11:37:14.714 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-08-30 11:37:16.241 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-08-30 11:37:17.523 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-08-30 11:37:18.719 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-08-30 11:37:19.764 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-08-30 11:37:20.823 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-08-30 11:37:21.656 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-08-30 11:37:22.396 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-08-30 11:37:23.877 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-08-30 11:37:24.448 | INFO     | __main__:main:654 - JUDGE_COMPLETE required=266 missing=0
+2026-08-30 11:37:27.038 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v1 profile=dev cells=18 demo_sides=270
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:557: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)

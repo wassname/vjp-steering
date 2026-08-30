@@ -1,0 +1,11 @@
+n_pairs=200 dtype=bfloat16 estimator=origin_conditioned_per_side_shrink
+vector_hashes={"+C": "ab82b4d03156d4a012391fbf707cbc5d88463dfedb82bd55eeaa94ec78ee9fe3", "-C": "202c3279fbaad57b40323e67bc8e5db9d32d4ea7b9d1e12b4b78fa22c8a491f9"}
+stored_ray_cosine=0.786451876 applied_side_cosine=-0.786451876
++C origin=negative activation_scale_layer_mean=0.372221802 activation_scale_sha256=57e5b2f256023a6b7dbf9760eab0e07c656e6b3cc7a53104fe3b6b9d2f37a292
++C live_coordinates_total=68677 live_coordinate_map_sha256=416cae805a42fa2c34c666379d63b57b330e9dbec64e8157000b46d5ef577ea2 standardized_norm=1.000000000
++C probes=10 C_approx=25.898995145 grid_n=9 grid=[17.093336796,34.445663542]
++C selected_C=23.600459326 effect=0.053333333 damage=0.586666667
+-C origin=positive activation_scale_layer_mean=0.370415650 activation_scale_sha256=f7118f20ea3651b3a41028c2823b4f49499133e7f54c60e4028925d3cc838e60
+-C live_coordinates_total=65126 live_coordinate_map_sha256=85bd2f6963b7ba57078e4bb7a58a558a98aa4ba9479e32fa447d34df2f439e68 standardized_norm=0.999999881
+-C probes=10 C_approx=45.671464724 grid_n=9 grid=[30.143166718,60.743048083]
+-C selected_C=37.793137059 effect=-0.553333333 damage=0.293333333

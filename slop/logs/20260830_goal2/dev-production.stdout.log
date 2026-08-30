@@ -1,0 +1,90 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-jC3JmGch5v6jKlHKO6tash
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 814.46it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 527.35it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 16/426 [00:00<00:02, 139.38it/s]
+[1ALoading weights:   7%|▋         | 30/426 [00:00<00:03, 128.40it/s]
+[1ALoading weights:  12%|█▏        | 51/426 [00:00<00:02, 149.19it/s]
+[1ALoading weights:  15%|█▌        | 66/426 [00:00<00:02, 132.16it/s]
+[1ALoading weights:  20%|█▉        | 84/426 [00:00<00:02, 145.91it/s]
+[1ALoading weights:  24%|██▍       | 103/426 [00:00<00:02, 155.19it/s]
+[1ALoading weights:  30%|██▉       | 126/426 [00:00<00:01, 167.40it/s]
+[1ALoading weights:  34%|███▎      | 143/426 [00:00<00:01, 158.32it/s]
+[1ALoading weights:  37%|███▋      | 159/426 [00:01<00:01, 152.33it/s]
+[1ALoading weights:  41%|████      | 175/426 [00:01<00:01, 153.92it/s]
+[1ALoading weights:  46%|████▌     | 197/426 [00:01<00:01, 165.15it/s]
+[1ALoading weights:  51%|█████     | 217/426 [00:01<00:01, 173.66it/s]
+[1ALoading weights:  57%|█████▋    | 241/426 [00:01<00:01, 177.20it/s]
+[1ALoading weights:  61%|██████    | 259/426 [00:01<00:00, 171.83it/s]
+[1ALoading weights:  65%|██████▌   | 277/426 [00:01<00:00, 171.98it/s]
+[1ALoading weights:  69%|██████▉   | 295/426 [00:01<00:00, 153.70it/s]
+[1ALoading weights:  74%|███████▎  | 314/426 [00:01<00:00, 153.75it/s]
+[1ALoading weights:  79%|███████▉  | 338/426 [00:02<00:00, 174.07it/s]
+[1ALoading weights:  92%|█████████▏| 390/426 [00:02<00:00, 266.65it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 193.41it/s]
+2026-08-30 03:07:34.936 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-08-30 03:07:35.019 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-08-30 03:08:48.240 | INFO     | vjp_steering.vjp:vjp_mlp_up_left_right_shrink:538 - vjp_mlp_up_left_right_shrink target=29 layers=29 live_plus=68677 live_minus=65126
+2026-08-30 03:08:59.432 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:09:03.402 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:09:07.363 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:09:13.108 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:09:18.370 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:09:23.424 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:10:03.690 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:10:08.468 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:10:30.387 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:10:51.690 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:12.960 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:16.866 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:21.798 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:26.842 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:31.858 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:35.352 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:11:39.164 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:00.829 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:07.781 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:30.490 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:36.266 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:41.402 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:48.455 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:12:53.651 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:13:18.315 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:13:42.188 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:14:05.141 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:14:27.611 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:14:50.565 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:12.916 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:17.000 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:21.456 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:25.978 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:48.771 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:15:54.614 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:16:17.782 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:16:41.255 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:17:04.737 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:17:28.067 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 03:17:28.096 | INFO     | __main__:gpu_stage:410 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v1 profile=dev cells=18
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-jC3JmGch5v6jKlHKO6tash
+✓ Finished downloading files to local!
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev arms=18 scenarios=270
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v1 profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-left-right-formative-v1
