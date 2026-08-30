@@ -517,6 +517,9 @@ def vjp_mlp_up_left_right_shrink(
         sorted_energy = energy.sort(descending=True).values
         total_energy = energy.sum()
         standardized_total = standardized_energy.sum()
+        flattened_scales = torch.cat([scales[side][layer].flatten() for layer in layers])
+        top_coordinate_index = int(energy.argmax())
+        top_coordinate_scale = flattened_scales[top_coordinate_index]
         metadata["sides"][side] = {
             "conditioning_class": "negative" if side == "+C" else "positive",
             "activation_weighted_gradient_norm": activation_norm.item(),
@@ -540,6 +543,10 @@ def vjp_mlp_up_left_right_shrink(
                 "top100": (sorted_energy[:100].sum() / total_energy).item(),
                 "top1000": (sorted_energy[:1000].sum() / total_energy).item(),
             },
+            "top_coordinate_activation_scale": top_coordinate_scale.item(),
+            "top_coordinate_activation_scale_percentile": (
+                (flattened_scales <= top_coordinate_scale).float().mean().item()
+            ),
         }
     metadata["stored_ray_cosine_descriptive_only"] = torch.nn.functional.cosine_similarity(
         flattened["+C"], flattened["-C"], dim=0

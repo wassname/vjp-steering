@@ -86,6 +86,7 @@ def _means(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
+    include_rejected: bool = False,
 ) -> list[dict]:
     points = []
     for method in (method for method in methods if method != "random"):
@@ -94,12 +95,13 @@ def _means(
                 rows_at_dose = [
                     row for row in rows
                     if row["method"] == method and row["C"] == C and row["side"] == side
-                    and row["admissible"]
+                    and (include_rejected or row["admissible"])
                 ]
                 if {row["seed"] for row in rows_at_dose} == method_seeds[method]:
                     points.append({"method": method, "C": C, "side": side,
                                    "effect": mean(row["effect"] for row in rows_at_dose),
-                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose)})
+                                   "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
+                                   "admissible": all(row["admissible"] for row in rows_at_dose)})
     return points
 
 
@@ -189,11 +191,12 @@ def plot(
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
     title: str = "VJP steering on Bullshit Bench v2",
-    endpoint_coefficients: dict[str, float] | None = None,
+    endpoint_coefficients: dict[str, float | None] | None = None,
     smooth: bool = True,
+    include_rejected: bool = False,
 ) -> go.Figure:
     figure = go.Figure()
-    means = _means(rows, methods, method_seeds)
+    means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
     valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
@@ -256,19 +259,34 @@ def plot(
                 points = [points[i] for i in idx]
             if points:
                 endpoint_C = endpoint_coefficients[side] if endpoint_coefficients is not None else points[-1]["C"]
-                endpoint_index = min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
-                endpoint = points[endpoint_index]
-                displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
+                endpoint_index = (
+                    min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
+                    if endpoint_C is not None else None
+                )
+                if endpoint_index is not None:
+                    endpoint = points[endpoint_index]
+                    displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
                     mode="lines+markers", line={"color": colors[method], "width": 3},
                     marker={
                         "color": colors[method],
                         "size": [0, *(12 if index == endpoint_index else 8 for index in range(len(points)))],
-                        "symbol": ["circle", *("x" if index == endpoint_index else "circle" for index in range(len(points)))],
+                        "symbol": [
+                            "circle",
+                            *(
+                                "x" if index == endpoint_index
+                                else "circle" if points[index]["admissible"]
+                                else "circle-open"
+                                for index in range(len(points))
+                            ),
+                        ],
                     },
                     line_shape="spline" if smooth else "linear", line_smoothing=0.6 if smooth else 0,
-                    text=["bare", *(f"C={row['C']:g}" for row in points)],
+                    text=[
+                        "bare",
+                        *(f"C={row['C']:g}" + ("" if row["admissible"] else " (rejected)") for row in points),
+                    ],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
                     showlegend=False,
                 ))
@@ -331,7 +349,7 @@ def _summary(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
-    endpoint_coefficients: dict[str, float] | None = None,
+    endpoint_coefficients: dict[str, float | None] | None = None,
 ) -> list[list[str]]:
     means = _means(rows, methods, method_seeds)
     scored_rows = []
@@ -353,24 +371,31 @@ def _summary(
                 ]
             else:
                 live = [row for row in means if row["method"] == method and row["side"] == side]
-            if endpoint_coefficients is None:
+            if not live or (endpoint_coefficients is not None and endpoint_coefficients[side] is None):
+                peaks[side] = None
+            elif endpoint_coefficients is None:
                 peaks[side] = max(live, key=lambda row: sign * row["effect"])
             else:
                 peaks[side] = min(live, key=lambda row: abs(row["C"] - endpoint_coefficients[side]))
             candidate_count += len(live)
             rejected += sum(not row["admissible"] for row in group)
 
-        score = min(
-            sign * peaks[side]["effect"] - peaks[side]["off_axis_perturbation"]
-            for side, sign in (("-C", -1), ("+C", 1))
-        )
+        if None in peaks.values():
+            score = float("-inf")
+            score_text = "—"
+        else:
+            score = min(
+                sign * peaks[side]["effect"] - peaks[side]["off_axis_perturbation"]
+                for side, sign in (("-C", -1), ("+C", 1))
+            )
+            score_text = f"{score:+.3f}"
         scored_rows.append((score, [
             method,
-            f"{score:+.3f}",
-            f"{-peaks['-C']['effect']:.3f}",
-            f"{peaks['-C']['off_axis_perturbation']:.3f}",
-            f"{peaks['+C']['effect']:.3f}",
-            f"{peaks['+C']['off_axis_perturbation']:.3f}",
+            score_text,
+            f"{-peaks['-C']['effect']:.3f}" if peaks["-C"] is not None else "not confirmed",
+            f"{peaks['-C']['off_axis_perturbation']:.3f}" if peaks["-C"] is not None else "—",
+            f"{peaks['+C']['effect']:.3f}" if peaks["+C"] is not None else "not confirmed",
+            f"{peaks['+C']['off_axis_perturbation']:.3f}" if peaks["+C"] is not None else "—",
             str(RANDOM_SEEDS if method == "random" else len(method_seeds[method])),
             str(candidate_count),
             str(rejected),
@@ -396,7 +421,10 @@ README_TABLE_END = "<!-- CODEX: generated results table ends -->"
 def _display_table(table: list[list[str]]) -> list[list[str]]:
     display = [row.copy() for row in table]
     for column, reverse in ((1, True), (2, True), (3, False), (4, True), (5, False)):
-        best = sorted(display, key=lambda row: float(row[column]), reverse=reverse)[0][column]
+        numeric = [(float(row[column]), row[column]) for row in display if row[column] not in {"—", "not confirmed"}]
+        if not numeric:
+            continue
+        best = sorted(numeric, key=lambda item: item[0], reverse=reverse)[0][1]
         for row in display:
             if row[column] == best:
                 row[column] = f"**{row[column]}**"
@@ -527,7 +555,7 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
     rows = _rows(data_dir(profile_, experiment_id) / "results.csv", methods, method_seeds)
     selected = json.loads((data_dir(profile_, experiment_id) / "selected.json").read_text())
     endpoint_coefficients = {
-        side: selected["sides"][side]["selected_C"]
+        side: selected["sides"][side].get("selected_C")
         for side in ("+C", "-C")
     }
     table = _display_table(_summary(rows, methods, method_seeds, endpoint_coefficients))
@@ -536,7 +564,19 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         f"{status} evidence for {METHOD}: {profile_.cohort_size} questions, "
         f"orders={','.join(profile_.orders)}, passes={profile_.passes}."
     )
-    markdown_text = _markdown(table, (intro_line, "This output is separate from the primary publication result."))
+    unconfirmed = [side for side, coefficient in endpoint_coefficients.items() if coefficient is None]
+    confirmation_note = (
+        " No accepted endpoint was confirmed for " + ", ".join(unconfirmed) + "."
+        if unconfirmed else ""
+    )
+    path_note = (
+        "Markers are evaluated doses; open markers were rejected; straight connectors show dose order, "
+        "not interpolation." + confirmation_note
+    )
+    markdown_text = _markdown(
+        table,
+        (intro_line, "This output is separate from the primary publication result.", path_note),
+    )
     figure = plot(
         rows,
         methods,
@@ -544,6 +584,7 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         title=f"{status}: per-side MLP-up steering",
         endpoint_coefficients=endpoint_coefficients,
         smooth=False,
+        include_rejected=True,
     )
     figure_html = figure.to_html(
         full_html=False,
@@ -552,7 +593,11 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         config={"responsive": True},
         div_id=f"{profile_name}-results-plot",
     )
-    html_text = _html(table, figure_html, intro_line + " This output is separate from the primary publication result.")
+    html_text = _html(
+        table,
+        figure_html,
+        intro_line + " This output is separate from the primary publication result. " + path_note,
+    )
     _check_equivalent(markdown_text, html_text)
     output = results_dir(profile_, experiment_id)
     output.mkdir(parents=True, exist_ok=True)

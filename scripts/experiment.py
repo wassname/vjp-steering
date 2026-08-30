@@ -48,6 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
+    parser.add_argument("--verify-extraction", action="store_true")
     return parser.parse_args()
 
 
@@ -114,6 +115,23 @@ def load_model(args: argparse.Namespace):
     return model, tokenizer
 
 
+def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], list[str]]:
+    positive, negative = make_persona_pairs(
+        tokenizer,
+        n_pairs=args.n_pairs,
+        thinking=True,
+        persona_pairs=walk.PERSONAS,
+        template=walk.PERSONA_TEMPLATE,
+        seed=0,
+    )
+    if len(positive) != len(negative) or not positive:
+        raise ValueError("persona extraction pairs are empty or unpaired")
+    lengths = tokenizer(positive + negative, add_special_tokens=False)["input_ids"]
+    if max(map(len, lengths)) > args.max_length:
+        raise ValueError("extraction prompt truncation")
+    return positive, negative
+
+
 def load_or_extract(
     args: argparse.Namespace,
     root: Path,
@@ -130,19 +148,7 @@ def load_or_extract(
             raise ValueError("saved extraction vector hash mismatch")
         return vectors, metadata
 
-    positive, negative = make_persona_pairs(
-        tokenizer,
-        n_pairs=args.n_pairs,
-        thinking=True,
-        persona_pairs=walk.PERSONAS,
-        template=walk.PERSONA_TEMPLATE,
-        seed=0,
-    )
-    if len(positive) != len(negative) or not positive:
-        raise ValueError("persona extraction pairs are empty or unpaired")
-    lengths = tokenizer(positive + negative, add_special_tokens=False)["input_ids"]
-    if max(map(len, lengths)) > args.max_length:
-        raise ValueError("extraction prompt truncation")
+    positive, negative = extraction_prompts(args, tokenizer)
     started = time.monotonic()
     vectors, extraction_metadata = vjp_mlp_up_left_right_shrink(
         model,
@@ -172,6 +178,43 @@ def load_or_extract(
     }
     atomic_json(metadata_path, metadata)
     return vectors, metadata
+
+
+def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) -> None:
+    metadata_path = root / "extraction" / "metadata.json"
+    existing = json.loads(metadata_path.read_text())
+    positive, negative = extraction_prompts(args, tokenizer)
+    started = time.monotonic()
+    vectors, extraction_metadata = vjp_mlp_up_left_right_shrink(
+        model,
+        tokenizer,
+        positive,
+        negative,
+        batch_size=args.extract_batch_size,
+        max_length=args.max_length,
+        skip_first=16,
+    )
+    hashes = {side: vector_sha256(vector) for side, vector in vectors.items()}
+    if hashes != existing["vector_content_sha256"]:
+        raise ValueError("verification extraction differs from the generation vectors")
+    verification = {
+        "status": "FORMATIVE_EXTRACTION_VERIFICATION",
+        "command": "just experiment vjp_mlp_up_left_right_shrink --verify-extraction",
+        "model": args.model,
+        "n_pairs": len(positive),
+        "seconds": time.monotonic() - started,
+        "hashes_match_generation": True,
+        "vector_content_sha256": hashes,
+        **extraction_metadata,
+    }
+    path = root / "extraction" / "verification.json"
+    atomic_json(path, verification)
+    logger.info(
+        "EXTRACTION_VERIFICATION_COMPLETE experiment={} n_pairs={} hashes_match=true path={}",
+        args.experiment_id,
+        len(positive),
+        path,
+    )
 
 
 def generation_records(
@@ -393,7 +436,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if manifest["method"] != args.method:
         raise ValueError("experiment id belongs to another method")
     completed_cells = completed_profile_cell_count(args, manifest, root, profile_name, limit)
-    if completed_cells is not None:
+    if completed_cells is not None and not args.verify_extraction:
         logger.info(
             "GPU_STAGE_COMPLETE experiment={} profile={} cells={} reused=true",
             args.experiment_id,
@@ -403,6 +446,9 @@ def gpu_stage(args: argparse.Namespace) -> None:
         return
     rows, cohort_sha256 = walk.read_cohort(limit)
     model, tokenizer = load_model(args)
+    if args.verify_extraction:
+        verify_extraction(args, root, model, tokenizer)
+        return
     vectors, extraction = load_or_extract(args, root, model, tokenizer)
     prompts = walk.generation_inputs(tokenizer, rows)
     bare_path = root / "bare.jsonl"
@@ -500,6 +546,8 @@ def modal_stage(
         "--max-length", str(args.max_length),
         "--max-new-tokens", str(args.max_new_tokens),
     ]
+    if args.verify_extraction:
+        command.append("--verify-extraction")
     if coefficients is not None:
         command.extend([
             "--coefficients-plus", ",".join(map(str, coefficients["+C"])),
@@ -546,8 +594,11 @@ def local_pipeline(args: argparse.Namespace) -> None:
         for side in ("+C", "-C")
     }
     modal_stage(args, dev=False, coefficients=candidates)
+    failed_sides: dict[str, list[float]] = {}
     for side in ("+C", "-C"):
+        tested_candidates: list[float] = []
         for coefficient in selected["sides"][side]["candidates_descending"]:
+            tested_candidates.append(coefficient)
             cell_args = ["--side", side, "--coefficient", str(coefficient)]
             run_resumable(
                 [
@@ -579,9 +630,24 @@ def local_pipeline(args: argparse.Namespace) -> None:
             confirmed_path = walk.ROOT / "data" / "formative" / args.experiment_id / "selected.json"
             confirmed = json.loads(confirmed_path.read_text())
             if side in confirmed["sides"]:
+                confirmed["sides"][side]["status"] = "accepted"
+                atomic_json(confirmed_path, confirmed)
                 break
         else:
-            raise RuntimeError(f"full confirmation found no accepted endpoint for {side}")
+            failed_sides[side] = tested_candidates
+            logger.warning(
+                "FULL_SIDE_UNCONFIRMED side={} tested_candidates={}",
+                side,
+                tested_candidates,
+            )
+    confirmed_path = walk.ROOT / "data" / "formative" / args.experiment_id / "selected.json"
+    confirmed = json.loads(confirmed_path.read_text())
+    for side, tested_candidates in failed_sides.items():
+        confirmed["sides"][side] = {
+            "status": "no_accepted_endpoint",
+            "tested_candidates": tested_candidates,
+        }
+    atomic_json(confirmed_path, confirmed)
     subprocess.run(
         [sys.executable, "-m", "vjp_steering.results", "--experiment-id", args.experiment_id, "--profile", "full"],
         cwd=walk.ROOT,
@@ -645,6 +711,8 @@ def main() -> None:
         self_test()
     elif args.gpu_stage:
         gpu_stage(args)
+    elif args.verify_extraction:
+        modal_stage(args, dev=True)
     else:
         local_pipeline(args)
 

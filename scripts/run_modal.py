@@ -87,6 +87,7 @@ def experiment(
     max_new_tokens: int = 512,
     coefficients_plus: str = "",
     coefficients_minus: str = "",
+    verify_extraction: bool = False,
 ):
     if profile not in {"dev", "full"}:
         raise ValueError("profile must be dev or full")
@@ -100,6 +101,8 @@ def experiment(
         "--max-length", str(max_length),
         "--max-new-tokens", str(max_new_tokens),
     ]
+    if verify_extraction:
+        argv.append("--verify-extraction")
     if profile == "full":
         argv.extend([
             "--coefficients-plus", coefficients_plus,
