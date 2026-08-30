@@ -44,6 +44,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extract-batch-size", type=int, default=8)
     parser.add_argument("--max-length", type=int, default=384)
     parser.add_argument("--max-new-tokens", type=int, default=512)
+    parser.add_argument("--coefficients-plus", default="")
+    parser.add_argument("--coefficients-minus", default="")
     return parser.parse_args()
 
 
@@ -388,8 +390,15 @@ def gpu_stage(args: argparse.Namespace) -> None:
         manifest["extraction"] = extraction
         manifest["cohort_sha256"] = cohort_sha256
         atomic_json(manifest_path(args.experiment_id), manifest)
+    coefficients = manifest["grid"] if args.dev else {
+        "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
+        "-C": [float(value) for value in args.coefficients_minus.split(",") if value],
+    }
+    if not args.dev and any(not coefficients[side] for side in ("+C", "-C")):
+        raise ValueError("full GPU stage requires DEV-accepted candidates for both sides")
+    generated_cells = 0
     for side in ("+C", "-C"):
-        for coefficient in manifest["grid"][side]:
+        for coefficient in coefficients[side]:
             records = extend_generation(
                 cell_path(root, side, coefficient),
                 rows,
@@ -411,6 +420,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 "breakdown_reasons": reasons,
             }
             atomic_json(manifest_path(args.experiment_id), manifest)
+            generated_cells += 1
     manifest["profiles"][profile_name] = {
         "status": "DEV" if args.dev else "FORMATIVE",
         "cohort_size": limit,
@@ -418,7 +428,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
     }
     manifest["bare"] = {"path": str(bare_path.relative_to(root)), "rows": len(bare)}
     atomic_json(manifest_path(args.experiment_id), manifest)
-    logger.info("GPU_STAGE_COMPLETE experiment={} profile={} cells={}", args.experiment_id, profile_name, GRID_POINTS * 2)
+    logger.info("GPU_STAGE_COMPLETE experiment={} profile={} cells={}", args.experiment_id, profile_name, generated_cells)
 
 
 def run_resumable(command: list[str], *, attempts: int, label: str) -> None:
@@ -433,7 +443,11 @@ def run_resumable(command: list[str], *, attempts: int, label: str) -> None:
         time.sleep(delay)
 
 
-def modal_stage(args: argparse.Namespace, dev: bool) -> None:
+def modal_stage(
+    args: argparse.Namespace,
+    dev: bool,
+    coefficients: dict[str, list[float]] | None = None,
+) -> None:
     command = [
         "uv", "run", "modal", "run", "scripts/run_modal.py::experiment",
         "--experiment-id", args.experiment_id,
@@ -446,6 +460,11 @@ def modal_stage(args: argparse.Namespace, dev: bool) -> None:
         "--max-length", str(args.max_length),
         "--max-new-tokens", str(args.max_new_tokens),
     ]
+    if coefficients is not None:
+        command.extend([
+            "--coefficients-plus", ",".join(map(str, coefficients["+C"])),
+            "--coefficients-minus", ",".join(map(str, coefficients["-C"])),
+        ])
     run_resumable(command, attempts=4, label=f"Modal {'dev' if dev else 'full'} stage")
     run_resumable(
         ["uv", "run", "modal", "volume", "get", "--force", "jsteer-pub-cache", "outputs", "."],
@@ -477,8 +496,12 @@ def local_pipeline(args: argparse.Namespace) -> None:
     )
     if args.dev:
         return
-    modal_stage(args, dev=False)
     selected = json.loads((walk.ROOT / "data" / "dev" / args.experiment_id / "selected.json").read_text())
+    candidates = {
+        side: selected["sides"][side]["candidates_descending"]
+        for side in ("+C", "-C")
+    }
+    modal_stage(args, dev=False, coefficients=candidates)
     for side in ("+C", "-C"):
         for coefficient in selected["sides"][side]["candidates_descending"]:
             cell_args = ["--side", side, "--coefficient", str(coefficient)]

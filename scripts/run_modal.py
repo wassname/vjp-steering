@@ -85,6 +85,8 @@ def experiment(
     extract_batch_size: int = 8,
     max_length: int = 384,
     max_new_tokens: int = 512,
+    coefficients_plus: str = "",
+    coefficients_minus: str = "",
 ):
     if profile not in {"dev", "full"}:
         raise ValueError("profile must be dev or full")
@@ -98,6 +100,11 @@ def experiment(
         "--max-length", str(max_length),
         "--max-new-tokens", str(max_new_tokens),
     ]
+    if profile == "full":
+        argv.extend([
+            "--coefficients-plus", coefficients_plus,
+            "--coefficients-minus", coefficients_minus,
+        ])
     if profile == "dev":
         argv.append("--dev")
     manifest = json.loads(run_experiment.remote(argv))
