@@ -3,6 +3,7 @@
 import argparse
 import csv
 import html
+import json
 import math
 from statistics import mean, median
 from html.parser import HTMLParser
@@ -188,6 +189,8 @@ def plot(
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
     title: str = "VJP steering on Bullshit Bench v2",
+    endpoint_coefficients: dict[str, float] | None = None,
+    smooth: bool = True,
 ) -> go.Figure:
     figure = go.Figure()
     means = _means(rows, methods, method_seeds)
@@ -233,7 +236,7 @@ def plot(
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
             # log-kernel median: window is fixed in log-C (comparable on coarse vs dense tail)
-            if len(points) >= 5:
+            if smooth and len(points) >= 5:
                 import math
                 logC = [math.log(row["C"]) for row in points]
                 # half-window ~0.15 in log (about one half-octave / log(2)/4) so kernel comparable across grids
@@ -252,12 +255,19 @@ def plot(
                 idx = sorted({round(i * (len(points) - 1) / 15) for i in range(16)} | {len(points) - 1})
                 points = [points[i] for i in idx]
             if points:
-                displayed_endpoints[method, side] = (points[-1]["effect"], points[-1]["off_axis_perturbation"])
+                endpoint_C = endpoint_coefficients[side] if endpoint_coefficients is not None else points[-1]["C"]
+                endpoint_index = min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
+                endpoint = points[endpoint_index]
+                displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
                     mode="lines+markers", line={"color": colors[method], "width": 3},
-                    marker={"color": colors[method], "size": [0, *([8] * (len(points) - 1)), 12], "symbol": ["circle"] * len(points) + ["x"]},
-                    line_shape="spline", line_smoothing=0.6,
+                    marker={
+                        "color": colors[method],
+                        "size": [0, *(12 if index == endpoint_index else 8 for index in range(len(points)))],
+                        "symbol": ["circle", *("x" if index == endpoint_index else "circle" for index in range(len(points)))],
+                    },
+                    line_shape="spline" if smooth else "linear", line_smoothing=0.6 if smooth else 0,
                     text=["bare", *(f"C={row['C']:g}" for row in points)],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
                     showlegend=False,
@@ -518,11 +528,18 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         f"orders={','.join(profile_.orders)}, passes={profile_.passes}."
     )
     markdown_text = _markdown(table, (intro_line, "This output is separate from the primary publication result."))
+    selected = json.loads((data_dir(profile_, experiment_id) / "selected.json").read_text())
+    endpoint_coefficients = {
+        side: selected["sides"][side]["selected_C"]
+        for side in ("+C", "-C")
+    }
     figure = plot(
         rows,
         methods,
         method_seeds,
         title=f"{status}: per-side MLP-up steering",
+        endpoint_coefficients=endpoint_coefficients,
+        smooth=False,
     )
     figure_html = figure.to_html(
         full_html=False,

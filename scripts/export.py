@@ -341,10 +341,13 @@ def export_experiment(
         writer.writerows(scenario_rows)
     selected = {"experiment_id": experiment_id, "profile": profile_name, "sides": {}}
     for side in ("+C", "-C"):
+        direction = 1 if side == "+C" else -1
         side_rows = sorted(
             (
                 row for row in result_rows
-                if row["side"] == side and str(row["admissible"]).lower() == "true"
+                if row["side"] == side
+                and str(row["admissible"]).lower() == "true"
+                and direction * float(row["effect"]) > 0
             ),
             key=lambda row: float(row["C"]),
             reverse=True,

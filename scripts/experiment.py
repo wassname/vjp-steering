@@ -338,6 +338,35 @@ def local_grid(c_approx: float) -> list[float]:
     ]
 
 
+def completed_profile_cell_count(
+    args: argparse.Namespace,
+    manifest: dict,
+    root: Path,
+    profile_name: str,
+    limit: int,
+) -> int | None:
+    profile = manifest.get("profiles", {}).get(profile_name)
+    if not profile or not profile.get("generated"):
+        return None
+    coefficients = manifest.get("grid") if args.dev else {
+        "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
+        "-C": [float(value) for value in args.coefficients_minus.split(",") if value],
+    }
+    if not coefficients or any(not coefficients[side] for side in ("+C", "-C")):
+        return None
+    bare = manifest.get("bare")
+    if not bare or len(read_jsonl(root / bare["path"])) < limit:
+        return None
+    count = 0
+    for side in ("+C", "-C"):
+        for coefficient in coefficients[side]:
+            entry = manifest.get("cells", {}).get(side, {}).get(f"{coefficient:.12g}")
+            if not entry or len(read_jsonl(root / entry["path"])) < limit:
+                return None
+            count += 1
+    return count
+
+
 def gpu_stage(args: argparse.Namespace) -> None:
     profile_name = "dev" if args.dev else "full"
     limit = DEV.cohort_size if args.dev else FULL.cohort_size
@@ -361,6 +390,15 @@ def gpu_stage(args: argparse.Namespace) -> None:
     }
     if manifest["method"] != args.method:
         raise ValueError("experiment id belongs to another method")
+    completed_cells = completed_profile_cell_count(args, manifest, root, profile_name, limit)
+    if completed_cells is not None:
+        logger.info(
+            "GPU_STAGE_COMPLETE experiment={} profile={} cells={} reused=true",
+            args.experiment_id,
+            profile_name,
+            completed_cells,
+        )
+        return
     rows, cohort_sha256 = walk.read_cohort(limit)
     model, tokenizer = load_model(args)
     vectors, extraction = load_or_extract(args, root, model, tokenizer)
@@ -467,7 +505,11 @@ def modal_stage(
         ])
     run_resumable(command, attempts=4, label=f"Modal {'dev' if dev else 'full'} stage")
     run_resumable(
-        ["uv", "run", "modal", "volume", "get", "--force", "jsteer-pub-cache", "outputs", "."],
+        [
+            "uv", "run", "modal", "volume", "get", "--force", "jsteer-pub-cache",
+            f"outputs/experiments/{args.experiment_id}",
+            "outputs/experiments",
+        ],
         attempts=4,
         label="Modal artifact pull",
     )
