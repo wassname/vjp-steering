@@ -522,6 +522,8 @@ def run_resumable(command: list[str], *, attempts: int, label: str) -> None:
         result = subprocess.run(command, cwd=walk.ROOT)
         if result.returncode == 0:
             return
+        if result.returncode in {2, 126, 127}:
+            raise subprocess.CalledProcessError(result.returncode, command)
         if attempt == attempts:
             raise subprocess.CalledProcessError(result.returncode, command)
         delay = min(300, 15 * 2 ** (attempt - 1))
@@ -599,7 +601,7 @@ def local_pipeline(args: argparse.Namespace) -> None:
         tested_candidates: list[float] = []
         for coefficient in selected["sides"][side]["candidates_descending"]:
             tested_candidates.append(coefficient)
-            cell_args = ["--side", side, "--coefficient", str(coefficient)]
+            cell_args = [f"--side={side}", "--coefficient", str(coefficient)]
             run_resumable(
                 [
                     sys.executable,

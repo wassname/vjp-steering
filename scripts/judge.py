@@ -371,16 +371,16 @@ class DeferredCell(Exception):
     pass
 
 
-class ProviderEmptyStorm(Exception):
-    pass
+PROVIDERS = ("parasail", "baseten", "mancer")
 
 
-PROVIDER = {
-    "order": ["mancer"],
-    "allow_fallbacks": False,
-    "quantizations": ["fp8"],
-    "require_parameters": True,
-}
+def provider_route(empty_choice_attempt: int) -> dict:
+    return {
+        "order": [PROVIDERS[min(empty_choice_attempt, len(PROVIDERS) - 1)]],
+        "allow_fallbacks": False,
+        "quantizations": ["fp8"],
+        "require_parameters": True,
+    }
 
 
 def _error_text(err: Exception) -> str:
@@ -401,7 +401,7 @@ def _model_offline(err: Exception, status_code: int | None) -> bool:
     return status_code == 503 and ("model_offline" in text or "model is currently busy" in text)
 
 
-async def request_with_rate_limit(client: AsyncOpenAI, content: str):
+async def request_with_rate_limit(client: AsyncOpenAI, content: str, empty_choice_attempt: int):
     rate_limit_attempt = 0
     provider_unavailable_attempt = 0
     while True:
@@ -413,9 +413,8 @@ async def request_with_rate_limit(client: AsyncOpenAI, content: str):
                 max_tokens=1024,
                 response_format=FORMAT,
                 extra_body={
-                    "min_p": 0.1,
                     "reasoning": {"enabled": False},
-                    "provider": PROVIDER,
+                    "provider": provider_route(empty_choice_attempt),
                 },
             )
         except Exception as err:
@@ -448,19 +447,21 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
     reasoning_attempts = []
     format_attempt = 0
     empty_choice_attempt = 0
+    transport_attempt = 0
     while format_attempt < 3:
         # PI: Retry provider-empty responses without counting them as a model-format sample.
         content = prompt if format_attempt == 0 else prompt + RETRY_NUDGE
         try:
-            response = await request_with_rate_limit(client, content)
+            response = await request_with_rate_limit(client, content, empty_choice_attempt)
         except (APIConnectionError, APITimeoutError) as err:
             # PI: Network failures have no HTTP status code, so handle them before HTTP errors.
-            logger.warning("{} attempt={}/3 {}", type(err).__name__, format_attempt + 1, err)
-            if format_attempt == 2:
+            transport_attempt += 1
+            logger.warning("{} attempt={}/3 {}", type(err).__name__, transport_attempt, err)
+            if transport_attempt == 3:
                 raise RuntimeError(
                     f"{type(err).__name__} after 3 attempts for {cache_key(row, order, pass_index)}"
                 ) from err
-            await asyncio.sleep(1.5 * (format_attempt + 1))
+            await asyncio.sleep(1.5 * transport_attempt)
             continue
         except Exception as err:
             status_code = getattr(err, "status_code", None)
@@ -593,8 +594,6 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
                     "order": order,
                     "pass": pass_index,
                 })
-                if len(deferred) >= EMPTY_STORM_LIMIT:
-                    raise ProviderEmptyStorm(f"provider-empty storm: deferred={len(deferred)}")
             return
         async with lock:
             with CACHE.open("a") as file:
@@ -607,9 +606,9 @@ async def refresh(todo: list[tuple[dict, str, int]]) -> None:
     try:
         for start in range(0, len(todo), 500):
             await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
-    except ProviderEmptyStorm as error:
-        write_deferred(deferred)
-        raise RuntimeError(f"JUDGE_PROVIDER_EMPTY_STORM cells={len(deferred)} report={DEFERRED}") from error
+            if len(deferred) >= EMPTY_STORM_LIMIT:
+                write_deferred(deferred)
+                raise RuntimeError(f"JUDGE_PROVIDER_EMPTY_STORM cells={len(deferred)} report={DEFERRED}")
     finally:
         await client.close()
     if deferred:

@@ -37,7 +37,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "vjp_mlp_up_shrink": "MLP-up VJP",
-    "vjp_mlp_up_left_right_shrink": "MLP-up per-side VJP",
+    "vjp_mlp_up_left_right_shrink": "per-side VJP",
 }
 COHORT_FIELDS = (
     "model",
@@ -98,10 +98,13 @@ def _means(
                     and (include_rejected or row["admissible"])
                 ]
                 if {row["seed"] for row in rows_at_dose} == method_seeds[method]:
+                    effect = mean(row["effect"] for row in rows_at_dose)
+                    admissible = all(row["admissible"] for row in rows_at_dose)
                     points.append({"method": method, "C": C, "side": side,
-                                   "effect": mean(row["effect"] for row in rows_at_dose),
+                                   "effect": effect,
                                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
-                                   "admissible": all(row["admissible"] for row in rows_at_dose)})
+                                   "admissible": admissible,
+                                   "accepted": admissible and (effect > 0 if side == "+C" else effect < 0)})
     return points
 
 
@@ -276,7 +279,7 @@ def plot(
                             "circle",
                             *(
                                 "x" if index == endpoint_index
-                                else "circle" if points[index]["admissible"]
+                                else "circle" if points[index]["accepted" if include_rejected else "admissible"]
                                 else "circle-open"
                                 for index in range(len(points))
                             ),
@@ -285,7 +288,9 @@ def plot(
                     line_shape="spline" if smooth else "linear", line_smoothing=0.6 if smooth else 0,
                     text=[
                         "bare",
-                        *(f"C={row['C']:g}" + ("" if row["admissible"] else " (rejected)") for row in points),
+                        *(f"C={row['C']:g}" + (
+                            "" if row["accepted" if include_rejected else "admissible"] else " (rejected)"
+                        ) for row in points),
                     ],
                     hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
                     showlegend=False,
@@ -316,6 +321,8 @@ def plot(
             "y": displayed_endpoints[method, side][1],
             "text": f"{LABELS[method]} {side}",
             "color": colors[method],
+            "angles": (0, -45, 45, -90, 90, -135, 135, 180)
+            if method == "vjp_mlp_up_left_right_shrink" else (90, 45, 135, 0, 180, -45, -135, -90),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -350,8 +357,9 @@ def _summary(
     methods: tuple[str, ...] = METHODS,
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
     endpoint_coefficients: dict[str, float | None] | None = None,
+    include_rejected: bool = False,
 ) -> list[list[str]]:
-    means = _means(rows, methods, method_seeds)
+    means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
     scored_rows = []
     for method in methods:
         peaks = {}
@@ -378,7 +386,10 @@ def _summary(
             else:
                 peaks[side] = min(live, key=lambda row: abs(row["C"] - endpoint_coefficients[side]))
             candidate_count += len(live)
-            rejected += sum(not row["admissible"] for row in group)
+            rejected += (
+                sum(not row["accepted"] for row in live)
+                if include_rejected else sum(not row["admissible"] for row in group)
+            )
 
         if None in peaks.values():
             score = float("-inf")
@@ -558,7 +569,9 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         side: selected["sides"][side].get("selected_C")
         for side in ("+C", "-C")
     }
-    table = _display_table(_summary(rows, methods, method_seeds, endpoint_coefficients))
+    table = _display_table(_summary(
+        rows, methods, method_seeds, endpoint_coefficients, include_rejected=True
+    ))
     status = "DEV" if profile_name == "dev" else "FORMATIVE"
     intro_line = (
         f"{status} evidence for {METHOD}: {profile_.cohort_size} questions, "
