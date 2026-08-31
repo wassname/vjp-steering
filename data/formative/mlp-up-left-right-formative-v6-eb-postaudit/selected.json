@@ -1,0 +1,20 @@
+{
+  "experiment_id": "mlp-up-left-right-formative-v6-eb-postaudit",
+  "profile": "full",
+  "sides": {
+    "+C": {
+      "selected_C": 40.35481215806536,
+      "candidates_descending": [
+        40.35481215806536
+      ],
+      "effect": 3.203,
+      "off_axis_perturbation": 0.668
+    },
+    "-C": {
+      "status": "no_accepted_endpoint",
+      "tested_candidates": [
+        28.60187715130719
+      ]
+    }
+  }
+}

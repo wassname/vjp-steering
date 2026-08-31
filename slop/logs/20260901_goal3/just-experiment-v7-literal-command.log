@@ -1,0 +1,96 @@
+COMMAND: just experiment vjp_mlp_up_left_right_shrink
+uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink 
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-UUvJNSldThYXYE2RIM9aYW
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 820.61it/s]
+2026-08-31 22:51:06.500 | INFO     | __main__:gpu_stage:440 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18 reused=true
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-UUvJNSldThYXYE2RIM9aYW
+✓ Finished downloading files to local!
+2026-09-01 06:51:18.907 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18 demo_sides=270
+2026-09-01 06:51:19.407 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:51:19.823 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:51:20.352 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:51:20.885 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:51:21.344 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:51:21.790 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:51:22.262 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:51:22.708 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:51:23.064 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:51:23.405 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:51:23.752 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:51:23.998 | INFO     | __main__:main:650 - CACHE_CHECK required=263 cached=263 missing=0 API_calls=0
+2026-09-01 06:51:26.063 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18 demo_sides=270
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev arms=18 scenarios=270
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:621: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-left-right-formative-v7-eb-audited
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-6yYS6To5pp2J91YdjxEA2E
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 920.29it/s]
+2026-08-31 22:51:50.630 | INFO     | __main__:gpu_stage:440 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v7-eb-audited profile=full cells=6 reused=true
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=6
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-6yYS6To5pp2J91YdjxEA2E
+✓ Finished downloading files to local!
+2026-09-01 06:51:59.011 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+2026-09-01 06:51:59.432 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:51:59.851 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:52:00.337 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:52:00.864 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:52:01.409 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:52:01.872 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:52:02.335 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:52:02.757 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:52:03.116 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:52:03.454 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:52:03.795 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:52:03.990 | INFO     | __main__:main:650 - CACHE_CHECK required=200 cached=200 missing=0 API_calls=0
+2026-09-01 06:52:06.141 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full arms=2 scenarios=200
+2026-09-01 06:52:12.806 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+2026-09-01 06:52:13.229 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:52:13.671 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:52:14.176 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:52:14.679 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:52:15.205 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:52:15.726 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:52:16.194 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:52:16.622 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:52:16.981 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:52:17.317 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:52:17.660 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:52:17.855 | INFO     | __main__:main:650 - CACHE_CHECK required=200 cached=200 missing=0 API_calls=0
+2026-09-01 06:52:19.959 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full arms=2 scenarios=200
+2026-09-01 06:52:25.492 | WARNING  | __main__:local_pipeline:640 - FULL_SIDE_UNCONFIRMED side=-C tested_candidates=[28.60187715130719]
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:621: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full rows=2 output=/workspace/2026/jspace/j-steer_pub/results/formative/mlp-up-left-right-formative-v7-eb-audited

@@ -13,3 +13,4 @@ The random cone shows ten vectors until fewer than half have two coherent direct
 | pca | +0.265 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
 | J_word | +0.078 | 0.275 | **0.197** | 2.075 | 0.626 | 1 | 13 | 3 |
 | *random* | -0.782 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |
+| vjp_mlp_up_left_right_shrink | — | not confirmed | — | 3.466 | 1.129 | 1 | 1 | 1 |

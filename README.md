@@ -36,6 +36,7 @@ The Jacobian (`vjp_delta`) methods have a better profile than the controls here.
 | pca | +0.265 | 1.227 | 0.963 | 4.090 | 1.031 | 3 | 61 | 39 |
 | J_word | +0.078 | 0.275 | **0.197** | 2.075 | 0.626 | 1 | 13 | 3 |
 | *random* | -0.782 | -0.425 | 0.357 | 2.995 | 0.553 | 10 | 6 | 5 |
+| vjp_mlp_up_left_right_shrink | — | not confirmed | — | 3.466 | 1.129 | 1 | 1 | 1 |
 <!-- CODEX: generated results table ends -->
 
 Prompting can often reach the sycophantic direction. The difficult test is steering away from it, so the score uses the weaker direction rather than letting the easier one compensate for it.

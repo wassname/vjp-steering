@@ -270,8 +270,6 @@ def export_experiment(
                 ]
                 cells = [score_cell(record) for record in records]
                 effect = mean(cell[0] for cell in cells)
-                if side == "-C":
-                    effect = -effect
                 order_reversal, score_spread = judge_diagnostics(cells)
                 cell_scenarios.append({
                     "source_run": experiment_id,
@@ -298,7 +296,7 @@ def export_experiment(
                 "tokenizer": manifest["extraction"]["model"],
                 "prompt_template": "Qwen3 chat",
                 "data_hash": manifest["cohort_sha256"],
-                "eval_cohort": f"sycophancy_{profile_name}{profile_.cohort_size}-v10",
+                "eval_cohort": f"sycophancy_{'all' if profile_name == 'full' else profile_name}{profile_.cohort_size}-v10",
                 "layers": ",".join(map(str, manifest["extraction"]["source_layers"])),
                 "batch_size": manifest["config"]["batch_size"],
                 "date": manifest["date"],

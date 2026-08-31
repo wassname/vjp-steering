@@ -1,0 +1,227 @@
+uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink 
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-wi11cBwkUhE2GjMSQ0gjwH
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 912.09it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 786.78it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   3%|▎         | 14/426 [00:00<00:03, 126.23it/s]
+[1ALoading weights:   8%|▊         | 36/426 [00:00<00:02, 174.88it/s]
+[1ALoading weights:  15%|█▌        | 66/426 [00:00<00:01, 228.94it/s]
+[1ALoading weights:  23%|██▎       | 98/426 [00:00<00:01, 255.39it/s]
+[1ALoading weights:  29%|██▉       | 124/426 [00:00<00:01, 240.68it/s]
+[1ALoading weights:  38%|███▊      | 162/426 [00:00<00:00, 268.69it/s]
+[1ALoading weights:  45%|████▌     | 192/426 [00:00<00:00, 273.70it/s]
+[1ALoading weights:  52%|█████▏    | 220/426 [00:00<00:00, 258.68it/s]
+[1ALoading weights:  59%|█████▉    | 251/426 [00:00<00:00, 273.26it/s]
+[1ALoading weights:  65%|██████▌   | 279/426 [00:01<00:00, 255.58it/s]
+[1ALoading weights:  73%|███████▎  | 312/426 [00:01<00:00, 264.77it/s]
+[1ALoading weights:  81%|████████  | 345/426 [00:01<00:00, 279.01it/s]
+[1ALoading weights:  88%|████████▊ | 374/426 [00:01<00:00, 252.67it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 282.45it/s]
+2026-08-31 22:28:12.339 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-08-31 22:28:12.406 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-08-31 22:29:16.581 | INFO     | vjp_steering.vjp:vjp_mlp_up_left_right_shrink:633 - vjp_mlp_up_left_right_shrink target=29 layers=29 live_plus=267264 live_minus=267264
+2026-08-31 22:29:26.105 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:29.589 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:32.640 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:35.382 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:38.896 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:43.282 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:29:45.692 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:20.188 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:38.102 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:41.701 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:45.199 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:48.394 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:51.432 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:54.359 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:57.178 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:30:59.909 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:31:17.366 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:31:19.773 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:31:37.780 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:31:56.236 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:31:59.040 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:32:01.483 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:32:03.585 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:32:05.897 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:32:24.421 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:32:42.741 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:01.199 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:20.714 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:39.087 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:41.685 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:44.584 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:46.992 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:33:49.377 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:34:07.515 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:34:25.398 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:34:43.630 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:35:02.752 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:35:21.255 | INFO     | walk:generate:440 - generation 15/15
+2026-08-31 22:35:21.279 | INFO     | __main__:gpu_stage:517 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-wi11cBwkUhE2GjMSQ0gjwH
+✓ Finished downloading files to local!
+2026-09-01 06:35:32.869 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18 demo_sides=270
+2026-09-01 06:35:33.299 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:35:33.760 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:35:34.334 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:35:34.938 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:35:35.506 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:35:36.045 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:35:36.478 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:35:36.927 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:35:37.282 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:35:37.617 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:35:37.968 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:35:38.158 | INFO     | __main__:main:650 - CACHE_CHECK required=263 cached=244 missing=19 API_calls=19
+2026-09-01 06:35:49.763 | INFO     | __main__:run:613 - judge progress=19/19
+2026-09-01 06:35:50.304 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:35:50.823 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:35:51.343 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:35:51.828 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:35:52.296 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:35:52.753 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:35:53.219 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:35:53.650 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:35:54.059 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:35:54.394 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:35:54.762 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:35:54.965 | INFO     | __main__:main:663 - JUDGE_COMPLETE required=263 missing=0
+2026-09-01 06:35:56.992 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=dev cells=18 demo_sides=270
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev arms=18 scenarios=270
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:621: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-left-right-formative-v7-eb-audited
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-RH5VOsoUFxomF1HDbsEeXR
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 934.69it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 515.94it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 18/426 [00:00<00:02, 168.74it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:00<00:03, 126.80it/s]
+[1ALoading weights:  15%|█▍        | 62/426 [00:00<00:02, 179.08it/s]
+[1ALoading weights:  19%|█▉        | 82/426 [00:00<00:02, 163.80it/s]
+[1ALoading weights:  24%|██▍       | 103/426 [00:00<00:01, 177.14it/s]
+[1ALoading weights:  29%|██▊       | 122/426 [00:00<00:01, 163.53it/s]
+[1ALoading weights:  33%|███▎      | 139/426 [00:00<00:01, 157.31it/s]
+[1ALoading weights:  38%|███▊      | 160/426 [00:00<00:01, 169.63it/s]
+[1ALoading weights:  43%|████▎     | 184/426 [00:01<00:01, 185.20it/s]
+[1ALoading weights:  48%|████▊     | 203/426 [00:01<00:01, 176.22it/s]
+[1ALoading weights:  52%|█████▏    | 221/426 [00:01<00:01, 176.98it/s]
+[1ALoading weights:  56%|█████▌    | 239/426 [00:01<00:01, 175.29it/s]
+[1ALoading weights:  60%|██████    | 257/426 [00:01<00:01, 167.96it/s]
+[1ALoading weights:  65%|██████▌   | 279/426 [00:01<00:00, 174.70it/s]
+[1ALoading weights:  70%|██████▉   | 297/426 [00:01<00:00, 168.63it/s]
+[1ALoading weights:  75%|███████▌  | 321/426 [00:01<00:00, 185.26it/s]
+[1ALoading weights:  81%|████████  | 344/426 [00:01<00:00, 191.50it/s]
+[1ALoading weights:  85%|████████▌ | 364/426 [00:02<00:00, 156.65it/s]
+[1ALoading weights:  89%|████████▉ | 381/426 [00:02<00:00, 152.47it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 181.10it/s]
+2026-08-31 22:37:00.033 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:38:50.421 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:39:20.936 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:39:50.798 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:40:00.520 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:40:10.060 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:40:21.654 | INFO     | walk:generate:440 - generation 85/85
+2026-08-31 22:40:21.685 | INFO     | __main__:gpu_stage:517 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v7-eb-audited profile=full cells=6
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=6
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-RH5VOsoUFxomF1HDbsEeXR
+✓ Finished downloading files to local!
+2026-09-01 06:40:34.294 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+2026-09-01 06:40:34.738 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:40:35.164 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:40:35.687 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:40:36.198 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:40:36.661 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:40:37.123 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:40:37.587 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:40:38.059 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:40:38.405 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:40:38.735 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:40:39.123 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:40:39.339 | INFO     | __main__:main:650 - CACHE_CHECK required=200 cached=179 missing=21 API_calls=21
+2026-09-01 06:40:53.954 | INFO     | __main__:run:613 - judge progress=21/21
+2026-09-01 06:40:54.479 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:40:54.980 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:40:55.594 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:40:56.197 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:40:56.768 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:40:57.337 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:40:57.839 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:40:58.356 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:40:58.842 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:40:59.260 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:40:59.644 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:40:59.848 | INFO     | __main__:main:663 - JUDGE_COMPLETE required=200 missing=0
+2026-09-01 06:41:01.895 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full arms=1 scenarios=100
+2026-09-01 06:41:08.908 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+2026-09-01 06:41:09.374 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:41:09.887 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:41:10.399 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:41:10.951 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:41:11.406 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:41:11.847 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:41:12.298 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:41:12.776 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:41:13.195 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:41:13.591 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:41:14.045 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:41:14.286 | INFO     | __main__:main:650 - CACHE_CHECK required=200 cached=191 missing=9 API_calls=9
+2026-09-01 06:41:19.635 | INFO     | __main__:run:613 - judge progress=9/9
+2026-09-01 06:41:20.165 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 06:41:20.684 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 06:41:21.272 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 06:41:21.877 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 06:41:22.355 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 06:41:22.813 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 06:41:23.234 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 06:41:23.729 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 06:41:24.159 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 06:41:24.515 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 06:41:24.953 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 06:41:25.216 | INFO     | __main__:main:663 - JUDGE_COMPLETE required=200 missing=0
+2026-09-01 06:41:27.360 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full arms=2 scenarios=200
+2026-09-01 06:41:32.935 | WARNING  | __main__:local_pipeline:640 - FULL_SIDE_UNCONFIRMED side=-C tested_candidates=[28.60187715130719]
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:621: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full rows=2 output=/workspace/2026/jspace/j-steer_pub/results/formative/mlp-up-left-right-formative-v7-eb-audited

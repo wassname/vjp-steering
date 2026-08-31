@@ -1,0 +1,210 @@
+COMMAND: just experiment vjp_mlp_up_left_right_shrink --dev
+uv run python scripts/experiment.py vjp_mlp_up_left_right_shrink --dev
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-rB1XK7XIQ8Opul7mlDPfYj
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 344.24it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 181.17it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 7/426 [00:00<00:14, 29.68it/s]
+[1ALoading weights:   2%|▏         | 10/426 [00:00<00:41,  9.91it/s]
+[1ALoading weights:   3%|▎         | 12/426 [00:01<01:27,  4.71it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:02<00:46,  8.80it/s]
+[1ALoading weights:   8%|▊         | 36/426 [00:02<00:17, 21.77it/s]
+[1ALoading weights:  12%|█▏        | 51/426 [00:02<00:11, 31.94it/s]
+[1ALoading weights:  14%|█▎        | 58/426 [00:02<00:10, 33.60it/s]
+[1ALoading weights:  19%|█▊        | 79/426 [00:02<00:06, 57.41it/s]
+[1ALoading weights:  23%|██▎       | 100/426 [00:03<00:04, 81.37it/s]
+[1ALoading weights:  30%|██▉       | 127/426 [00:03<00:02, 114.77it/s]
+[1ALoading weights:  34%|███▍      | 146/426 [00:03<00:02, 123.17it/s]
+[1ALoading weights:  39%|███▉      | 167/426 [00:03<00:01, 140.78it/s]
+[1ALoading weights:  44%|████▍     | 189/426 [00:03<00:01, 157.08it/s]
+[1ALoading weights:  50%|█████     | 213/426 [00:03<00:01, 176.24it/s]
+[1ALoading weights:  55%|█████▍    | 233/426 [00:03<00:01, 177.45it/s]
+[1ALoading weights:  59%|█████▉    | 253/426 [00:03<00:00, 178.48it/s]
+[1ALoading weights:  64%|██████▍   | 272/426 [00:03<00:00, 179.38it/s]
+[1ALoading weights:  69%|██████▉   | 296/426 [00:03<00:00, 191.69it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:04<00:00, 104.42it/s]
+2026-08-30 10:09:20.517 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-08-30 10:09:20.578 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-08-30 10:10:19.528 | INFO     | vjp_steering.vjp:vjp_mlp_up_left_right_shrink:557 - vjp_mlp_up_left_right_shrink target=29 layers=29 live_plus=65126 live_minus=68677
+2026-08-30 10:10:28.361 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:10:31.114 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:10:34.197 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:10:36.822 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:10:39.171 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:10:42.331 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:11:15.396 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:11:30.956 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:11:46.591 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:02.160 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:17.243 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:19.806 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:22.513 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:25.797 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:28.294 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:30.688 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:33.384 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:12:48.291 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:13:02.950 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:13:17.262 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:13:31.883 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:13:37.457 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:13:52.424 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:14:07.563 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:14:22.808 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:14:37.697 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:14:52.169 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:06.600 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:23.369 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:38.034 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:40.528 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:43.247 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:15:58.344 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:16:12.882 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:16:27.148 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:16:41.396 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:16:55.637 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:17:09.862 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:17:24.599 | INFO     | walk:generate:439 - generation 15/15
+2026-08-30 10:17:24.650 | INFO     | __main__:gpu_stage:517 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v2 profile=dev cells=18
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v2 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-rB1XK7XIQ8Opul7mlDPfYj
+✓ Finished downloading files to local!
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 657, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 626, in main
+    rows = experiment_rows(
+        args.experiment_id,
+    ...<2 lines>...
+        coefficient_filter=args.coefficient,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 236, in experiment_rows
+    bare_records = [json.loads(line) for line in (root / manifest["bare"]["path"]).read_text().splitlines()]
+                                                         ~~~~~~~~^^^^^^^^
+KeyError: 'bare'
+2026-08-30 18:17:35.215 | WARNING  | __main__:run_resumable:530 - OpenRouter dev judge failed attempt=1/12; resume in 15s
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 657, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 626, in main
+    rows = experiment_rows(
+        args.experiment_id,
+    ...<2 lines>...
+        coefficient_filter=args.coefficient,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 236, in experiment_rows
+    bare_records = [json.loads(line) for line in (root / manifest["bare"]["path"]).read_text().splitlines()]
+                                                         ~~~~~~~~^^^^^^^^
+KeyError: 'bare'
+2026-08-30 18:17:52.389 | WARNING  | __main__:run_resumable:530 - OpenRouter dev judge failed attempt=2/12; resume in 30s
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 657, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 626, in main
+    rows = experiment_rows(
+        args.experiment_id,
+    ...<2 lines>...
+        coefficient_filter=args.coefficient,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 236, in experiment_rows
+    bare_records = [json.loads(line) for line in (root / manifest["bare"]["path"]).read_text().splitlines()]
+                                                         ~~~~~~~~^^^^^^^^
+KeyError: 'bare'
+2026-08-30 18:18:24.522 | WARNING  | __main__:run_resumable:530 - OpenRouter dev judge failed attempt=3/12; resume in 60s
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 657, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 626, in main
+    rows = experiment_rows(
+        args.experiment_id,
+    ...<2 lines>...
+        coefficient_filter=args.coefficient,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 236, in experiment_rows
+    bare_records = [json.loads(line) for line in (root / manifest["bare"]["path"]).read_text().splitlines()]
+                                                         ~~~~~~~~^^^^^^^^
+KeyError: 'bare'
+2026-08-30 18:19:26.568 | WARNING  | __main__:run_resumable:530 - OpenRouter dev judge failed attempt=4/12; resume in 120s
+2026-08-30 18:21:28.184 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v2 profile=dev cells=18 demo_sides=270
+2026-08-30 18:21:28.709 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-08-30 18:21:29.232 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-08-30 18:21:29.759 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-08-30 18:21:30.341 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-08-30 18:21:30.891 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-08-30 18:21:31.411 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-08-30 18:21:31.918 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-08-30 18:21:32.350 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-08-30 18:21:32.710 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-08-30 18:21:33.064 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-08-30 18:21:33.484 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-08-30 18:21:33.662 | INFO     | __main__:main:640 - CACHE_CHECK required=264 cached=131 missing=133 API_calls=133
+2026-08-30 18:22:23.504 | INFO     | __main__:run:603 - judge progress=100/133
+2026-08-30 18:22:39.280 | INFO     | __main__:run:603 - judge progress=133/133
+2026-08-30 18:22:39.847 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-08-30 18:22:40.379 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-08-30 18:22:41.093 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-08-30 18:22:41.687 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-08-30 18:22:42.353 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-08-30 18:22:42.910 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-08-30 18:22:43.417 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-08-30 18:22:43.848 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-08-30 18:22:44.257 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-08-30 18:22:44.701 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-08-30 18:22:45.324 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-08-30 18:22:45.553 | INFO     | __main__:main:653 - JUDGE_COMPLETE required=264 missing=0
+2026-08-30 18:22:47.998 | INFO     | judge:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v2 profile=dev cells=18 demo_sides=270
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 399, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 391, in main
+    export_experiment(args.experiment_id, args.profile, args.side, args.coefficient)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 357, in export_experiment
+    raise ValueError(f"{profile_name} has no accepted {side} cell")
+ValueError: dev has no accepted -C cell
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 723, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 719, in main
+    local_pipeline(args)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 581, in local_pipeline
+    subprocess.run(
+    ~~~~~~~~~~~~~~^
+        [sys.executable, "scripts/export.py", "--experiment-id", args.experiment_id, "--profile", "dev"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        cwd=walk.ROOT,
+        ^^^^^^^^^^^^^^
+        check=True,
+        ^^^^^^^^^^^
+    )
+    ^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/workspace/2026/jspace/j-steer_pub/.venv/bin/python3', 'scripts/export.py', '--experiment-id', 'mlp-up-left-right-formative-v2', '--profile', 'dev']' returned non-zero exit status 1.
+error: recipe `experiment` failed on line 15 with exit code 1
+EXIT_STATUS=1

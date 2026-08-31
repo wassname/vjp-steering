@@ -70,6 +70,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--refine-around-cstar", action="store_true",
                         help="bracket C* with local health (rep/unfinished/leak) then insert a dense tail 0.5..1.25*C*")
     parser.add_argument("--status", choices=("RESULT", "SMOKE_PASS"), default="RESULT")
+    parser.add_argument("--extract-only", action="store_true")
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
 
@@ -486,7 +487,7 @@ def assert_hook_changes_logits(model, tokenizer, vector, prompt: str, coefficien
 
 
 def run_rung(args: argparse.Namespace) -> None:
-    assert args.coefficient is not None
+    assert args.coefficient is not None or args.extract_only
     if args.device == "cuda":
         wait_for_gpu()
     stamp = time.strftime("%Y%m%dT%H%M%S")
@@ -559,6 +560,23 @@ def run_rung(args: argparse.Namespace) -> None:
         vector_files[side] = vector_file.name
         vector_sha256[side] = hashlib.sha256(vector_file.read_bytes()).hexdigest()
         vector_content_sha256[side] = vector_hash(vector)
+
+    if args.extract_only:
+        audit = {
+            "schema": "per_side_vjp_noisy_coordinate_audit_v1",
+            "method": args.method,
+            "model": args.model,
+            "seed": args.seed,
+            "n_pairs": len(positive),
+            "extraction_sample_id": sample_id,
+            "extraction_seconds": extraction_seconds,
+            "vector_files": vector_files,
+            "vector_content_sha256": vector_content_sha256,
+            "extraction_metadata": extraction_metadata,
+        }
+        (output / "extraction_audit.json").write_text(json.dumps(audit, indent=2) + "\n")
+        logger.info("EXTRACTION_AUDIT_COMPLETE output={}", output)
+        return
 
     prompts = generation_inputs(tokenizer, rows)
     first_length = len(tokenizer(prompts[0], add_special_tokens=False)["input_ids"])
@@ -653,10 +671,11 @@ def run_rung(args: argparse.Namespace) -> None:
 def main() -> None:
     args = parse_args()
     if args.walk:
-        assert args.coefficient is None
+        assert args.coefficient is None and not args.extract_only
         walk(args)
     else:
         assert not args.dry_run
+        assert args.coefficient is not None or args.extract_only
         run_rung(args)
 
 

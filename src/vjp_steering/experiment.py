@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 METHOD = "vjp_mlp_up_left_right_shrink"
-DEFAULT_EXPERIMENT_ID = "mlp-up-left-right-formative-v1"
+DEFAULT_EXPERIMENT_ID = "mlp-up-left-right-formative-v7-eb-audited"
 
 
 @dataclass(frozen=True)

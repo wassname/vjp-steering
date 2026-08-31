@@ -36,6 +36,9 @@ judge walk_id *args:
 judge-dry walk_id:
 	uv run python scripts/judge.py --walk-id {{walk_id}}
 
+judge-experiment experiment_id profile:
+	uv run python scripts/judge.py --experiment-id {{experiment_id}} --profile {{profile}} --refresh
+
 export walk_id:
 	uv run python scripts/export.py --walk-id {{walk_id}}
 

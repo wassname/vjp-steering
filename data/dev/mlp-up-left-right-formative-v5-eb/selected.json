@@ -1,0 +1,23 @@
+{
+  "experiment_id": "mlp-up-left-right-formative-v5-eb",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 40.34972976708344,
+      "candidates_descending": [
+        40.34972976708344,
+        35.806146751294214
+      ],
+      "effect": 1.9066666666666665,
+      "off_axis_perturbation": 0.5133333333333333
+    },
+    "-C": {
+      "selected_C": 28.60187715130719,
+      "candidates_descending": [
+        28.60187715130719
+      ],
+      "effect": -0.7666666666666665,
+      "off_axis_perturbation": 0.5266666666666666
+    }
+  }
+}

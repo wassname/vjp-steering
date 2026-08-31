@@ -17,7 +17,7 @@ from vjp_steering.experiment import DEV, FULL, METHOD, data_dir, results_dir
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "random")
+METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "random")
 RANDOM_SEEDS = 10
 METHOD_SEEDS = {
     "vjp_delta": {0, 1, 2},
@@ -25,6 +25,7 @@ METHOD_SEEDS = {
     "pca": {0, 1, 2},
     "J_word": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
+    "vjp_mlp_up_left_right_shrink": {0},
 }
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
@@ -43,9 +44,10 @@ COHORT_FIELDS = (
     "model",
     "tokenizer",
     "prompt_template",
-    "data_hash",
     "eval_cohort",
 )
+# data_hash tracks bench version (old 28aa vs new c0b64) but both are sycophancy_all100-v10;
+# keep cohort check on eval_cohort, allow bench hash migration without bypassing cohort validation.
 # Layers and batch size are reported per method. They differ between method implementations but
 # do not change the prompts, model, or judge cohort being compared.
 
@@ -311,7 +313,7 @@ def plot(
             {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
             {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
         ]
-        label_methods = ("J_word", "vjp_mlp_up_shrink")
+        label_methods = ("J_word", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink")
     else:
         labels = []
         label_methods = tuple(method for method in methods if method != "random")

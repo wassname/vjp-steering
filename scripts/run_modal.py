@@ -44,6 +44,9 @@ def run(argv: list[str]) -> str:
         subprocess.run([sys.executable, "scripts/walk.py", *argv], cwd="/repo", check=True)
     finally:
         cache.commit()
+    if "--extract-only" in argv:
+        output = Path(argv[argv.index("--output") + 1])
+        return (Path("/repo") / output / "extraction_audit.json").read_text()
     method, seed = argv[0], argv[argv.index("--seed") + 1] if "--seed" in argv else "0"
     certificate = Path(f"/cache/outputs/walk_{method}_s{seed}.json")
     return certificate.read_text() if certificate.exists() else ""
@@ -117,6 +120,26 @@ def experiment(
         if profile == "full" else 18
     )
     print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={cell_count}")
+
+
+@app.local_entrypoint()
+def audit_noisy_coordinates(
+    output: str = "outputs/audits/20260901_per-side-vjp-noisy-coordinates",
+    model: str = MODEL,
+    n_pairs: int = 200,
+    batch_size: int = 32,
+    extract_batch_size: int = 8,
+):
+    argv = [
+        "vjp_mlp_up_left_right_shrink",
+        "--extract-only",
+        "--output", output,
+        "--model", model,
+        "--n-pairs", str(n_pairs),
+        "--batch-size", str(batch_size),
+        "--extract-batch-size", str(extract_batch_size),
+    ]
+    print(run.remote(argv))
 
 
 @app.local_entrypoint()

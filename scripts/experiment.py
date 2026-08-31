@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
-    parser.add_argument("--n-pairs", type=int, default=256)
+    parser.add_argument("--n-pairs", type=int, default=200)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--extract-batch-size", type=int, default=8)
     parser.add_argument("--max-length", type=int, default=384)

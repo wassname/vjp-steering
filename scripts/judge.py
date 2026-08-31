@@ -432,12 +432,22 @@ async def request_with_rate_limit(client: AsyncOpenAI, content: str, empty_choic
             if status_code != 429 or _insufficient_credits(err, status_code):
                 raise
             rate_limit_attempt += 1
-            retry_seconds = err.body["metadata"]["retry_after_seconds"]
-            logger.warning(
-                "rate limited attempt={} retry_seconds={}",
-                rate_limit_attempt,
-                retry_seconds,
-            )
+            body = getattr(err, "body", {})
+            metadata = body.get("metadata", {}) if isinstance(body, dict) else {}
+            retry_seconds = metadata.get("retry_after_seconds")
+            if retry_seconds is None:
+                retry_seconds = min(120, 15 * rate_limit_attempt)
+                logger.warning(
+                    "rate limit response omitted retry_after_seconds; attempt={} backoff_seconds={}",
+                    rate_limit_attempt,
+                    retry_seconds,
+                )
+            else:
+                logger.warning(
+                    "rate limited attempt={} retry_seconds={}",
+                    rate_limit_attempt,
+                    retry_seconds,
+                )
             await asyncio.sleep(retry_seconds)
 
 
