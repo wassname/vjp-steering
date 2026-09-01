@@ -1,0 +1,120 @@
+uv run python scripts/judge.py --experiment-id mlp-up-left-right-formative-v7-eb-audited --profile full --refresh --all-generated
+2026-09-01 19:04:19.160 | INFO     | __main__:experiment_rows:295 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=12 demo_sides=1200
+2026-09-01 19:04:20.378 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-01 19:04:21.608 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-01 19:04:23.049 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-01 19:04:24.723 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-01 19:04:26.044 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-01 19:04:27.270 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-01 19:04:28.336 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-01 19:04:29.328 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-01 19:04:30.492 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-01 19:04:31.244 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-01 19:04:32.043 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-01 19:04:32.627 | INFO     | __main__:main:657 - CACHE_CHECK required=2296 cached=657 missing=1639 API_calls=1639
+2026-09-01 19:05:42.405 | INFO     | __main__:run:619 - judge progress=100/1639
+2026-09-01 19:06:43.210 | INFO     | __main__:run:619 - judge progress=200/1639
+2026-09-01 19:07:49.223 | INFO     | __main__:run:619 - judge progress=300/1639
+2026-09-01 19:08:44.502 | INFO     | __main__:run:619 - judge progress=400/1639
+2026-09-01 19:09:36.884 | INFO     | __main__:run:619 - judge progress=500/1639
+2026-09-01 19:10:33.041 | INFO     | __main__:run:619 - judge progress=600/1639
+2026-09-01 19:21:03.510 | WARNING  | __main__:judge_one:475 - APITimeoutError attempt=1/3 Request timed out.
+2026-09-01 19:21:03.510 | WARNING  | __main__:judge_one:475 - APITimeoutError attempt=1/3 Request timed out.
+2026-09-01 19:21:03.510 | WARNING  | __main__:judge_one:475 - APITimeoutError attempt=1/3 Request timed out.
+2026-09-01 19:21:03.526 | WARNING  | __main__:judge_one:475 - APITimeoutError attempt=1/3 Request timed out.
+2026-09-01 19:21:06.183 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:06.231 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:06.311 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:13.557 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:22.362 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=2 backoff_seconds=30
+2026-09-01 19:21:22.385 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=2 backoff_seconds=30
+2026-09-01 19:21:36.664 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:40.632 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:52.789 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=2 backoff_seconds=30
+2026-09-01 19:21:57.939 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:58.473 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:21:59.637 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:22:13.788 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=2 backoff_seconds=30
+2026-09-01 19:22:15.553 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=2 backoff_seconds=30
+2026-09-01 19:22:17.775 | WARNING  | __main__:request_with_rate_limit:446 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-01 19:22:34.172 | WARNING  | __main__:judge_one:475 - APIConnectionError attempt=1/3 Connection error.
+2026-09-01 19:22:34.173 | WARNING  | __main__:judge_one:475 - APIConnectionError attempt=1/3 Connection error.
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 674, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 667, in main
+    asyncio.run(refresh(todo))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 624, in refresh
+    await asyncio.gather(*(run(cell) for cell in todo[start : start + 500]))
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 595, in run
+    record = await judge_one(client, *cell)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 471, in judge_one
+    response = await request_with_rate_limit(client, content, empty_choice_attempt)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 415, in request_with_rate_limit
+    return await client.chat.completions.create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/openai/resources/chat/completions/completions.py", line 2907, in create
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+    ...<55 lines>...
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1996, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/openai/_base_client.py", line 1781, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.NotFoundError: Error code: 404 - {'error': {'message': 'Provider returned error', 'code': 404, 'metadata': {'raw': '{"error":{"message":"404 page not found\\n","type":"invalid_request_error","param":null,"code":null}}', 'provider_name': 'Parasail', 'is_byok': False}}, 'user_id': 'user_2ffkoR4mYsVn0rZWphIZivDqvFW'}
+error: recipe `judge-experiment` failed on line 40 with exit code 1
+uv run python scripts/judge.py --experiment-id mlp-up-left-right-formative-v7-eb-audited --profile full --refresh --all-generated
+2026-09-01 19:24:07.436 | INFO     | __main__:experiment_rows:295 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=12 demo_sides=1200
+2026-09-01 19:24:09.224 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-01 19:24:10.950 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-01 19:24:12.829 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-01 19:24:15.022 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-01 19:24:16.400 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-01 19:24:17.916 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-01 19:24:19.509 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-01 19:24:20.799 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-01 19:24:21.849 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-01 19:24:22.818 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-01 19:24:23.835 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-01 19:24:24.483 | INFO     | __main__:main:668 - CACHE_CHECK required=2296 cached=1333 missing=963 API_calls=963
+2026-09-01 19:25:14.878 | INFO     | __main__:run:630 - judge progress=100/963
+2026-09-01 19:26:00.492 | INFO     | __main__:run:630 - judge progress=200/963
+2026-09-01 19:26:48.559 | INFO     | __main__:run:630 - judge progress=300/963
+2026-09-01 19:27:38.515 | INFO     | __main__:run:630 - judge progress=400/963
+2026-09-01 19:28:26.391 | INFO     | __main__:run:630 - judge progress=500/963
+2026-09-01 19:29:17.070 | INFO     | __main__:run:630 - judge progress=600/963
+2026-09-01 19:30:13.118 | INFO     | __main__:run:630 - judge progress=700/963
+2026-09-01 19:31:13.961 | INFO     | __main__:run:630 - judge progress=800/963
+2026-09-01 19:32:21.090 | INFO     | __main__:run:630 - judge progress=900/963
+2026-09-01 19:32:56.560 | INFO     | __main__:run:630 - judge progress=963/963
+2026-09-01 19:32:58.134 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-01 19:32:59.813 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-01 19:33:01.759 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-01 19:33:03.318 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-01 19:33:04.776 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-01 19:33:06.452 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-01 19:33:07.766 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-01 19:33:09.168 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-01 19:33:10.305 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-01 19:33:11.883 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-01 19:33:13.439 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-01 19:33:14.207 | INFO     | __main__:main:681 - JUDGE_COMPLETE required=2296 missing=0

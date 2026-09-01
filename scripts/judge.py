@@ -91,6 +91,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile", choices=("dev", "full"))
     parser.add_argument("--side", choices=("+C", "-C"))
     parser.add_argument("--coefficient", type=float)
+    parser.add_argument("--all-generated", action="store_true")
     return parser.parse_args()
 
 
@@ -229,6 +230,7 @@ def experiment_rows(
     profile_name: str,
     side_filter: str | None = None,
     coefficient_filter: float | None = None,
+    all_generated: bool = False,
 ) -> list[dict]:
     profile_ = DEV if profile_name == "dev" else FULL
     root = experiment_dir(experiment_id)
@@ -237,9 +239,13 @@ def experiment_rows(
     bare = {record["scenario"]: record for record in bare_records[: profile_.cohort_size]}
     if len(bare) != profile_.cohort_size:
         raise ValueError(f"{profile_name} bare cohort is incomplete")
-    if profile_name == "dev":
+    if profile_name == "dev" or all_generated:
         candidates = {
-            side: [cell["coefficient"] for cell in manifest["cells"][side].values()]
+            side: [
+                cell["coefficient"]
+                for cell in manifest["cells"][side].values()
+                if cell["rows"] >= profile_.cohort_size
+            ]
             for side in ("+C", "-C")
         }
     else:
@@ -401,6 +407,17 @@ def _model_offline(err: Exception, status_code: int | None) -> bool:
     return status_code == 503 and ("model_offline" in text or "model is currently busy" in text)
 
 
+def _provider_upstream_404(err: Exception, status_code: int | None) -> bool:
+    body = getattr(err, "body", None) or {}
+    error = body.get("error", {}) if isinstance(body, dict) else {}
+    metadata = error.get("metadata", {}) if isinstance(error, dict) else {}
+    return (
+        status_code == 404
+        and error.get("message") == "Provider returned error"
+        and bool(metadata.get("provider_name"))
+    )
+
+
 async def request_with_rate_limit(client: AsyncOpenAI, content: str, empty_choice_attempt: int):
     rate_limit_attempt = 0
     provider_unavailable_attempt = 0
@@ -481,7 +498,7 @@ async def judge_one(client: AsyncOpenAI, row: dict, order: str, pass_index: int)
             if _insufficient_credits(err, status_code):
                 logger.error("OPENROUTER out of credits ({}), aborting", status_code)
                 raise
-            if status_code in TRANSIENT_CODES:
+            if status_code in TRANSIENT_CODES or _provider_upstream_404(err, status_code):
                 retry_seconds = 1.5 * (format_attempt + 1)
                 logger.warning(
                     "transient {} attempt={}/3 retry_seconds={}",
@@ -638,6 +655,7 @@ def main() -> None:
             args.profile,
             side_filter=args.side,
             coefficient_filter=args.coefficient,
+            all_generated=args.all_generated,
         )
         cells = required_cells(rows, profile_.orders, profile_.passes)
     else:

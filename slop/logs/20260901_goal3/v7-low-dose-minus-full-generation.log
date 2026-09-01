@@ -1,0 +1,47 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-TECMaMwhQLl5hrl3JguVN3
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 802.24it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 525.11it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:00<00:02, 163.98it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:02, 168.87it/s]
+[1ALoading weights:  13%|█▎        | 55/426 [00:00<00:02, 149.33it/s]
+[1ALoading weights:  17%|█▋        | 71/426 [00:00<00:02, 146.83it/s]
+[1ALoading weights:  24%|██▎       | 101/426 [00:00<00:01, 191.95it/s]
+[1ALoading weights:  28%|██▊       | 121/426 [00:00<00:01, 190.30it/s]
+[1ALoading weights:  33%|███▎      | 142/426 [00:00<00:01, 195.87it/s]
+[1ALoading weights:  38%|███▊      | 162/426 [00:00<00:01, 183.87it/s]
+[1ALoading weights:  42%|████▏     | 181/426 [00:01<00:01, 173.49it/s]
+[1ALoading weights:  49%|████▊     | 207/426 [00:01<00:01, 190.42it/s]
+[1ALoading weights:  54%|█████▍    | 229/426 [00:01<00:01, 192.64it/s]
+[1ALoading weights:  59%|█████▉    | 253/426 [00:01<00:00, 203.24it/s]
+[1ALoading weights:  64%|██████▍   | 274/426 [00:01<00:00, 182.25it/s]
+[1ALoading weights:  69%|██████▉   | 296/426 [00:01<00:00, 188.14it/s]
+[1ALoading weights:  75%|███████▍  | 319/426 [00:01<00:00, 197.98it/s]
+[1ALoading weights:  80%|███████▉  | 340/426 [00:01<00:00, 172.94it/s]
+[1ALoading weights:  86%|████████▋ | 368/426 [00:01<00:00, 199.95it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 208.00it/s]
+2026-09-01 10:35:35.024 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:35:47.055 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:35:58.456 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:36:09.511 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:36:20.023 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:36:30.720 | INFO     | walk:generate:440 - generation 100/100
+2026-09-01 10:36:30.759 | INFO     | __main__:gpu_stage:517 - GPU_STAGE_COMPLETE experiment=mlp-up-left-right-formative-v7-eb-audited profile=full cells=8
+EXPERIMENT_GPU_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=8
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-TECMaMwhQLl5hrl3JguVN3

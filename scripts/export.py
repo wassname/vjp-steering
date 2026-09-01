@@ -49,6 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile", choices=("dev", "full"))
     parser.add_argument("--side", choices=("+C", "-C"))
     parser.add_argument("--coefficient", type=float)
+    parser.add_argument("--all-generated", action="store_true")
     return parser.parse_args()
 
 
@@ -238,11 +239,18 @@ def export_experiment(
     profile_name: str,
     side_filter: str | None = None,
     coefficient_filter: float | None = None,
+    all_generated: bool = False,
 ) -> None:
     profile_ = DEV if profile_name == "dev" else FULL
     root = experiment_dir(experiment_id)
     manifest = json.loads((root / "manifest.json").read_text())
-    rows = experiment_rows(experiment_id, profile_name, side_filter, coefficient_filter)
+    rows = experiment_rows(
+        experiment_id,
+        profile_name,
+        side_filter,
+        coefficient_filter,
+        all_generated,
+    )
     keys = {
         cache_key(row, order, pass_index)
         for row in rows
@@ -386,7 +394,13 @@ def main() -> None:
             raise ValueError("experiment export needs --experiment-id and --profile only")
         if (args.side is None) != (args.coefficient is None):
             raise ValueError("--side and --coefficient must be supplied together")
-        export_experiment(args.experiment_id, args.profile, args.side, args.coefficient)
+        export_experiment(
+            args.experiment_id,
+            args.profile,
+            args.side,
+            args.coefficient,
+            args.all_generated,
+        )
     else:
         if bool(args.run) == (args.walk_id is not None) or args.profile is not None or args.side is not None:
             raise ValueError("select exactly one of --run or --walk-id")

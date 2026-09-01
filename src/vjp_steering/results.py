@@ -231,6 +231,28 @@ def plot(
             line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
             hoverinfo="skip", showlegend=False,
         ))
+        random_peaks = []
+        for side, sign in (("+C", 1), ("-C", -1)):
+            candidates = [
+                {
+                    "effect": mean(row["effect"] for row in rows_at_dose),
+                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
+                }
+                for C in sorted({row["C"] for row in random})
+                if (rows_at_dose := [
+                    row for row in random
+                    if row["side"] == side and row["C"] == C and row["admissible"]
+                ])
+            ]
+            random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
+        figure.add_trace(go.Scatter(
+            x=[row["effect"] for row in random_peaks],
+            y=[row["off_axis_perturbation"] for row in random_peaks],
+            mode="markers", marker={"color": "#888888", "size": 8, "symbol": "circle-open"},
+            text=["random +C table peak", "random -C table peak"],
+            hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+            showlegend=False,
+        ))
     colors = {
         "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
@@ -243,24 +265,16 @@ def plot(
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
-            # log-kernel median: window is fixed in log-C (comparable on coarse vs dense tail)
-            if smooth and len(points) >= 5:
-                import math
-                logC = [math.log(row["C"]) for row in points]
-                # half-window ~0.15 in log (about one half-octave / log(2)/4) so kernel comparable across grids
-                hw = 0.15
-                smoothed = []
-                for i, row in enumerate(points):
-                    win = [points[j] for j, lc in enumerate(logC) if abs(lc - logC[i]) <= hw]
-                    if len(win) < 3:
-                        win = points[max(0, i - 2):i + 3]
-                    smoothed.append({**row,
-                                     "effect": median(r["effect"] for r in win),
-                                     "off_axis_perturbation": median(r["off_axis_perturbation"] for r in win)})
-                points = smoothed
             # do not decimate below dense resolution near the tip; keep all if tail is dense
             if len(points) > 16:
-                idx = sorted({round(i * (len(points) - 1) / 15) for i in range(16)} | {len(points) - 1})
+                table_peak = max(
+                    range(len(points)),
+                    key=lambda index: (1 if side == "+C" else -1) * points[index]["effect"],
+                )
+                idx = sorted(
+                    {round(i * (len(points) - 1) / 15) for i in range(16)}
+                    | {len(points) - 1, table_peak}
+                )
                 points = [points[i] for i in idx]
             if points:
                 endpoint_C = endpoint_coefficients[side] if endpoint_coefficients is not None else points[-1]["C"]
@@ -311,7 +325,7 @@ def plot(
             {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
             {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
             {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-            {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "x = last coherent dose<br>later doses rejected", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
+            {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "× = final plotted dose", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
         ]
         label_methods = ("J_word", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink")
     else:

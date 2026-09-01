@@ -5,16 +5,27 @@
     "+C": {
       "selected_C": 44.06369064172843,
       "candidates_descending": [
-        44.06369064172843
+        44.06369064172843,
+        40.35481215806536,
+        36.645933674402286,
+        32.937055190739216,
+        29.228176707076145
       ],
       "effect": 3.4665,
       "off_axis_perturbation": 1.129
     },
     "-C": {
-      "status": "no_accepted_endpoint",
-      "tested_candidates": [
-        28.60187715130719
-      ]
+      "selected_C": 24.0,
+      "candidates_descending": [
+        24.0,
+        20.0,
+        16.0,
+        12.0,
+        8.0,
+        4.0
+      ],
+      "effect": -0.83,
+      "off_axis_perturbation": 0.593
     }
   }
 }

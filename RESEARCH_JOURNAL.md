@@ -102,3 +102,24 @@ Interpretation (Pi): my read is that the lopsided result does not show a per-sid
 The next MLP-up run should compare the published bipolar vector with a class-conditioned left/right vector, log split-half cosine without interpreting it as behavioral evidence, record activation-scaled concentration diagnostics, and reserve full-cohort repeated judging for endpoint candidates.
 
 <!-- PI: journal entry written 2026-08-29. -->
+
+## 2026-09-01 -- Per-side VJP full dose curve
+
+This entry records the completed per-side VJP dose curve.
+
+Evidence: [`slop/logs/20260901_goal3/v7-full-dose-curve-exact-verify.log`](slop/logs/20260901_goal3/v7-full-dose-curve-exact-verify.log) records `CACHE_CHECK required=2296 cached=2296 missing=0 API_calls=0`, `EXPERIMENT_EXPORT_COMPLETE id=mlp-up-left-right-formative-v7-eb-audited profile=full arms=12 scenarios=1200`, and `wrote 7 table rows from 800 measured evaluations`. The fixed v7 extraction generated and judged both sides on the all-100 cohort, with one AB and one BA order per scenario.
+
+| side | dose | on-axis effect | off-axis damage | accepted |
+| --- | ---: | ---: | ---: | --- |
+| -C | 16 | -0.968 | 0.416 | yes |
+| -C | 24 | -0.830 | 0.593 | yes |
+| -C | 28.6019 | -0.642 | 1.023 | no |
+| +C | 44.0637 | 3.466 | 1.129 | yes |
+
+Table values are from [`data/formative/mlp-up-left-right-formative-v7-eb-audited/results.csv`](data/formative/mlp-up-left-right-formative-v7-eb-audited/results.csv). The same public [`results/plot.png`](results/plot.png) shows both raw purple dose curves. [`slop/reviews/2026-09-01_fresh-eyes-v7-full-dose-curve-final-table-points.md`](slop/reviews/2026-09-01_fresh-eyes-v7-full-dose-curve-final-table-points.md) says the table values occur at purple plot markers. Wassname approved this plot and presentation in this session.
+
+Interpretation: my read is that the code works for this extraction, generation, judgment, export, and rendering path. The behavioral comparison remains a one-seed result, so it does not establish that the empirical-Bayes weighting is reliably better than the existing VJP methods.
+
+The presentation is accepted for this result.
+
+<!-- PI/Codex: journal entry written 2026-09-01. -->

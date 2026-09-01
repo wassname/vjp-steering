@@ -1,0 +1,35 @@
+COMMAND: uv run python scripts/judge.py --experiment-id mlp-up-left-right-formative-v7-eb-audited --profile full --refresh --side=-C --coefficient 4
+2026-09-01 18:37:23.144 | INFO     | __main__:experiment_rows:289 - experiment manifest id=mlp-up-left-right-formative-v7-eb-audited profile=full cells=1 demo_sides=100
+2026-09-01 18:37:24.590 | INFO     | __main__:cached_keys:322 - cache scan records=20000 valid_keys=0
+2026-09-01 18:37:26.033 | INFO     | __main__:cached_keys:322 - cache scan records=40000 valid_keys=0
+2026-09-01 18:37:27.620 | INFO     | __main__:cached_keys:322 - cache scan records=60000 valid_keys=0
+2026-09-01 18:37:29.403 | INFO     | __main__:cached_keys:322 - cache scan records=80000 valid_keys=11699
+2026-09-01 18:37:30.694 | INFO     | __main__:cached_keys:322 - cache scan records=100000 valid_keys=31699
+2026-09-01 18:37:31.894 | INFO     | __main__:cached_keys:322 - cache scan records=120000 valid_keys=51368
+2026-09-01 18:37:32.945 | INFO     | __main__:cached_keys:322 - cache scan records=140000 valid_keys=71368
+2026-09-01 18:37:33.936 | INFO     | __main__:cached_keys:322 - cache scan records=160000 valid_keys=91368
+2026-09-01 18:37:34.791 | INFO     | __main__:cached_keys:322 - cache scan records=180000 valid_keys=111368
+2026-09-01 18:37:35.567 | INFO     | __main__:cached_keys:322 - cache scan records=200000 valid_keys=130444
+2026-09-01 18:37:36.409 | INFO     | __main__:cached_keys:322 - cache scan records=220000 valid_keys=150271
+2026-09-01 18:37:37.071 | INFO     | __main__:main:650 - CACHE_CHECK required=200 cached=38 missing=162 API_calls=162
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 667, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 660, in main
+    asyncio.run(refresh(todo))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/judge.py", line 572, in refresh
+    api_key = os.environ["OPENROUTER_API_KEY"]
+              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen os>", line 717, in __getitem__
+KeyError: 'OPENROUTER_API_KEY'
