@@ -607,6 +607,12 @@ def local_pipeline(args: argparse.Namespace) -> None:
     if args.dev:
         return
     selected = json.loads((walk.ROOT / "data" / "dev" / args.experiment_id / "selected.json").read_text())
+    missing_sides = [
+        side for side in ("+C", "-C")
+        if "candidates_descending" not in selected["sides"].get(side, {})
+    ]
+    if missing_sides:
+        raise ValueError(f"DEV has no accepted endpoint for {', '.join(missing_sides)}")
     candidates = {
         side: selected["sides"][side]["candidates_descending"]
         for side in ("+C", "-C")

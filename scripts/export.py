@@ -359,8 +359,7 @@ def export_experiment(
             reverse=True,
         )
         if not side_rows:
-            if profile_name == "dev":
-                raise ValueError(f"{profile_name} has no accepted {side} cell")
+            selected["sides"][side] = {"status": "no_accepted_endpoint"}
             continue
         selected["sides"][side] = {
             "selected_C": float(side_rows[0]["C"]),

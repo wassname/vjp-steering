@@ -1,0 +1,195 @@
+COMMAND: just experiment vjp_mlp_up_shared_eb --dev
+uv run python scripts/experiment.py vjp_mlp_up_shared_eb --dev
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-b611X8qPNfxM4LbQQklKTV
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1031.12it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 752.14it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:00<00:02, 173.29it/s]
+[1ALoading weights:  11%|█         | 46/426 [00:00<00:01, 208.12it/s]
+[1ALoading weights:  16%|█▋        | 70/426 [00:00<00:01, 214.52it/s]
+[1ALoading weights:  22%|██▏       | 95/426 [00:00<00:01, 223.64it/s]
+[1ALoading weights:  30%|███       | 128/426 [00:00<00:01, 252.42it/s]
+[1ALoading weights:  37%|███▋      | 157/426 [00:00<00:01, 249.59it/s]
+[1ALoading weights:  43%|████▎     | 182/426 [00:00<00:01, 243.12it/s]
+[1ALoading weights:  49%|████▊     | 207/426 [00:00<00:00, 234.57it/s]
+[1ALoading weights:  57%|█████▋    | 241/426 [00:00<00:00, 261.85it/s]
+[1ALoading weights:  63%|██████▎   | 268/426 [00:01<00:00, 256.00it/s]
+[1ALoading weights:  69%|██████▉   | 294/426 [00:01<00:00, 256.38it/s]
+[1ALoading weights:  75%|███████▌  | 321/426 [00:01<00:00, 254.79it/s]
+[1ALoading weights:  82%|████████▏ | 350/426 [00:01<00:00, 264.87it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 286.45it/s]
+2026-09-02 07:31:27.580 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-02 07:31:27.646 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-09-02 07:32:23.640 | INFO     | vjp_steering.vjp:vjp_mlp_up_shared_eb:827 - vjp_mlp_up_shared_eb target=29 layers=29 pairs=200 split_half_cosine=0.9941404461860657
+2026-09-02 07:32:32.452 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:32:36.571 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:32:40.247 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:32:43.279 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:32:46.284 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:32:49.468 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:33:19.632 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:33:22.348 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:33:25.438 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:33:41.001 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:33:56.699 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:00.397 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:02.977 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:06.461 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:08.882 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:11.633 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:13.977 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:29.371 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:31.989 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:34:47.496 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:02.985 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:06.460 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:09.230 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:12.049 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:15.106 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:30.602 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:35:46.263 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:02.026 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:17.609 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:33.468 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:35.901 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:38.359 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:41.059 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:43.672 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:36:59.725 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:37:15.528 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:37:32.050 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:37:47.757 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:38:03.626 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 07:38:03.653 | INFO     | __main__:gpu_stage:532 - GPU_STAGE_COMPLETE experiment=mlp-up-shared-eb-formative-v1 profile=dev cells=18
+EXPERIMENT_GPU_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-b611X8qPNfxM4LbQQklKTV
+✓ Finished downloading files to local!
+2026-09-02 15:38:15.931 | INFO     | __main__:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=18 demo_sides=270
+2026-09-02 15:38:17.271 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-02 15:38:18.528 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-02 15:38:19.953 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-02 15:38:21.375 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-02 15:38:22.830 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-02 15:38:24.095 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-02 15:38:25.149 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-02 15:38:26.146 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-02 15:38:26.962 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-02 15:38:27.778 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-02 15:38:28.756 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-02 15:38:29.508 | INFO     | __main__:main:668 - CACHE_CHECK required=251 cached=0 missing=251 API_calls=251
+2026-09-02 15:39:17.927 | INFO     | __main__:run:630 - judge progress=100/251
+2026-09-02 15:40:04.285 | INFO     | __main__:run:630 - judge progress=200/251
+2026-09-02 15:40:28.762 | INFO     | __main__:run:630 - judge progress=251/251
+2026-09-02 15:40:30.115 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-02 15:40:31.337 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-02 15:40:32.782 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-02 15:40:34.291 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-02 15:40:35.585 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-02 15:40:36.762 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-02 15:40:37.807 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-02 15:40:38.884 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-02 15:40:39.715 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-02 15:40:40.496 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-02 15:40:41.481 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-02 15:40:42.122 | INFO     | __main__:main:681 - JUDGE_COMPLETE required=251 missing=0
+2026-09-02 15:40:45.189 | INFO     | judge:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=18 demo_sides=270
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 411, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 397, in main
+    export_experiment(
+    ~~~~~~~~~~~~~~~~~^
+        args.experiment_id,
+        ^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        args.all_generated,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 363, in export_experiment
+    raise ValueError(f"{profile_name} has no accepted {side} cell")
+ValueError: dev has no accepted +C cell
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 739, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 735, in main
+    local_pipeline(args)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 597, in local_pipeline
+    subprocess.run(
+    ~~~~~~~~~~~~~~^
+        [sys.executable, "scripts/export.py", "--experiment-id", args.experiment_id, "--profile", "dev"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        cwd=walk.ROOT,
+        ^^^^^^^^^^^^^^
+        check=True,
+        ^^^^^^^^^^^
+    )
+    ^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/workspace/2026/jspace/j-steer_pub/.venv/bin/python3', 'scripts/export.py', '--experiment-id', 'mlp-up-shared-eb-formative-v1', '--profile', 'dev']' returned non-zero exit status 1.
+error: recipe `experiment` failed on line 17 with exit code 1
+COMMAND: just experiment vjp_mlp_up_shared_eb --dev (resume after null-endpoint export fix)
+uv run python scripts/experiment.py vjp_mlp_up_shared_eb --dev
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-1iZfbMtzNNlyT0FGvlnwtt
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 630.59it/s]
+2026-09-02 07:42:47.900 | INFO     | __main__:gpu_stage:455 - GPU_STAGE_COMPLETE experiment=mlp-up-shared-eb-formative-v1 profile=dev cells=18 reused=true
+EXPERIMENT_GPU_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-1iZfbMtzNNlyT0FGvlnwtt
+✓ Finished downloading files to local!
+2026-09-02 15:42:56.817 | INFO     | __main__:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=18 demo_sides=270
+2026-09-02 15:42:58.352 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-02 15:42:59.624 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-02 15:43:01.128 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-02 15:43:02.474 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-02 15:43:03.811 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-02 15:43:04.991 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-02 15:43:05.995 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-02 15:43:07.029 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-02 15:43:07.836 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-02 15:43:08.628 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-02 15:43:09.418 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-02 15:43:10.061 | INFO     | __main__:main:668 - CACHE_CHECK required=251 cached=251 missing=0 API_calls=0
+2026-09-02 15:43:12.734 | INFO     | judge:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=18 demo_sides=270
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev arms=18 scenarios=270
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:658: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-shared-eb-formative-v1
