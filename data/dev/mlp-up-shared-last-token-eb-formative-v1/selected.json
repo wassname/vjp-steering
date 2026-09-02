@@ -1,0 +1,19 @@
+{
+  "experiment_id": "mlp-up-shared-last-token-eb-formative-v1",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 32.0,
+      "candidates_descending": [
+        32.0,
+        16.0,
+        4.0
+      ],
+      "effect": -0.9266666666666665,
+      "off_axis_perturbation": 0.2333333333333333
+    }
+  }
+}

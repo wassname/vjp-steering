@@ -1,0 +1,185 @@
+COMMAND: uv run modal run scripts/run_modal.py::extract_experiment --method vjp_mlp_up_shared_last_token_eb --experiment-id mlp-up-shared-last-token-eb-formative-v1
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-Dm5M21Bgk1ZwyGiP0psjxR
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 518.31it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 140.73it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▎         | 15/426 [00:00<00:05, 75.53it/s]
+[1ALoading weights:   5%|▌         | 23/426 [00:00<00:15, 25.52it/s]
+[1ALoading weights:   7%|▋         | 30/426 [00:00<00:13, 28.41it/s]
+[1ALoading weights:  12%|█▏        | 50/426 [00:01<00:06, 56.86it/s]
+[1ALoading weights:  17%|█▋        | 73/426 [00:01<00:04, 85.62it/s]
+[1ALoading weights:  23%|██▎       | 96/426 [00:01<00:02, 110.17it/s]
+[1ALoading weights:  28%|██▊       | 119/426 [00:01<00:02, 133.91it/s]
+[1ALoading weights:  32%|███▏      | 137/426 [00:01<00:02, 138.47it/s]
+[1ALoading weights:  38%|███▊      | 162/426 [00:01<00:01, 158.51it/s]
+[1ALoading weights:  43%|████▎     | 183/426 [00:01<00:01, 170.52it/s]
+[1ALoading weights:  49%|████▉     | 209/426 [00:01<00:01, 191.64it/s]
+[1ALoading weights:  54%|█████▍    | 230/426 [00:02<00:01, 188.59it/s]
+[1ALoading weights:  59%|█████▉    | 253/426 [00:02<00:00, 196.30it/s]
+[1ALoading weights:  65%|██████▍   | 275/426 [00:02<00:00, 202.68it/s]
+[1ALoading weights:  70%|███████   | 299/426 [00:02<00:00, 206.89it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 177.18it/s]
+2026-09-02 12:39:51.963 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-02 12:39:52.026 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-09-02 12:40:52.213 | INFO     | vjp_steering.vjp:vjp_mlp_up_shared_eb:864 - vjp_mlp_up_shared_eb target=29 scope=last_token layers=29 pairs=200 split_half_cosine=0.9179764986038208
+EXTRACTION_COMPLETE id=mlp-up-shared-last-token-eb-formative-v1 hash_plus=4253f47e749cc4718e43b3c0f623f412517b028f87cd0a8486cfad414c228722
+{
+  "method": "vjp_mlp_up_shared_last_token_eb",
+  "model": "Qwen/Qwen3.5-4B",
+  "dtype": "bfloat16",
+  "n_pairs": 200,
+  "sample_id": "persona:ab3adaa117116d2b",
+  "seconds": 60.07990654700001,
+  "vector_files": {
+    "+C": "extraction/plusC.safetensors",
+    "-C": "extraction/minusC.safetensors"
+  },
+  "vector_content_sha256": {
+    "+C": "4253f47e749cc4718e43b3c0f623f412517b028f87cd0a8486cfad414c228722",
+    "-C": "4253f47e749cc4718e43b3c0f623f412517b028f87cd0a8486cfad414c228722"
+  },
+  "source_readout": "mlp.up_proj",
+  "delta_estimator": "destination_conditioned_shared_pair_mean",
+  "noisy_coordinate_estimator": "empirical_bayes_normal_normal_per_layer",
+  "normalization": "global_pooled_activation_scaled",
+  "target_layer": 29,
+  "target_cotangent_scope": "last_token",
+  "source_layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "pairing": "mean_of_matched_positive_negative_prompt_vjps",
+  "pooled_activation_token_count": 30410,
+  "shared": {
+    "n_pairs": 200,
+    "activation_weighted_gradient_norm": 0.12258590012788773,
+    "shrinkage_weight_sha256": "b5909d877745c849fc5d3436d405176c5157805f17fda0662206f808c1202fbd",
+    "activation_scale_sha256": "8d89b38f2b44e1ccf42e588063e8805c6d222b02c4c039b1e982e4bd4e64c022",
+    "direction_sha256": "c0df27ab0186b238e5dbbc19644c1df732bc3affc497d0018551652d72b86f24",
+    "split_half_cosine": 0.9179764986038208,
+    "empirical_bayes_signal_variance": {
+      "0": 1.5420544059452368e-06,
+      "1": 1.5790105862834025e-06,
+      "2": 1.7315614968538284e-06,
+      "3": 1.6789009578133118e-06,
+      "4": 1.4507883179248893e-06,
+      "5": 1.429001258657081e-06,
+      "6": 1.0556462939348421e-06,
+      "7": 1.1215402082598303e-06,
+      "8": 1.1033380360458978e-06,
+      "9": 1.1985473520326195e-06,
+      "10": 1.2788584626832744e-06,
+      "11": 1.37092251861759e-06,
+      "12": 1.7865341987999273e-06,
+      "13": 1.7357526758132735e-06,
+      "14": 1.4952679521229584e-06,
+      "15": 1.6258854884654284e-06,
+      "16": 9.456861107537406e-07,
+      "17": 6.63287380575639e-07,
+      "18": 1.924750421267163e-07,
+      "19": 1.5268544473201473e-07,
+      "20": 6.945706587657696e-08,
+      "21": 4.556410715395032e-08,
+      "22": 3.915730317771704e-08,
+      "23": 3.1001416544995664e-08,
+      "24": 2.750904037895907e-08,
+      "25": 1.9495644210110186e-08,
+      "26": 1.6309300576722308e-08,
+      "27": 1.0791860738379455e-08,
+      "28": 2.8755506864541758e-09
+    },
+    "standardized_intervention_norm": 0.9999999403953552,
+    "layer_energy": {
+      "0": 0.0017967161256819963,
+      "1": 0.005987087264657021,
+      "2": 0.010459303855895996,
+      "3": 0.020034916698932648,
+      "4": 0.02992171049118042,
+      "5": 0.0479305237531662,
+      "6": 0.03927885368466377,
+      "7": 0.046106211841106415,
+      "8": 0.04453659430146217,
+      "9": 0.0523395910859108,
+      "10": 0.06443565338850021,
+      "11": 0.07368690520524979,
+      "12": 0.0858214870095253,
+      "13": 0.0824224203824997,
+      "14": 0.07632596045732498,
+      "15": 0.0901707112789154,
+      "16": 0.06430448591709137,
+      "17": 0.03529178351163864,
+      "18": 0.025522666051983833,
+      "19": 0.028476500883698463,
+      "20": 0.013363759033381939,
+      "21": 0.009398983791470528,
+      "22": 0.01254018023610115,
+      "23": 0.009269456379115582,
+      "24": 0.008128877729177475,
+      "25": 0.007046928629279137,
+      "26": 0.008301017805933952,
+      "27": 0.005334518849849701,
+      "28": 0.0017662325408309698
+    }
+  },
+  "sides": {
+    "+C": {
+      "conditioning_class": "shared_pair_mean",
+      "application_sign": 1,
+      "direction_sha256": "c0df27ab0186b238e5dbbc19644c1df732bc3affc497d0018551652d72b86f24"
+    },
+    "-C": {
+      "conditioning_class": "shared_pair_mean",
+      "application_sign": -1,
+      "direction_sha256": "c0df27ab0186b238e5dbbc19644c1df732bc3affc497d0018551652d72b86f24"
+    }
+  },
+  "stored_ray_cosine_descriptive_only": 1.0,
+  "applied_side_cosine_descriptive_only": -1.0
+}
+
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-Dm5M21Bgk1ZwyGiP0psjxR

@@ -275,6 +275,7 @@ def plot(
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
     }
     displayed_endpoints = {}
+    unselected_sides = {}
     for method in (method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
@@ -301,6 +302,8 @@ def plot(
                 if endpoint_index is not None:
                     endpoint = points[endpoint_index]
                     displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
+                else:
+                    unselected_sides[method, side] = (points[0]["effect"], points[0]["off_axis_perturbation"])
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
                     mode="lines+markers", line={"color": colors[method], "width": 3},
@@ -365,6 +368,18 @@ def plot(
         for method in label_methods
         for side in ("+C", "-C")
         if (method, side) in displayed_endpoints
+    )
+    labels.extend(
+        {
+            "x": unselected_sides[method, side][0],
+            "y": unselected_sides[method, side][1],
+            "text": f"{LABELS[method]} {side} (no accepted dose)",
+            "color": colors[method],
+            "angles": (0, -45, 45, -90, 90, -135, 135, 180),
+        }
+        for method in label_methods
+        for side in ("+C", "-C")
+        if (method, side) in unselected_sides
     )
     for annotation in place_labels(
         labels, (-x_limit, x_limit), y_range, obstacles=obstacles,
