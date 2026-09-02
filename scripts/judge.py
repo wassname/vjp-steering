@@ -9,12 +9,14 @@ from datetime import UTC, datetime
 from math import isclose
 from pathlib import Path
 
+from dotenv import load_dotenv
 from loguru import logger
 from openai import APIConnectionError, APITimeoutError, AsyncOpenAI, AuthenticationError
 
 from vjp_steering.experiment import DEV, FULL, data_dir, experiment_dir
 
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / ".env")
 CACHE = ROOT / "outputs/demo_judgments/judgments.jsonl"
 DEFERRED = CACHE.with_name("deferred_judge_cells.jsonl")
 MODEL = os.environ.get("JUDGE_MODEL", "deepseek/deepseek-v4-flash-0731")  # override via env; latest is deepseek/deepseek-v4-flash
