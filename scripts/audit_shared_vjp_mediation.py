@@ -25,7 +25,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
     parser.add_argument("--n-pairs", type=int, default=32)
     parser.add_argument("--seed", type=int, default=1)
-    parser.add_argument("--batch-size", type=int, default=8)
+    parser.add_argument("--batch-size", type=int, default=2)
     parser.add_argument("--max-length", type=int, default=384)
     parser.add_argument("--coefficients", type=float, nargs="+", default=[0.25, 1.0])
     parser.add_argument("--output", type=Path, default=Path("slop/audits/20260902_shared_pair_eb_mediation.json"))
@@ -150,6 +150,7 @@ def main() -> None:
     target_layer = metadata["target_layer"]
 
     model, tokenizer = load_model(args)
+    model.requires_grad_(False)
     extraction_positive, extraction_negative = make_persona_pairs(
         tokenizer, n_pairs=metadata["n_pairs"], thinking=True,
         persona_pairs=walk.PERSONAS, template=walk.PERSONA_TEMPLATE, seed=0,
