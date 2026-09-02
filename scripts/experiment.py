@@ -67,6 +67,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--verify-extraction", action="store_true")
+    parser.add_argument("--extract-only", action="store_true")
     args = parser.parse_args()
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     return args
@@ -198,6 +199,16 @@ def load_or_extract(
     }
     atomic_json(metadata_path, metadata)
     return vectors, metadata
+
+
+def extract_only(args: argparse.Namespace) -> None:
+    root = experiment_dir(args.experiment_id)
+    model, tokenizer = load_model(args)
+    _, metadata = load_or_extract(args, root, model, tokenizer)
+    print(
+        "EXTRACTION_COMPLETE "
+        f"id={args.experiment_id} hash_plus={metadata['vector_content_sha256']['+C']}"
+    )
 
 
 def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) -> None:
@@ -759,6 +770,8 @@ def main() -> None:
         self_test()
     elif args.gpu_stage:
         gpu_stage(args)
+    elif args.extract_only:
+        extract_only(args)
     elif args.verify_extraction:
         modal_stage(args, dev=True)
     else:

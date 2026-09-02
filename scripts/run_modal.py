@@ -57,6 +57,31 @@ def run(argv: list[str]) -> str:
     volumes={"/cache": cache},
     timeout=24 * 60 * 60,
 )
+def extract_experiment_remote(method: str, argv: list[str]) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    model = argv[argv.index("--model") + 1]
+    snapshot_download(model)
+    try:
+        subprocess.run(
+            [sys.executable, "scripts/experiment.py", method, "--extract-only", *argv],
+            cwd="/repo",
+            check=True,
+        )
+    finally:
+        cache.commit()
+    experiment_id = argv[argv.index("--experiment-id") + 1]
+    return Path(f"/cache/outputs/experiments/{experiment_id}/extraction/metadata.json").read_text()
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=24 * 60 * 60,
+)
 def run_experiment(method: str, argv: list[str]) -> str:
     from huggingface_hub import snapshot_download
 
@@ -75,6 +100,27 @@ def run_experiment(method: str, argv: list[str]) -> str:
         cache.commit()
     experiment_id = argv[argv.index("--experiment-id") + 1]
     return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
+
+
+@app.local_entrypoint()
+def extract_experiment(
+    method: str,
+    experiment_id: str,
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    n_pairs: int = 200,
+    extract_batch_size: int = 8,
+    max_length: int = 384,
+):
+    argv = [
+        "--experiment-id", experiment_id,
+        "--model", model,
+        "--dtype", dtype,
+        "--n-pairs", str(n_pairs),
+        "--extract-batch-size", str(extract_batch_size),
+        "--max-length", str(max_length),
+    ]
+    print(extract_experiment_remote.remote(method, argv))
 
 
 @app.local_entrypoint()
