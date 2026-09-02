@@ -57,7 +57,7 @@ def run(argv: list[str]) -> str:
     volumes={"/cache": cache},
     timeout=24 * 60 * 60,
 )
-def run_experiment(argv: list[str]) -> str:
+def run_experiment(method: str, argv: list[str]) -> str:
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
@@ -67,7 +67,7 @@ def run_experiment(argv: list[str]) -> str:
     snapshot_download(model)
     try:
         subprocess.run(
-            [sys.executable, "scripts/experiment.py", "vjp_mlp_up_left_right_shrink", "--gpu-stage", *argv],
+            [sys.executable, "scripts/experiment.py", method, "--gpu-stage", *argv],
             cwd="/repo",
             check=True,
         )
@@ -81,6 +81,7 @@ def run_experiment(argv: list[str]) -> str:
 def experiment(
     experiment_id: str,
     profile: str,
+    method: str = "vjp_mlp_up_left_right_shrink",
     model: str = MODEL,
     dtype: str = "bfloat16",
     n_pairs: int = 256,
@@ -113,7 +114,7 @@ def experiment(
         ])
     if profile == "dev":
         argv.append("--dev")
-    json.loads(run_experiment.remote(argv))
+    json.loads(run_experiment.remote(method, argv))
     cell_count = (
         len([value for value in coefficients_plus.split(",") if value])
         + len([value for value in coefficients_minus.split(",") if value])

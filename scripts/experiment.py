@@ -19,8 +19,21 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
-from vjp_steering.experiment import DEFAULT_EXPERIMENT_ID, DEV, FULL, METHOD, experiment_dir, manifest_path
-from vjp_steering.vjp import vjp_mlp_up_left_right_shrink
+from vjp_steering.experiment import (
+    DEFAULT_EXPERIMENT_IDS,
+    DEV,
+    FULL,
+    METHODS,
+    experiment_dir,
+    manifest_path,
+)
+from vjp_steering.vjp import vjp_mlp_up_left_right_shrink, vjp_mlp_up_shared_eb
+
+
+EXTRACTORS = {
+    "vjp_mlp_up_left_right_shrink": vjp_mlp_up_left_right_shrink,
+    "vjp_mlp_up_shared_eb": vjp_mlp_up_shared_eb,
+}
 
 
 SEARCH_BUDGET = 10
@@ -32,12 +45,12 @@ GRID_POINTS = 9
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=(METHOD,))
+    parser.add_argument("method", choices=METHODS)
     parser.add_argument("--dev", action="store_true")
     parser.add_argument("--gpu-stage", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--local", action="store_true")
-    parser.add_argument("--experiment-id", default=DEFAULT_EXPERIMENT_ID)
+    parser.add_argument("--experiment-id", default="")
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
@@ -49,7 +62,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--verify-extraction", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
+    return args
 
 
 def atomic_json(path: Path, value: dict) -> None:
@@ -150,7 +165,7 @@ def load_or_extract(
 
     positive, negative = extraction_prompts(args, tokenizer)
     started = time.monotonic()
-    vectors, extraction_metadata = vjp_mlp_up_left_right_shrink(
+    vectors, extraction_metadata = EXTRACTORS[args.method](
         model,
         tokenizer,
         positive,
@@ -164,7 +179,7 @@ def load_or_extract(
         vector.cfg.dtype = getattr(torch, args.dtype)
         vector.save(str(paths[side]))
     metadata = {
-        "method": METHOD,
+        "method": args.method,
         "model": args.model,
         "dtype": args.dtype,
         "n_pairs": len(positive),
@@ -185,7 +200,7 @@ def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) ->
     existing = json.loads(metadata_path.read_text())
     positive, negative = extraction_prompts(args, tokenizer)
     started = time.monotonic()
-    vectors, extraction_metadata = vjp_mlp_up_left_right_shrink(
+    vectors, extraction_metadata = EXTRACTORS[args.method](
         model,
         tokenizer,
         positive,
@@ -199,7 +214,7 @@ def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) ->
         raise ValueError("verification extraction differs from the generation vectors")
     verification = {
         "status": "FORMATIVE_EXTRACTION_VERIFICATION",
-        "command": "just experiment vjp_mlp_up_left_right_shrink --verify-extraction",
+        "command": f"just experiment {args.method} --verify-extraction",
         "model": args.model,
         "n_pairs": len(positive),
         "seconds": time.monotonic() - started,
@@ -538,6 +553,7 @@ def modal_stage(
 ) -> None:
     command = [
         "uv", "run", "modal", "run", "scripts/run_modal.py::experiment",
+        "--method", args.method,
         "--experiment-id", args.experiment_id,
         "--profile", "dev" if dev else "full",
         "--model", args.model,

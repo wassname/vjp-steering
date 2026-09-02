@@ -6,7 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 METHOD = "vjp_mlp_up_left_right_shrink"
-DEFAULT_EXPERIMENT_ID = "mlp-up-left-right-formative-v7-eb-audited"
+SHARED_METHOD = "vjp_mlp_up_shared_eb"
+METHODS = (METHOD, SHARED_METHOD)
+DEFAULT_EXPERIMENT_IDS = {
+    METHOD: "mlp-up-left-right-formative-v7-eb-audited",
+    SHARED_METHOD: "mlp-up-shared-eb-formative-v1",
+}
+DEFAULT_EXPERIMENT_ID = DEFAULT_EXPERIMENT_IDS[METHOD]
 
 
 @dataclass(frozen=True)

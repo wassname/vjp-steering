@@ -46,6 +46,18 @@ class VjpMlpUpLeftRightShrink:
     apply = staticmethod(VjpDelta.apply)
 
 
+@register_config
+@dataclass
+class VjpMlpUpSharedEBC(VjpDeltaC):
+    method: str = "vjp_mlp_up_shared_eb"
+
+
+@register
+class VjpMlpUpSharedEB:
+    name = "vjp_mlp_up_shared_eb"
+    apply = staticmethod(VjpDelta.apply)
+
+
 J_WORD_LENS_REPO = "neuronpedia/jacobian-lens"
 J_WORD_LENS_REVISION = "qwen-n1000"
 J_WORD_LENS_FILE = "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
@@ -250,7 +262,9 @@ def _class_prompt_vjp_scale(
     max_length: int,
     skip_first: int,
     source_readout: str,
-) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor]]:
+    *,
+    return_moments: bool = False,
+) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor]] | tuple[dict[int, torch.Tensor], dict[int, torch.Tensor], dict[str, object]]:
     gradients_by_layer = {layer: [] for layer in layers}
     activation_sum = {layer: None for layer in layers}
     activation_square_sum = {layer: None for layer in layers}
@@ -292,6 +306,13 @@ def _class_prompt_vjp_scale(
         mean = activation_sum[layer] / activation_count
         variance = activation_square_sum[layer] / activation_count - mean.square()
         activation_scale[layer] = variance.clamp(min=0).sqrt().float()
+    moments = {
+        "count": activation_count,
+        "sum": activation_sum,
+        "square_sum": activation_square_sum,
+    }
+    if return_moments:
+        return prompt_gradients, activation_scale, moments
     return prompt_gradients, activation_scale
 
 
@@ -428,6 +449,42 @@ def _layer_tensor_sha256(tensors: dict[int, torch.Tensor]) -> str:
     return digest.hexdigest()
 
 
+def _empirical_bayes_raw(
+    prompt_gradients: dict[int, torch.Tensor],
+) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor], dict[int, torch.Tensor]]:
+    means = {layer: gradients.mean(0) for layer, gradients in prompt_gradients.items()}
+    variances = {
+        layer: gradients.var(0, unbiased=True) for layer, gradients in prompt_gradients.items()
+    }
+    n_prompts = next(iter(prompt_gradients.values())).shape[0]
+    raw, weights, signal_variance = {}, {}, {}
+    for layer in prompt_gradients:
+        noise_variance = variances[layer] / n_prompts
+        signal_variance[layer] = (means[layer].square() - noise_variance).mean().clamp(min=0)
+        weights[layer] = signal_variance[layer] / (signal_variance[layer] + noise_variance)
+        raw[layer] = means[layer] * weights[layer]
+    return raw, weights, signal_variance
+
+
+def _pooled_activation_scale(
+    first: dict[str, object], second: dict[str, object], layers: tuple[int, ...]
+) -> dict[int, torch.Tensor]:
+    count = int(first["count"]) + int(second["count"])
+    if count == 0:
+        raise ValueError("pooled activation scale has no valid positions")
+    sums_first = first["sum"]
+    sums_second = second["sum"]
+    squares_first = first["square_sum"]
+    squares_second = second["square_sum"]
+    return {
+        layer: (
+            (squares_first[layer] + squares_second[layer]) / count
+            - ((sums_first[layer] + sums_second[layer]) / count).square()
+        ).clamp(min=0).sqrt().float()
+        for layer in layers
+    }
+
+
 def vjp_mlp_up_left_right_shrink(
     model,
     tokenizer,
@@ -473,6 +530,7 @@ def vjp_mlp_up_left_right_shrink(
     names = {layer: "mlp.up_proj" for layer in layers}
     flattened = {}
     for side in ("+C", "-C"):
+        n_prompts = next(iter(samples[side].values())).shape[0]
         means = {layer: samples[side][layer].mean(0) for layer in layers}
         current_weights = {
             layer: (
@@ -486,20 +544,6 @@ def vjp_mlp_up_left_right_shrink(
             layer: means[layer] * current_weights[layer] for layer in layers
         }
 
-        def empirical_bayes_raw(prompt_gradients: dict[int, torch.Tensor]):
-            means_eb = {layer: prompt_gradients[layer].mean(0) for layer in layers}
-            variances_eb = {
-                layer: prompt_gradients[layer].var(0, unbiased=True) for layer in layers
-            }
-            n_prompts = next(iter(prompt_gradients.values())).shape[0]
-            raw_eb, weights_eb, signal_variance = {}, {}, {}
-            for layer in layers:
-                noise_variance = variances_eb[layer] / n_prompts
-                signal_variance[layer] = (means_eb[layer].square() - noise_variance).mean().clamp(min=0)
-                weights_eb[layer] = signal_variance[layer] / (signal_variance[layer] + noise_variance)
-                raw_eb[layer] = means_eb[layer] * weights_eb[layer]
-            return raw_eb, weights_eb, signal_variance
-
         def unit_standardized_direction(candidate_raw: dict[int, torch.Tensor]):
             direction = torch.cat([
                 (scales[side][layer].square() * candidate_raw[layer]).flatten()
@@ -510,28 +554,38 @@ def vjp_mlp_up_left_right_shrink(
                 raise ValueError(f"mlp-up {side} candidate direction is zero or nonfinite")
             return direction / norm
 
-        raw_eb, weights_eb, signal_variance = empirical_bayes_raw(samples[side])
+        raw_eb, weights_eb, signal_variance = _empirical_bayes_raw(samples[side])
         current_unit = unit_standardized_direction(raw_current)
         eb_unit = unit_standardized_direction(raw_eb)
         raw = raw_eb
         weights = weights_eb
-        split_current, split_eb = [], []
-        for split in (0, 1):
-            split_samples = {layer: samples[side][layer][split::2] for layer in layers}
-            split_means = {layer: split_samples[layer].mean(0) for layer in layers}
-            split_weights = {
-                layer: (
-                    1
-                    - split_samples[layer].var(0, unbiased=True)
-                    / split_means[layer].square().clamp(min=1e-30)
-                ).clamp(min=0)
-                for layer in layers
+        split_half_cosine = None
+        if n_prompts >= 4:
+            split_current, split_eb = [], []
+            for split in (0, 1):
+                split_samples = {layer: samples[side][layer][split::2] for layer in layers}
+                split_means = {layer: split_samples[layer].mean(0) for layer in layers}
+                split_weights = {
+                    layer: (
+                        1
+                        - split_samples[layer].var(0, unbiased=True)
+                        / split_means[layer].square().clamp(min=1e-30)
+                    ).clamp(min=0)
+                    for layer in layers
+                }
+                split_current.append(unit_standardized_direction({
+                    layer: split_means[layer] * split_weights[layer] for layer in layers
+                }))
+                split_raw_eb, _, _ = _empirical_bayes_raw(split_samples)
+                split_eb.append(unit_standardized_direction(split_raw_eb))
+            split_half_cosine = {
+                "current": torch.nn.functional.cosine_similarity(
+                    split_current[0], split_current[1], dim=0
+                ).item(),
+                "empirical_bayes": torch.nn.functional.cosine_similarity(
+                    split_eb[0], split_eb[1], dim=0
+                ).item(),
             }
-            split_current.append(unit_standardized_direction({
-                layer: split_means[layer] * split_weights[layer] for layer in layers
-            }))
-            split_raw_eb, _, _ = empirical_bayes_raw(split_samples)
-            split_eb.append(unit_standardized_direction(split_raw_eb))
         activation_norm = torch.stack(
             [(scales[side][layer] * raw[layer]).norm() for layer in layers]
         ).norm()
@@ -577,18 +631,11 @@ def vjp_mlp_up_left_right_shrink(
             "shrinkage_weight_sha256": _layer_tensor_sha256(weights),
             "activation_scale_sha256": _layer_tensor_sha256(scales[side]),
             "noisy_coordinate_audit": {
-                "n_prompts": next(iter(samples[side].values())).shape[0],
+                "n_prompts": n_prompts,
                 "current_vs_empirical_bayes_cosine": torch.nn.functional.cosine_similarity(
                     current_unit, eb_unit, dim=0
                 ).item(),
-                "split_half_cosine": {
-                    "current": torch.nn.functional.cosine_similarity(
-                        split_current[0], split_current[1], dim=0
-                    ).item(),
-                    "empirical_bayes": torch.nn.functional.cosine_similarity(
-                        split_eb[0], split_eb[1], dim=0
-                    ).item(),
-                },
+                "split_half_cosine": split_half_cosine,
                 "zero_fraction": {
                     "current": torch.cat([
                         (current_weights[layer] == 0).flatten() for layer in layers
@@ -636,6 +683,153 @@ def vjp_mlp_up_left_right_shrink(
         len(layers),
         sum(metadata["sides"]["+C"]["live_coordinates"].values()),
         sum(metadata["sides"]["-C"]["live_coordinates"].values()),
+    )
+    return vectors, metadata
+
+
+def vjp_mlp_up_shared_eb(
+    model,
+    tokenizer,
+    positive_prompts: list[str],
+    negative_prompts: list[str],
+    *,
+    target_layer: int | None = None,
+    batch_size: int = 8,
+    max_length: int = 384,
+    skip_first: int = 16,
+) -> tuple[dict[str, Vector], dict[str, object]]:
+    """Extract one pair-mean EB VJP ray for opposite-sign application."""
+    model.requires_grad_(False)
+    if len(positive_prompts) != len(negative_prompts) or len(positive_prompts) < 2:
+        raise ValueError("shared EB needs at least two paired persona prompts")
+    target_layer = len(_blocks(model)) - 3 if target_layer is None else target_layer
+    layers = tuple(range(target_layer))
+    cotangent = _target_mean(
+        model, tokenizer, positive_prompts, target_layer, batch_size, max_length
+    ) - _target_mean(
+        model, tokenizer, negative_prompts, target_layer, batch_size, max_length
+    )
+    positive, _, positive_moments = _class_prompt_vjp_scale(
+        model, tokenizer, positive_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj", return_moments=True,
+    )
+    negative, _, negative_moments = _class_prompt_vjp_scale(
+        model, tokenizer, negative_prompts, layers, target_layer, cotangent,
+        batch_size, max_length, skip_first, "mlp.up_proj", return_moments=True,
+    )
+    pair_means = {
+        layer: (positive[layer] + negative[layer]) / 2 for layer in layers
+    }
+    pooled_scale = _pooled_activation_scale(positive_moments, negative_moments, layers)
+    raw, weights, signal_variance = _empirical_bayes_raw(pair_means)
+    activation_norm = torch.stack(
+        [(pooled_scale[layer] * raw[layer]).norm() for layer in layers]
+    ).norm()
+    if not torch.isfinite(activation_norm) or activation_norm == 0:
+        raise ValueError("shared EB activation-scaled norm is zero or nonfinite")
+    directions = {
+        layer: pooled_scale[layer].square() * raw[layer] / activation_norm
+        for layer in layers
+    }
+    if not all(torch.isfinite(direction).all() for direction in directions.values()):
+        raise ValueError("shared EB direction is nonfinite")
+
+    def unit_direction(candidate_raw: dict[int, torch.Tensor]) -> torch.Tensor:
+        direction = torch.cat([
+            (pooled_scale[layer].square() * candidate_raw[layer]).flatten()
+            for layer in layers
+        ])
+        norm = direction.norm()
+        if not torch.isfinite(norm) or norm == 0:
+            raise ValueError("shared EB split direction is zero or nonfinite")
+        return direction / norm
+
+    n_pairs = next(iter(pair_means.values())).shape[0]
+    split_half_cosine = None
+    if n_pairs >= 4:
+        split_raw = [
+            _empirical_bayes_raw({layer: pair_means[layer][split::2] for layer in layers})[0]
+            for split in (0, 1)
+        ]
+        split_half_cosine = torch.nn.functional.cosine_similarity(
+            unit_direction(split_raw[0]), unit_direction(split_raw[1]), dim=0
+        ).item()
+    names = {layer: "mlp.up_proj" for layer in layers}
+
+    def make_vector() -> Vector:
+        return Vector(
+            VjpMlpUpSharedEBC(
+                layers=layers,
+                target_submodule="mlp.up_proj",
+                target_layer=target_layer,
+            ),
+            {f"layers.{layer}.{names[layer]}": {} for layer in layers},
+            {
+                f"layers.{layer}.{names[layer]}": {"v": directions[layer].unsqueeze(0)}
+                for layer in layers
+            },
+        )
+
+    vectors = {side: make_vector() for side in ("+C", "-C")}
+    energy = torch.cat([directions[layer].square().flatten() for layer in layers])
+    total_energy = energy.sum()
+    standardized_energy = torch.cat([
+        torch.where(
+            pooled_scale[layer] > 0,
+            (directions[layer] / pooled_scale[layer]).square(),
+            torch.zeros_like(directions[layer]),
+        ).flatten()
+        for layer in layers
+    ])
+    direction_sha256 = _layer_tensor_sha256(directions)
+    metadata = {
+        "source_readout": "mlp.up_proj",
+        "delta_estimator": "destination_conditioned_shared_pair_mean",
+        "noisy_coordinate_estimator": "empirical_bayes_normal_normal_per_layer",
+        "normalization": "global_pooled_activation_scaled",
+        "target_layer": target_layer,
+        "source_layers": list(layers),
+        "pairing": "mean_of_matched_positive_negative_prompt_vjps",
+        "pooled_activation_token_count": (
+            int(positive_moments["count"]) + int(negative_moments["count"])
+        ),
+        "shared": {
+            "n_pairs": n_pairs,
+            "activation_weighted_gradient_norm": activation_norm.item(),
+            "shrinkage_weight_sha256": _layer_tensor_sha256(weights),
+            "activation_scale_sha256": _layer_tensor_sha256(pooled_scale),
+            "direction_sha256": direction_sha256,
+            "split_half_cosine": split_half_cosine,
+            "empirical_bayes_signal_variance": {
+                str(layer): signal_variance[layer].item() for layer in layers
+            },
+            "standardized_intervention_norm": standardized_energy.sum().sqrt().item(),
+            "layer_energy": {
+                str(layer): (directions[layer].square().sum() / total_energy).item()
+                for layer in layers
+            },
+        },
+        "sides": {
+            "+C": {
+                "conditioning_class": "shared_pair_mean",
+                "application_sign": 1,
+                "direction_sha256": direction_sha256,
+            },
+            "-C": {
+                "conditioning_class": "shared_pair_mean",
+                "application_sign": -1,
+                "direction_sha256": direction_sha256,
+            },
+        },
+        "stored_ray_cosine_descriptive_only": 1.0,
+        "applied_side_cosine_descriptive_only": -1.0,
+    }
+    logger.info(
+        "vjp_mlp_up_shared_eb target={} layers={} pairs={} split_half_cosine={}",
+        target_layer,
+        len(layers),
+        metadata["shared"]["n_pairs"],
+        split_half_cosine,
     )
     return vectors, metadata
 

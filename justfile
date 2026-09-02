@@ -8,7 +8,9 @@ smoke:
 	for method in vjp_delta mean_diff pca; do
 		BEARTYPE=1 uv run python scripts/walk.py "$method" --coefficient 16 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --layers 1 --target-layer 4 --status SMOKE_PASS
 	done
-	BEARTYPE=1 uv run python scripts/walk.py vjp_mlp_up_left_right_shrink --coefficient 1 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --extract-batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS
+	for method in vjp_mlp_up_left_right_shrink vjp_mlp_up_shared_eb; do
+		BEARTYPE=1 uv run python scripts/walk.py "$method" --coefficient 1 --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --n-pairs 2 --batch-size 2 --extract-batch-size 2 --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS
+	done
 	uv run python scripts/export.py --self-test
 
 experiment method *args:

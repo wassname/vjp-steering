@@ -12,12 +12,21 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 
-from vjp_steering.experiment import DEV, FULL, METHOD, data_dir, results_dir
+from vjp_steering.experiment import DEV, FULL, data_dir, results_dir
 
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-METHODS = ("vjp_delta", "mean_diff", "pca", "J_word", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "random")
+METHODS = (
+    "vjp_delta",
+    "mean_diff",
+    "pca",
+    "J_word",
+    "vjp_mlp_up_shrink",
+    "vjp_mlp_up_left_right_shrink",
+    "vjp_mlp_up_shared_eb",
+    "random",
+)
 RANDOM_SEEDS = 10
 METHOD_SEEDS = {
     "vjp_delta": {0, 1, 2},
@@ -26,6 +35,7 @@ METHOD_SEEDS = {
     "J_word": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
+    "vjp_mlp_up_shared_eb": {0},
 }
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
@@ -39,6 +49,7 @@ LABELS = {
     "J_word": "J-word",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
+    "vjp_mlp_up_shared_eb": "shared-pair VJP",
 }
 COHORT_FIELDS = (
     "model",
@@ -257,6 +268,7 @@ def plot(
         "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
         "vjp_mlp_up_left_right_shrink": "#6f4aa8",
+        "vjp_mlp_up_shared_eb": "#a64d79",
     }
     displayed_endpoints = {}
     for method in (method for method in methods if method != "random"):
@@ -327,7 +339,12 @@ def plot(
             {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
             {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "× = final plotted dose", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
         ]
-        label_methods = ("J_word", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink")
+        label_methods = (
+            "J_word",
+            "vjp_mlp_up_shrink",
+            "vjp_mlp_up_left_right_shrink",
+            "vjp_mlp_up_shared_eb",
+        )
     else:
         labels = []
         label_methods = tuple(method for method in methods if method != "random")
@@ -577,9 +594,15 @@ def parse_args() -> argparse.Namespace:
 
 def render_experiment(experiment_id: str, profile_name: str) -> None:
     profile_ = DEV if profile_name == "dev" else FULL
-    methods = (METHOD,)
-    method_seeds = {METHOD: {0}}
-    rows = _rows(data_dir(profile_, experiment_id) / "results.csv", methods, method_seeds)
+    results_path = data_dir(profile_, experiment_id) / "results.csv"
+    with results_path.open(newline="") as handle:
+        methods_found = {row["method"] for row in csv.DictReader(handle)}
+    if len(methods_found) != 1:
+        raise ValueError(f"experiment results need one method, got {sorted(methods_found)}")
+    method = methods_found.pop()
+    methods = (method,)
+    method_seeds = {method: {0}}
+    rows = _rows(results_path, methods, method_seeds)
     selected = json.loads((data_dir(profile_, experiment_id) / "selected.json").read_text())
     endpoint_coefficients = {
         side: selected["sides"][side].get("selected_C")
@@ -590,7 +613,7 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
     ))
     status = "DEV" if profile_name == "dev" else "FORMATIVE"
     intro_line = (
-        f"{status} evidence for {METHOD}: {profile_.cohort_size} questions, "
+        f"{status} evidence for {LABELS[method]}: {profile_.cohort_size} questions, "
         f"orders={','.join(profile_.orders)}, passes={profile_.passes}."
     )
     unconfirmed = [side for side, coefficient in endpoint_coefficients.items() if coefficient is None]
@@ -610,7 +633,7 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         rows,
         methods,
         method_seeds,
-        title=f"{status}: per-side MLP-up steering",
+        title=f"{status}: {LABELS[method]}",
         endpoint_coefficients=endpoint_coefficients,
         smooth=False,
         include_rejected=True,

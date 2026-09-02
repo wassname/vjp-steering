@@ -1,6 +1,12 @@
 from contextlib import contextmanager
 
-from .vjp import j_word, vjp_delta, vjp_mlp_up_left_right_shrink, vjp_mlp_up_shrink
+from .vjp import (
+    j_word,
+    vjp_delta,
+    vjp_mlp_up_left_right_shrink,
+    vjp_mlp_up_shared_eb,
+    vjp_mlp_up_shrink,
+)
 
 
 @contextmanager
@@ -9,4 +15,11 @@ def steer(model, vector, C: float):
         yield model
 
 
-__all__ = ["j_word", "steer", "vjp_delta", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shrink"]
+__all__ = [
+    "j_word",
+    "steer",
+    "vjp_delta",
+    "vjp_mlp_up_left_right_shrink",
+    "vjp_mlp_up_shared_eb",
+    "vjp_mlp_up_shrink",
+]
