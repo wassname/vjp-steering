@@ -14,7 +14,7 @@ from steering_lite.data import make_persona_pairs
 import walk
 from experiment import load_model
 from vjp_steering.experiment import DEFAULT_EXPERIMENT_IDS, experiment_dir
-from vjp_steering.vjp import _batch_gradients, _encode, _target_mean, _valid_mask
+from vjp_steering.vjp import _batch_gradients, _encode, _target_mask, _target_mean
 
 
 def parse_args() -> argparse.Namespace:
@@ -91,12 +91,12 @@ def record_target(model, target_layer: int):
         handle.remove()
 
 
-def target_means(model, tokenizer, prompts, target_layer, cotangent, batch_size, max_length, direction_by_layer, coefficient):
+def target_means(model, tokenizer, prompts, target_layer, cotangent, batch_size, max_length, direction_by_layer, coefficient, target_scope):
     values = []
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
         encoded = _encode(model, tokenizer, batch, max_length)
-        valid = _valid_mask(encoded["attention_mask"], skip_first=16)
+        target_valid = _target_mask(encoded["attention_mask"], skip_first=16, target_scope=target_scope)
         with record_target(model, target_layer) as captured:
             with apply_directions(model, direction_by_layer, coefficient):
                 model(**encoded)
@@ -104,23 +104,25 @@ def target_means(model, tokenizer, prompts, target_layer, cotangent, batch_size,
             raise ValueError("target block hook did not capture exactly one activation")
         target = captured[0].float()
         projection = (target * cotangent.to(target)).sum(-1)
-        values.append((projection * valid).sum(1).cpu() / valid.sum(1).cpu())
+        values.append((projection * target_valid).sum(1).cpu() / target_valid.sum(1).cpu())
     return torch.cat(values)
 
 
-def predicted_means(model, tokenizer, prompts, layers, target_layer, cotangent, batch_size, max_length, direction_by_layer):
+def predicted_means(model, tokenizer, prompts, layers, target_layer, cotangent, batch_size, max_length, direction_by_layer, target_scope):
     values = []
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
         gradients, valid, _ = _batch_gradients(
             model, tokenizer, batch, layers, target_layer, cotangent,
             skip_first=16, max_length=max_length, source_readout="mlp.up_proj",
+            target_scope=target_scope,
         )
         predicted_total = sum(
             (gradient.float() * valid.unsqueeze(-1) * direction_by_layer[layer].to(gradient)).sum((1, 2))
             for layer, gradient in gradients.items()
         )
-        values.append((predicted_total / valid.sum(1)).detach().cpu())
+        target_count = 1 if target_scope == "last_token" else valid.sum(1)
+        values.append((predicted_total / target_count).detach().cpu())
     return torch.cat(values)
 
 
@@ -148,6 +150,7 @@ def main() -> None:
     direction_by_layer = directions(vectors["+C"])
     layers = tuple(sorted(direction_by_layer))
     target_layer = metadata["target_layer"]
+    target_scope = metadata["target_cotangent_scope"]
 
     model, tokenizer = load_model(args)
     model.requires_grad_(False)
@@ -173,26 +176,29 @@ def main() -> None:
         "target_layer": target_layer,
         "source_layers": list(layers),
         "source_readout": "mlp.up_proj",
+        "target_cotangent_scope": target_scope,
         "vector_content_sha256": hashes,
-        "metric": "mean valid-token c dot h_target; c is recomputed from extraction seed 0",
+        "metric": f"mean {target_scope} c dot h_target; c is recomputed from extraction seed 0",
         "predicted_first_order_delta_per_C": {},
         "realized_delta": {},
     }
     for label, prompts in prompt_sets.items():
         prediction = predicted_means(
             model, tokenizer, prompts, layers, target_layer, cotangent,
-            args.batch_size, args.max_length, direction_by_layer,
+            args.batch_size, args.max_length, direction_by_layer, target_scope,
         )
         result["predicted_first_order_delta_per_C"][label] = summarize(prediction)
         baseline = target_means(
             model, tokenizer, prompts, target_layer, cotangent,
             args.batch_size, args.max_length, direction_by_layer, coefficient=0,
+            target_scope=target_scope,
         )
         result["realized_delta"][label] = {}
         for coefficient in args.coefficients:
             steered = target_means(
                 model, tokenizer, prompts, target_layer, cotangent,
                 args.batch_size, args.max_length, direction_by_layer, coefficient,
+                target_scope,
             )
             result["realized_delta"][label][str(coefficient)] = summarize(steered - baseline)
     args.output.parent.mkdir(parents=True, exist_ok=True)

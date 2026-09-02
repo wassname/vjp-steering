@@ -27,12 +27,17 @@ from vjp_steering.experiment import (
     experiment_dir,
     manifest_path,
 )
-from vjp_steering.vjp import vjp_mlp_up_left_right_shrink, vjp_mlp_up_shared_eb
+from vjp_steering.vjp import (
+    vjp_mlp_up_left_right_shrink,
+    vjp_mlp_up_shared_eb,
+    vjp_mlp_up_shared_last_token_eb,
+)
 
 
 EXTRACTORS = {
     "vjp_mlp_up_left_right_shrink": vjp_mlp_up_left_right_shrink,
     "vjp_mlp_up_shared_eb": vjp_mlp_up_shared_eb,
+    "vjp_mlp_up_shared_last_token_eb": vjp_mlp_up_shared_last_token_eb,
 }
 
 

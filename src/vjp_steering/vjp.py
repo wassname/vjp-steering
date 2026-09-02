@@ -58,6 +58,18 @@ class VjpMlpUpSharedEB:
     apply = staticmethod(VjpDelta.apply)
 
 
+@register_config
+@dataclass
+class VjpMlpUpSharedLastTokenEBC(VjpDeltaC):
+    method: str = "vjp_mlp_up_shared_last_token_eb"
+
+
+@register
+class VjpMlpUpSharedLastTokenEB:
+    name = "vjp_mlp_up_shared_last_token_eb"
+    apply = staticmethod(VjpDelta.apply)
+
+
 J_WORD_LENS_REPO = "neuronpedia/jacobian-lens"
 J_WORD_LENS_REVISION = "qwen-n1000"
 J_WORD_LENS_FILE = "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
@@ -126,6 +138,19 @@ def _valid_mask(
     )
 
 
+def _target_mask(
+    attention_mask: Int[torch.Tensor, "b s"], skip_first: int, target_scope: str
+) -> Bool[torch.Tensor, "b s"]:
+    if target_scope == "all_valid":
+        return _valid_mask(attention_mask, skip_first)
+    if target_scope == "last_token":
+        mask = torch.zeros_like(attention_mask, dtype=torch.bool)
+        rows = torch.arange(attention_mask.shape[0], device=attention_mask.device)
+        mask[rows, attention_mask.sum(dim=1) - 1] = True
+        return mask
+    raise ValueError(f"unknown target_scope={target_scope!r}")
+
+
 @torch.no_grad()
 def _target_mean(
     model,
@@ -158,6 +183,7 @@ def _batch_gradients(
     skip_first: int,
     max_length: int,
     source_readout: str | None = None,
+    target_scope: str = "all_valid",
 ) -> tuple[
     dict[int, Float[torch.Tensor, "b s d"]],
     Bool[torch.Tensor, "b s"],
@@ -165,6 +191,7 @@ def _batch_gradients(
 ]:
     encoded = _encode(model, tokenizer, prompts, max_length)
     valid = _valid_mask(encoded["attention_mask"], skip_first)
+    target_valid = _target_mask(encoded["attention_mask"], skip_first, target_scope)
     if valid.sum(dim=1).min() == 0:
         raise ValueError(f"a prompt has no valid positions after skip_first={skip_first}")
 
@@ -182,7 +209,7 @@ def _batch_gradients(
             gradients = torch.autograd.grad(
                 target,
                 [found[layer] for layer in layers],
-                grad_outputs=expanded * valid.unsqueeze(-1),
+                grad_outputs=expanded * target_valid.unsqueeze(-1),
             )
             activations = {layer: found[layer].detach() for layer in layers}
     return dict(zip(layers, gradients, strict=True)), valid, activations
@@ -230,6 +257,7 @@ def _class_prompt_vjp(
     max_length: int,
     skip_first: int,
     source_readout: str,
+    target_scope: str = "all_valid",
 ) -> dict[int, torch.Tensor]:
     values = {layer: [] for layer in layers}
     for start in range(0, len(prompts), batch_size):
@@ -244,6 +272,7 @@ def _class_prompt_vjp(
             skip_first,
             max_length,
             source_readout=source_readout,
+            target_scope=target_scope,
         )
         counts = valid.sum(dim=1, keepdim=True).float()
         for layer, gradient in gradients.items():
@@ -264,6 +293,7 @@ def _class_prompt_vjp_scale(
     source_readout: str,
     *,
     return_moments: bool = False,
+    target_scope: str = "all_valid",
 ) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor]] | tuple[dict[int, torch.Tensor], dict[int, torch.Tensor], dict[str, object]]:
     gradients_by_layer = {layer: [] for layer in layers}
     activation_sum = {layer: None for layer in layers}
@@ -281,6 +311,7 @@ def _class_prompt_vjp_scale(
             skip_first,
             max_length,
             source_readout=source_readout,
+            target_scope=target_scope,
         )
         mask = valid.unsqueeze(-1)
         counts = valid.sum(dim=1, keepdim=True).float()
@@ -697,6 +728,8 @@ def vjp_mlp_up_shared_eb(
     batch_size: int = 8,
     max_length: int = 384,
     skip_first: int = 16,
+    target_scope: str = "all_valid",
+    config_type=VjpMlpUpSharedEBC,
 ) -> tuple[dict[str, Vector], dict[str, object]]:
     """Extract one pair-mean EB VJP ray for opposite-sign application."""
     model.requires_grad_(False)
@@ -712,10 +745,12 @@ def vjp_mlp_up_shared_eb(
     positive, _, positive_moments = _class_prompt_vjp_scale(
         model, tokenizer, positive_prompts, layers, target_layer, cotangent,
         batch_size, max_length, skip_first, "mlp.up_proj", return_moments=True,
+        target_scope=target_scope,
     )
     negative, _, negative_moments = _class_prompt_vjp_scale(
         model, tokenizer, negative_prompts, layers, target_layer, cotangent,
         batch_size, max_length, skip_first, "mlp.up_proj", return_moments=True,
+        target_scope=target_scope,
     )
     pair_means = {
         layer: (positive[layer] + negative[layer]) / 2 for layer in layers
@@ -758,10 +793,11 @@ def vjp_mlp_up_shared_eb(
 
     def make_vector() -> Vector:
         return Vector(
-            VjpMlpUpSharedEBC(
+            config_type(
                 layers=layers,
                 target_submodule="mlp.up_proj",
                 target_layer=target_layer,
+                cotangent_scope=target_scope,
             ),
             {f"layers.{layer}.{names[layer]}": {} for layer in layers},
             {
@@ -788,6 +824,7 @@ def vjp_mlp_up_shared_eb(
         "noisy_coordinate_estimator": "empirical_bayes_normal_normal_per_layer",
         "normalization": "global_pooled_activation_scaled",
         "target_layer": target_layer,
+        "target_cotangent_scope": target_scope,
         "source_layers": list(layers),
         "pairing": "mean_of_matched_positive_negative_prompt_vjps",
         "pooled_activation_token_count": (
@@ -825,13 +862,23 @@ def vjp_mlp_up_shared_eb(
         "applied_side_cosine_descriptive_only": -1.0,
     }
     logger.info(
-        "vjp_mlp_up_shared_eb target={} layers={} pairs={} split_half_cosine={}",
+        "vjp_mlp_up_shared_eb target={} scope={} layers={} pairs={} split_half_cosine={}",
         target_layer,
+        target_scope,
         len(layers),
         metadata["shared"]["n_pairs"],
         split_half_cosine,
     )
     return vectors, metadata
+
+
+def vjp_mlp_up_shared_last_token_eb(
+    model, tokenizer, positive_prompts: list[str], negative_prompts: list[str], **kwargs
+) -> tuple[dict[str, Vector], dict[str, object]]:
+    return vjp_mlp_up_shared_eb(
+        model, tokenizer, positive_prompts, negative_prompts,
+        target_scope="last_token", config_type=VjpMlpUpSharedLastTokenEBC, **kwargs,
+    )
 
 
 def vjp_delta(

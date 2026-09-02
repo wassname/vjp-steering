@@ -20,7 +20,11 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from vjp_steering import j_word, vjp_delta, vjp_mlp_up_shrink
-from vjp_steering.vjp import vjp_mlp_up_left_right_shrink, vjp_mlp_up_shared_eb
+from vjp_steering.vjp import (
+    vjp_mlp_up_left_right_shrink,
+    vjp_mlp_up_shared_eb,
+    vjp_mlp_up_shared_last_token_eb,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +52,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -366,8 +370,13 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
             max_length=args.max_length,
             skip_first=16,
         )
-    elif args.method == "vjp_mlp_up_shared_eb":
-        vector, metadata = vjp_mlp_up_shared_eb(
+    elif args.method in {"vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb"}:
+        extractor = (
+            vjp_mlp_up_shared_eb
+            if args.method == "vjp_mlp_up_shared_eb"
+            else vjp_mlp_up_shared_last_token_eb
+        )
+        vector, metadata = extractor(
             model,
             tokenizer,
             positive,
@@ -636,7 +645,7 @@ def run_rung(args: argparse.Namespace) -> None:
         )
         logger.info("=== generation output side={} ===\n{}\n=== end output ===", side, answers[0])
 
-    mlp_up_methods = ("vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb")
+    mlp_up_methods = ("vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb")
     artifact_layers = extraction_metadata["source_layers"] if args.method in mlp_up_methods else layers
     target_layer = vectors["+C"].cfg.target_layer if args.method in ("vjp_delta", *mlp_up_methods) else None
     artifact = {

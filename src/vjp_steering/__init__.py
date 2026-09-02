@@ -5,6 +5,7 @@ from .vjp import (
     vjp_delta,
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
+    vjp_mlp_up_shared_last_token_eb,
     vjp_mlp_up_shrink,
 )
 
@@ -21,5 +22,6 @@ __all__ = [
     "vjp_delta",
     "vjp_mlp_up_left_right_shrink",
     "vjp_mlp_up_shared_eb",
+    "vjp_mlp_up_shared_last_token_eb",
     "vjp_mlp_up_shrink",
 ]

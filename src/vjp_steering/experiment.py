@@ -7,10 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 METHOD = "vjp_mlp_up_left_right_shrink"
 SHARED_METHOD = "vjp_mlp_up_shared_eb"
-METHODS = (METHOD, SHARED_METHOD)
+SHARED_LAST_TOKEN_METHOD = "vjp_mlp_up_shared_last_token_eb"
+METHODS = (METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD)
 DEFAULT_EXPERIMENT_IDS = {
     METHOD: "mlp-up-left-right-formative-v7-eb-audited",
     SHARED_METHOD: "mlp-up-shared-eb-formative-v1",
+    SHARED_LAST_TOKEN_METHOD: "mlp-up-shared-last-token-eb-formative-v1",
 }
 DEFAULT_EXPERIMENT_ID = DEFAULT_EXPERIMENT_IDS[METHOD]
 

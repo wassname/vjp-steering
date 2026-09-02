@@ -25,6 +25,7 @@ METHODS = (
     "vjp_mlp_up_shrink",
     "vjp_mlp_up_left_right_shrink",
     "vjp_mlp_up_shared_eb",
+    "vjp_mlp_up_shared_last_token_eb",
     "random",
 )
 RANDOM_SEEDS = 10
@@ -36,6 +37,7 @@ METHOD_SEEDS = {
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
     "vjp_mlp_up_shared_eb": {0},
+    "vjp_mlp_up_shared_last_token_eb": {0},
 }
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
@@ -50,6 +52,7 @@ LABELS = {
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
+    "vjp_mlp_up_shared_last_token_eb": "shared-pair last-token VJP",
 }
 COHORT_FIELDS = (
     "model",
@@ -269,6 +272,7 @@ def plot(
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
         "vjp_mlp_up_left_right_shrink": "#6f4aa8",
         "vjp_mlp_up_shared_eb": "#a64d79",
+        "vjp_mlp_up_shared_last_token_eb": "#a64d79",
     }
     displayed_endpoints = {}
     for method in (method for method in methods if method != "random"):
@@ -344,6 +348,7 @@ def plot(
             "vjp_mlp_up_shrink",
             "vjp_mlp_up_left_right_shrink",
             "vjp_mlp_up_shared_eb",
+            "vjp_mlp_up_shared_last_token_eb",
         )
     else:
         labels = []
