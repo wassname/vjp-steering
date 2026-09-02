@@ -43,13 +43,13 @@
   "metric": "mean valid-token c dot h_target; c is recomputed from extraction seed 0",
   "predicted_first_order_delta_per_C": {
     "positive": {
-      "mean": 2.8518950939178467,
-      "std": 0.6353808641433716,
+      "mean": 2.8519270420074463,
+      "std": 0.6354281306266785,
       "n": 32
     },
     "negative": {
-      "mean": 4.797775745391846,
-      "std": 1.3861292600631714,
+      "mean": 4.797731399536133,
+      "std": 1.3861109018325806,
       "n": 32
     }
   },

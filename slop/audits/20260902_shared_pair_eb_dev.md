@@ -106,11 +106,11 @@ Epistemic context: one fixed scenario selected by file order, not for extremity.
 
 [`20260902_shared_pair_eb_mediation.json`](/workspace/2026/jspace/j-steer_pub/slop/audits/20260902_shared_pair_eb_mediation.json) uses the saved shared-vector hash on 32 held-out persona pairs (seed 1). It recomputes the extraction cotangent from seed 0, then measures the mean valid-token target projection `c dot h_target` before and after direct MLP-up intervention. The run log ends `SHARED_VJP_MEDIATION_COMPLETE`.
 
-> `positive predicted_first_order_delta_per_C mean: 2.851895`
+> `positive predicted_first_order_delta_per_C mean: 2.851927`
 >
 > `positive realized_delta C=0.25 mean: 0.391607; C=1 mean: 2.554454`
 >
-> `negative predicted_first_order_delta_per_C mean: 4.797776`
+> `negative predicted_first_order_delta_per_C mean: 4.797731`
 >
 > `negative realized_delta C=0.25 mean: 0.663281; C=1 mean: 4.234744`
 
