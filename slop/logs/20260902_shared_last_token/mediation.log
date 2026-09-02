@@ -1,0 +1,94 @@
+COMMAND: uv run python scripts/audit_shared_vjp_mediation.py --experiment-id mlp-up-shared-last-token-eb-formative-v1
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 1985.00it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights: 100%|██████████| 426/426 [00:00<00:00, 8340.60it/s]
+2026-09-02 20:44:49.906 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-02 20:44:49.959 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+2026-09-02 20:45:29.599 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-02 20:45:29.604 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=32 from 1 persona pairs
+/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-09-02 20:46:08.327 | INFO     | __main__:main:206 - SHARED_VJP_MEDIATION_COMPLETE output=slop/audits/20260902_shared_pair_eb_mediation.json
+2026-09-02 20:46:08.327 | INFO     | __main__:main:207 - {
+  "experiment_id": "mlp-up-shared-last-token-eb-formative-v1",
+  "model": "Qwen/Qwen3.5-4B",
+  "held_out_pair_seed": 1,
+  "held_out_n_pairs": 32,
+  "target_layer": 29,
+  "source_layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "source_readout": "mlp.up_proj",
+  "target_cotangent_scope": "last_token",
+  "vector_content_sha256": {
+    "+C": "4253f47e749cc4718e43b3c0f623f412517b028f87cd0a8486cfad414c228722",
+    "-C": "4253f47e749cc4718e43b3c0f623f412517b028f87cd0a8486cfad414c228722"
+  },
+  "metric": "mean last_token c dot h_target; c is recomputed from extraction seed 0",
+  "predicted_first_order_delta_per_C": {
+    "positive": {
+      "mean": 0.35467100143432617,
+      "std": 1.6139241456985474,
+      "n": 32
+    },
+    "negative": {
+      "mean": 10.049213409423828,
+      "std": 12.00800895690918,
+      "n": 32
+    }
+  },
+  "realized_delta": {
+    "positive": {
+      "0.25": {
+        "mean": 0.014211408793926239,
+        "std": 0.26399296522140503,
+        "n": 32
+      },
+      "1.0": {
+        "mean": 0.3163876533508301,
+        "std": 1.744221568107605,
+        "n": 32
+      }
+    },
+    "negative": {
+      "0.25": {
+        "mean": 0.9580215215682983,
+        "std": 1.195446252822876,
+        "n": 32
+      },
+      "1.0": {
+        "mean": 11.864745140075684,
+        "std": 15.57526969909668,
+        "n": 32
+      }
+    }
+  }
+}
