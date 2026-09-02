@@ -66,13 +66,13 @@ Epistemic context: one fixed scenario selected by file order, not for extremity.
 
 ## Hypotheses
 
-### H1 [misconception | Likely | 70%]
+### H1 [misconception | Highly Likely | 80%]
 
 - **Mechanism:** Pair-mean VJPs do not estimate a shared behavioral axis here. They average local routes that are class-conditioned and semantically mismatched; the shared target contrast is insufficient to make the route universal.
 - **Evidence:** The run records one identical vector hash for both sides, yet all fourteen clean `+C` rows are negative, including C=1 at -0.473 with 0.053 displayed off-axis damage.
-- **Contrary evidence:** No direct measurement shows whether target-layer projection along `c` moved as the VJP predicts.
-- **Discriminating test:** At C values 0, 8, 16, and 24, measure predicted and realized \(\Delta(c^\top h)\) on both prompt classes. If the projection changes as predicted while judged behavior moves oppositely, the cotangent is semantically wrong; if it fails early, finite-dose geometry is the problem.
-- **Fix/action:** Do not replace the per-side published method. Add the mediation measurement before proposing another shared objective.
+- **Contrary evidence:** The target-layer projection now moves in the expected direction, so this is not evidence that the shared VJP has no causal effect on its own target.
+- **Discriminating test:** Measure a mediator closer to the judge trait, or define the cotangent from a validated judge-relevant contrast rather than last-token persona states.
+- **Fix/action:** Do not replace the per-side published method. Do not change EB weighting again; revise the target objective only after specifying the target mediator.
 - **Interpretability:** partial — it is a credible negative result for this pair-mean implementation, not for every possible shared-axis extraction.
 
 ### H2 [method | Chances a little better than even | 50%]
@@ -93,23 +93,41 @@ Epistemic context: one fixed scenario selected by file order, not for extremity.
 - **Fix/action:** Do this only after mediation, because it cannot explain a wrong realized hidden-state displacement.
 - **Interpretability:** partial.
 
-### H4 [bug | Unlikely | 20%]
+### H4 [bug | Remote | 10%]
 
 - **Mechanism:** A sign or pooled-moment bug makes the constructed vector opposite the intended local movement.
-- **Evidence:** The observed +C sign is opposite intent.
-- **Contrary evidence:** Same-vector hashes, explicit `application_sign` values +1/-1, existing hook smoke, and several code reviews make a trivial side-sign swap less likely. The vector must still be checked through target-layer mediation.
-- **Discriminating test:** Run one no-generation forward pass that compares \(g_i^\top d\) with realized \(\Delta(c^\top h)\) at infinitesimal C for both classes.
-- **Fix/action:** Fix only if predicted and realized signs disagree at infinitesimal C.
-- **Interpretability:** partial until that check.
+- **Evidence:** The observed +C judge sign is opposite intent.
+- **Contrary evidence:** Same-vector hashes, explicit `application_sign` values +1/-1, existing hook smoke, and the held-out mediation test: both prompt classes have positive predicted and realized `c dot h_target` change at C=.25 and C=1.
+- **Discriminating test:** A substantially different application path or target mask would need its own direct mediation check.
+- **Fix/action:** No code fix is indicated by this experiment.
+- **Interpretability:** good for the checked MLP-up hook and target projection; it does not validate trait semantics.
+
+## Target-layer mediation
+
+[`20260902_shared_pair_eb_mediation.json`](/workspace/2026/jspace/j-steer_pub/slop/audits/20260902_shared_pair_eb_mediation.json) uses the saved shared-vector hash on 32 held-out persona pairs (seed 1). It recomputes the extraction cotangent from seed 0, then measures the mean valid-token target projection `c dot h_target` before and after direct MLP-up intervention. The run log ends `SHARED_VJP_MEDIATION_COMPLETE`.
+
+> `positive predicted_first_order_delta_per_C mean: 2.851895`
+>
+> `positive realized_delta C=0.25 mean: 0.391607; C=1 mean: 2.554454`
+>
+> `negative predicted_first_order_delta_per_C mean: 4.797776`
+>
+> `negative realized_delta C=0.25 mean: 0.663281; C=1 mean: 4.234744`
+
+Epistemic context: machine-generated no-generation forward and VJP measurements. It uses the identical saved vector for both applications (`b4b8e3...f1f33`).
+
+The sign agrees in both prompt classes at C=0.25 and C=1. This makes a simple source hook, application sign, or VJP target-direction error unlikely for the shared experiment. The realized size is nonlinear at C=0.25, so this does not establish linearity; it only establishes the direction of the measured target functional.
+
+The DEV `+C` judged score remains negative even though the measured target functional rises. Therefore the current evidence favors a semantic mismatch between `c dot h_target` and the judged trait, or a shared direction that enters the trait through the wrong behavioral route. It does not support changing the EB formula again without first changing the target objective or measuring a closer mediator.
 
 ## Decision
 
 - **Resolve-condition verdict:** **not met.** The planned condition was one shared vector with an intended-direction DEV candidate on both sides before all-100 confirmation. `+C` has no such candidate.
 - **Prediction check:** no explicit numeric pre-run prediction was saved. The design prediction “shared pair mean produces a coherent bipolar direction” is contradicted on the DEV judged curve.
 - **Earliest unsupported link:** `c` as a semantic trait axis shared across both prompt regions. The first missing measurement is realized target-layer displacement along `c`.
-- **Validity:** This is a **credible negative result for this implementation**; estimated P(run invalid) ≈ 0.15–0.30. The main cheap failure is an unmeasured sign/mediation error, not output persistence or judge-cache failure.
+- **Validity:** This is a **credible negative result for this implementation**; estimated P(run invalid) ≈ 0.05–0.15. The checked source hook moves the chosen target functional in the predicted direction. The remaining uncertainty is whether that functional corresponds to the judge trait, not output persistence or a simple sign error.
 - **Highest-information clues:** (1) fourteen clean +C points, including C=1, have the wrong sign; (2) extraction is stable and the same vector hash is used on both sides; (3) -C remains weak, so neither side supports a positive “one vector works both ways” reading.
-- **Missing metrics, ordered:** realized \(\Delta(c^\top h)\); orthogonal target displacement; cross-application matrix; independent/rubric-decomposed judge.
-- **Recommended sequence:** keep the DEV plot as a formative negative result, do not run all-100 or alter public output, then add only the target-layer mediation measurement. A further estimator change before that measurement would destroy attribution.
+- **Missing metrics, ordered:** orthogonal target displacement; a target mediator validated against the judge trait; cross-application matrix; independent/rubric-decomposed judge.
+- **Recommended sequence:** keep the DEV plot as a formative negative result and do not alter public output. Define and validate a closer behavioral target before proposing another shared estimator.
 
 — PI/Codex
