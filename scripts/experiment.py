@@ -398,6 +398,13 @@ def local_grid(c_approx: float) -> list[float]:
     ]
 
 
+def dev_grid(boundary: dict) -> list[float]:
+    return sorted({
+        *local_grid(boundary["C_approx"]),
+        *(entry["coefficient"] for entry in boundary["trace"] if entry["health_clean"]),
+    })
+
+
 def completed_profile_cell_count(
     args: argparse.Namespace,
     manifest: dict,
@@ -450,6 +457,11 @@ def gpu_stage(args: argparse.Namespace) -> None:
     }
     if manifest["method"] != args.method:
         raise ValueError("experiment id belongs to another method")
+    if args.dev and "boundaries" in manifest:
+        expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
+        if manifest["grid"] != expanded_grid:
+            manifest["grid"] = expanded_grid
+            atomic_json(manifest_path(args.experiment_id), manifest)
     completed_cells = completed_profile_cell_count(args, manifest, root, profile_name, limit)
     if completed_cells is not None and not args.verify_extraction:
         logger.info(
@@ -487,7 +499,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             for side in ("+C", "-C")
         }
         manifest["boundaries"] = boundaries
-        manifest["grid"] = {side: local_grid(boundaries[side]["C_approx"]) for side in ("+C", "-C")}
+        manifest["grid"] = {side: dev_grid(boundaries[side]) for side in ("+C", "-C")}
         manifest["extraction"] = extraction
         manifest["cohort_sha256"] = cohort_sha256
         atomic_json(manifest_path(args.experiment_id), manifest)
@@ -685,6 +697,13 @@ def self_test() -> None:
     assert len(local_grid(1.0)) == GRID_POINTS
     assert math.isclose(local_grid(1.0)[0], GRID_LOW)
     assert math.isclose(local_grid(1.0)[-1], GRID_HIGH)
+    assert dev_grid({
+        "C_approx": 1.0,
+        "trace": [
+            {"coefficient": 0.5, "health_clean": True},
+            {"coefficient": 2.0, "health_clean": False},
+        ],
+    }) == sorted({*local_grid(1.0), 0.5})
     assert signed_coefficient("+C", 2.0) == 2.0
     assert signed_coefficient("-C", 2.0) == -2.0
     quick_rows = [
