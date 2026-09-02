@@ -118,7 +118,7 @@ Epistemic context: machine-generated no-generation forward and VJP measurements.
 
 The sign agrees in both prompt classes at C=0.25 and C=1. This makes a simple source hook, application sign, or VJP target-direction error unlikely for the shared experiment. The realized size is nonlinear at C=0.25, so this does not establish linearity; it only establishes the direction of the measured target functional.
 
-The DEV `+C` judged score remains negative even though the measured target functional rises. Therefore the current evidence favors a semantic mismatch between `c dot h_target` and the judged trait, or a shared direction that enters the trait through the wrong behavioral route. It does not support changing the EB formula again without first changing the target objective or measuring a closer mediator.
+The DEV `+C` judged score remains negative even though the measured target functional rises. There is one exact design mismatch: `_target_mean` defines `c` from the final real prompt token, while `_batch_gradients` supplies `c` as the cotangent at every valid target position after `skip_first`. This audit intentionally measures the latter all-token functional, because that is what the saved vector optimized. Thus it verifies the implementation but also identifies a likely semantic mismatch with answer behavior. The next discriminating extraction test should use `c` only at the final real target token, before changing EB weighting again.
 
 ## Decision
 
