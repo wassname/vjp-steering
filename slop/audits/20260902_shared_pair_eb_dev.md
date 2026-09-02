@@ -2,13 +2,13 @@
 
 Target: `mlp-up-shared-eb-formative-v1` DEV run. The intended test was one paired, shared VJP vector, applied with opposite signs, before considering all-100 confirmation.
 
-Provenance: [`dev.log`](/workspace/2026/jspace/j-steer_pub/slop/logs/20260902_shared_eb/dev.log) contains the literal command, GPU stage, 251 judge calls, initial export failure, and cached successful re-export. The extraction/generation implementation was committed as `0c3e533` before the first invocation. The manifest does not record a Git revision, so that association is inferred from the logged invocation. The saved outputs are [`plusC.safetensors`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/extraction/plusC.safetensors), [`minusC.safetensors`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/extraction/minusC.safetensors), [`manifest.json`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/manifest.json), [`bare.jsonl`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/bare.jsonl), and the 18 generated cell files under [`cells/`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/cells).
+Provenance: [`dev.log`](/workspace/2026/jspace/j-steer_pub/slop/logs/20260902_shared_eb/dev.log) contains the literal first command, GPU stage, 251 initial judge calls, and the later coverage-repair command. The repaired run generated 34 cells and logged `JUDGE_COMPLETE required=444 missing=0`. The extraction/generation implementation was committed as `0c3e533` before the first invocation. The manifest does not record a Git revision, so that association is inferred from the logged invocation. The saved outputs are [`plusC.safetensors`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/extraction/plusC.safetensors), [`minusC.safetensors`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/extraction/minusC.safetensors), [`manifest.json`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/manifest.json), [`bare.jsonl`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/bare.jsonl), and the generated cell files under [`cells/`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/cells).
 
 | stage | expected | observed | expected? | clues | missing metric | consequence |
 |---|---|---|---|---|---|---|
 | extraction | one vector, same hash on both applications | same vector hash for `+C` and `-C`; split-half cosine 0.99414 | yes | [`manifest.json`](/workspace/2026/jspace/j-steer_pub/outputs/experiments/mlp-up-shared-eb-formative-v1/manifest.json) | comparison with per-side vectors under this metric | construction ran as specified |
-| DEV generation health | local dose grids reach health boundary | `+C` boundary 26.95; `-C` boundary 43.34 | yes | manifest `boundaries` | target-layer displacement by C | dose coverage was adequate for DEV selection |
-| DEV judgment | at least one intended-direction accepted point per side before full | no `+C` intended-direction point; one near-zero `-C` point | no | [`results.csv`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/results.csv) rows 2–19 | judge uncertainty / alternate judge | do not run all-100 confirmation |
+| DEV generation health | local grids and all health-clean search probes are judged | `+C` health-clean C=1 through 26.82; `-C` health-clean C=1 through 32.23 | yes | manifest `boundaries`; [`results.csv`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/results.csv) | target-layer displacement by C | low-dose coverage is now adequate for selection |
+| DEV judgment | at least one intended-direction accepted point per side before full | no `+C` intended-direction point; -C is weak at low dose | no | [`results.csv`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/results.csv) | judge uncertainty / alternate judge | do not run all-100 confirmation |
 | raw-output integrity | three distinct arms, no output artifact corruption | bare, +C, and -C answer the same first prompt differently and coherently | yes | raw JSONL paths below | stratified output annotation | result is not explained by empty outputs or obvious generation collapse |
 | export/render | DEV null result remains inspectable, not public | initial exporter raised on missing +C endpoint; fixed exporter saved explicit null and a DEV plot | yes after fix | `dev.log`; [`selected.json`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/selected.json) | none | public `data/results.csv` and `results/plot.png` unchanged |
 
@@ -30,25 +30,25 @@ This establishes that the implementation applied one saved vector under opposite
 
 ### Judged curve
 
-[`results.csv`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/results.csv), rows 2–6, records health-admissible `+C` points:
+The coverage repair added health-clean low-dose rows to [`results.csv`](/workspace/2026/jspace/j-steer_pub/data/dev/mlp-up-shared-eb-formative-v1/results.csv):
 
-> `17.789524998677237,+C,-0.9533333333333333,0.3133333333333333,True`
+> `1.0,+C,-0.4733333333333334,0.05333333333333333,True`
 >
-> `20.046907905706355,+C,-0.8800000000000001,0.3933333333333333,True`
+> `2.0,+C,-0.52,0.09333333333333334,True`
 >
-> `22.304290812735474,+C,-1.7133333333333334,0.38,True`
+> `4.0,+C,-0.33999999999999997,0.12000000000000001,True`
 >
-> `26.819056626793714,+C,-1.7266666666666666,1.0799999999999998,True`
+> `8.0,+C,-1.2466666666666668,0.08666666666666667,True`
+>
+> `16.0,+C,-0.8666666666666667,0.2533333333333333,True`
 
-Rows 11–12 record the only health-admissible `-C` points:
+The higher clean +C rows remain negative through C=26.819. The strongest health-admissible -C row is:
 
-> `28.60187715130719,-C,0.05333333333333338,0.5333333333333333,True`
->
-> `32.23128201709806,-C,-0.04666666666666665,0.6,True`
+> `16.0,-C,-0.24666666666666653,0.2866666666666666,True`
 
 Epistemic context: machine-generated means over the fixed 15-question DEV cohort, one AB order. Under the null bare-vs-bare comparison, expected mean effect is 0 by construction; no judge confidence interval was measured.
 
-The `+C` sign is consistently opposite its intended judged direction across five admissible doses. The one `-C` sign-correct point is near the null scale and should not be read as evidence of a useful negative intervention.
+The `+C` sign is consistently opposite its intended judged direction across all fourteen admissible doses, including C=1 with low displayed off-axis damage. The observed -C effect is small; it should not be read as evidence of a useful bipolar intervention.
 
 ### Raw generation check
 
@@ -69,7 +69,7 @@ Epistemic context: one fixed scenario selected by file order, not for extremity.
 ### H1 [misconception | Likely | 70%]
 
 - **Mechanism:** Pair-mean VJPs do not estimate a shared behavioral axis here. They average local routes that are class-conditioned and semantically mismatched; the shared target contrast is insufficient to make the route universal.
-- **Evidence:** The run records one identical vector hash for both sides, yet the five clean `+C` rows have negative effects from -0.867 to -1.727.
+- **Evidence:** The run records one identical vector hash for both sides, yet all fourteen clean `+C` rows are negative, including C=1 at -0.473 with 0.053 displayed off-axis damage.
 - **Contrary evidence:** No direct measurement shows whether target-layer projection along `c` moved as the VJP predicts.
 - **Discriminating test:** At C values 0, 8, 16, and 24, measure predicted and realized \(\Delta(c^\top h)\) on both prompt classes. If the projection changes as predicted while judged behavior moves oppositely, the cotangent is semantically wrong; if it fails early, finite-dose geometry is the problem.
 - **Fix/action:** Do not replace the per-side published method. Add the mediation measurement before proposing another shared objective.
@@ -108,7 +108,7 @@ Epistemic context: one fixed scenario selected by file order, not for extremity.
 - **Prediction check:** no explicit numeric pre-run prediction was saved. The design prediction “shared pair mean produces a coherent bipolar direction” is contradicted on the DEV judged curve.
 - **Earliest unsupported link:** `c` as a semantic trait axis shared across both prompt regions. The first missing measurement is realized target-layer displacement along `c`.
 - **Validity:** This is a **credible negative result for this implementation**; estimated P(run invalid) ≈ 0.15–0.30. The main cheap failure is an unmeasured sign/mediation error, not output persistence or judge-cache failure.
-- **Highest-information clues:** (1) five clean +C points have the wrong sign; (2) extraction is stable and the same vector hash is used on both sides; (3) the -C near-zero point prevents a positive “one vector works both ways” reading.
+- **Highest-information clues:** (1) fourteen clean +C points, including C=1, have the wrong sign; (2) extraction is stable and the same vector hash is used on both sides; (3) -C remains weak, so neither side supports a positive “one vector works both ways” reading.
 - **Missing metrics, ordered:** realized \(\Delta(c^\top h)\); orthogonal target displacement; cross-application matrix; independent/rubric-decomposed judge.
 - **Recommended sequence:** keep the DEV plot as a formative negative result, do not run all-100 or alter public output, then add only the target-layer mediation measurement. A further estimator change before that measurement would destroy attribution.
 

@@ -193,3 +193,95 @@ Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0
 
   figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
 EXPERIMENT_RENDER_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev rows=18 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-shared-eb-formative-v1
+COMMAND: just experiment vjp_mlp_up_shared_eb --dev (expanded health-clean probe grid)
+uv run python scripts/experiment.py vjp_mlp_up_shared_eb --dev
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-GuJnWb2XiXCY8wJuBGXXdT
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created function run.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 605.01it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 204.69it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 18/426 [00:00<00:05, 70.36it/s]
+[1ALoading weights:   6%|▌         | 26/426 [00:00<00:09, 41.27it/s]
+[1ALoading weights:   7%|▋         | 31/426 [00:01<00:20, 19.44it/s]
+[1ALoading weights:  13%|█▎        | 55/426 [00:01<00:08, 45.91it/s]
+[1ALoading weights:  19%|█▉        | 80/426 [00:01<00:04, 76.01it/s]
+[1ALoading weights:  26%|██▌       | 110/426 [00:01<00:02, 113.50it/s]
+[1ALoading weights:  31%|███       | 130/426 [00:01<00:02, 128.29it/s]
+[1ALoading weights:  37%|███▋      | 158/426 [00:01<00:01, 150.69it/s]
+[1ALoading weights:  42%|████▏     | 178/426 [00:01<00:01, 158.54it/s]
+[1ALoading weights:  48%|████▊     | 203/426 [00:02<00:01, 179.34it/s]
+[1ALoading weights:  53%|█████▎    | 224/426 [00:02<00:01, 179.75it/s]
+[1ALoading weights:  59%|█████▉    | 252/426 [00:02<00:00, 203.44it/s]
+[1ALoading weights:  65%|██████▍   | 275/426 [00:02<00:00, 199.07it/s]
+[1ALoading weights:  72%|███████▏  | 307/426 [00:02<00:00, 225.43it/s]
+[1ALoading weights:  78%|███████▊  | 331/426 [00:02<00:00, 227.42it/s]
+[1ALoading weights:  85%|████████▍ | 361/426 [00:02<00:00, 247.48it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 154.60it/s]
+2026-09-02 10:43:00.284 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:03.662 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:06.368 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:09.204 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:12.112 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:14.872 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:17.825 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:49.998 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:53.770 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:56.450 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:43:59.949 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:02.413 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:05.067 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:07.462 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:10.063 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:25.257 | INFO     | walk:generate:451 - generation 15/15
+2026-09-02 10:44:25.388 | INFO     | __main__:gpu_stage:544 - GPU_STAGE_COMPLETE experiment=mlp-up-shared-eb-formative-v1 profile=dev cells=34
+EXPERIMENT_GPU_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev cells=18
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-GuJnWb2XiXCY8wJuBGXXdT
+✓ Finished downloading files to local!
+2026-09-02 18:44:36.796 | INFO     | __main__:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=34 demo_sides=510
+2026-09-02 18:44:38.108 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-02 18:44:39.310 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-02 18:44:40.940 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-02 18:44:42.340 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-02 18:44:43.911 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-02 18:44:45.321 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-02 18:44:46.574 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-02 18:44:47.657 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-02 18:44:48.471 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-02 18:44:49.270 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-02 18:44:50.096 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-02 18:44:50.815 | INFO     | __main__:main:668 - CACHE_CHECK required=444 cached=268 missing=176 API_calls=176
+2026-09-02 18:45:42.694 | INFO     | __main__:run:630 - judge progress=100/176
+2026-09-02 18:46:21.105 | INFO     | __main__:run:630 - judge progress=176/176
+2026-09-02 18:46:22.450 | INFO     | __main__:cached_keys:328 - cache scan records=20000 valid_keys=0
+2026-09-02 18:46:23.563 | INFO     | __main__:cached_keys:328 - cache scan records=40000 valid_keys=0
+2026-09-02 18:46:24.788 | INFO     | __main__:cached_keys:328 - cache scan records=60000 valid_keys=0
+2026-09-02 18:46:25.674 | INFO     | __main__:cached_keys:328 - cache scan records=80000 valid_keys=11699
+2026-09-02 18:46:26.951 | INFO     | __main__:cached_keys:328 - cache scan records=100000 valid_keys=31699
+2026-09-02 18:46:28.113 | INFO     | __main__:cached_keys:328 - cache scan records=120000 valid_keys=51368
+2026-09-02 18:46:29.166 | INFO     | __main__:cached_keys:328 - cache scan records=140000 valid_keys=71368
+2026-09-02 18:46:30.151 | INFO     | __main__:cached_keys:328 - cache scan records=160000 valid_keys=91368
+2026-09-02 18:46:30.969 | INFO     | __main__:cached_keys:328 - cache scan records=180000 valid_keys=111368
+2026-09-02 18:46:31.713 | INFO     | __main__:cached_keys:328 - cache scan records=200000 valid_keys=130444
+2026-09-02 18:46:32.558 | INFO     | __main__:cached_keys:328 - cache scan records=220000 valid_keys=150271
+2026-09-02 18:46:33.137 | INFO     | __main__:main:681 - JUDGE_COMPLETE required=444 missing=0
+2026-09-02 18:46:42.002 | INFO     | judge:experiment_rows:295 - experiment manifest id=mlp-up-shared-eb-formative-v1 profile=dev cells=34 demo_sides=510
+EXPERIMENT_EXPORT_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev arms=34 scenarios=510
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:658: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=mlp-up-shared-eb-formative-v1 profile=dev rows=34 output=/workspace/2026/jspace/j-steer_pub/results/dev/mlp-up-shared-eb-formative-v1

@@ -8,4 +8,4 @@ Markers are evaluated doses; open markers were rejected; straight connectors sho
 
 | method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| vjp_mlp_up_shared_eb | — | **0.047** | **0.600** | not confirmed | — | 1 | 18 | 17 |
+| vjp_mlp_up_shared_eb | — | **0.047** | **0.600** | not confirmed | — | 1 | 34 | 29 |
