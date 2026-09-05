@@ -538,7 +538,7 @@ def j_lens_coordinate_prefill(model, vector: Vector, mask: torch.Tensor):
             swapped = _swap_lens_coordinates(
                 hidden, shared["basis"].to(hidden), shared["dual"].to(hidden), vector.cfg.coeff,
             )
-            edited = torch.where(mask.to(hidden).unsqueeze(-1), swapped, hidden)
+            edited = torch.where(mask.to(device=hidden.device).unsqueeze(-1), swapped, hidden)
             handles_by_layer[layer].remove()
             return (edited, *output[1:]) if isinstance(output, tuple) else edited
         return apply

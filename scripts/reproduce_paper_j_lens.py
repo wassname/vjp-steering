@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATA = ROOT / "data/vendor/jacobian-lens/verbal-report.json"
 DEFAULT_OUTPUT = ROOT / "outputs/experiments/paper-native-verbal-report-v1/results.json"
 WORKSPACE_LAYERS = tuple(range(13, 22))
+PROMPT_TEMPLATE = "Think of a {category}. Answer in one word:"
 
 
 def token_id(tokenizer, word: str) -> int | None:
@@ -29,7 +30,7 @@ def rank(logits: torch.Tensor, token: int) -> int:
 
 
 def prompt(category: str) -> str:
-    return f"Think of a {category}. Answer in one word."
+    return PROMPT_TEMPLATE.format(category=category)
 
 
 def next_logits(model, tokenizer, text: str, vector=None) -> tuple[torch.Tensor, dict[int, int]]:
@@ -102,7 +103,7 @@ def main() -> None:
         raise ValueError("no valid one-token candidates had clean rank greater than 10")
     summary = {
         "model": args.model, "data": str(args.data), "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
-        "prompt_format": "literal paper verbal-report prompt, without a chat template",
+        "prompt_format": "paper verbal-report colon prefill, without a chat template",
         "operator": "h + V(swap(V^dagger h) - V^dagger h)",
         "layers": list(WORKSPACE_LAYERS), "n_trials": len(trials),
         "n_top1": sum(trial["success_top1"] for trial in trials),
