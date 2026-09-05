@@ -212,6 +212,38 @@ def paper_native_prompt_diagnostic(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
+def paper_native_binary_agreement_remote(model: str, dtype: str, output: str, source_revision: str) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    snapshot_download(model)
+    remote_output = Path("/cache/outputs") / output
+    subprocess.run([
+        sys.executable, "scripts/paper_native_binary_agreement.py", "--model", model,
+        "--dtype", dtype, "--source-revision", source_revision, "--output", str(remote_output),
+    ], cwd="/repo", check=True)
+    cache.commit()
+    return remote_output.read_text()
+
+
+@app.local_entrypoint()
+def paper_native_binary_agreement(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "experiments/paper-native-binary-agreement-v1/results.json",
+):
+    result = paper_native_binary_agreement_remote.remote(model, dtype, output, source_revision())
+    local_output = REPO / "outputs" / output
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    print("PAPER_NATIVE_BINARY_AGREEMENT_DOWNLOADED", result)
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
 def diagnose_j_lens_remote(model: str, dtype: str, output: str) -> str:
     from huggingface_hub import snapshot_download
 
