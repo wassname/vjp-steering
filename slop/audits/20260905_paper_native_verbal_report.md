@@ -80,6 +80,30 @@ Source: `pqlog 164 100000`; preserved as [paper-native-prompt-diagnostic.log](..
 
 Inspection of the saved chat top-10 records then found category surfaces at assistant token IDs that have **no leading space**: `France`, `Blue`, `Apple`, `Earth`, `English`, `Doctor`, `Water`, and `Heart`. Local tokenizer replay against the same candidate list verifies 8/14 exact one-token category matches under the no-space form; raw remains 0/14 under its leading-space form. Thus task 164 rules out raw prefill and identifies a Qwen-chat-compatible candidate-token convention. It does not rerun the swap, so it is not a behavior result.
 
+### Eligible Qwen-chat coordinate swap — task 174
+
+Task 174 held the candidate data, raw `W_U J_l` coordinate construction, layers 13–21, and alpha 1 fixed. It changed only the token form required by Qwen's chat answer slot. Full cleaned log: 55/55 lines; raw bytes were also read. The run selected the eight semantic clean categories, of which six had at least one first-ten one-token target outside the clean top-10: country, color, planet, language, profession, and organ. Fruit and beverage had no eligible first-ten target after exclusions.
+
+> 2026-09-05 14:30:18.952 | INFO     | __main__:main:118 - category=country clean=France source_id=47358 valid_targets=2
+> 2026-09-05 14:30:22.269 | INFO     | __main__:main:118 - category=color clean=Blue source_id=10025 valid_targets=6
+> 2026-09-05 14:30:31.790 | INFO     | __main__:main:118 - category=planet clean=Earth source_id=42373 valid_targets=1
+> ...
+> PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "b2a4cf6b3439dfe6c37dc305debd752641758ea9", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "chat", "candidate_prefix": "", "prompt_format": "Qwen chat template around the paper verbal-report colon prefill", "operator": "h + V(swap(V^dagger h) - V^dagger h)", "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_trials": 18, "n_top1": 0, "top1_rate": 0.0, "median_clean_target_rank": 40.0, "median_swapped_target_rank": 9.0}
+
+Source: [paper-native-chat-swap.log](../logs/20260905_j_lens_concept/paper-native-chat-swap.log), a contemporaneous Modal log. Saved raw rows are [chat results.json](../../outputs/experiments/paper-native-verbal-report-chat-v1/results.json).
+
+The swap improves 17/18 target ranks, worsens 1/18, and leaves none unchanged; median rank falls 40→9. It still produces 0/18 rank-1 targets. Examples selected by the fixed target list: `Blue→Black` moves Black rank 55→3, `English→Italian` 149→35, and `Heart→Eye` 16→5. The clean top token remains `Blue`, `English`, or `Heart` in most of these examples; the rank movement is not yet a greedy output replacement. C=0 and swap hook maps are all `{13:1,...,21:1}` in every raw trial. Per-layer basis condition numbers span 1.34–2.59.
+
+This is a valid **directional-rank reproduction** on the Qwen-compatible prompt condition, but it does not meet the paper's rank-1 success criterion. It materially lowers the probability that the earlier null was an inherent impossibility of applying the paper operator to Qwen.
+
+The paper's appendix describes the most direct next test:
+
+> The output is typically still the correct answer for the original argument, but the swapped-in target's answer often appears further down the ranking. This suggests that the α = 1 swap moves the activation in the right direction but not far enough; consistent with this interpretation, the target answer often does appear when the swap strength is doubled to α = 2.
+
+epistemic context: primary paper authors' interpretation of their own flexible-generalization experiment; it supplies an alpha-2 hypothesis, not a promise that Qwen verbal-report will cross rank 1.
+
+The next run should therefore change alpha from 1 to 2 only, keeping this chat condition, candidate selection, operator, and band fixed.
+
 ## ml-debug form
 
 | row | answer |
@@ -145,13 +169,13 @@ Inspection of the saved chat top-10 records then found category surfaces at assi
 
 ## Decision
 
-1. **Resolve-condition verdict:** **not met.** The task used raw rows, a pseudoinverse swap, 117 trials, and the declared band, but it did not reproduce a rank-1 target: `"n_top1": 0, "top1_rate": 0.0`.
-2. **Prediction check:** no recorded pre-run predictions beyond the resolve condition. Future runs must state prompt-validity and top-1 predictions first.
-3. **Earliest unsupported link:** Qwen is in the same semantic answer condition as the paper. The required measurement is clean semantic candidate identity at the scored token.
-4. **Validity:** Define invalid as “cannot test paper verbal report because the clean source is not a category answer.” `P(invalid for that claim) ≈ 0.85–0.95`. Classification: **inconclusive**, not a credible negative for J-lens.
-5. **Highest-information clues:** (1) ` What`/newline source tokens contradict the paper's Soccer source; (2) zero top-1 target successes; (3) all hooks and C=0 controls completed, so the next test should change prompt compatibility rather than repair hooks.
-6. **Missing metrics by value:** (1) prompt-condition semantic eligibility; (2) J-lens source/target readout at scored position; (3) explicit C=0 max-logit delta and git SHA; (4) full clean continuation.
-7. **Bugs requiring code changes:** boolean mask conversion was fixed before task 161. Remaining code work is provenance and readout persistence, not a speculative steering rewrite.
-8. **Misconceptions requiring reinterpretation:** “paper operator fails on Qwen” is unsupported. “This raw-prompt, mid-band Qwen condition has no rank-1 target swap” is supported.
-9. **What would change verdict:** A valid assistant condition with a category clean answer followed by zero rank improvements/top-1 swaps would make H2 materially more probable; one or more rank-1 swaps would establish that the current failure was primarily H1.
-10. **Recommended sequence:** raw is excluded. Repeat the exact coordinate swap only on the eight eligible Qwen-chat rows, using no-space assistant token IDs; retain layers, alpha, operator, and candidate data. Do not combine a prompt convention correction with a band, alpha, or representation change.
+1. **Resolve-condition verdict:** **partly met.** Task 174 used the paper operator in a semantic Qwen-chat answer condition and improved 17/18 target ranks, but rank-1 success remains 0/18.
+2. **Prediction check:** prompt eligibility prediction supported: raw 0/14, chat 8/14 semantic clean sources with correct token form. Alpha-2 prediction is now recorded: if alpha is insufficient, rank movement should improve and some target may reach rank 1; if the alpha-1 effect is merely redistribution, targets need not improve further.
+3. **Earliest unsupported link:** alpha-1 coordinate-rank movement is sufficient to alter the greedy category answer. The required measurement is the paired alpha-2 target rank and top token.
+4. **Validity:** Define invalid as “the prompt does not have a semantic category answer at the scored token.” Task 174 has `P(invalid for directional-rank claim) ≈ 0.05–0.15`; classification: **credible partial reproduction**, not rank-1 replication.
+5. **Highest-information clues:** (1) no-space chat token form produces semantic clean answers; (2) 17/18 ranks improve, median 40→9; (3) C=0 and hook controls succeed, reducing a direct implementation-bug explanation.
+6. **Missing metrics by value:** (1) alpha-2 paired ranks/top tokens; (2) J-lens source/target readout at scored position; (3) explicit C=0 max-logit delta; (4) multi-token category coverage.
+7. **Bugs requiring code changes:** boolean mask conversion was fixed before task 161. Remaining code work is alpha provenance/readout persistence, not a speculative steering rewrite.
+8. **Misconceptions requiring reinterpretation:** “paper operator fails on Qwen” is contradicted for rank movement. “alpha-1 has no rank-1 Qwen swap on this eligible subset” is supported.
+9. **What would change verdict:** an alpha-2 rank-1 target would upgrade this toward a paper-style success; broad degradation at alpha-2 would localize a saturation limit rather than justify a representation change.
+10. **Recommended sequence:** run alpha 2 only on the fixed task-174 chat rows; retain no-space token IDs, layers, candidate selection, and operator. Do not vary band or representation in the same run.

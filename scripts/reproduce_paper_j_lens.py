@@ -75,6 +75,7 @@ def main() -> None:
     parser.add_argument("--limit-targets", type=int)
     parser.add_argument("--prompt-mode", choices=("raw", "chat"), default="raw")
     parser.add_argument("--clean-only", action="store_true")
+    parser.add_argument("--coefficient", type=float, default=1.0)
     parser.add_argument("--source-revision", required=True)
     args = parser.parse_args()
 
@@ -125,7 +126,7 @@ def main() -> None:
             zero.cfg.coeff = 0.0
             zero_logits, zero_calls = next_logits(model, tokenizer, text, zero)
             torch.testing.assert_close(zero_logits, clean_logits, rtol=0, atol=0)
-            vector.cfg.coeff = 1.0
+            vector.cfg.coeff = args.coefficient
             swapped_logits, calls = next_logits(model, tokenizer, text, vector)
             trials.append({
                 "category": category, "prompt": text, "source_token_id": source_id,
@@ -160,7 +161,8 @@ def main() -> None:
         summary = {
             **common,
             "operator": "h + V(swap(V^dagger h) - V^dagger h)",
-            "layers": list(WORKSPACE_LAYERS), "n_trials": len(trials),
+            "coefficient": args.coefficient,
+            "layers":  list(WORKSPACE_LAYERS), "n_trials": len(trials),
             "n_top1": sum(trial["success_top1"] for trial in trials),
             "top1_rate": sum(trial["success_top1"] for trial in trials) / len(trials),
             "median_clean_target_rank": float(torch.tensor([trial["clean_target_rank"] for trial in trials]).median()),
