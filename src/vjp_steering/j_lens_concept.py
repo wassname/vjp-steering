@@ -19,6 +19,7 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
+PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
 
 
@@ -295,9 +296,11 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
 
 @torch.inference_mode()
 def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, negative_prompts,
-                             batch_size, max_length, lens_file=None):
+                             batch_size, max_length, direction="j_gp16", lens_file=None):
     if len(positive_prompts) != len(negative_prompts) or not positive_prompts:
         raise ValueError("persona extraction prompts must be nonempty matched pairs")
+    if direction not in {"j_gp16", "full_residual"}:
+        raise ValueError(f"unknown persona direction {direction}")
     prompts = [*positive_prompts, *negative_prompts]
     prompt_hash = hashlib.sha256(json.dumps(prompts, separators=(",", ":")).encode()).hexdigest()
     hidden, token_records = residuals(model, tokenizer, prompts, layers, batch_size, max_length)
@@ -315,29 +318,34 @@ def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, nega
         del raw
         hs = hidden[layer].to(device)
         difference = hs[:n_pairs].mean(0) - hs[n_pairs:].mean(0)
-        weights, component, errors = gradient_pursuit(difference, dictionary, 16)
-        if not torch.isfinite(component).all() or component.norm() <= 1e-6 * difference.norm():
+        weights, j_component, errors = gradient_pursuit(difference, dictionary, 16)
+        if not torch.isfinite(j_component).all() or j_component.norm() <= 1e-6 * difference.norm():
             raise ValueError(f"zero, nonfinite, or numerically unresolved persona J component at layer {layer}")
+        component = j_component if direction == "j_gp16" else difference
         selected = weights.nonzero().flatten()
-        remainder = difference - component
+        remainder = difference - j_component
         state[layer] = {"v": (component / component.norm()).cpu().unsqueeze(0)}
         layer_meta[str(layer)] = {
             "achieved_nonzero_count": selected.numel(), "selected_ids": selected.tolist(),
             "selected_tokens": [tokenizer.decode([i]) for i in selected.tolist()],
             "weights_unit_dictionary": weights[selected].tolist(), "raw_row_norms": norms[selected].tolist(),
-            "paired_difference_norm": difference.norm().item(), "j_norm": component.norm().item(),
-            "remainder_norm": remainder.norm().item(), "j_remainder_dot": (component @ remainder).item(),
-            "reconstruction_error": (difference - component - remainder).norm().item(),
+            "paired_difference_norm": difference.norm().item(), "j_norm": j_component.norm().item(),
+            "remainder_norm": remainder.norm().item(), "j_remainder_dot": (j_component @ remainder).item(),
+            "reconstruction_error": (difference - j_component - remainder).norm().item(),
             "error_history": errors, "difference_sha256": tensor_hash(difference),
-            "j_sha256": tensor_hash(component), "remainder_sha256": tensor_hash(remainder),
+            "j_sha256": tensor_hash(j_component), "remainder_sha256": tensor_hash(remainder),
+            "applied_direction": direction, "applied_direction_sha256": tensor_hash(component),
+            "full_j_cosine": torch.nn.functional.cosine_similarity(difference, j_component, dim=0).item(),
         }
-        logger.info("persona layer={} j_norm={:.4f} remainder_norm={:.4f} selected={}",
-                    layer, component.norm(), remainder.norm(), selected.numel())
+        logger.info("persona layer={} direction={} applied_norm={:.4f} j_norm={:.4f} remainder_norm={:.4f} selected={}",
+                    layer, direction, component.norm(), j_component.norm(), remainder.norm(), selected.numel())
     vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
     return {"+C": vector, "-C": vector}, {
-        "operator": PERSONA_VERSION, "representation_source": "matched_persona_prompt_difference",
-        "implementation_sha256": implementation_hash(), "source_layers": list(layers),
-        "equation": "h_valid_prompt + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))",
+        "operator": PERSONA_VERSION if direction == "j_gp16" else PERSONA_FULL_RESIDUAL_VERSION,
+        "representation_source": "matched_persona_prompt_difference",
+        "projection": direction, "implementation_sha256": implementation_hash(), "source_layers": list(layers),
+        "equation": "h_valid_prompt + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))"
+                    if direction == "j_gp16" else "h_valid_prompt + C * unit(mean(h_sycophantic) - mean(h_abrasive))",
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
         "n_pairs": n_pairs, "prompt_sha256": prompt_hash,

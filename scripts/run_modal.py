@@ -187,6 +187,7 @@ def experiment(
     coefficients_minus: str = "",
     concept_layers: str = "",
     j_lens_source: str = "concept",
+    persona_direction: str = "j_gp16",
     reuse_extraction_from: str = "",
     verify_extraction: bool = False,
 ):
@@ -210,6 +211,8 @@ def experiment(
         argv.extend(["--concept-layers", concept_layers])
     if j_lens_source != "concept":
         argv.extend(["--j-lens-source", j_lens_source])
+    if persona_direction != "j_gp16":
+        argv.extend(["--persona-direction", persona_direction])
     if profile == "full" or coefficients_plus or coefficients_minus:
         argv.extend([
             "--coefficients-plus", coefficients_plus,

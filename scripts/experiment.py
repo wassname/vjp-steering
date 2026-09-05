@@ -21,7 +21,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
-    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256, PERSONA_VERSION,
+    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256, PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION,
     concept_spec, extract_concept, extract_persona_contrast, implementation_hash,
     prefill_diagnostics, select_concept_layers,
 )
@@ -90,6 +90,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
     parser.add_argument("--j-lens-source", choices=("concept", "persona"), default="concept")
+    parser.add_argument("--persona-direction", choices=("j_gp16", "full_residual"), default="j_gp16")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
     parser.add_argument("--j-lens-diagnostic", action="store_true")
@@ -193,9 +194,10 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
             positive, negative = extraction_prompts(args, tokenizer)
             vectors, metadata = extract_persona_contrast(
                 model, tokenizer, layers, positive_prompts=positive, negative_prompts=negative,
-                batch_size=args.extract_batch_size, max_length=args.max_length, lens_file=args.lens_file,
+                batch_size=args.extract_batch_size, max_length=args.max_length,
+                direction=args.persona_direction, lens_file=args.lens_file,
             )
-            return vectors, metadata, len(positive), "persona-j:" + metadata["prompt_sha256"]
+            return vectors, metadata, len(positive), f"persona-{args.persona_direction}:" + metadata["prompt_sha256"]
         rows, _ = walk.read_cohort(DEV.cohort_size)
         vectors, metadata = extract_concept(
             model, tokenizer, layers, batch_size=args.extract_batch_size,
@@ -252,7 +254,15 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
         )
         if source == "concept" and metadata["spec_sha256"] != concept_spec()[1]:
             raise ValueError("concept extraction specification mismatch")
-        if source == "persona" and (metadata["operator"] != PERSONA_VERSION or metadata["n_pairs"] != args.n_pairs):
+        persona_direction = getattr(args, "persona_direction", "j_gp16")
+        expected_persona_operator = (
+            PERSONA_VERSION if persona_direction == "j_gp16" else PERSONA_FULL_RESIDUAL_VERSION
+        )
+        if source == "persona" and (
+            metadata["operator"] != expected_persona_operator
+            or metadata["projection"] != persona_direction
+            or metadata["n_pairs"] != args.n_pairs
+        ):
             raise ValueError("persona extraction specification mismatch")
         if not (implementation_matches or legacy_reuse):
             raise ValueError("J-lens extraction implementation mismatch")
@@ -625,6 +635,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             "max_length": args.max_length,
             "max_new_tokens": args.max_new_tokens,
             "j_lens_source": args.j_lens_source,
+            "persona_direction": args.persona_direction,
         },
     }
     if manifest["method"] != args.method:
@@ -806,6 +817,8 @@ def modal_stage(
         command.extend(["--concept-layers", args.concept_layers])
     if args.j_lens_source != "concept":
         command.extend(["--j-lens-source", args.j_lens_source])
+    if args.persona_direction != "j_gp16":
+        command.extend(["--persona-direction", args.persona_direction])
     if args.method == "j_lens_concept" and dev:
         coefficients = concept_grid(args)
     if coefficients is not None:
