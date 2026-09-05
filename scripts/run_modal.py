@@ -99,7 +99,19 @@ def run_experiment(method: str, argv: list[str]) -> str:
     finally:
         cache.commit()
     experiment_id = argv[argv.index("--experiment-id") + 1]
-    return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
+    filename = "calibration.json" if "--concept-calibrate" in argv else "manifest.json"
+    return Path(f"/cache/outputs/experiments/{experiment_id}/{filename}").read_text()
+
+
+@app.local_entrypoint()
+def calibrate_concept(
+    experiment_id: str = "j-lens-concept-calibration-v1",
+    source_experiment: str = "j-lens-concept-dev-v1",
+):
+    print(run_experiment.remote("j_lens_concept", [
+        "--concept-calibrate", "--dev", "--experiment-id", experiment_id,
+        "--source-experiment", source_experiment, "--model", MODEL,
+    ])[:500])
 
 
 @app.function(

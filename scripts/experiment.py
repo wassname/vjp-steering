@@ -68,6 +68,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gpu-stage", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--concept-smoke", action="store_true")
+    parser.add_argument("--concept-calibrate", action="store_true")
+    parser.add_argument("--source-experiment", default="j-lens-concept-dev-v1")
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--local", action="store_true")
     parser.add_argument("--experiment-id", default="")
@@ -1096,6 +1098,9 @@ def main() -> None:
     elif args.concept_smoke:
         from concept_checks import smoke
         smoke(args)
+    elif args.concept_calibrate:
+        from concept_checks import calibrate
+        calibrate(args)
     elif args.j_lens_diagnostic:
         j_lens_paper_native_diagnostic(args)
     elif args.gpu_stage:

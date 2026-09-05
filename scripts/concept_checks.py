@@ -1,5 +1,6 @@
 """Focused checks and real tiny-pipeline smoke for concept addition. — PI/OpenAI Codex"""
 
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -14,6 +15,94 @@ from vjp_steering.j_lens_concept import (
     JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
 )
 from vjp_steering.vjp import _activations
+
+
+def calibrate(args):
+    import experiment
+    import walk
+
+    root = experiment.experiment_dir(args.experiment_id)
+    if root.exists():
+        raise ValueError(f"calibration output exists: {root}")
+    source = experiment.experiment_dir(args.source_experiment)
+    model, tokenizer = experiment.load_model(args)
+    vectors, metadata = experiment.load_or_extract(args, source, model, tokenizer)
+    rows, cohort_hash = walk.read_cohort(1)
+    prompts = walk.generation_inputs(tokenizer, rows)
+    encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
+    mask = encoded.attention_mask.bool()
+    observations = []
+    with torch.inference_mode():
+        bare_logits = model(**encoded).logits[:, -1].float()
+    for coefficient in (0., 1., .5, .25, .125, .0625, .03125):
+        before, diagnostics, handles = {}, {}, []
+
+        def before_hook(layer):
+            def capture(_module, _inputs, output):
+                hidden = output[0] if isinstance(output, tuple) else output
+                before[layer] = hidden.detach().clone()
+            return capture
+
+        def after_hook(layer):
+            def capture(_module, _inputs, output):
+                hidden = output[0] if isinstance(output, tuple) else output
+                h = before[layer][mask].float()
+                actual = hidden[mask].float() - h
+                direction = vectors["+C"].stacked[layer]["v"][0].to(h)
+                intended = coefficient * direction
+                raw_norm = h.norm(dim=-1)
+                diagnostics[str(layer)] = {
+                    "hidden_norms": raw_norm.tolist(), "actual_patch_norms": actual.norm(dim=-1).tolist(),
+                    "patch_residual_ratios": (actual.norm(dim=-1) / raw_norm).tolist(),
+                    "actual_direction_coordinates": (actual @ direction).tolist(),
+                    "intended_patch_norm": intended.norm().item(),
+                    "changed_coordinate_fraction": (actual != 0).float().mean().item(),
+                    "relative_quantization_error": ((actual - intended).norm(dim=-1) / max(abs(coefficient), 1e-30)).tolist(),
+                    "dtype": str(hidden.dtype),
+                }
+            return capture
+
+        try:
+            for layer in vectors["+C"].cfg.layers:
+                handles.append(model.model.layers[layer].register_forward_hook(before_hook(layer)))
+            with concept_prefill(model, vectors["+C"], mask, coefficient) as calls:
+                for layer in vectors["+C"].cfg.layers:
+                    handles.append(model.model.layers[layer].register_forward_hook(after_hook(layer)))
+                with torch.inference_mode():
+                    logits = model(**encoded).logits[:, -1].float()
+        finally:
+            for handle in handles:
+                handle.remove()
+        assert all(count == 1 for count in calls.values())
+        if coefficient == 0:
+            torch.testing.assert_close(logits, bare_logits, rtol=0, atol=0)
+        log_probs, bare_log_probs = logits.log_softmax(-1), bare_logits.log_softmax(-1)
+        top = logits[0].topk(10)
+        path = root / f"c{experiment.coefficient_slug(coefficient)}.jsonl"
+        records = experiment.extend_generation(
+            path, rows, prompts, model, tokenizer, args, profile_name="dev", side="+C",
+            coefficient=coefficient, vector=vectors["+C"],
+        )
+        health, reasons = walk.health(tokenizer, [record["text"] for record in records])
+        observation = {
+            "coefficient": coefficient, "path": path.name, "health": health, "breakdown_reasons": reasons,
+            "layers": diagnostics, "hook_calls": calls,
+            "logit_delta_norm": (logits - bare_logits).norm().item(),
+            "kl_bare_to_steered": (bare_log_probs.exp() * (bare_log_probs - log_probs)).sum().item(),
+            "top_token_ids": top.indices.tolist(), "top_tokens": [tokenizer.decode([i]) for i in top.indices.tolist()],
+            "top_logits": top.values.tolist(), "text": records[0]["text"],
+        }
+        observations.append(observation)
+        experiment.atomic_json(root / "calibration.json", {
+            "source_experiment": args.source_experiment, "source_metadata_sha256": hashlib.sha256((source / "extraction/metadata.json").read_bytes()).hexdigest(),
+            "vector_content_sha256": metadata["vector_content_sha256"], "cohort_sha256": cohort_hash,
+            "scenario": rows[0]["scenario"], "prompt": prompts[0], "input_ids": encoded.input_ids.tolist(),
+            "attention_mask": encoded.attention_mask.tolist(), "batch_size": 1,
+            "original_dev_batch_size": 15, "note": "single-prompt rerun; BF16 batch-shape effects may prevent byte-exact original output",
+            "observations": observations,
+        })
+        print(f"CONCEPT_CALIBRATION C={coefficient} logit_delta={observation['logit_delta_norm']:.5g} KL={observation['kl_bare_to_steered']:.5g} health={reasons} text={records[0]['text']!r}", flush=True)
+    print(f"CONCEPT_CALIBRATION_COMPLETE id={args.experiment_id} doses={len(observations)}")
 
 
 def self_test():
