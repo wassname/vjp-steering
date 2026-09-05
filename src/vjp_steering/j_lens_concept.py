@@ -296,7 +296,8 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
 
 @torch.inference_mode()
 def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, negative_prompts,
-                             batch_size, max_length, direction="j_gp16", lens_file=None):
+                             batch_size, max_length, direction="j_gp16",
+                             representation_source="matched_persona_prompt_difference", lens_file=None):
     if len(positive_prompts) != len(negative_prompts) or not positive_prompts:
         raise ValueError("persona extraction prompts must be nonempty matched pairs")
     if direction not in {"j_gp16", "full_residual"}:
@@ -342,7 +343,7 @@ def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, nega
     vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
     return {"+C": vector, "-C": vector}, {
         "operator": PERSONA_VERSION if direction == "j_gp16" else PERSONA_FULL_RESIDUAL_VERSION,
-        "representation_source": "matched_persona_prompt_difference",
+        "representation_source": representation_source,
         "projection": direction, "implementation_sha256": implementation_hash(), "source_layers": list(layers),
         "equation": "h_valid_prompt + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))"
                     if direction == "j_gp16" else "h_valid_prompt + C * unit(mean(h_sycophantic) - mean(h_abrasive))",

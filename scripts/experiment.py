@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 import os
+import random
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,7 @@ import torch
 from loguru import logger
 from steering_lite import Vector
 from steering_lite.data import make_persona_pairs
+from steering_lite.data.personas import load_suffixes
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
@@ -89,7 +91,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
-    parser.add_argument("--j-lens-source", choices=("concept", "persona"), default="concept")
+    parser.add_argument("--j-lens-source", choices=("concept", "persona", "persona_prefill"), default="concept")
     parser.add_argument("--persona-direction", choices=("j_gp16", "full_residual"), default="j_gp16")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
@@ -187,17 +189,45 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
     return positive, negative
 
 
+def persona_prefill_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], list[str]]:
+    entries = load_suffixes(thinking=True)
+    rng = random.Random(0)
+    sampled = rng.sample(entries, min(args.n_pairs, len(entries)))
+    positive, negative = [], []
+    for entry in sampled:
+        user_message = entry["user_msg"]
+        for persona, output in (("sycophantic", positive), ("abrasive", negative)):
+            content = walk.PERSONA_TEMPLATE.format(persona=persona) + "\n\n" + user_message
+            output.append(tokenizer.apply_chat_template(
+                [{"role": "user", "content": content}], tokenize=False,
+                add_generation_prompt=True, enable_thinking=False,
+            ))
+    lengths = tokenizer(positive + negative, add_special_tokens=False)["input_ids"]
+    if max(map(len, lengths)) > args.max_length:
+        raise ValueError("prefill persona extraction prompt truncation")
+    return positive, negative
+
+
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
     if args.method == "j_lens_concept":
         layers = walk.resolve_layers(model, None)
-        if args.j_lens_source == "persona":
-            positive, negative = extraction_prompts(args, tokenizer)
+        if args.j_lens_source in {"persona", "persona_prefill"}:
+            source = args.j_lens_source
+            positive, negative = (
+                extraction_prompts(args, tokenizer) if source == "persona"
+                else persona_prefill_prompts(args, tokenizer)
+            )
+            representation_source = (
+                "matched_persona_prompt_difference" if source == "persona"
+                else "matched_persona_prefill_difference"
+            )
             vectors, metadata = extract_persona_contrast(
                 model, tokenizer, layers, positive_prompts=positive, negative_prompts=negative,
                 batch_size=args.extract_batch_size, max_length=args.max_length,
-                direction=args.persona_direction, lens_file=args.lens_file,
+                direction=args.persona_direction, representation_source=representation_source,
+                lens_file=args.lens_file,
             )
-            return vectors, metadata, len(positive), f"persona-{args.persona_direction}:" + metadata["prompt_sha256"]
+            return vectors, metadata, len(positive), f"{source}-{args.persona_direction}:" + metadata["prompt_sha256"]
         rows, _ = walk.read_cohort(DEV.cohort_size)
         vectors, metadata = extract_concept(
             model, tokenizer, layers, batch_size=args.extract_batch_size,
@@ -244,7 +274,11 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method == "j_lens_concept":
         source = getattr(args, "j_lens_source", "concept")
-        expected_source = "concept_mean100" if source == "concept" else "matched_persona_prompt_difference"
+        expected_source = {
+            "concept": "concept_mean100",
+            "persona": "matched_persona_prompt_difference",
+            "persona_prefill": "matched_persona_prefill_difference",
+        }[source]
         if metadata.get("representation_source", "concept_mean100") != expected_source:
             raise ValueError("J-lens extraction representation source mismatch")
         implementation_matches = metadata["implementation_sha256"] == implementation_hash()
@@ -258,7 +292,7 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
         expected_persona_operator = (
             PERSONA_VERSION if persona_direction == "j_gp16" else PERSONA_FULL_RESIDUAL_VERSION
         )
-        if source == "persona" and (
+        if source in {"persona", "persona_prefill"} and (
             metadata["operator"] != expected_persona_operator
             or metadata["projection"] != persona_direction
             or metadata["n_pairs"] != args.n_pairs
