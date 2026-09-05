@@ -19,7 +19,7 @@ from steering_lite.calibrate import _ngram_rep
 from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from vjp_steering import j_word, vjp_delta, vjp_mlp_up_shrink
+from vjp_steering import j_lens_swap, j_word, vjp_delta, vjp_mlp_up_shrink
 from vjp_steering.vjp import (
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
@@ -52,7 +52,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("J_word", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "j_lens_swap", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb", "mean_diff", "pca"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -348,6 +348,8 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
     batch_size = args.extract_batch_size or args.batch_size
     if args.method == "J_word":
         vector, metadata = j_word(model, tokenizer, layers, lens_file=args.lens_file)
+    elif args.method == "j_lens_swap":
+        vector, metadata = j_lens_swap(model, tokenizer, layers, lens_file=args.lens_file)
     elif args.method == "vjp_mlp_up_shrink":
         vector, metadata = vjp_mlp_up_shrink(
             model,
@@ -504,6 +506,7 @@ def assert_hook_changes_logits(model, tokenizer, vector, prompt: str, coefficien
     restored = model(**encoded).logits
     assert not torch.equal(bare, steered), "steering changed no logits"
     torch.testing.assert_close(bare, restored)
+    logger.info("hook_check changed_logits=true restored_logits=true")
 
 
 def run_rung(args: argparse.Namespace) -> None:

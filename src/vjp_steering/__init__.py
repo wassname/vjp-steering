@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 
 from .vjp import (
+    j_lens_swap,
     j_word,
     vjp_delta,
     vjp_mlp_up_left_right_shrink,
@@ -17,6 +18,7 @@ def steer(model, vector, C: float):
 
 
 __all__ = [
+    "j_lens_swap",
     "j_word",
     "steer",
     "vjp_delta",

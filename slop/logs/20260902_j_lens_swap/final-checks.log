@@ -1,0 +1,9 @@
+COMMAND: uv run python -m compileall -q src scripts
+COMPILEALL_PASS
+COMMAND: uv run python scripts/experiment.py j_lens_swap --self-test
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange reload=exact
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+COMMAND: uv run python scripts/export.py --self-test
+EXPORT_SELF_TEST_PASS
+COMMAND: git diff --check
+GIT_DIFF_CHECK_PASS

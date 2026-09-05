@@ -1,0 +1,79 @@
+COMMAND: uv run python scripts/experiment.py j_lens_swap --dev
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-o9F8Ta44KPk3zkfX0noJ0b
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1352.78it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 876.00it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▌         | 23/426 [00:00<00:01, 205.51it/s]
+[1ALoading weights:  12%|█▏        | 50/426 [00:00<00:01, 236.52it/s]
+[1ALoading weights:  17%|█▋        | 74/426 [00:00<00:01, 229.80it/s]
+[1ALoading weights:  24%|██▍       | 102/426 [00:00<00:01, 243.59it/s]
+[1ALoading weights:  30%|██▉       | 127/426 [00:00<00:01, 241.98it/s]
+[1ALoading weights:  36%|███▌      | 152/426 [00:00<00:01, 243.75it/s]
+[1ALoading weights:  42%|████▏     | 177/426 [00:00<00:01, 231.33it/s]
+[1ALoading weights:  47%|████▋     | 201/426 [00:00<00:00, 232.79it/s]
+[1ALoading weights:  54%|█████▍    | 230/426 [00:00<00:00, 247.07it/s]
+[1ALoading weights:  60%|█████▉    | 255/426 [00:01<00:00, 247.00it/s]
+[1ALoading weights:  67%|██████▋   | 286/426 [00:01<00:00, 265.50it/s]
+[1ALoading weights:  73%|███████▎  | 313/426 [00:01<00:00, 248.62it/s]
+[1ALoading weights:  80%|███████▉  | 339/426 [00:01<00:00, 241.96it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 303.49it/s]
+2026-09-04 23:09:40.631 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:09:57.147 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:10:13.743 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:10:30.532 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:10:47.572 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:11:04.231 | INFO     | walk:generate:462 - generation 15/15
+2026-09-04 23:11:06.452 | INFO     | __main__:gpu_stage:584 - GPU_STAGE_COMPLETE experiment=j-lens-swap-formative-v1 profile=dev cells=12
+EXPERIMENT_GPU_COMPLETE id=j-lens-swap-formative-v1 profile=dev cells=12
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-o9F8Ta44KPk3zkfX0noJ0b
+✓ Finished downloading files to local!
+2026-09-05 07:11:20.822 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-swap-formative-v1 profile=dev cells=12 demo_sides=180
+2026-09-05 07:11:21.268 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 07:11:21.691 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 07:11:22.168 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 07:11:22.753 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 07:11:23.218 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 07:11:23.652 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 07:11:24.070 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 07:11:24.475 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 07:11:24.846 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 07:11:25.199 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 07:11:25.542 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 07:11:25.786 | INFO     | __main__:main:670 - CACHE_CHECK required=72 cached=57 missing=15 API_calls=15
+2026-09-05 07:11:33.461 | INFO     | __main__:run:632 - judge progress=15/15
+2026-09-05 07:11:33.940 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 07:11:34.417 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 07:11:34.967 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 07:11:35.486 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 07:11:35.953 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 07:11:36.402 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 07:11:36.855 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 07:11:37.307 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 07:11:37.694 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 07:11:38.071 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 07:11:38.452 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 07:11:38.724 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=72 missing=0
+2026-09-05 07:11:40.946 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-swap-formative-v1 profile=dev cells=12 demo_sides=180
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-swap-formative-v1 profile=dev arms=12 scenarios=180
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:680: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=j-lens-swap-formative-v1 profile=dev rows=12 output=/workspace/2026/jspace/j-steer_pub/results/dev/j-lens-swap-formative-v1

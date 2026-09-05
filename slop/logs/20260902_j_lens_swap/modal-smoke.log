@@ -1,0 +1,117 @@
+COMMAND: uv run modal run scripts/run_modal.py::smoke_j_lens_swap
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-kAYRJ45gVZMBgbfeCBaEym
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+└── 🔨 Created function run_experiment.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 993.17it/s]
+00:15:04 | stage=load model=Qwen/Qwen3.5-4B device=cuda dtype=bfloat16
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 547.92it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 10/426 [00:00<00:04, 87.61it/s]
+[1ALoading weights:   6%|▋         | 27/426 [00:00<00:03, 129.57it/s]
+[1ALoading weights:  10%|▉         | 41/426 [00:00<00:04, 94.55it/s]
+[1ALoading weights:  12%|█▏        | 52/426 [00:00<00:04, 84.67it/s]
+[1ALoading weights:  15%|█▍        | 62/426 [00:00<00:04, 81.71it/s]
+[1ALoading weights:  17%|█▋        | 71/426 [00:00<00:04, 74.40it/s]
+[1ALoading weights:  19%|█▉        | 81/426 [00:00<00:04, 77.26it/s]
+[1ALoading weights:  21%|██        | 89/426 [00:01<00:04, 77.70it/s]
+[1ALoading weights:  23%|██▎       | 97/426 [00:01<00:04, 73.08it/s]
+[1ALoading weights:  25%|██▍       | 105/426 [00:01<00:04, 72.28it/s]
+[1ALoading weights:  27%|██▋       | 116/426 [00:01<00:03, 81.34it/s]
+[1ALoading weights:  31%|███       | 133/426 [00:01<00:02, 103.26it/s]
+[1ALoading weights:  35%|███▍      | 149/426 [00:01<00:02, 118.30it/s]
+[1ALoading weights:  38%|███▊      | 162/426 [00:01<00:02, 97.04it/s]
+[1ALoading weights:  41%|████      | 173/426 [00:01<00:02, 96.79it/s]
+[1ALoading weights:  43%|████▎     | 184/426 [00:02<00:02, 95.01it/s]
+[1ALoading weights:  46%|████▌     | 196/426 [00:02<00:02, 97.45it/s]
+[1ALoading weights:  49%|████▊     | 207/426 [00:02<00:02, 94.21it/s]
+[1ALoading weights:  51%|█████     | 217/426 [00:02<00:02, 94.40it/s]
+[1ALoading weights:  53%|█████▎    | 227/426 [00:02<00:02, 93.29it/s]
+[1ALoading weights:  57%|█████▋    | 243/426 [00:02<00:01, 98.86it/s]
+[1ALoading weights:  60%|█████▉    | 255/426 [00:02<00:01, 101.93it/s]
+[1ALoading weights:  62%|██████▏   | 266/426 [00:02<00:01, 96.52it/s]
+[1ALoading weights:  66%|██████▌   | 280/426 [00:03<00:01, 104.97it/s]
+[1ALoading weights:  69%|██████▉   | 296/426 [00:03<00:01, 110.17it/s]
+[1ALoading weights:  72%|███████▏  | 308/426 [00:03<00:01, 104.65it/s]
+[1ALoading weights:  75%|███████▍  | 319/426 [00:03<00:01, 104.35it/s]
+[1ALoading weights:  77%|███████▋  | 330/426 [00:03<00:00, 101.70it/s]
+[1ALoading weights:  81%|████████  | 344/426 [00:03<00:00, 110.74it/s]
+[1ALoading weights:  84%|████████▍ | 359/426 [00:03<00:00, 115.68it/s]Loading weights: 100%|██████████| 426/426 [00:03<00:00, 111.93it/s]
+00:15:14 | resolved method=j_lens_swap seed=0 C=1.0 cohort=2/100 layers=(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24) target=None pairs=2 batch=2 tokens=8
+00:15:14 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+00:15:14 | Persona-branching pairs: n=2 from 1 persona pairs
+00:15:14 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+00:15:14 | stage=extract
+00:15:16 | j_lens_swap lens=/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt n_prompts=1000 source=abrasive id=90474 target=flattering id=80238 layers=(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+00:15:16 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+00:15:19 | hook_check changed_logits=true restored_logits=true
+00:15:20 | hook_check changed_logits=true restored_logits=true
+00:15:20 | stage=generate side=bare
+00:15:24 | generation 2/2
+00:15:24 | stage=generate side=+C
+00:15:24 | generation 2/2
+00:15:24 | stage=generate side=-C
+00:15:24 | generation 2/2
+00:15:24 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 7.0} breakdown=['unfinished']
+00:15:24 | === generation output side=bare ===
+The decomposition should isolate specific IP assets and
+=== end output ===
+00:15:24 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 7.0} breakdown=['unfinished']
+00:15:24 | === generation output side=+C ===
+The decomposition should isolate liabilities by specific IP
+=== end output ===
+00:15:24 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 2, 'max_repetition': 0.5714285714285714, 'mean_words': 8.0} breakdown=['unfinished', 'repetition']
+00:15:24 | === generation output side=-C ===
+abrasive abrasive abrasive abrasive abrasive abrasive abrasive abrasive
+=== end output ===
+00:15:24 | RESULT       method  seed    C       bare_reasons    +C_reasons      -C_reasons      output
+00:15:24 | RESULT       j_lens_swap     0       1.0     ['unfinished']  ['unfinished']  ['unfinished', 'repetition']    /repo/outputs/run_20260905T001504_j_lens_swap_s0_c1p0
+J_LENS_SWAP_MODAL_SMOKE_PASS
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-kAYRJ45gVZMBgbfeCBaEym

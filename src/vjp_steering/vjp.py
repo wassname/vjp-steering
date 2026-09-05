@@ -18,7 +18,7 @@ import torch
 from loguru import logger
 from jaxtyping import Bool, Float, Int
 from steering_lite import Vector, VjpDeltaC
-from steering_lite.config import register, register_config
+from steering_lite.config import SteeringConfig, register, register_config
 from steering_lite.variants.vjp_delta import VjpDelta
 
 
@@ -32,6 +32,39 @@ class JWordC(VjpDeltaC):
 class JWord:
     name = "J_word"
     apply = staticmethod(VjpDelta.apply)
+
+
+@register_config
+@dataclass
+class JLensSwapC(SteeringConfig):
+    method: str = "j_lens_swap"
+    source_token: str = "abrasive"
+    target_token: str = "flattering"
+
+
+def _swap_lens_coordinates(
+    hidden: Float[torch.Tensor, "... d"],
+    basis: Float[torch.Tensor, "two d"],
+    dual: Float[torch.Tensor, "two d"],
+    alpha: float,
+) -> Float[torch.Tensor, "... d"]:
+    coordinates = torch.einsum("...d,kd->...k", hidden.float(), dual.float())
+    delta = torch.einsum("...k,kd->...d", coordinates.flip(-1) - coordinates, basis.float())
+    return hidden + (alpha * delta).to(hidden)
+
+
+@register
+class JLensSwap:
+    name = "j_lens_swap"
+
+    @staticmethod
+    def apply(_mod, _x, y, shared, _stacked, cfg: JLensSwapC):
+        return _swap_lens_coordinates(
+            y,
+            shared["basis"].to(y.device),
+            shared["dual"].to(y.device),
+            cfg.coeff,
+        )
 
 
 @register_config
@@ -75,6 +108,8 @@ J_WORD_LENS_REVISION = "qwen-n1000"
 J_WORD_LENS_FILE = "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
 J_WORD_POSITIVE = "sycophantic"
 J_WORD_NEGATIVE = "abrasive"
+J_LENS_SWAP_SOURCE = "abrasive"
+J_LENS_SWAP_TARGET = "flattering"
 
 
 def _blocks(model):
@@ -347,14 +382,7 @@ def _class_prompt_vjp_scale(
     return prompt_gradients, activation_scale
 
 
-def j_word(
-    model,
-    tokenizer,
-    layers: tuple[int, ...],
-    *,
-    lens_file: Path | None = None,
-) -> tuple[Vector, dict[str, object]]:
-    """Steer the persona-word contrast through a cached full Jacobian lens."""
+def _load_j_lens(model, layers: tuple[int, ...], lens_file: Path | None):
     if lens_file is None:
         from huggingface_hub import hf_hub_download
 
@@ -369,7 +397,18 @@ def j_word(
     assert set(checkpoint) == {"J", "n_prompts", "source_layers", "d_model"}
     assert checkpoint["d_model"] == model.config.hidden_size
     assert set(layers) <= set(checkpoint["source_layers"])
+    return lens_file, checkpoint
 
+
+def j_word(
+    model,
+    tokenizer,
+    layers: tuple[int, ...],
+    *,
+    lens_file: Path | None = None,
+) -> tuple[Vector, dict[str, object]]:
+    """Steer the persona-word contrast through a cached full Jacobian lens."""
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
     unembedding = model.lm_head.weight
 
     def word_embedding(word: str) -> tuple[torch.Tensor, list[int]]:
@@ -404,6 +443,76 @@ def j_word(
         "cotangent": f"{J_WORD_POSITIVE} - {J_WORD_NEGATIVE}",
         "cotangent_norm": cotangent.norm().item(),
         "layer_norms": {str(layer): direction.norm().item() for layer, direction in directions.items()},
+    }
+
+
+def j_lens_swap(
+    model,
+    tokenizer,
+    layers: tuple[int, ...],
+    *,
+    lens_file: Path | None = None,
+    source_token: str = J_LENS_SWAP_SOURCE,
+    target_token: str = J_LENS_SWAP_TARGET,
+) -> tuple[Vector, dict[str, object]]:
+    """Swap two single-token coordinates using the paper's J-lens patch."""
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+
+    def single_token_id(word: str) -> int:
+        token_ids = tokenizer(" " + word, add_special_tokens=False).input_ids
+        if len(token_ids) != 1:
+            raise ValueError(f"J-lens swap needs one token for {word!r}, got {token_ids}")
+        return token_ids[0]
+
+    source_id = single_token_id(source_token)
+    target_id = single_token_id(target_token)
+    unembedding = model.lm_head.weight.detach().float().cpu()
+    layer_state = {}
+    layer_metadata = {}
+    for layer in layers:
+        jacobian = checkpoint["J"][layer].float()
+        basis = torch.stack((unembedding[source_id] @ jacobian, unembedding[target_id] @ jacobian))
+        singular_values = torch.linalg.svdvals(basis)
+        if singular_values[-1] <= 0:
+            raise ValueError(f"rank-deficient J-lens swap basis at layer {layer}")
+        dual = torch.linalg.pinv(basis.T)
+        layer_state[layer] = {"basis": basis, "dual": dual}
+        layer_metadata[str(layer)] = {
+            "basis_norms": basis.norm(dim=1).tolist(),
+            "singular_values": singular_values.tolist(),
+            "condition_number": (singular_values[0] / singular_values[-1]).item(),
+        }
+
+    logger.info(
+        "j_lens_swap lens={} n_prompts={} source={} id={} target={} id={} layers={}",
+        lens_file,
+        checkpoint["n_prompts"],
+        source_token,
+        source_id,
+        target_token,
+        target_id,
+        layers,
+    )
+    vector = Vector(
+        JLensSwapC(layers=layers, source_token=source_token, target_token=target_token),
+        layer_state,
+        {layer: {} for layer in layers},
+    )
+    return vector, {
+        "paper_equation": "h + alpha V(swap(V^dagger h) - V^dagger h)",
+        "normalization": "none",
+        "token_scope": "all_positions",
+        "source_layers": list(layers),
+        "source_token": source_token,
+        "source_token_id": source_id,
+        "source_token_text": tokenizer.decode([source_id]),
+        "target_token": target_token,
+        "target_token_id": target_id,
+        "target_token_text": tokenizer.decode([target_id]),
+        "lens_file": str(lens_file),
+        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "lens_n_prompts": checkpoint["n_prompts"],
+        "layers": layer_metadata,
     }
 
 

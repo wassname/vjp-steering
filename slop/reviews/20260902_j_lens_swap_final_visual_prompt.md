@@ -1,0 +1,1 @@
+Read results/dev/j-lens-swap-formative-v1/plot.png only. Fresh-eyes visual check of the final render: report any overlap, clipping, confusing legend/shape encoding, or unclear axis label. If none, say "No visual defect found." Do not edit. End with model identity.

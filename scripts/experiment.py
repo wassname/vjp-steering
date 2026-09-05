@@ -28,6 +28,11 @@ from vjp_steering.experiment import (
     manifest_path,
 )
 from vjp_steering.vjp import (
+    J_LENS_SWAP_SOURCE,
+    J_LENS_SWAP_TARGET,
+    JLensSwapC,
+    _swap_lens_coordinates,
+    j_lens_swap,
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
     vjp_mlp_up_shared_last_token_eb,
@@ -46,6 +51,8 @@ SEARCH_LOG_TOLERANCE = math.log(2.0) / 6.0
 GRID_LOW = 0.66
 GRID_HIGH = 1.33
 GRID_POINTS = 9
+J_LENS_SWAP_POSITIVE_GRID = (0.5, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2.0)
+J_LENS_SWAP_NEGATIVE_GRID = (0.5, 1.0, 2.0)
 
 
 def parse_args() -> argparse.Namespace:
@@ -153,6 +160,31 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
     return positive, negative
 
 
+def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
+    if args.method == "j_lens_swap":
+        layers = walk.resolve_layers(model, None)
+        vector, metadata = j_lens_swap(model, tokenizer, layers)
+        return {
+            "+C": vector,
+            "-C": vector,
+        }, metadata, 0, f"fixed_tokens:{J_LENS_SWAP_SOURCE}-{J_LENS_SWAP_TARGET}"
+
+    positive, negative = extraction_prompts(args, tokenizer)
+    vectors, metadata = EXTRACTORS[args.method](
+        model,
+        tokenizer,
+        positive,
+        negative,
+        batch_size=args.extract_batch_size,
+        max_length=args.max_length,
+        skip_first=16,
+    )
+    sample_id = "persona:" + hashlib.sha256(
+        json.dumps([positive, negative], separators=(",", ":")).encode()
+    ).hexdigest()[:16]
+    return vectors, metadata, len(positive), sample_id
+
+
 def load_or_extract(
     args: argparse.Namespace,
     root: Path,
@@ -169,17 +201,8 @@ def load_or_extract(
             raise ValueError("saved extraction vector hash mismatch")
         return vectors, metadata
 
-    positive, negative = extraction_prompts(args, tokenizer)
     started = time.monotonic()
-    vectors, extraction_metadata = EXTRACTORS[args.method](
-        model,
-        tokenizer,
-        positive,
-        negative,
-        batch_size=args.extract_batch_size,
-        max_length=args.max_length,
-        skip_first=16,
-    )
+    vectors, extraction_metadata, n_pairs, sample_id = extract_vectors(args, model, tokenizer)
     paths["+C"].parent.mkdir(parents=True, exist_ok=True)
     for side, vector in vectors.items():
         vector.cfg.dtype = getattr(torch, args.dtype)
@@ -188,10 +211,8 @@ def load_or_extract(
         "method": args.method,
         "model": args.model,
         "dtype": args.dtype,
-        "n_pairs": len(positive),
-        "sample_id": "persona:" + hashlib.sha256(
-            json.dumps([positive, negative], separators=(",", ":")).encode()
-        ).hexdigest()[:16],
+        "n_pairs": n_pairs,
+        "sample_id": sample_id,
         "seconds": time.monotonic() - started,
         "vector_files": {side: str(path.relative_to(root)) for side, path in paths.items()},
         "vector_content_sha256": {side: vector_sha256(vector) for side, vector in vectors.items()},
@@ -214,17 +235,8 @@ def extract_only(args: argparse.Namespace) -> None:
 def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) -> None:
     metadata_path = root / "extraction" / "metadata.json"
     existing = json.loads(metadata_path.read_text())
-    positive, negative = extraction_prompts(args, tokenizer)
     started = time.monotonic()
-    vectors, extraction_metadata = EXTRACTORS[args.method](
-        model,
-        tokenizer,
-        positive,
-        negative,
-        batch_size=args.extract_batch_size,
-        max_length=args.max_length,
-        skip_first=16,
-    )
+    vectors, extraction_metadata, n_pairs, _ = extract_vectors(args, model, tokenizer)
     hashes = {side: vector_sha256(vector) for side, vector in vectors.items()}
     if hashes != existing["vector_content_sha256"]:
         raise ValueError("verification extraction differs from the generation vectors")
@@ -232,7 +244,7 @@ def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) ->
         "status": "FORMATIVE_EXTRACTION_VERIFICATION",
         "command": f"just experiment {args.method} --verify-extraction",
         "model": args.model,
-        "n_pairs": len(positive),
+        "n_pairs": n_pairs,
         "seconds": time.monotonic() - started,
         "hashes_match_generation": True,
         "vector_content_sha256": hashes,
@@ -243,7 +255,7 @@ def verify_extraction(args: argparse.Namespace, root: Path, model, tokenizer) ->
     logger.info(
         "EXTRACTION_VERIFICATION_COMPLETE experiment={} n_pairs={} hashes_match=true path={}",
         args.experiment_id,
-        len(positive),
+        n_pairs,
         path,
     )
 
@@ -313,6 +325,19 @@ def extend_generation(
     return combined
 
 
+def generation_health(args: argparse.Namespace, tokenizer, answers: list[str]) -> tuple[dict, list[str]]:
+    stats, reasons = walk.health(tokenizer, answers)
+    if args.method == "j_lens_swap":
+        leaks = sum(
+            any(word in answer.lower() for word in (J_LENS_SWAP_SOURCE, J_LENS_SWAP_TARGET))
+            for answer in answers
+        )
+        stats["lens_token_leaks"] = leaks
+        if leaks:
+            reasons.append("lens_token_leak")
+    return stats, reasons
+
+
 def health_margin(stats: dict[str, float | int]) -> float:
     answers = int(stats["answers"])
     return min(
@@ -350,7 +375,7 @@ def search_boundary(
             coefficient=coefficient,
             vector=vector,
         )
-        stats, reasons = walk.health(tokenizer, [record["text"] for record in records])
+        stats, reasons = generation_health(args, tokenizer, [record["text"] for record in records])
         entry = {
             "coefficient": coefficient,
             "health_margin": health_margin(stats),
@@ -446,6 +471,8 @@ def completed_profile_cell_count(
             entry = manifest.get("cells", {}).get(side, {}).get(f"{coefficient:.12g}")
             if not entry or len(read_jsonl(root / entry["path"])) < limit:
                 return None
+            if args.method == "j_lens_swap" and "lens_token_leaks" not in entry["health"]:
+                return None
             count += 1
     return count
 
@@ -456,7 +483,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
     root = experiment_dir(args.experiment_id)
     root.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(manifest_path(args.experiment_id).read_text()) if manifest_path(args.experiment_id).exists() else {
-        "schema": "mlp_up_left_right_experiment_v1",
+        "schema": "j_lens_swap_experiment_v1" if args.method == "j_lens_swap" else "mlp_up_left_right_experiment_v1",
         "experiment_id": args.experiment_id,
         "method": args.method,
         "date": time.strftime("%Y%m%d"),
@@ -473,8 +500,17 @@ def gpu_stage(args: argparse.Namespace) -> None:
     }
     if manifest["method"] != args.method:
         raise ValueError("experiment id belongs to another method")
+    if args.method == "j_lens_swap" and manifest["schema"] == "mlp_up_left_right_experiment_v1":
+        manifest["schema"] = "j_lens_swap_experiment_v1"
+        atomic_json(manifest_path(args.experiment_id), manifest)
     if args.dev and "boundaries" in manifest:
-        expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
+        if args.method == "j_lens_swap":
+            expanded_grid = {
+                "+C": list(J_LENS_SWAP_POSITIVE_GRID),
+                "-C": list(J_LENS_SWAP_NEGATIVE_GRID),
+            }
+        else:
+            expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
         if manifest["grid"] != expanded_grid:
             manifest["grid"] = expanded_grid
             atomic_json(manifest_path(args.experiment_id), manifest)
@@ -510,12 +546,23 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if "grid" not in manifest:
         if not args.dev:
             raise RuntimeError("full mode requires its automatic dev stage first")
-        boundaries = {
-            side: search_boundary(side, root, rows, prompts, model, tokenizer, vectors[side], args)
-            for side in ("+C", "-C")
-        }
+        if args.method == "j_lens_swap":
+            boundaries = {
+                "+C": {"meaning": "paper swap alpha", "trace": []},
+                "-C": {"meaning": "negative-alpha extrapolation control", "trace": []},
+            }
+            grid = {
+                "+C": list(J_LENS_SWAP_POSITIVE_GRID),
+                "-C": list(J_LENS_SWAP_NEGATIVE_GRID),
+            }
+        else:
+            boundaries = {
+                side: search_boundary(side, root, rows, prompts, model, tokenizer, vectors[side], args)
+                for side in ("+C", "-C")
+            }
+            grid = {side: dev_grid(boundaries[side]) for side in ("+C", "-C")}
         manifest["boundaries"] = boundaries
-        manifest["grid"] = {side: dev_grid(boundaries[side]) for side in ("+C", "-C")}
+        manifest["grid"] = grid
         manifest["extraction"] = extraction
         manifest["cohort_sha256"] = cohort_sha256
         atomic_json(manifest_path(args.experiment_id), manifest)
@@ -540,7 +587,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 coefficient=coefficient,
                 vector=vectors[side],
             )
-            stats, reasons = walk.health(tokenizer, [record["text"] for record in records])
+            stats, reasons = generation_health(args, tokenizer, [record["text"] for record in records])
             manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = {
                 "coefficient": coefficient,
                 "path": str(cell_path(root, side, coefficient).relative_to(root)),
@@ -710,6 +757,22 @@ def local_pipeline(args: argparse.Namespace) -> None:
 def self_test() -> None:
     from judge import required_cells
 
+    generator = torch.Generator().manual_seed(0)
+    basis = torch.randn(2, 7, generator=generator)
+    dual = torch.linalg.pinv(basis.T)
+    hidden = torch.randn(3, 5, 7, generator=generator)
+    torch.testing.assert_close(_swap_lens_coordinates(hidden, basis, dual, 0), hidden)
+    patched = _swap_lens_coordinates(hidden, basis, dual, 1)
+    coordinates = torch.einsum("...d,kd->...k", hidden, dual)
+    patched_coordinates = torch.einsum("...d,kd->...k", patched, dual)
+    torch.testing.assert_close(patched_coordinates, coordinates.flip(-1), atol=1e-5, rtol=1e-5)
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "swap.safetensors"
+        vector = Vector(JLensSwapC(layers=(1,)), {1: {"basis": basis, "dual": dual}}, {1: {}})
+        vector.save(str(path))
+        assert vector_sha256(Vector.load(str(path))) == vector_sha256(vector)
+    print("J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange reload=exact")
+
     assert len(local_grid(1.0)) == GRID_POINTS
     assert math.isclose(local_grid(1.0)[0], GRID_LOW)
     assert math.isclose(local_grid(1.0)[-1], GRID_HIGH)
@@ -759,7 +822,7 @@ def self_test() -> None:
                 path = root / f"{side}_{coefficient}.jsonl"
                 path.write_text("{}\n" * DEV.cohort_size)
                 manifest["cells"][side][f"{coefficient:.12g}"] = {"path": path.name}
-        args = SimpleNamespace(dev=True, coefficients_plus="", coefficients_minus="")
+        args = SimpleNamespace(method="test", dev=True, coefficients_plus="", coefficients_minus="")
         assert completed_profile_cell_count(args, manifest, root, "dev", DEV.cohort_size) == GRID_POINTS * 2
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 

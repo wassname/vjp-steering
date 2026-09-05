@@ -164,7 +164,7 @@ def experiment(
     cell_count = (
         len([value for value in coefficients_plus.split(",") if value])
         + len([value for value in coefficients_minus.split(",") if value])
-        if profile == "full" else 18
+        if profile == "full" else (12 if method == "j_lens_swap" else 18)
     )
     print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={cell_count}")
 
@@ -225,10 +225,21 @@ def main(
 
 
 @app.local_entrypoint()
+def smoke_j_lens_swap():
+    command = (
+        "j_lens_swap --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
+        " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS"
+    )
+    print(run.remote(command.split()) or "J_LENS_SWAP_MODAL_SMOKE_PASS")
+
+
+@app.local_entrypoint()
 def smoke():
-    """Run both new methods on the real model through the deployed container path."""
+    """Run the research methods on the real model through the deployed container path."""
     commands = (
         "J_word --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
+        " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS",
+        "j_lens_swap --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
         " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS",
         "vjp_mlp_up_shrink --seed 0 --coefficient 1 --n-pairs 2 --batch-size 2 --extract-batch-size 2"
         " --max-length 128 --max-new-tokens 8 --limit 2 --status SMOKE_PASS",

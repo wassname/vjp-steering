@@ -53,7 +53,24 @@ LABELS = {
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
     "vjp_mlp_up_shared_last_token_eb": "shared-pair last-token VJP",
+    "j_lens_swap": "J-lens coordinate swap",
 }
+
+
+def series_label(method: str, side: str) -> str:
+    if method == "j_lens_swap":
+        return "positive alpha (paper swap)" if side == "+C" else "negative alpha control"
+    return side
+
+
+def annotation_angles(method: str, side: str) -> tuple[int, ...]:
+    if method == "j_lens_swap":
+        return (-90,) if side == "+C" else (90,)
+    if method == "vjp_mlp_up_left_right_shrink":
+        return (0, -45, 45, -90, 90, -135, 135, 180)
+    return (90, 45, 135, 0, 180, -45, -135, -90)
+
+
 COHORT_FIELDS = (
     "model",
     "tokenizer",
@@ -273,9 +290,11 @@ def plot(
         "vjp_mlp_up_left_right_shrink": "#6f4aa8",
         "vjp_mlp_up_shared_eb": "#a64d79",
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
+        "j_lens_swap": "#56b4e9",
     }
     displayed_endpoints = {}
     unselected_sides = {}
+    is_j_lens_swap = methods == ("j_lens_swap",)
     for method in (method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
@@ -304,18 +323,28 @@ def plot(
                     displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
                 else:
                     unselected_sides[method, side] = (points[0]["effect"], points[0]["off_axis_perturbation"])
+                marker_symbol = "diamond" if is_j_lens_swap and side == "-C" else "circle"
+                trace_color = (
+                    "#0072b2" if side == "+C" else "#d55e00"
+                ) if is_j_lens_swap else colors[method]
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
-                    mode="lines+markers", line={"color": colors[method], "width": 3},
+                    mode="lines+markers",
+                    name=series_label(method, side),
+                    line={
+                        "color": trace_color,
+                        "width": 3,
+                        "dash": "dot" if is_j_lens_swap and side == "-C" else "solid",
+                    },
                     marker={
-                        "color": colors[method],
+                        "color": trace_color,
                         "size": [0, *(12 if index == endpoint_index else 8 for index in range(len(points)))],
                         "symbol": [
-                            "circle",
+                            f"{marker_symbol}-open",
                             *(
                                 "x" if index == endpoint_index
-                                else "circle" if points[index]["accepted" if include_rejected else "admissible"]
-                                else "circle-open"
+                                else marker_symbol if points[index]["accepted" if include_rejected else "admissible"]
+                                else f"{marker_symbol}-open"
                                 for index in range(len(points))
                             ),
                         ],
@@ -327,8 +356,8 @@ def plot(
                             "" if row["accepted" if include_rejected else "admissible"] else " (rejected)"
                         ) for row in points),
                     ],
-                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
-                    showlegend=False,
+                    hovertemplate=f"{LABELS[method]} {series_label(method, side)}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+                    showlegend=is_j_lens_swap,
                 ))
                 series = [(0.0, 0.0), *((row["effect"], row["off_axis_perturbation"]) for row in points)]
                 for start, end in zip(series, series[1:]):
@@ -337,8 +366,8 @@ def plot(
                         for fraction in (0.25, 0.5, 0.75, 1.0)
                     )
 
-    figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
-    figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
+    figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "star"}, hoverinfo="skip", showlegend=False))
+    figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=-14, font={"color": "#333333", "size": 14})
     if methods == METHODS:
         labels = [
             {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
@@ -355,15 +384,14 @@ def plot(
         )
     else:
         labels = []
-        label_methods = tuple(method for method in methods if method != "random")
+        label_methods = () if is_j_lens_swap else tuple(method for method in methods if method != "random")
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
             "y": displayed_endpoints[method, side][1],
-            "text": f"{LABELS[method]} {side}",
+            "text": f"{LABELS[method]} {series_label(method, side)}",
             "color": colors[method],
-            "angles": (0, -45, 45, -90, 90, -135, 135, 180)
-            if method == "vjp_mlp_up_left_right_shrink" else (90, 45, 135, 0, 180, -45, -135, -90),
+            "angles": annotation_angles(method, side),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -373,9 +401,13 @@ def plot(
         {
             "x": unselected_sides[method, side][0],
             "y": unselected_sides[method, side][1],
-            "text": f"{LABELS[method]} {side} (no accepted dose)",
+            "text": (
+                f"{series_label(method, side)}: no accepted dose"
+                if method == "j_lens_swap"
+                else f"{LABELS[method]} {series_label(method, side)} (no accepted dose)"
+            ),
             "color": colors[method],
-            "angles": (0, -45, 45, -90, 90, -135, 135, 180),
+            "angles": annotation_angles(method, side),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -393,14 +425,69 @@ def plot(
             align="center", font={"color": "#666666", "size": 14},
         )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
-    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
-    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
+    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", xshift=-8, font={"color": "#287a4d", "size": 14})
+    if not is_j_lens_swap:
+        figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
+    if is_j_lens_swap:
+        for side in ("+C", "-C"):
+            side_points = [row for row in means if row["method"] == "j_lens_swap" and row["side"] == side]
+            groups = {}
+            for row in side_points:
+                groups.setdefault((row["effect"], row["off_axis_perturbation"]), []).append(row["C"])
+            for (effect, damage), coefficients in groups.items():
+                annotation_color = "#0072b2" if side == "+C" else "#d55e00"
+                if len(coefficients) > 1:
+                    alpha_range = (
+                        f"{min(coefficients):g}-{max(coefficients):g}"
+                        if side == "+C" else f"-{min(coefficients):g} to -{max(coefficients):g}"
+                    )
+                    figure.add_annotation(
+                        x=effect,
+                        y=damage,
+                        text=f"{len(coefficients)} identical doses: alpha={alpha_range}",
+                        showarrow=False,
+                        xanchor="left",
+                        xshift=12,
+                        yshift=-20,
+                        font={"color": annotation_color, "size": 12},
+                    )
+                elif side == "+C":
+                    coefficient = coefficients[0]
+                    figure.add_annotation(
+                        x=effect,
+                        y=damage,
+                        text=f"alpha={coefficient:g}",
+                        showarrow=False,
+                        xanchor="right" if coefficient == 1 else "left" if coefficient == 1.125 else "center",
+                        xshift=-10 if coefficient == 1 else 10 if coefficient == 1.125 else 0,
+                        yshift=0 if coefficient in {1, 1.125} else -18,
+                        bgcolor="rgba(255,255,255,0.9)",
+                        borderpad=1,
+                        font={"color": annotation_color, "size": 11},
+                    )
     figure.update_layout(
-        title={"text": title, "x": 0.5, "xanchor": "center"},
+        title={"text": title, "x": 0.5, "xanchor": "center", "y": 0.98, "yanchor": "top"},
         height=590, margin=margin,
-        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
+        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=is_j_lens_swap,
+        legend={
+            "x": 0.99,
+            "y": 0.92,
+            "xanchor": "right",
+            "yanchor": "top",
+            "bgcolor": "rgba(255,255,255,0.8)",
+        },
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
-        yaxis={"title": "off-axis damage (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
+        yaxis={
+            "title": (
+                "|off-axis change from bare| (better upward)"
+                if is_j_lens_swap else "off-axis damage (lower is better)"
+            ),
+            "range": y_range,
+            "showline": True,
+            "linecolor": "#333333",
+            "gridcolor": "#e5e5e5",
+            "zeroline": False,
+        },
     )
     return figure
 
@@ -641,9 +728,18 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         " No accepted endpoint was confirmed for " + ", ".join(unconfirmed) + "."
         if unconfirmed else ""
     )
+    parameter_note = (
+        " For this method, +C denotes positive alpha (the paper swap) and -C denotes the negative-alpha control. "
+        "Six +C doses (alpha=1.25-2) share one collapsed-output marker; all three -C doses "
+        "(alpha=-0.5 to -2) share another. At these doses the steered responses reach the judge's "
+        "5.0 off-axis ceiling; the plotted y value is the absolute change in the mean score from bare. "
+        "Rejected counts every row without an accepted intended-direction effect. The CSV admissible field "
+        "covers generation and damage checks only, so two fluent but wrong-sign +C rows are still rejected."
+        if method == "j_lens_swap" else ""
+    )
     path_note = (
-        "Markers are evaluated doses; open markers were rejected; straight connectors show dose order, "
-        "not interpolation." + confirmation_note
+        "Markers are evaluated doses; open markers failed either the generation/damage checks or the intended-effect check; "
+        "straight connectors show dose order, not interpolation." + confirmation_note + parameter_note
     )
     markdown_text = _markdown(
         table,
@@ -653,11 +749,17 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         rows,
         methods,
         method_seeds,
-        title=f"{status}: {LABELS[method]}",
+        title=(
+            f"{status}: {LABELS[method]} (no accepted dose)"
+            if method == "j_lens_swap" and len(unconfirmed) == 2
+            else f"{status}: {LABELS[method]}"
+        ),
         endpoint_coefficients=endpoint_coefficients,
         smooth=False,
         include_rejected=True,
     )
+    if method == "j_lens_swap":
+        figure.update_xaxes(title_text="judge on-axis change (left = abrasive; right = sycophantic)")
     figure_html = figure.to_html(
         full_html=False,
         include_plotlyjs="cdn",

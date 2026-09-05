@@ -1,0 +1,9 @@
+CELL	n	mean_effect	median_effect	mean_damage	mean_abs_effect	unique_outputs
++C 0.5	15	-0.1800	-0.1000	0.1467	1.1000	15
++C 1	15	-0.6067	-0.1000	0.1400	0.7000	15
++C 2	15	-2.8067	-3.8000	4.5933	3.8333	1
+-C 0.5	15	+0.7067	+0.7000	4.2067	2.6400	1
+-C 1	15	+0.7067	+0.7000	4.2067	2.6400	1
+-C 2	15	+0.7067	+0.7000	4.2067	2.6400	1
+negative_outputs_identical_across_doses= True
+plus_low_effect_range= -8.1 6.0
