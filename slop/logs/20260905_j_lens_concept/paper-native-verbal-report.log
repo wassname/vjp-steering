@@ -1,0 +1,76 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-gtSpHUglqRbzXzmN5TiV7n
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1063.02it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 581.94it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 8/426 [00:00<00:09, 46.36it/s]
+[1ALoading weights:   5%|▌         | 22/426 [00:00<00:05, 73.51it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:04, 96.94it/s]
+[1ALoading weights:  12%|█▏        | 53/426 [00:00<00:03, 108.41it/s]
+[1ALoading weights:  16%|█▋        | 70/426 [00:00<00:03, 117.94it/s]
+[1ALoading weights:  21%|██        | 88/426 [00:00<00:02, 131.79it/s]
+[1ALoading weights:  24%|██▍       | 102/426 [00:00<00:02, 127.85it/s]
+[1ALoading weights:  30%|███       | 128/426 [00:01<00:02, 145.49it/s]
+[1ALoading weights:  35%|███▍      | 148/426 [00:01<00:01, 156.42it/s]
+[1ALoading weights:  38%|███▊      | 164/426 [00:01<00:01, 157.30it/s]
+[1ALoading weights:  42%|████▏     | 180/426 [00:01<00:01, 146.23it/s]
+[1ALoading weights:  46%|████▌     | 195/426 [00:01<00:01, 132.03it/s]
+[1ALoading weights:  49%|████▉     | 209/426 [00:01<00:01, 133.49it/s]
+[1ALoading weights:  52%|█████▏    | 223/426 [00:01<00:01, 129.14it/s]
+[1ALoading weights:  56%|█████▌    | 237/426 [00:01<00:01, 116.72it/s]
+[1ALoading weights:  62%|██████▏   | 262/426 [00:02<00:01, 143.06it/s]
+[1ALoading weights:  65%|██████▌   | 277/426 [00:02<00:01, 131.47it/s]
+[1ALoading weights:  68%|██████▊   | 291/426 [00:02<00:01, 123.83it/s]
+[1ALoading weights:  72%|███████▏  | 307/426 [00:02<00:00, 130.46it/s]
+[1ALoading weights:  76%|███████▌  | 323/426 [00:02<00:00, 129.74it/s]
+[1ALoading weights:  80%|████████  | 341/426 [00:02<00:00, 141.41it/s]
+[1ALoading weights:  86%|████████▋ | 368/426 [00:02<00:00, 175.67it/s]
+[1ALoading weights:  91%|█████████ | 387/426 [00:02<00:00, 148.55it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 146.48it/s]
+2026-09-05 13:58:51.975 | INFO     | __main__:main:79 - category=country clean= What source_id=3437 valid_targets=10
+2026-09-05 13:59:11.441 | INFO     | __main__:main:79 - category=color clean=
+
+ source_id=271 valid_targets=8
+2026-09-05 13:59:26.437 | INFO     | __main__:main:79 - category=fruit clean=
+ source_id=198 valid_targets=8
+2026-09-05 13:59:41.675 | INFO     | __main__:main:79 - category=sport clean=
+ source_id=198 valid_targets=9
+2026-09-05 13:59:58.419 | INFO     | __main__:main:79 - category=instrument clean=
+
+ source_id=271 valid_targets=5
+2026-09-05 14:00:08.184 | INFO     | __main__:main:79 - category=planet clean=
+
+ source_id=271 valid_targets=7
+2026-09-05 14:00:21.010 | INFO     | __main__:main:79 - category=tree clean= What source_id=3437 valid_targets=10
+2026-09-05 14:00:39.068 | INFO     | __main__:main:79 - category=bird clean=
+ source_id=198 valid_targets=9
+2026-09-05 14:00:56.557 | INFO     | __main__:main:79 - category=language clean=
+ source_id=198 valid_targets=10
+2026-09-05 14:01:15.872 | INFO     | __main__:main:79 - category=profession clean=
+ source_id=198 valid_targets=10
+2026-09-05 14:01:35.090 | INFO     | __main__:main:79 - category=beverage clean=
+ source_id=198 valid_targets=7
+2026-09-05 14:01:48.506 | INFO     | __main__:main:79 - category=organ clean=
+
+ source_id=271 valid_targets=6
+2026-09-05 14:02:00.123 | INFO     | __main__:main:79 - category=city clean= What source_id=3437 valid_targets=10
+2026-09-05 14:02:19.334 | INFO     | __main__:main:79 - category=river clean= What source_id=3437 valid_targets=8
+PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_format": "paper verbal-report colon prefill, without a chat template", "operator": "h + V(swap(V^dagger h) - V^dagger h)", "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_trials": 117, "n_top1": 0, "top1_rate": 0.0, "median_clean_target_rank": 77.0, "median_swapped_target_rank": 79.0}
+PAPER_NATIVE_J_LENS_VERBAL_REPORT_DOWNLOADED {"model": "Qwen/Qwen3.5-4B", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_format": "paper verbal-report colon prefill, without a chat template", "operator": "h + V(swap(V^dagger h) - V^dagger h)", "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_trials": 117, "n_top1": 0, "top1_rate": 0.0, "median_clean_target_rank": 77.0, "median_swapped_target_rank": 79.0}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-gtSpHUglqRbzXzmN5TiV7n
