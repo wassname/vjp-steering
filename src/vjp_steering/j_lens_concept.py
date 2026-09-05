@@ -50,7 +50,7 @@ def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
     cfg.dtype = vector.cfg.dtype
     return Vector(
         cfg,
-        {layer: vector.shared[layer] for layer in layers},
+        {layer: vector.shared.get(layer, {}) for layer in layers},
         {layer: vector.stacked[layer] for layer in layers},
     )
 
