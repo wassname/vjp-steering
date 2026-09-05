@@ -20,7 +20,9 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
-from vjp_steering.j_lens_concept import concept_spec, extract_concept, implementation_hash, prefill_diagnostics
+from vjp_steering.j_lens_concept import (
+    concept_spec, extract_concept, implementation_hash, prefill_diagnostics, select_concept_layers,
+)
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
     DEV,
@@ -84,6 +86,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
+    parser.add_argument("--concept-layers", default="")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
     parser.add_argument("--j-lens-diagnostic", action="store_true")
@@ -551,6 +554,12 @@ def completed_profile_cell_count(
     return count
 
 
+def concept_application_layers(args: argparse.Namespace, vector: Vector) -> tuple[int, ...]:
+    if not args.concept_layers:
+        return tuple(vector.cfg.layers)
+    return tuple(int(value) for value in args.concept_layers.split(",") if value)
+
+
 def concept_grid(args):
     grid = {side: [float(c) for c in text.split(",") if c] if text else list(J_LENS_CONCEPT_GRID)
             for side, text in (("+C", args.coefficients_plus), ("-C", args.coefficients_minus))}
@@ -618,6 +627,14 @@ def gpu_stage(args: argparse.Namespace) -> None:
         verify_extraction(args, root, model, tokenizer)
         return
     vectors, extraction = load_or_extract(args, root, model, tokenizer)
+    if args.method == "j_lens_concept":
+        layers = concept_application_layers(args, vectors["+C"])
+        vectors = {side: select_concept_layers(vector, layers) for side, vector in vectors.items()}
+        extraction = {
+            **extraction,
+            "application_layers": list(layers),
+            "application_vector_content_sha256": {side: vector_sha256(vector) for side, vector in vectors.items()},
+        }
     prompts = walk.generation_inputs(tokenizer, rows)
     bare_path = root / "bare.jsonl"
     bare = extend_generation(

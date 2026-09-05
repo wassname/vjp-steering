@@ -13,7 +13,7 @@ from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
     JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
-    prefill_diagnostics,
+    prefill_diagnostics, select_concept_layers,
 )
 from vjp_steering.vjp import _activations
 
@@ -144,6 +144,13 @@ def self_test():
 
     model = Toy()
     vector = Vector(JLensConceptC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}})
+    assert select_concept_layers(vector, (0,)).cfg.layers == (0,)
+    try:
+        select_concept_layers(vector, (1,))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("invalid layer selection did not fail")
     hidden = torch.zeros(2, 3, 3)
     mask = torch.tensor([[0, 1, 1], [1, 1, 1]])
     results = {}

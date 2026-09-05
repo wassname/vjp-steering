@@ -41,6 +41,19 @@ def tensor_hash(tensor: torch.Tensor) -> str:
     return hashlib.sha256(tensor.detach().float().contiguous().cpu().numpy().tobytes()).hexdigest()
 
 
+def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
+    available = tuple(vector.cfg.layers)
+    if not layers or len(set(layers)) != len(layers) or any(layer not in available for layer in layers):
+        raise ValueError(f"invalid concept application layers={layers}; available={available}")
+    cfg = JLensConceptC(layers=layers)
+    cfg.dtype = vector.cfg.dtype
+    return Vector(
+        cfg,
+        {layer: vector.shared[layer] for layer in layers},
+        {layer: vector.stacked[layer] for layer in layers},
+    )
+
+
 def final_positions(mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b"]:
     positions = torch.arange(mask.shape[1], device=mask.device).expand_as(mask)
     last = positions.masked_fill(~mask.bool(), -1).max(dim=1).values
