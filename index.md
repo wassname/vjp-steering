@@ -2,7 +2,7 @@
 
 All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
 The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.
-The cyan J-lens overlay is DEV evidence from 15 questions, not an all-100 result and not included in the table. It has no accepted dose. Downward triangles mark collapse outside the shared y-range: damage 4.59 for positive alpha and 4.21 for the negative-alpha control.
+The cyan directed J-lens transfer overlay is DEV evidence from 15 questions, not an all-100 result and not included in the table. Solid +C transfers abrasive to flattering; dotted -C transfers flattering to abrasive. Both use positive alpha and edit prompt-prefill positions only. All measured doses remain as dots; open diamonds mark incomplete-seed probes. Staggered open upward triangles retain main-method doses beyond the labeled damage range; downward triangles retain corresponding J-lens doses. Smooth curves use bare and complete in-range Pareto-efficient doses. For the main methods, × retains the final admissible dose and a faint segment reaches a dominated final measured dose when it is in range.
 
 ![Judged effect against off-axis change](plot.png)
 
