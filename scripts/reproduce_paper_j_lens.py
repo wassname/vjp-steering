@@ -28,11 +28,8 @@ def rank(logits: torch.Tensor, token: int) -> int:
     return int((logits > logits[token]).sum().item()) + 1
 
 
-def prompt(tokenizer, category: str) -> str:
-    return tokenizer.apply_chat_template(
-        [{"role": "user", "content": f"Think of a {category}. Answer in one word."}],
-        tokenize=False, add_generation_prompt=True, enable_thinking=False,
-    )
+def prompt(category: str) -> str:
+    return f"Think of a {category}. Answer in one word."
 
 
 def next_logits(model, tokenizer, text: str, vector=None) -> tuple[torch.Tensor, dict[int, int]]:
@@ -66,13 +63,15 @@ def main() -> None:
     model = AutoModelForCausalLM.from_pretrained(
         args.model, dtype=getattr(torch, args.dtype), attn_implementation="sdpa"
     ).cuda().eval()
-    categories = data["candidates"][: args.limit_categories]
+    categories = list(data["candidates"].items())
+    if args.limit_categories is not None:
+        categories = categories[: args.limit_categories]
     trials = []
-    for category in categories:
-        text = prompt(tokenizer, category["name"])
+    for category, words in categories:
+        text = prompt(category)
         clean_logits, _ = next_logits(model, tokenizer, text)
         source_id = int(clean_logits.argmax())
-        target_ids = [token_id(tokenizer, word) for word in category["words"][:10]]
+        target_ids = [token_id(tokenizer, word) for word in words[:10]]
         target_ids = [target for target in target_ids if target is not None and target != source_id and rank(clean_logits, target) > 10]
         if args.limit_targets is not None:
             target_ids = target_ids[: args.limit_targets]
@@ -89,7 +88,7 @@ def main() -> None:
             vector.cfg.coeff = 1.0
             swapped_logits, calls = next_logits(model, tokenizer, text, vector)
             trials.append({
-                "category": category["name"], "prompt": text, "source_token_id": source_id,
+                "category": category, "prompt": text, "source_token_id": source_id,
                 "source_token": tokenizer.decode([source_id]), "target_token_id": target_id,
                 "target_token": tokenizer.decode([target_id]), "clean_target_rank": rank(clean_logits, target_id),
                 "swapped_target_rank": rank(swapped_logits, target_id),
@@ -99,8 +98,11 @@ def main() -> None:
                 "zero_hook_calls": zero_calls, "swap_hook_calls": calls,
                 "layer_condition_numbers": {layer: info["condition_number"] for layer, info in metadata["layers"].items()},
             })
+    if not trials:
+        raise ValueError("no valid one-token candidates had clean rank greater than 10")
     summary = {
         "model": args.model, "data": str(args.data), "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
+        "prompt_format": "literal paper verbal-report prompt, without a chat template",
         "operator": "h + V(swap(V^dagger h) - V^dagger h)",
         "layers": list(WORKSPACE_LAYERS), "n_trials": len(trials),
         "n_top1": sum(trial["success_top1"] for trial in trials),

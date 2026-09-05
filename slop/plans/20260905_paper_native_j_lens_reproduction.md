@@ -1,5 +1,5 @@
 - [/] goal: reproduce the vendored paper's verbal-report coordinate swap on Qwen3.5-4B
-  - use vendored `verbal-report.json`; use raw single-token J-lens rows, pseudoinverse coordinates, and a complete source↔target swap
+  - use vendored `verbal-report.json` and its literal prompt; use raw single-token J-lens rows, pseudoinverse coordinates, and a complete source↔target swap
   - use layers 13–21: paper's workspace starts after roughly one third and ends before late layers dominated by the imminent output token; this is a model-matched approximation from fitted Qwen layers 6–24, not a claimed paper layer range
   - failure modes: current directed transfer is mistaken for a swap; chat formatting or token IDs differ; a swap changes output through incoherence
   - deliverable: saved clean/swap next-token ranks, raw vectors and token IDs, per-layer condition numbers, and first examples
