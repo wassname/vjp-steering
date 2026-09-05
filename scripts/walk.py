@@ -21,6 +21,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from vjp_steering import j_lens_swap, j_word, vjp_delta, vjp_mlp_up_shrink
 from vjp_steering.vjp import (
+    J_LENS_SWAP_SOURCE,
+    J_LENS_SWAP_TARGET,
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
     vjp_mlp_up_shared_last_token_eb,
@@ -349,7 +351,16 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
     if args.method == "J_word":
         vector, metadata = j_word(model, tokenizer, layers, lens_file=args.lens_file)
     elif args.method == "j_lens_swap":
-        vector, metadata = j_lens_swap(model, tokenizer, layers, lens_file=args.lens_file)
+        positive, positive_metadata = j_lens_swap(
+            model, tokenizer, layers, lens_file=args.lens_file,
+            source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
+        )
+        negative, negative_metadata = j_lens_swap(
+            model, tokenizer, layers, lens_file=args.lens_file,
+            source_token=J_LENS_SWAP_TARGET, target_token=J_LENS_SWAP_SOURCE,
+        )
+        vector = {"+C": positive, "-C": negative}
+        metadata = {"semantic_directions": {"+C": positive_metadata, "-C": negative_metadata}}
     elif args.method == "vjp_mlp_up_shrink":
         vector, metadata = vjp_mlp_up_shrink(
             model,
@@ -610,7 +621,10 @@ def run_rung(args: argparse.Namespace) -> None:
         prompts[0],
     )
     assert_hook_changes_logits(model, tokenizer, vectors["+C"], prompts[0], args.coefficient)
-    assert_hook_changes_logits(model, tokenizer, vectors["-C"], prompts[0], -args.coefficient)
+    assert_hook_changes_logits(
+        model, tokenizer, vectors["-C"], prompts[0],
+        args.coefficient if args.method == "j_lens_swap" else -args.coefficient,
+    )
 
     logger.info("stage=generate side=bare")
     bare = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
@@ -618,7 +632,8 @@ def run_rung(args: argparse.Namespace) -> None:
     with vectors["+C"](model, C=args.coefficient):
         positive_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     logger.info("stage=generate side=-C")
-    with vectors["-C"](model, C=-args.coefficient):
+    negative_coefficient = args.coefficient if args.method == "j_lens_swap" else -args.coefficient
+    with vectors["-C"](model, C=negative_coefficient):
         negative_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     assert any(a != b for a, b in zip(bare, positive_answers, strict=True))
     assert any(a != b for a, b in zip(bare, negative_answers, strict=True))

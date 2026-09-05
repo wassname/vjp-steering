@@ -299,13 +299,18 @@ def export_experiment(
             )
             health_clean = not manifest_cell["breakdown_reasons"]
             steered_off_axis = mean(row["steered_off_axis"] for row in cell_scenarios)
+            if manifest["method"] == "j_lens_swap":
+                source_layers = manifest["extraction"]["semantic_directions"]["+C"]["source_layers"]
+                assert source_layers == manifest["extraction"]["semantic_directions"]["-C"]["source_layers"]
+            else:
+                source_layers = manifest["extraction"]["source_layers"]
             result_rows.append({
                 "model": manifest["extraction"]["model"],
                 "tokenizer": manifest["extraction"]["model"],
                 "prompt_template": "Qwen3 chat",
                 "data_hash": manifest["cohort_sha256"],
                 "eval_cohort": f"sycophancy_{'all' if profile_name == 'full' else profile_name}{profile_.cohort_size}-v10",
-                "layers": ",".join(map(str, manifest["extraction"]["source_layers"])),
+                "layers": ",".join(map(str, source_layers)),
                 "batch_size": manifest["config"]["batch_size"],
                 "date": manifest["date"],
                 "source_run": experiment_id,

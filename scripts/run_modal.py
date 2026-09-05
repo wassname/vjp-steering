@@ -102,6 +102,42 @@ def run_experiment(method: str, argv: list[str]) -> str:
     return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
 
 
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
+def diagnose_j_lens_remote(model: str, dtype: str, output: str) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    snapshot_download(model)
+    try:
+        subprocess.run(
+            [
+                sys.executable, "scripts/experiment.py", "j_lens_swap",
+                "--j-lens-diagnostic", "--model", model, "--dtype", dtype,
+                "--diagnostic-output", output,
+            ],
+            cwd="/repo",
+            check=True,
+        )
+    finally:
+        cache.commit()
+    return (Path("/repo") / output).read_text()
+
+
+@app.local_entrypoint()
+def diagnose_j_lens_swap(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "outputs/audits/20260905_j_lens_paper_native/diagnostic.json",
+):
+    print(diagnose_j_lens_remote.remote(model, dtype, output))
+
+
 @app.local_entrypoint()
 def extract_experiment(
     method: str,

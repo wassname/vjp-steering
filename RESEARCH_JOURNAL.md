@@ -123,3 +123,23 @@ Interpretation: my read is that the code works for this extraction, generation, 
 The presentation is accepted for this result.
 
 <!-- PI/Codex: journal entry written 2026-09-01. -->
+
+## 2026-09-05 -- Corrected directed J-lens DEV
+
+This entry records the country control and the corrected style-token DEV run.
+
+Evidence: `outputs/audits/20260905_j_lens_country_alpha/diagnostic.json` records target answers for directed unit transfer on all six country item and layer-band combinations at alpha one and two. Raw and unit symmetric exchange produced no target answers at alpha one, two, or four. The final DEV log records:
+
+> `GPU_STAGE_COMPLETE experiment=j-lens-transfer-formative-v2 profile=dev cells=26`
+>
+> `JUDGE_COMPLETE required=220 missing=0`
+>
+> `EXPERIMENT_EXPORT_COMPLETE id=j-lens-transfer-formative-v2 profile=dev arms=26 scenarios=390`
+
+Source: `slop/logs/20260905_j_lens_transfer_v2_high_dev.log`. The selected rows in `data/dev/j-lens-transfer-formative-v2/selected.json` are +C alpha 1.25 with effect 0.120 and damage 0.073, and -C alpha 3 with effect -0.280 and damage 0.307. At alpha four, raw outputs on both semantic directions begin with the literal word `flattering` and repeat; examples are in `outputs/experiments/j-lens-transfer-formative-v2/cells/plus/c4.jsonl` and `minus/c4.jsonl`.
+
+Interpretation: my read is that directed unit transfer is very likely the correct operational intervention for these Qwen country controls. It does not establish a useful bipolar style axis for the fixed `abrasive` and `flattering` token pair. The intended DEV effects are small and non-monotone before high-dose token leakage, so full confirmation is not justified.
+
+The public comparison retains this as a labelled DEV overlay rather than an all-cohort table result.
+
+<!-- PI/OpenAI Codex: journal entry written 2026-09-05. -->

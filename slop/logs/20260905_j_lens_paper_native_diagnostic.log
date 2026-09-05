@@ -1,0 +1,6859 @@
+COMMAND: uv run modal run scripts/run_modal.py::diagnose_j_lens_swap
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-jtjKErD2fWc1VyqBwMRJBY
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 549.16it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 268.56it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 7/426 [00:00<00:21, 19.46it/s]
+[1ALoading weights:   3%|▎         | 12/426 [00:00<00:22, 18.34it/s]
+[1ALoading weights:   4%|▎         | 15/426 [00:01<00:43,  9.38it/s]
+[1ALoading weights:   4%|▍         | 17/426 [00:01<00:39, 10.23it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:02<01:03,  6.38it/s]
+[1ALoading weights:   8%|▊         | 36/426 [00:02<00:19, 20.08it/s]
+[1ALoading weights:  13%|█▎        | 54/426 [00:02<00:09, 38.13it/s]
+[1ALoading weights:  16%|█▌        | 69/426 [00:02<00:06, 53.57it/s]
+[1ALoading weights:  21%|██        | 90/426 [00:02<00:04, 79.22it/s]
+[1ALoading weights:  26%|██▌       | 111/426 [00:02<00:03, 100.46it/s]
+[1ALoading weights:  30%|███       | 129/426 [00:02<00:02, 112.41it/s]
+[1ALoading weights:  34%|███▍      | 146/426 [00:03<00:02, 123.17it/s]
+[1ALoading weights:  38%|███▊      | 164/426 [00:03<00:01, 135.03it/s]
+[1ALoading weights:  43%|████▎     | 183/426 [00:03<00:01, 144.12it/s]
+[1ALoading weights:  48%|████▊     | 204/426 [00:03<00:01, 155.87it/s]
+[1ALoading weights:  54%|█████▎    | 228/426 [00:03<00:01, 175.94it/s]
+[1ALoading weights:  59%|█████▉    | 252/426 [00:03<00:00, 193.23it/s]
+[1ALoading weights:  64%|██████▍   | 273/426 [00:03<00:00, 180.47it/s]
+[1ALoading weights:  70%|██████▉   | 298/426 [00:03<00:00, 195.45it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:03<00:00, 108.74it/s]
+{
+  "output": "outputs/audits/20260905_j_lens_paper_native/diagnostic.json",
+  "summary": {
+    "raw_exchange": {
+      "n": 6,
+      "hit_target": 0,
+      "stayed_source": 6
+    },
+    "unit_exchange": {
+      "n": 6,
+      "hit_target": 0,
+      "stayed_source": 6
+    },
+    "unit_transfer": {
+      "n": 6,
+      "hit_target": 6,
+      "stayed_source": 0
+    }
+  }
+}
+{
+  "schema": "j_lens_paper_native_diagnostic_v1",
+  "model": "Qwen/Qwen3.5-4B",
+  "dtype": "bfloat16",
+  "decode": "greedy_prompt_prefill_only",
+  "records": [
+    {
+      "kind": "baseline",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "source_text": " Paris.\nThe capital of",
+      "target_text": " Beijing.\nA. True",
+      "source_first": 11751,
+      "target_first": 25701,
+      "baseline_ok": true
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "raw_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "coordinate_abs_mean_pre": [
+            1.4445909261703491,
+            0.5479942560195923
+          ],
+          "coordinate_mean_pre": [
+            1.4445909261703491,
+            0.5470757484436035
+          ],
+          "coordinate_mean_post": [
+            0.5470755696296692,
+            1.4445908069610596
+          ],
+          "swap_max_abs_error": 6.556510925292969e-07
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.4545043706893921,
+            1.3457090854644775
+          ],
+          "coordinate_mean_pre": [
+            0.4545043706893921,
+            1.3457090854644775
+          ],
+          "coordinate_mean_post": [
+            1.3457090854644775,
+            0.4545045495033264
+          ],
+          "swap_max_abs_error": 9.08970832824707e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            1.3468729257583618,
+            0.41717034578323364
+          ],
+          "coordinate_mean_pre": [
+            1.3468729257583618,
+            0.34415334463119507
+          ],
+          "coordinate_mean_post": [
+            0.34415343403816223,
+            1.3468728065490723
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.4590648114681244,
+            1.1818933486938477
+          ],
+          "coordinate_mean_pre": [
+            0.4590648114681244,
+            1.1818933486938477
+          ],
+          "coordinate_mean_post": [
+            1.1818934679031372,
+            0.45906469225883484
+          ],
+          "swap_max_abs_error": 6.631016731262207e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            1.173840045928955,
+            0.47530272603034973
+          ],
+          "coordinate_mean_pre": [
+            1.173840045928955,
+            0.47530272603034973
+          ],
+          "coordinate_mean_post": [
+            0.475302517414093,
+            1.173840045928955
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.4814094305038452,
+            0.9523038268089294
+          ],
+          "coordinate_mean_pre": [
+            0.4814094305038452,
+            0.9523038268089294
+          ],
+          "coordinate_mean_post": [
+            0.9523040056228638,
+            0.48140934109687805
+          ],
+          "swap_max_abs_error": 6.854534149169922e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.9044554233551025,
+            0.570751428604126
+          ],
+          "coordinate_mean_pre": [
+            0.9044554233551025,
+            0.570751428604126
+          ],
+          "coordinate_mean_post": [
+            0.5707513689994812,
+            0.9044554233551025
+          ],
+          "swap_max_abs_error": 2.384185791015625e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.4889126718044281,
+            0.8546878099441528
+          ],
+          "coordinate_mean_pre": [
+            0.4889126718044281,
+            0.8546878099441528
+          ],
+          "coordinate_mean_post": [
+            0.8546879291534424,
+            0.48891258239746094
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.7665286064147949,
+            0.5182266235351562
+          ],
+          "coordinate_mean_pre": [
+            0.7665286064147949,
+            0.464885413646698
+          ],
+          "coordinate_mean_post": [
+            0.4648853838443756,
+            0.7665286064147949
+          ],
+          "swap_max_abs_error": 3.5762786865234375e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            0.5538825988769531,
+            0.7811939120292664
+          ],
+          "coordinate_mean_pre": [
+            0.48854079842567444,
+            0.7811939120292664
+          ],
+          "coordinate_mean_post": [
+            0.7811938524246216,
+            0.4885407090187073
+          ],
+          "swap_max_abs_error": 2.980232238769531e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.8648666143417358,
+            0.5986559391021729
+          ],
+          "coordinate_mean_pre": [
+            0.8648666143417358,
+            0.5860716104507446
+          ],
+          "coordinate_mean_post": [
+            0.5860715508460999,
+            0.8648666739463806
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            0.5222381949424744,
+            0.9365023374557495
+          ],
+          "coordinate_mean_pre": [
+            0.49154239892959595,
+            0.9365023374557495
+          ],
+          "coordinate_mean_post": [
+            0.9365023970603943,
+            0.49154236912727356
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            1.148647665977478,
+            0.8224413394927979
+          ],
+          "coordinate_mean_pre": [
+            1.148647665977478,
+            0.725127100944519
+          ],
+          "coordinate_mean_post": [
+            0.7251269221305847,
+            1.1486475467681885
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.0519558191299438,
+            1.3623508214950562
+          ],
+          "coordinate_mean_pre": [
+            0.991802453994751,
+            1.3623508214950562
+          ],
+          "coordinate_mean_post": [
+            1.3623509407043457,
+            0.9918025732040405
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            1.71428382396698,
+            0.9512697458267212
+          ],
+          "coordinate_mean_pre": [
+            1.71428382396698,
+            0.9296823740005493
+          ],
+          "coordinate_mean_post": [
+            0.9296823740005493,
+            1.7142835855484009
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.143815279006958,
+            1.7244046926498413
+          ],
+          "coordinate_mean_pre": [
+            1.0776920318603516,
+            1.7244046926498413
+          ],
+          "coordinate_mean_post": [
+            1.7244049310684204,
+            1.0776917934417725
+          ],
+          "swap_max_abs_error": 1.5497207641601562e-06
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.900528907775879,
+            1.0822279453277588
+          ],
+          "coordinate_mean_pre": [
+            1.900528907775879,
+            1.0822279453277588
+          ],
+          "coordinate_mean_post": [
+            1.0822279453277588,
+            1.9005290269851685
+          ],
+          "swap_max_abs_error": 7.450580596923828e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            1.6155245304107666,
+            2.308621406555176
+          ],
+          "coordinate_mean_pre": [
+            1.6155245304107666,
+            2.308621406555176
+          ],
+          "coordinate_mean_post": [
+            2.308621406555176,
+            1.6155245304107666
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            2.3012142181396484,
+            2.5026421546936035
+          ],
+          "coordinate_mean_pre": [
+            2.299792528152466,
+            2.5026421546936035
+          ],
+          "coordinate_mean_post": [
+            2.5026419162750244,
+            2.299792528152466
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "unit_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "coordinate_abs_mean_pre": [
+            0.8404054641723633,
+            0.3111943304538727
+          ],
+          "coordinate_mean_pre": [
+            0.8404054641723633,
+            0.3106727600097656
+          ],
+          "coordinate_mean_post": [
+            0.3106728792190552,
+            0.8404054641723633
+          ],
+          "swap_max_abs_error": 4.2282044887542725e-07
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.27314475178718567,
+            0.8460679054260254
+          ],
+          "coordinate_mean_pre": [
+            0.27314475178718567,
+            0.8460679054260254
+          ],
+          "coordinate_mean_post": [
+            0.8460680246353149,
+            0.27314475178718567
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            0.9345732927322388,
+            0.28344082832336426
+          ],
+          "coordinate_mean_pre": [
+            0.9345732927322388,
+            0.2313898801803589
+          ],
+          "coordinate_mean_post": [
+            0.23138979077339172,
+            0.9345733523368835
+          ],
+          "swap_max_abs_error": 3.8743019104003906e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.33829477429389954,
+            0.9171276092529297
+          ],
+          "coordinate_mean_pre": [
+            0.33829477429389954,
+            0.9171276092529297
+          ],
+          "coordinate_mean_post": [
+            0.9171277284622192,
+            0.33829474449157715
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.9547999501228333,
+            0.3700414299964905
+          ],
+          "coordinate_mean_pre": [
+            0.9547999501228333,
+            0.3700414299964905
+          ],
+          "coordinate_mean_post": [
+            0.3700414299964905,
+            0.9547998309135437
+          ],
+          "swap_max_abs_error": 6.407499313354492e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.4074060916900635,
+            0.8584821224212646
+          ],
+          "coordinate_mean_pre": [
+            0.4074060916900635,
+            0.8584821224212646
+          ],
+          "coordinate_mean_post": [
+            0.8584821224212646,
+            0.40740591287612915
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.8656169176101685,
+            0.521477460861206
+          ],
+          "coordinate_mean_pre": [
+            0.8656169176101685,
+            0.521477460861206
+          ],
+          "coordinate_mean_post": [
+            0.5214775800704956,
+            0.8656169176101685
+          ],
+          "swap_max_abs_error": 8.940696716308594e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.46864715218544006,
+            0.8597663044929504
+          ],
+          "coordinate_mean_pre": [
+            0.46864715218544006,
+            0.8597663044929504
+          ],
+          "coordinate_mean_post": [
+            0.8597664833068848,
+            0.4686470925807953
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.7928518652915955,
+            0.5064260959625244
+          ],
+          "coordinate_mean_pre": [
+            0.7928518652915955,
+            0.45146533846855164
+          ],
+          "coordinate_mean_post": [
+            0.451465368270874,
+            0.7928518652915955
+          ],
+          "swap_max_abs_error": 5.364418029785156e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            0.5596643686294556,
+            0.8252875804901123
+          ],
+          "coordinate_mean_pre": [
+            0.49115416407585144,
+            0.8252875804901123
+          ],
+          "coordinate_mean_post": [
+            0.8252874612808228,
+            0.49115419387817383
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.9058822989463806,
+            0.5947306752204895
+          ],
+          "coordinate_mean_pre": [
+            0.9058822989463806,
+            0.5804813504219055
+          ],
+          "coordinate_mean_post": [
+            0.5804814100265503,
+            0.9058823585510254
+          ],
+          "swap_max_abs_error": 4.172325134277344e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            0.5401586890220642,
+            1.0271373987197876
+          ],
+          "coordinate_mean_pre": [
+            0.5054903030395508,
+            1.0271373987197876
+          ],
+          "coordinate_mean_post": [
+            1.027137279510498,
+            0.5054903626441956
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            1.1569305658340454,
+            0.8021417856216431
+          ],
+          "coordinate_mean_pre": [
+            1.1569305658340454,
+            0.7044320106506348
+          ],
+          "coordinate_mean_post": [
+            0.7044320702552795,
+            1.1569304466247559
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            0.9833061695098877,
+            1.2901265621185303
+          ],
+          "coordinate_mean_pre": [
+            0.924174427986145,
+            1.2901265621185303
+          ],
+          "coordinate_mean_post": [
+            1.2901264429092407,
+            0.9241745471954346
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            1.5782287120819092,
+            0.8550397157669067
+          ],
+          "coordinate_mean_pre": [
+            1.5782287120819092,
+            0.8327043056488037
+          ],
+          "coordinate_mean_post": [
+            0.8327044248580933,
+            1.57822847366333
+          ],
+          "swap_max_abs_error": 6.258487701416016e-07
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.0473318099975586,
+            1.6005134582519531
+          ],
+          "coordinate_mean_pre": [
+            0.9841950535774231,
+            1.6005134582519531
+          ],
+          "coordinate_mean_post": [
+            1.6005136966705322,
+            0.9841952919960022
+          ],
+          "swap_max_abs_error": 6.556510925292969e-07
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.8154088258743286,
+            1.0270917415618896
+          ],
+          "coordinate_mean_pre": [
+            1.8154088258743286,
+            1.0270917415618896
+          ],
+          "coordinate_mean_post": [
+            1.0270917415618896,
+            1.8154089450836182
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            1.5376522541046143,
+            2.156284809112549
+          ],
+          "coordinate_mean_pre": [
+            1.5376522541046143,
+            2.156284809112549
+          ],
+          "coordinate_mean_post": [
+            2.156285047531128,
+            1.5376520156860352
+          ],
+          "swap_max_abs_error": 1.5497207641601562e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            2.1474390029907227,
+            2.3575401306152344
+          ],
+          "coordinate_mean_pre": [
+            2.1474390029907227,
+            2.3575401306152344
+          ],
+          "coordinate_mean_post": [
+            2.3575401306152344,
+            2.1474390029907227
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "unit_transfer",
+      "text": " Beijing.\nA. True",
+      "first_token": 25701,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "source_abs_mean_pre": 1.0082895755767822,
+          "source_mean_pre": 1.0082895755767822,
+          "source_mean_post": 0.544867992401123,
+          "target_mean_pre": 0.7648181915283203,
+          "target_mean_post": 1.2282400131225586
+        },
+        "7": {
+          "source_abs_mean_pre": 0.5139601826667786,
+          "source_mean_pre": 0.5139601826667786,
+          "source_mean_post": 0.2786862552165985,
+          "target_mean_pre": 1.1885364055633545,
+          "target_mean_post": 1.4238100051879883
+        },
+        "8": {
+          "source_abs_mean_pre": 0.32813242077827454,
+          "source_mean_pre": 0.32813242077827454,
+          "source_mean_post": 0.17500890791416168,
+          "target_mean_pre": 1.3545854091644287,
+          "target_mean_post": 1.5077089071273804
+        },
+        "9": {
+          "source_abs_mean_pre": 0.3171166777610779,
+          "source_mean_pre": 0.3171166777610779,
+          "source_mean_post": 0.17156516015529633,
+          "target_mean_pre": 1.5013970136642456,
+          "target_mean_post": 1.6469483375549316
+        },
+        "10": {
+          "source_abs_mean_pre": 0.27264249324798584,
+          "source_mean_pre": 0.27264249324798584,
+          "source_mean_post": 0.14985111355781555,
+          "target_mean_pre": 1.664930820465088,
+          "target_mean_post": 1.7877223491668701
+        },
+        "11": {
+          "source_abs_mean_pre": 0.22168880701065063,
+          "source_mean_pre": 0.22168880701065063,
+          "source_mean_post": 0.12664686143398285,
+          "target_mean_pre": 1.6615444421768188,
+          "target_mean_post": 1.7565863132476807
+        },
+        "12": {
+          "source_abs_mean_pre": 0.292475163936615,
+          "source_mean_pre": 0.292475163936615,
+          "source_mean_post": 0.16605259478092194,
+          "target_mean_pre": 1.8073630332946777,
+          "target_mean_post": 1.9337856769561768
+        },
+        "13": {
+          "source_abs_mean_pre": 0.17155036330223083,
+          "source_mean_pre": 0.16628560423851013,
+          "source_mean_post": 0.09705298393964767,
+          "target_mean_pre": 1.8718187808990479,
+          "target_mean_post": 1.9410513639450073
+        },
+        "14": {
+          "source_abs_mean_pre": 0.21187454462051392,
+          "source_mean_pre": 0.052776999771595,
+          "source_mean_post": 0.030902249738574028,
+          "target_mean_pre": 1.861395001411438,
+          "target_mean_post": 1.8832697868347168
+        },
+        "15": {
+          "source_abs_mean_pre": 0.20940743386745453,
+          "source_mean_pre": 0.11974021792411804,
+          "source_mean_post": 0.07128393650054932,
+          "target_mean_pre": 1.8770630359649658,
+          "target_mean_post": 1.9255189895629883
+        },
+        "16": {
+          "source_abs_mean_pre": 0.21362805366516113,
+          "source_mean_pre": 0.21362805366516113,
+          "source_mean_post": 0.13331443071365356,
+          "target_mean_pre": 2.1087188720703125,
+          "target_mean_post": 2.189032554626465
+        },
+        "17": {
+          "source_abs_mean_pre": 0.23153594136238098,
+          "source_mean_pre": 0.23153594136238098,
+          "source_mean_post": 0.1486574113368988,
+          "target_mean_pre": 2.239664077758789,
+          "target_mean_post": 2.322542667388916
+        },
+        "18": {
+          "source_abs_mean_pre": 0.324435830116272,
+          "source_mean_pre": 0.299256831407547,
+          "source_mean_post": 0.1819027066230774,
+          "target_mean_pre": 2.6353352069854736,
+          "target_mean_post": 2.7526891231536865
+        },
+        "19": {
+          "source_abs_mean_pre": 0.4723610579967499,
+          "source_mean_pre": 0.4723610579967499,
+          "source_mean_post": 0.2562839686870575,
+          "target_mean_pre": 3.0727925300598145,
+          "target_mean_post": 3.288869857788086
+        },
+        "20": {
+          "source_abs_mean_pre": 0.37242385745048523,
+          "source_mean_pre": 0.37242385745048523,
+          "source_mean_post": 0.2127341479063034,
+          "target_mean_pre": 3.272465229034424,
+          "target_mean_post": 3.432154655456543
+        },
+        "21": {
+          "source_abs_mean_pre": 0.28370189666748047,
+          "source_mean_pre": 0.27330827713012695,
+          "source_mean_post": 0.14400380849838257,
+          "target_mean_pre": 3.471925973892212,
+          "target_mean_post": 3.6012303829193115
+        },
+        "22": {
+          "source_abs_mean_pre": 0.40990838408470154,
+          "source_mean_pre": 0.30439478158950806,
+          "source_mean_post": 0.14663535356521606,
+          "target_mean_pre": 3.8458499908447266,
+          "target_mean_post": 4.003609657287598
+        },
+        "23": {
+          "source_abs_mean_pre": 0.36649519205093384,
+          "source_mean_pre": 0.3388446569442749,
+          "source_mean_post": 0.1659262329339981,
+          "target_mean_pre": 4.447930335998535,
+          "target_mean_post": 4.620848655700684
+        },
+        "24": {
+          "source_abs_mean_pre": 0.3811158537864685,
+          "source_mean_pre": 0.26265135407447815,
+          "source_mean_post": 0.1251571923494339,
+          "target_mean_pre": 5.258150100708008,
+          "target_mean_post": 5.395644187927246
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "raw_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        },
+        "25": {
+          "raw_norms": [
+            0.9660353660583496,
+            0.9852067828178406
+          ],
+          "unit_cosine": 0.43740901350975037
+        },
+        "26": {
+          "raw_norms": [
+            0.996387779712677,
+            1.0259013175964355
+          ],
+          "unit_cosine": 0.42297011613845825
+        },
+        "27": {
+          "raw_norms": [
+            0.9848310351371765,
+            1.0096800327301025
+          ],
+          "unit_cosine": 0.4275195002555847
+        },
+        "28": {
+          "raw_norms": [
+            0.9207609295845032,
+            0.9379457235336304
+          ],
+          "unit_cosine": 0.399602472782135
+        },
+        "29": {
+          "raw_norms": [
+            0.7833813428878784,
+            0.7738577723503113
+          ],
+          "unit_cosine": 0.517499566078186
+        },
+        "30": {
+          "raw_norms": [
+            0.7100005745887756,
+            0.7126102447509766
+          ],
+          "unit_cosine": 0.5407922267913818
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "coordinate_abs_mean_pre": [
+            1.3495630025863647,
+            0.44138526916503906
+          ],
+          "coordinate_mean_pre": [
+            1.3495630025863647,
+            0.34497201442718506
+          ],
+          "coordinate_mean_post": [
+            0.3449716567993164,
+            1.3495632410049438
+          ],
+          "swap_max_abs_error": 1.1324882507324219e-06
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.43744179606437683,
+            1.2819108963012695
+          ],
+          "coordinate_mean_pre": [
+            0.4128151834011078,
+            1.2819108963012695
+          ],
+          "coordinate_mean_post": [
+            1.2819108963012695,
+            0.41281524300575256
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            1.2200781106948853,
+            0.3593410849571228
+          ],
+          "coordinate_mean_pre": [
+            1.2200781106948853,
+            0.28292185068130493
+          ],
+          "coordinate_mean_post": [
+            0.2829219400882721,
+            1.2200782299041748
+          ],
+          "swap_max_abs_error": 6.034970283508301e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.33979666233062744,
+            1.202773094177246
+          ],
+          "coordinate_mean_pre": [
+            0.31847506761550903,
+            1.202773094177246
+          ],
+          "coordinate_mean_post": [
+            1.2027729749679565,
+            0.31847506761550903
+          ],
+          "swap_max_abs_error": 4.172325134277344e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            1.0869715213775635,
+            0.3253732919692993
+          ],
+          "coordinate_mean_pre": [
+            1.0869715213775635,
+            0.3055630922317505
+          ],
+          "coordinate_mean_post": [
+            0.3055628538131714,
+            1.086971640586853
+          ],
+          "swap_max_abs_error": 7.860362529754639e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.3230544626712799,
+            1.037224292755127
+          ],
+          "coordinate_mean_pre": [
+            0.25211048126220703,
+            1.037224292755127
+          ],
+          "coordinate_mean_post": [
+            1.037224292755127,
+            0.25211048126220703
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            1.0441590547561646,
+            0.3176749050617218
+          ],
+          "coordinate_mean_pre": [
+            1.0441590547561646,
+            0.28201839327812195
+          ],
+          "coordinate_mean_post": [
+            0.28201824426651,
+            1.044159173965454
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.3299466073513031,
+            1.1894104480743408
+          ],
+          "coordinate_mean_pre": [
+            0.31609269976615906,
+            1.1894104480743408
+          ],
+          "coordinate_mean_post": [
+            1.1894104480743408,
+            0.31609272956848145
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            1.1576917171478271,
+            0.4054984450340271
+          ],
+          "coordinate_mean_pre": [
+            1.1576917171478271,
+            0.3277307152748108
+          ],
+          "coordinate_mean_post": [
+            0.3277302384376526,
+            1.1576919555664062
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            0.47932401299476624,
+            1.4591816663742065
+          ],
+          "coordinate_mean_pre": [
+            0.47932401299476624,
+            1.4591816663742065
+          ],
+          "coordinate_mean_post": [
+            1.4591822624206543,
+            0.4793238043785095
+          ],
+          "swap_max_abs_error": 1.6689300537109375e-06
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.74094820022583,
+            0.6709105372428894
+          ],
+          "coordinate_mean_pre": [
+            1.74094820022583,
+            0.6709105372428894
+          ],
+          "coordinate_mean_post": [
+            0.6709107160568237,
+            1.7409483194351196
+          ],
+          "swap_max_abs_error": 8.344650268554688e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            0.6796683669090271,
+            1.9290502071380615
+          ],
+          "coordinate_mean_pre": [
+            0.6796683669090271,
+            1.9290502071380615
+          ],
+          "coordinate_mean_post": [
+            1.9290504455566406,
+            0.6796683669090271
+          ],
+          "swap_max_abs_error": 1.2852251529693604e-06
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.9926600456237793,
+            0.8015860319137573
+          ],
+          "coordinate_mean_pre": [
+            1.9926600456237793,
+            0.8015860319137573
+          ],
+          "coordinate_mean_post": [
+            0.80158531665802,
+            1.9926601648330688
+          ],
+          "swap_max_abs_error": 1.6093254089355469e-06
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.0589001178741455,
+            1.9397225379943848
+          ],
+          "coordinate_mean_pre": [
+            1.0589001178741455,
+            1.9397225379943848
+          ],
+          "coordinate_mean_post": [
+            1.9397226572036743,
+            1.0589001178741455
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            2.860250949859619,
+            1.0219743251800537
+          ],
+          "coordinate_mean_pre": [
+            2.860250949859619,
+            0.9702064990997314
+          ],
+          "coordinate_mean_post": [
+            0.9702067971229553,
+            2.860250473022461
+          ],
+          "swap_max_abs_error": 1.3113021850585938e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            0.9152942895889282,
+            4.04371976852417
+          ],
+          "coordinate_mean_pre": [
+            0.6942168474197388,
+            4.04371976852417
+          ],
+          "coordinate_mean_post": [
+            4.043719291687012,
+            0.6942174434661865
+          ],
+          "swap_max_abs_error": 2.592802047729492e-06
+        },
+        "25": {
+          "coordinate_abs_mean_pre": [
+            5.262864112854004,
+            0.8740602731704712
+          ],
+          "coordinate_mean_pre": [
+            5.262864112854004,
+            0.2788545787334442
+          ],
+          "coordinate_mean_post": [
+            0.27885526418685913,
+            5.262864112854004
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        },
+        "26": {
+          "coordinate_abs_mean_pre": [
+            0.8288275599479675,
+            5.21755313873291
+          ],
+          "coordinate_mean_pre": [
+            0.18907462060451508,
+            5.21755313873291
+          ],
+          "coordinate_mean_post": [
+            5.217553615570068,
+            0.1890731006860733
+          ],
+          "swap_max_abs_error": 2.5033950805664062e-06
+        },
+        "27": {
+          "coordinate_abs_mean_pre": [
+            5.820864677429199,
+            0.8803707361221313
+          ],
+          "coordinate_mean_pre": [
+            5.820864677429199,
+            0.33458995819091797
+          ],
+          "coordinate_mean_post": [
+            0.3345891237258911,
+            5.820864677429199
+          ],
+          "swap_max_abs_error": 3.4570693969726562e-06
+        },
+        "28": {
+          "coordinate_abs_mean_pre": [
+            1.116538166999817,
+            6.882913589477539
+          ],
+          "coordinate_mean_pre": [
+            0.6486424207687378,
+            6.882913589477539
+          ],
+          "coordinate_mean_post": [
+            6.882913112640381,
+            0.648642361164093
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        },
+        "29": {
+          "coordinate_abs_mean_pre": [
+            8.882195472717285,
+            1.8377455472946167
+          ],
+          "coordinate_mean_pre": [
+            8.882195472717285,
+            0.4763931632041931
+          ],
+          "coordinate_mean_post": [
+            0.47639214992523193,
+            8.882194519042969
+          ],
+          "swap_max_abs_error": 4.76837158203125e-06
+        },
+        "30": {
+          "coordinate_abs_mean_pre": [
+            1.9861392974853516,
+            9.142753601074219
+          ],
+          "coordinate_mean_pre": [
+            0.6831123232841492,
+            9.142753601074219
+          ],
+          "coordinate_mean_post": [
+            9.142752647399902,
+            0.6831150650978088
+          ],
+          "swap_max_abs_error": 5.0067901611328125e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "unit_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        },
+        "25": {
+          "raw_norms": [
+            0.9660353660583496,
+            0.9852067828178406
+          ],
+          "unit_cosine": 0.43740901350975037
+        },
+        "26": {
+          "raw_norms": [
+            0.996387779712677,
+            1.0259013175964355
+          ],
+          "unit_cosine": 0.42297011613845825
+        },
+        "27": {
+          "raw_norms": [
+            0.9848310351371765,
+            1.0096800327301025
+          ],
+          "unit_cosine": 0.4275195002555847
+        },
+        "28": {
+          "raw_norms": [
+            0.9207609295845032,
+            0.9379457235336304
+          ],
+          "unit_cosine": 0.399602472782135
+        },
+        "29": {
+          "raw_norms": [
+            0.7833813428878784,
+            0.7738577723503113
+          ],
+          "unit_cosine": 0.517499566078186
+        },
+        "30": {
+          "raw_norms": [
+            0.7100005745887756,
+            0.7126102447509766
+          ],
+          "unit_cosine": 0.5407922267913818
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "coordinate_abs_mean_pre": [
+            1.0048143863677979,
+            0.340146541595459
+          ],
+          "coordinate_mean_pre": [
+            1.0048143863677979,
+            0.2658476233482361
+          ],
+          "coordinate_mean_post": [
+            0.2658472955226898,
+            1.0048143863677979
+          ],
+          "swap_max_abs_error": 1.6391277313232422e-06
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.35341835021972656,
+            1.0059384107589722
+          ],
+          "coordinate_mean_pre": [
+            0.3318895697593689,
+            1.0059384107589722
+          ],
+          "coordinate_mean_post": [
+            1.0059382915496826,
+            0.33188968896865845
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            1.039980411529541,
+            0.3213892877101898
+          ],
+          "coordinate_mean_pre": [
+            1.039980411529541,
+            0.2504426836967468
+          ],
+          "coordinate_mean_post": [
+            0.2504427134990692,
+            1.0399806499481201
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.32180607318878174,
+            1.096086025238037
+          ],
+          "coordinate_mean_pre": [
+            0.29791170358657837,
+            1.096086025238037
+          ],
+          "coordinate_mean_post": [
+            1.096085786819458,
+            0.29791179299354553
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            1.0390807390213013,
+            0.3200245499610901
+          ],
+          "coordinate_mean_pre": [
+            1.0390807390213013,
+            0.30005037784576416
+          ],
+          "coordinate_mean_post": [
+            0.3000500798225403,
+            1.0390809774398804
+          ],
+          "swap_max_abs_error": 1.1865049600601196e-06
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.32534724473953247,
+            1.0027698278427124
+          ],
+          "coordinate_mean_pre": [
+            0.2556423246860504,
+            1.0027698278427124
+          ],
+          "coordinate_mean_post": [
+            1.0027698278427124,
+            0.25564226508140564
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            1.0427749156951904,
+            0.3279227614402771
+          ],
+          "coordinate_mean_pre": [
+            1.0427749156951904,
+            0.2931594252586365
+          ],
+          "coordinate_mean_post": [
+            0.2931593954563141,
+            1.0427749156951904
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.342827707529068,
+            1.172964096069336
+          ],
+          "coordinate_mean_pre": [
+            0.32933393120765686,
+            1.172964096069336
+          ],
+          "coordinate_mean_post": [
+            1.172964096069336,
+            0.3293339014053345
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            1.193068504333496,
+            0.4375976324081421
+          ],
+          "coordinate_mean_pre": [
+            1.193068504333496,
+            0.3579067587852478
+          ],
+          "coordinate_mean_post": [
+            0.3579067885875702,
+            1.193068265914917
+          ],
+          "swap_max_abs_error": 6.109476089477539e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            0.47545862197875977,
+            1.4085667133331299
+          ],
+          "coordinate_mean_pre": [
+            0.47545862197875977,
+            1.4085667133331299
+          ],
+          "coordinate_mean_post": [
+            1.4085664749145508,
+            0.47545865178108215
+          ],
+          "swap_max_abs_error": 8.717179298400879e-07
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.6218777894973755,
+            0.6291645169258118
+          ],
+          "coordinate_mean_pre": [
+            1.6218777894973755,
+            0.6291645169258118
+          ],
+          "coordinate_mean_post": [
+            0.6291643381118774,
+            1.621877908706665
+          ],
+          "swap_max_abs_error": 8.344650268554688e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            0.620341420173645,
+            1.7385838031768799
+          ],
+          "coordinate_mean_pre": [
+            0.620341420173645,
+            1.7385838031768799
+          ],
+          "coordinate_mean_post": [
+            1.7385835647583008,
+            0.6203415393829346
+          ],
+          "swap_max_abs_error": 7.525086402893066e-07
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.8246480226516724,
+            0.7370196580886841
+          ],
+          "coordinate_mean_pre": [
+            1.8246480226516724,
+            0.7370196580886841
+          ],
+          "coordinate_mean_post": [
+            0.7370192408561707,
+            1.8246476650238037
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.003225564956665,
+            1.8440147638320923
+          ],
+          "coordinate_mean_pre": [
+            1.003225564956665,
+            1.8440147638320923
+          ],
+          "coordinate_mean_post": [
+            1.8440147638320923,
+            1.0032254457473755
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            2.7196872234344482,
+            0.9410066604614258
+          ],
+          "coordinate_mean_pre": [
+            2.7196872234344482,
+            0.8938673734664917
+          ],
+          "coordinate_mean_post": [
+            0.893866777420044,
+            2.719686985015869
+          ],
+          "swap_max_abs_error": 2.0265579223632812e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            0.8506301641464233,
+            3.8170995712280273
+          ],
+          "coordinate_mean_pre": [
+            0.6246227622032166,
+            3.8170995712280273
+          ],
+          "coordinate_mean_post": [
+            3.8170998096466064,
+            0.6246234178543091
+          ],
+          "swap_max_abs_error": 2.0265579223632812e-06
+        },
+        "25": {
+          "coordinate_abs_mean_pre": [
+            5.080053806304932,
+            0.8647897243499756
+          ],
+          "coordinate_mean_pre": [
+            5.080053806304932,
+            0.25118011236190796
+          ],
+          "coordinate_mean_post": [
+            0.25118041038513184,
+            5.080053329467773
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "26": {
+          "coordinate_abs_mean_pre": [
+            0.8446023464202881,
+            5.224642753601074
+          ],
+          "coordinate_mean_pre": [
+            0.1791616678237915,
+            5.224642753601074
+          ],
+          "coordinate_mean_post": [
+            5.224643707275391,
+            0.17916220426559448
+          ],
+          "swap_max_abs_error": 2.7492642402648926e-06
+        },
+        "27": {
+          "coordinate_abs_mean_pre": [
+            5.749899864196777,
+            0.8862805366516113
+          ],
+          "coordinate_mean_pre": [
+            5.749899864196777,
+            0.32911014556884766
+          ],
+          "coordinate_mean_post": [
+            0.32910865545272827,
+            5.749899864196777
+          ],
+          "swap_max_abs_error": 2.86102294921875e-06
+        },
+        "28": {
+          "coordinate_abs_mean_pre": [
+            1.048217535018921,
+            6.328337669372559
+          ],
+          "coordinate_mean_pre": [
+            0.5936936736106873,
+            6.328337669372559
+          ],
+          "coordinate_mean_post": [
+            6.328340530395508,
+            0.5936936736106873
+          ],
+          "swap_max_abs_error": 4.76837158203125e-06
+        },
+        "29": {
+          "coordinate_abs_mean_pre": [
+            6.949700355529785,
+            1.427405595779419
+          ],
+          "coordinate_mean_pre": [
+            6.949700355529785,
+            0.35183456540107727
+          ],
+          "coordinate_mean_post": [
+            0.351832777261734,
+            6.949699401855469
+          ],
+          "swap_max_abs_error": 4.291534423828125e-06
+        },
+        "30": {
+          "coordinate_abs_mean_pre": [
+            1.3983901739120483,
+            6.567918300628662
+          ],
+          "coordinate_mean_pre": [
+            0.46961694955825806,
+            6.567918300628662
+          ],
+          "coordinate_mean_post": [
+            6.56791877746582,
+            0.4696178734302521
+          ],
+          "swap_max_abs_error": 3.2186508178710938e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "unit_transfer",
+      "text": " Beijing.\nA. True",
+      "first_token": 25701,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        },
+        "14": {
+          "raw_norms": [
+            0.9757527112960815,
+            1.0130906105041504
+          ],
+          "unit_cosine": 0.5855252742767334
+        },
+        "15": {
+          "raw_norms": [
+            1.0079375505447388,
+            1.0369741916656494
+          ],
+          "unit_cosine": 0.5953215956687927
+        },
+        "16": {
+          "raw_norms": [
+            1.0036648511886597,
+            1.0214205980300903
+          ],
+          "unit_cosine": 0.6240494847297668
+        },
+        "17": {
+          "raw_norms": [
+            1.0475605726242065,
+            1.0713597536087036
+          ],
+          "unit_cosine": 0.642048716545105
+        },
+        "18": {
+          "raw_norms": [
+            0.9648074507713318,
+            0.9989660978317261
+          ],
+          "unit_cosine": 0.6078479290008545
+        },
+        "19": {
+          "raw_norms": [
+            0.9294682145118713,
+            0.9404924511909485
+          ],
+          "unit_cosine": 0.5425593852996826
+        },
+        "20": {
+          "raw_norms": [
+            0.9040904641151428,
+            0.9093801379203796
+          ],
+          "unit_cosine": 0.571215033531189
+        },
+        "21": {
+          "raw_norms": [
+            0.9183917045593262,
+            0.9184874296188354
+          ],
+          "unit_cosine": 0.5268915891647339
+        },
+        "22": {
+          "raw_norms": [
+            0.9469396471977234,
+            0.9536481499671936
+          ],
+          "unit_cosine": 0.4817274510860443
+        },
+        "23": {
+          "raw_norms": [
+            0.9460318684577942,
+            0.9364567995071411
+          ],
+          "unit_cosine": 0.48968249559402466
+        },
+        "24": {
+          "raw_norms": [
+            0.9462553858757019,
+            0.9306528568267822
+          ],
+          "unit_cosine": 0.4765143394470215
+        },
+        "25": {
+          "raw_norms": [
+            0.9660353660583496,
+            0.9852067828178406
+          ],
+          "unit_cosine": 0.43740901350975037
+        },
+        "26": {
+          "raw_norms": [
+            0.996387779712677,
+            1.0259013175964355
+          ],
+          "unit_cosine": 0.42297011613845825
+        },
+        "27": {
+          "raw_norms": [
+            0.9848310351371765,
+            1.0096800327301025
+          ],
+          "unit_cosine": 0.4275195002555847
+        },
+        "28": {
+          "raw_norms": [
+            0.9207609295845032,
+            0.9379457235336304
+          ],
+          "unit_cosine": 0.399602472782135
+        },
+        "29": {
+          "raw_norms": [
+            0.7833813428878784,
+            0.7738577723503113
+          ],
+          "unit_cosine": 0.517499566078186
+        },
+        "30": {
+          "raw_norms": [
+            0.7100005745887756,
+            0.7126102447509766
+          ],
+          "unit_cosine": 0.5407922267913818
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "source_abs_mean_pre": 1.1486414670944214,
+          "source_mean_pre": 1.1486414670944214,
+          "source_mean_post": 0.6214331984519958,
+          "target_mean_pre": 0.8094671368598938,
+          "target_mean_post": 1.3366749286651611
+        },
+        "10": {
+          "source_abs_mean_pre": 0.7087178826332092,
+          "source_mean_pre": 0.7087178826332092,
+          "source_mean_post": 0.38952890038490295,
+          "target_mean_pre": 1.3663063049316406,
+          "target_mean_post": 1.6854954957962036
+        },
+        "11": {
+          "source_abs_mean_pre": 0.4585147500038147,
+          "source_mean_pre": 0.4585147500038147,
+          "source_mean_post": 0.2619413435459137,
+          "target_mean_pre": 1.5836910009384155,
+          "target_mean_post": 1.7802644968032837
+        },
+        "12": {
+          "source_abs_mean_pre": 0.3933742940425873,
+          "source_mean_pre": 0.3933742940425873,
+          "source_mean_post": 0.2233380377292633,
+          "target_mean_pre": 1.817029356956482,
+          "target_mean_post": 1.9870655536651611
+        },
+        "13": {
+          "source_abs_mean_pre": 0.22156228125095367,
+          "source_mean_pre": 0.22156228125095367,
+          "source_mean_post": 0.1293153464794159,
+          "target_mean_pre": 1.9210436344146729,
+          "target_mean_post": 2.0132908821105957
+        },
+        "14": {
+          "source_abs_mean_pre": 0.2337186187505722,
+          "source_mean_pre": 0.0830216109752655,
+          "source_mean_post": 0.04861126095056534,
+          "target_mean_pre": 1.9298944473266602,
+          "target_mean_post": 1.9643049240112305
+        },
+        "15": {
+          "source_abs_mean_pre": 0.23049521446228027,
+          "source_mean_pre": 0.1443920135498047,
+          "source_mean_post": 0.08595968782901764,
+          "target_mean_pre": 1.9572495222091675,
+          "target_mean_post": 2.0156819820404053
+        },
+        "16": {
+          "source_abs_mean_pre": 0.22989195585250854,
+          "source_mean_pre": 0.22989195585250854,
+          "source_mean_post": 0.14346396923065186,
+          "target_mean_pre": 2.2102129459381104,
+          "target_mean_post": 2.2966408729553223
+        },
+        "17": {
+          "source_abs_mean_pre": 0.26103195548057556,
+          "source_mean_pre": 0.26103195548057556,
+          "source_mean_post": 0.1675952970981598,
+          "target_mean_pre": 2.340977430343628,
+          "target_mean_post": 2.4344143867492676
+        },
+        "18": {
+          "source_abs_mean_pre": 0.3335924744606018,
+          "source_mean_pre": 0.30824345350265503,
+          "source_mean_post": 0.18736526370048523,
+          "target_mean_pre": 2.7552149295806885,
+          "target_mean_post": 2.8760933876037598
+        },
+        "19": {
+          "source_abs_mean_pre": 0.46645432710647583,
+          "source_mean_pre": 0.46645432710647583,
+          "source_mean_post": 0.25307923555374146,
+          "target_mean_pre": 3.1881332397460938,
+          "target_mean_post": 3.401508331298828
+        },
+        "20": {
+          "source_abs_mean_pre": 0.37258994579315186,
+          "source_mean_pre": 0.37258994579315186,
+          "source_mean_post": 0.21282893419265747,
+          "target_mean_pre": 3.3625106811523438,
+          "target_mean_post": 3.5222716331481934
+        },
+        "21": {
+          "source_abs_mean_pre": 0.29182153940200806,
+          "source_mean_pre": 0.28250789642333984,
+          "source_mean_post": 0.14885103702545166,
+          "target_mean_pre": 3.563723564147949,
+          "target_mean_post": 3.697380304336548
+        },
+        "22": {
+          "source_abs_mean_pre": 0.4206767678260803,
+          "source_mean_pre": 0.314423531293869,
+          "source_mean_post": 0.1514664590358734,
+          "target_mean_pre": 3.9454345703125,
+          "target_mean_post": 4.108391761779785
+        },
+        "23": {
+          "source_abs_mean_pre": 0.38934648036956787,
+          "source_mean_pre": 0.3757970929145813,
+          "source_mean_post": 0.18402118980884552,
+          "target_mean_pre": 4.513377666473389,
+          "target_mean_post": 4.705153465270996
+        },
+        "24": {
+          "source_abs_mean_pre": 0.383103609085083,
+          "source_mean_pre": 0.2894441485404968,
+          "source_mean_post": 0.13792434334754944,
+          "target_mean_pre": 5.309297561645508,
+          "target_mean_post": 5.460817337036133
+        },
+        "25": {
+          "source_abs_mean_pre": 0.4206041097640991,
+          "source_mean_pre": 0.35063254833221436,
+          "source_mean_post": 0.15336987376213074,
+          "target_mean_pre": 5.878831386566162,
+          "target_mean_post": 6.076093673706055
+        },
+        "26": {
+          "source_abs_mean_pre": 0.2218497097492218,
+          "source_mean_pre": 0.08054801821708679,
+          "source_mean_post": 0.034069426357746124,
+          "target_mean_pre": 6.370301246643066,
+          "target_mean_post": 6.416779518127441
+        },
+        "27": {
+          "source_abs_mean_pre": 0.5577465295791626,
+          "source_mean_pre": 0.5577465295791626,
+          "source_mean_post": 0.238447368144989,
+          "target_mean_pre": 6.443536758422852,
+          "target_mean_post": 6.762835502624512
+        },
+        "28": {
+          "source_abs_mean_pre": 0.3350678086280823,
+          "source_mean_pre": 0.3350678086280823,
+          "source_mean_post": 0.13389384746551514,
+          "target_mean_pre": 7.482338905334473,
+          "target_mean_post": 7.6835126876831055
+        },
+        "29": {
+          "source_abs_mean_pre": 0.6484982967376709,
+          "source_mean_pre": 0.01672498881816864,
+          "source_mean_post": 0.008655190467834473,
+          "target_mean_pre": 7.4633026123046875,
+          "target_mean_post": 7.471372127532959
+        },
+        "30": {
+          "source_abs_mean_pre": 0.5602639317512512,
+          "source_mean_pre": -0.11856552958488464,
+          "source_mean_post": -0.064119353890419,
+          "target_mean_pre": 7.04377555847168,
+          "target_mean_post": 6.989328861236572
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "raw_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.7408506870269775,
+            0.6996765732765198
+          ],
+          "unit_cosine": 0.5055802464485168
+        },
+        "5": {
+          "raw_norms": [
+            0.7461590766906738,
+            0.7115569710731506
+          ],
+          "unit_cosine": 0.5163177847862244
+        },
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "coordinate_abs_mean_pre": [
+            0.535527229309082,
+            0.309945672750473
+          ],
+          "coordinate_mean_pre": [
+            0.535527229309082,
+            0.309945672750473
+          ],
+          "coordinate_mean_post": [
+            0.30994561314582825,
+            0.535527229309082
+          ],
+          "swap_max_abs_error": 3.8743019104003906e-07
+        },
+        "5": {
+          "coordinate_abs_mean_pre": [
+            0.40453529357910156,
+            0.5179048776626587
+          ],
+          "coordinate_mean_pre": [
+            0.40453529357910156,
+            0.5179048776626587
+          ],
+          "coordinate_mean_post": [
+            0.5179048776626587,
+            0.40453529357910156
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "6": {
+          "coordinate_abs_mean_pre": [
+            1.2481218576431274,
+            0.7074881792068481
+          ],
+          "coordinate_mean_pre": [
+            1.2481218576431274,
+            0.7074881792068481
+          ],
+          "coordinate_mean_post": [
+            0.707487940788269,
+            1.248121738433838
+          ],
+          "swap_max_abs_error": 7.748603820800781e-07
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.6203957796096802,
+            1.1649600267410278
+          ],
+          "coordinate_mean_pre": [
+            0.6203957796096802,
+            1.1649600267410278
+          ],
+          "coordinate_mean_post": [
+            1.1649600267410278,
+            0.6203955411911011
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            1.1878321170806885,
+            0.48978883028030396
+          ],
+          "coordinate_mean_pre": [
+            1.1878321170806885,
+            0.47912484407424927
+          ],
+          "coordinate_mean_post": [
+            0.4791250228881836,
+            1.1878318786621094
+          ],
+          "swap_max_abs_error": 8.940696716308594e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.592413067817688,
+            1.0382184982299805
+          ],
+          "coordinate_mean_pre": [
+            0.592413067817688,
+            1.0382184982299805
+          ],
+          "coordinate_mean_post": [
+            1.0382187366485596,
+            0.5924129486083984
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            1.0424844026565552,
+            0.5973336696624756
+          ],
+          "coordinate_mean_pre": [
+            1.0424844026565552,
+            0.5973336696624756
+          ],
+          "coordinate_mean_post": [
+            0.5973336100578308,
+            1.0424846410751343
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.5955531597137451,
+            0.8359448909759521
+          ],
+          "coordinate_mean_pre": [
+            0.5955531597137451,
+            0.8359448909759521
+          ],
+          "coordinate_mean_post": [
+            0.8359447121620178,
+            0.5955531597137451
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.8026764392852783,
+            0.6668917536735535
+          ],
+          "coordinate_mean_pre": [
+            0.8026764392852783,
+            0.6668917536735535
+          ],
+          "coordinate_mean_post": [
+            0.6668918132781982,
+            0.8026764392852783
+          ],
+          "swap_max_abs_error": 2.980232238769531e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.5810866355895996,
+            0.759543776512146
+          ],
+          "coordinate_mean_pre": [
+            0.5810866355895996,
+            0.759543776512146
+          ],
+          "coordinate_mean_post": [
+            0.7595437169075012,
+            0.5810866355895996
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "unit_exchange",
+      "text": " Paris.\nA. True",
+      "first_token": 11751,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.7408506870269775,
+            0.6996765732765198
+          ],
+          "unit_cosine": 0.5055802464485168
+        },
+        "5": {
+          "raw_norms": [
+            0.7461590766906738,
+            0.7115569710731506
+          ],
+          "unit_cosine": 0.5163177847862244
+        },
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "coordinate_abs_mean_pre": [
+            0.39674612879753113,
+            0.21686092019081116
+          ],
+          "coordinate_mean_pre": [
+            0.39674612879753113,
+            0.21686092019081116
+          ],
+          "coordinate_mean_post": [
+            0.21686087548732758,
+            0.3967461884021759
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "5": {
+          "coordinate_abs_mean_pre": [
+            0.2883540093898773,
+            0.3893476724624634
+          ],
+          "coordinate_mean_pre": [
+            0.2883540093898773,
+            0.3893476724624634
+          ],
+          "coordinate_mean_post": [
+            0.38934773206710815,
+            0.2883540391921997
+          ],
+          "swap_max_abs_error": 3.5762786865234375e-07
+        },
+        "6": {
+          "coordinate_abs_mean_pre": [
+            0.7303001880645752,
+            0.4019121527671814
+          ],
+          "coordinate_mean_pre": [
+            0.7303001880645752,
+            0.4019121527671814
+          ],
+          "coordinate_mean_post": [
+            0.4019120931625366,
+            0.7303003072738647
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.37390393018722534,
+            0.7360854148864746
+          ],
+          "coordinate_mean_pre": [
+            0.37390393018722534,
+            0.7360854148864746
+          ],
+          "coordinate_mean_post": [
+            0.7360854148864746,
+            0.37390395998954773
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            0.8273583650588989,
+            0.33253827691078186
+          ],
+          "coordinate_mean_pre": [
+            0.8273583650588989,
+            0.32363361120224
+          ],
+          "coordinate_mean_post": [
+            0.32363346219062805,
+            0.8273583650588989
+          ],
+          "swap_max_abs_error": 4.6193599700927734e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.4367384910583496,
+            0.8091214299201965
+          ],
+          "coordinate_mean_pre": [
+            0.4367384910583496,
+            0.8091214299201965
+          ],
+          "coordinate_mean_post": [
+            0.8091215491294861,
+            0.4367384910583496
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.8508174419403076,
+            0.4650104343891144
+          ],
+          "coordinate_mean_pre": [
+            0.8508174419403076,
+            0.4650104343891144
+          ],
+          "coordinate_mean_post": [
+            0.46501031517982483,
+            0.8508173227310181
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.5029394030570984,
+            0.7569961547851562
+          ],
+          "coordinate_mean_pre": [
+            0.5029394030570984,
+            0.7569961547851562
+          ],
+          "coordinate_mean_post": [
+            0.7569960355758667,
+            0.5029393434524536
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.7720414400100708,
+            0.6067072749137878
+          ],
+          "coordinate_mean_pre": [
+            0.7720414400100708,
+            0.6067072749137878
+          ],
+          "coordinate_mean_post": [
+            0.6067072153091431,
+            0.7720415592193604
+          ],
+          "swap_max_abs_error": 3.5762786865234375e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.5545329451560974,
+            0.7670366168022156
+          ],
+          "coordinate_mean_pre": [
+            0.5545329451560974,
+            0.7670366168022156
+          ],
+          "coordinate_mean_post": [
+            0.7670367956161499,
+            0.5545328855514526
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "France",
+      "target": "China",
+      "source_answer": "Paris",
+      "target_answer": "Beijing",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "unit_transfer",
+      "text": " Beijing.\nA. True",
+      "first_token": 25701,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.7408506870269775,
+            0.6996765732765198
+          ],
+          "unit_cosine": 0.5055802464485168
+        },
+        "5": {
+          "raw_norms": [
+            0.7461590766906738,
+            0.7115569710731506
+          ],
+          "unit_cosine": 0.5163177847862244
+        },
+        "6": {
+          "raw_norms": [
+            0.5817607045173645,
+            0.5678784251213074
+          ],
+          "unit_cosine": 0.5403882265090942
+        },
+        "7": {
+          "raw_norms": [
+            0.6193721890449524,
+            0.614524245262146
+          ],
+          "unit_cosine": 0.542233407497406
+        },
+        "8": {
+          "raw_norms": [
+            0.6841142177581787,
+            0.6887275576591492
+          ],
+          "unit_cosine": 0.5333486795425415
+        },
+        "9": {
+          "raw_norms": [
+            0.744547963142395,
+            0.7706334590911865
+          ],
+          "unit_cosine": 0.5410158634185791
+        },
+        "10": {
+          "raw_norms": [
+            0.7828574776649475,
+            0.8105084300041199
+          ],
+          "unit_cosine": 0.5496245622634888
+        },
+        "11": {
+          "raw_norms": [
+            0.8505480289459229,
+            0.8973376154899597
+          ],
+          "unit_cosine": 0.5712822079658508
+        },
+        "12": {
+          "raw_norms": [
+            0.907291829586029,
+            0.9530805945396423
+          ],
+          "unit_cosine": 0.5677496194839478
+        },
+        "13": {
+          "raw_norms": [
+            0.9518189430236816,
+            1.0011470317840576
+          ],
+          "unit_cosine": 0.583652138710022
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "source_abs_mean_pre": 0.5063864588737488,
+          "source_mean_pre": 0.5063864588737488,
+          "source_mean_post": 0.25601905584335327,
+          "target_mean_pre": 0.41744792461395264,
+          "target_mean_post": 0.6678152084350586
+        },
+        "5": {
+          "source_abs_mean_pre": 0.32642805576324463,
+          "source_mean_pre": 0.32642805576324463,
+          "source_mean_post": 0.16854062676429749,
+          "target_mean_pre": 0.6819115877151489,
+          "target_mean_post": 0.8397990465164185
+        },
+        "6": {
+          "source_abs_mean_pre": 0.46843576431274414,
+          "source_mean_pre": 0.46843576431274414,
+          "source_mean_post": 0.2531372606754303,
+          "target_mean_pre": 1.2041685581207275,
+          "target_mean_post": 1.4194672107696533
+        },
+        "7": {
+          "source_abs_mean_pre": 0.2302590310573578,
+          "source_mean_pre": 0.2271248996257782,
+          "source_mean_post": 0.1231546550989151,
+          "target_mean_pre": 1.3811322450637817,
+          "target_mean_post": 1.4851024150848389
+        },
+        "8": {
+          "source_abs_mean_pre": 0.1926175057888031,
+          "source_mean_pre": 0.1926175057888031,
+          "source_mean_post": 0.10273221880197525,
+          "target_mean_pre": 1.42997145652771,
+          "target_mean_post": 1.5198566913604736
+        },
+        "9": {
+          "source_abs_mean_pre": 0.24660196900367737,
+          "source_mean_pre": 0.24660196900367737,
+          "source_mean_post": 0.1334155797958374,
+          "target_mean_pre": 1.5237674713134766,
+          "target_mean_post": 1.6369537115097046
+        },
+        "10": {
+          "source_abs_mean_pre": 0.22729411721229553,
+          "source_mean_pre": 0.22729411721229553,
+          "source_mean_post": 0.12492647022008896,
+          "target_mean_pre": 1.6447606086730957,
+          "target_mean_post": 1.7471282482147217
+        },
+        "11": {
+          "source_abs_mean_pre": 0.19685029983520508,
+          "source_mean_pre": 0.19685029983520508,
+          "source_mean_post": 0.11245708912611008,
+          "target_mean_pre": 1.621079921722412,
+          "target_mean_post": 1.7054731845855713
+        },
+        "12": {
+          "source_abs_mean_pre": 0.2703675925731659,
+          "source_mean_pre": 0.2703675925731659,
+          "source_mean_post": 0.15350103378295898,
+          "target_mean_pre": 1.7577781677246094,
+          "target_mean_post": 1.8746447563171387
+        },
+        "13": {
+          "source_abs_mean_pre": 0.1597713828086853,
+          "source_mean_pre": 0.1536615788936615,
+          "source_mean_post": 0.08968488872051239,
+          "target_mean_pre": 1.8124041557312012,
+          "target_mean_post": 1.8763806819915771
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 9338,
+        "target_id": 5440
+      }
+    },
+    {
+      "kind": "baseline",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "source_text": " Ottawa.\nA. True",
+      "target_text": " Cairo. Cairo is located in",
+      "source_first": 31106,
+      "target_first": 50779,
+      "baseline_ok": true
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "raw_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "coordinate_abs_mean_pre": [
+            1.3084759712219238,
+            0.5423009991645813
+          ],
+          "coordinate_mean_pre": [
+            1.3084759712219238,
+            0.43329286575317383
+          ],
+          "coordinate_mean_post": [
+            0.43329280614852905,
+            1.308476209640503
+          ],
+          "swap_max_abs_error": 2.86102294921875e-06
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.5793966054916382,
+            1.1016277074813843
+          ],
+          "coordinate_mean_pre": [
+            0.5472986698150635,
+            1.1016277074813843
+          ],
+          "coordinate_mean_post": [
+            1.1016279458999634,
+            0.5472983121871948
+          ],
+          "swap_max_abs_error": 1.7285346984863281e-06
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            1.2354748249053955,
+            0.49952611327171326
+          ],
+          "coordinate_mean_pre": [
+            1.2354748249053955,
+            0.4064405858516693
+          ],
+          "coordinate_mean_post": [
+            0.4064408242702484,
+            1.235474705696106
+          ],
+          "swap_max_abs_error": 8.344650268554688e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.47910675406455994,
+            1.0471827983856201
+          ],
+          "coordinate_mean_pre": [
+            0.46509885787963867,
+            1.0471827983856201
+          ],
+          "coordinate_mean_post": [
+            1.0471829175949097,
+            0.46509870886802673
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.9951663017272949,
+            0.5680152773857117
+          ],
+          "coordinate_mean_pre": [
+            0.9951663017272949,
+            0.558447003364563
+          ],
+          "coordinate_mean_post": [
+            0.5584473013877869,
+            0.9951662421226501
+          ],
+          "swap_max_abs_error": 9.424984455108643e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.5730916261672974,
+            0.8073315620422363
+          ],
+          "coordinate_mean_pre": [
+            0.5730916261672974,
+            0.8073315620422363
+          ],
+          "coordinate_mean_post": [
+            0.8073315620422363,
+            0.5730916261672974
+          ],
+          "swap_max_abs_error": 7.227063179016113e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.8159353733062744,
+            0.614837646484375
+          ],
+          "coordinate_mean_pre": [
+            0.8159353733062744,
+            0.614837646484375
+          ],
+          "coordinate_mean_post": [
+            0.6148374676704407,
+            0.815935492515564
+          ],
+          "swap_max_abs_error": 9.685754776000977e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.5203222632408142,
+            0.7969775199890137
+          ],
+          "coordinate_mean_pre": [
+            0.5203222632408142,
+            0.7969775199890137
+          ],
+          "coordinate_mean_post": [
+            0.7969774603843689,
+            0.5203221440315247
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.7604342699050903,
+            0.5440438389778137
+          ],
+          "coordinate_mean_pre": [
+            0.6918546557426453,
+            0.5440438389778137
+          ],
+          "coordinate_mean_post": [
+            0.5440437197685242,
+            0.6918545961380005
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            0.6301040649414062,
+            0.738555371761322
+          ],
+          "coordinate_mean_pre": [
+            0.6301040649414062,
+            0.6646457314491272
+          ],
+          "coordinate_mean_post": [
+            0.6646456122398376,
+            0.6301040649414062
+          ],
+          "swap_max_abs_error": 9.238719940185547e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.8016096949577332,
+            0.6518371105194092
+          ],
+          "coordinate_mean_pre": [
+            0.7839285731315613,
+            0.6518371105194092
+          ],
+          "coordinate_mean_post": [
+            0.6518369913101196,
+            0.7839285135269165
+          ],
+          "swap_max_abs_error": 8.642673492431641e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            0.6094977855682373,
+            0.8437414169311523
+          ],
+          "coordinate_mean_pre": [
+            0.6094977855682373,
+            0.8000093698501587
+          ],
+          "coordinate_mean_post": [
+            0.8000094890594482,
+            0.6094976663589478
+          ],
+          "swap_max_abs_error": 6.258487701416016e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            1.1778662204742432,
+            0.7486299276351929
+          ],
+          "coordinate_mean_pre": [
+            1.0635902881622314,
+            0.7486299276351929
+          ],
+          "coordinate_mean_post": [
+            0.7486298084259033,
+            1.063590168952942
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.0190776586532593,
+            1.2590765953063965
+          ],
+          "coordinate_mean_pre": [
+            1.0190776586532593,
+            1.1922049522399902
+          ],
+          "coordinate_mean_post": [
+            1.1922051906585693,
+            1.0190776586532593
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            1.7670788764953613,
+            0.7601503729820251
+          ],
+          "coordinate_mean_pre": [
+            1.7670788764953613,
+            0.7601503729820251
+          ],
+          "coordinate_mean_post": [
+            0.7601503133773804,
+            1.7670786380767822
+          ],
+          "swap_max_abs_error": 1.5795230865478516e-06
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            0.8185008764266968,
+            1.7928134202957153
+          ],
+          "coordinate_mean_pre": [
+            0.8185008764266968,
+            1.7808815240859985
+          ],
+          "coordinate_mean_post": [
+            1.7808818817138672,
+            0.8185005784034729
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.9140782356262207,
+            1.102433443069458
+          ],
+          "coordinate_mean_pre": [
+            1.8937008380889893,
+            1.102433443069458
+          ],
+          "coordinate_mean_post": [
+            1.1024333238601685,
+            1.8937008380889893
+          ],
+          "swap_max_abs_error": 5.364418029785156e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            1.3867805004119873,
+            2.4944584369659424
+          ],
+          "coordinate_mean_pre": [
+            1.3867805004119873,
+            2.4405298233032227
+          ],
+          "coordinate_mean_post": [
+            2.4405298233032227,
+            1.3867802619934082
+          ],
+          "swap_max_abs_error": 1.3113021850585938e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            3.5309395790100098,
+            1.3782589435577393
+          ],
+          "coordinate_mean_pre": [
+            3.497497081756592,
+            1.3782589435577393
+          ],
+          "coordinate_mean_post": [
+            1.378258228302002,
+            3.49749755859375
+          ],
+          "swap_max_abs_error": 1.7881393432617188e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "unit_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "coordinate_abs_mean_pre": [
+            0.8071644306182861,
+            0.31140923500061035
+          ],
+          "coordinate_mean_pre": [
+            0.8071644306182861,
+            0.24881286919116974
+          ],
+          "coordinate_mean_post": [
+            0.24881288409233093,
+            0.8071645498275757
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.3639107644557953,
+            0.737464189529419
+          ],
+          "coordinate_mean_pre": [
+            0.3407510221004486,
+            0.737464189529419
+          ],
+          "coordinate_mean_post": [
+            0.737464189529419,
+            0.3407510221004486
+          ],
+          "swap_max_abs_error": 2.980232238769531e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            0.8849980235099792,
+            0.34030434489250183
+          ],
+          "coordinate_mean_pre": [
+            0.8849980235099792,
+            0.275819331407547
+          ],
+          "coordinate_mean_post": [
+            0.2758192718029022,
+            0.884998083114624
+          ],
+          "swap_max_abs_error": 4.6566128730773926e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.3576369285583496,
+            0.8135930895805359
+          ],
+          "coordinate_mean_pre": [
+            0.348599910736084,
+            0.8135930895805359
+          ],
+          "coordinate_mean_post": [
+            0.8135932087898254,
+            0.3485998213291168
+          ],
+          "swap_max_abs_error": 1.1883676052093506e-06
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.8162275552749634,
+            0.4413634240627289
+          ],
+          "coordinate_mean_pre": [
+            0.8162275552749634,
+            0.4359428584575653
+          ],
+          "coordinate_mean_post": [
+            0.43594294786453247,
+            0.8162276148796082
+          ],
+          "swap_max_abs_error": 8.847564458847046e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.4915553629398346,
+            0.7147546410560608
+          ],
+          "coordinate_mean_pre": [
+            0.4915553629398346,
+            0.7147546410560608
+          ],
+          "coordinate_mean_post": [
+            0.714754581451416,
+            0.4915553331375122
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.7613433599472046,
+            0.5527427196502686
+          ],
+          "coordinate_mean_pre": [
+            0.7613433599472046,
+            0.5527427196502686
+          ],
+          "coordinate_mean_post": [
+            0.5527428984642029,
+            0.7613434195518494
+          ],
+          "swap_max_abs_error": 4.172325134277344e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.4841349720954895,
+            0.773381233215332
+          ],
+          "coordinate_mean_pre": [
+            0.4841349720954895,
+            0.773381233215332
+          ],
+          "coordinate_mean_post": [
+            0.7733812928199768,
+            0.48413509130477905
+          ],
+          "swap_max_abs_error": 6.631016731262207e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.7487106323242188,
+            0.5141942501068115
+          ],
+          "coordinate_mean_pre": [
+            0.6791695356369019,
+            0.5141942501068115
+          ],
+          "coordinate_mean_post": [
+            0.5141943097114563,
+            0.6791696548461914
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            0.6172349452972412,
+            0.7486552596092224
+          ],
+          "coordinate_mean_pre": [
+            0.6172349452972412,
+            0.6727275848388672
+          ],
+          "coordinate_mean_post": [
+            0.6727277040481567,
+            0.6172349452972412
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.811816930770874,
+            0.630731463432312
+          ],
+          "coordinate_mean_pre": [
+            0.793306827545166,
+            0.630731463432312
+          ],
+          "coordinate_mean_post": [
+            0.6307314038276672,
+            0.793306827545166
+          ],
+          "swap_max_abs_error": 1.043081283569336e-06
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            0.6104791164398193,
+            0.8689424991607666
+          ],
+          "coordinate_mean_pre": [
+            0.6104791164398193,
+            0.8258230090141296
+          ],
+          "coordinate_mean_post": [
+            0.8258231282234192,
+            0.610479474067688
+          ],
+          "swap_max_abs_error": 7.897615432739258e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            1.1133300065994263,
+            0.7032678723335266
+          ],
+          "coordinate_mean_pre": [
+            1.0057899951934814,
+            0.7032678723335266
+          ],
+          "coordinate_mean_post": [
+            0.7032679319381714,
+            1.0057902336120605
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            0.8885431885719299,
+            1.1210254430770874
+          ],
+          "coordinate_mean_pre": [
+            0.8885431885719299,
+            1.0612901449203491
+          ],
+          "coordinate_mean_post": [
+            1.0612902641296387,
+            0.8885431289672852
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            1.5623258352279663,
+            0.6694989204406738
+          ],
+          "coordinate_mean_pre": [
+            1.5623258352279663,
+            0.6694989204406738
+          ],
+          "coordinate_mean_post": [
+            0.6694986820220947,
+            1.5623259544372559
+          ],
+          "swap_max_abs_error": 9.685754776000977e-07
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            0.7311403751373291,
+            1.6156928539276123
+          ],
+          "coordinate_mean_pre": [
+            0.7311403751373291,
+            1.607140064239502
+          ],
+          "coordinate_mean_post": [
+            1.607140064239502,
+            0.7311404347419739
+          ],
+          "swap_max_abs_error": 8.046627044677734e-07
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.7696748971939087,
+            0.9987501502037048
+          ],
+          "coordinate_mean_pre": [
+            1.7547533512115479,
+            0.9987501502037048
+          ],
+          "coordinate_mean_post": [
+            0.9987499713897705,
+            1.7547532320022583
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            1.2297041416168213,
+            2.2913978099823
+          ],
+          "coordinate_mean_pre": [
+            1.2297041416168213,
+            2.247745990753174
+          ],
+          "coordinate_mean_post": [
+            2.247746467590332,
+            1.2297039031982422
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            3.1944637298583984,
+            1.3144981861114502
+          ],
+          "coordinate_mean_pre": [
+            3.1694374084472656,
+            1.3144981861114502
+          ],
+          "coordinate_mean_post": [
+            1.314497947692871,
+            3.1694371700286865
+          ],
+          "swap_max_abs_error": 2.384185791015625e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "current",
+      "layers": [
+        6,
+        24
+      ],
+      "operator": "unit_transfer",
+      "text": " Cairo.\nA. True",
+      "first_token": 50779,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1
+      },
+      "layer_geometry": {
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        }
+      },
+      "layer_measurements": {
+        "6": {
+          "source_abs_mean_pre": 0.9156836271286011,
+          "source_mean_pre": 0.9156836271286011,
+          "source_mean_post": 0.39937475323677063,
+          "target_mean_pre": 0.6008566617965698,
+          "target_mean_post": 1.1171658039093018
+        },
+        "7": {
+          "source_abs_mean_pre": 0.46356087923049927,
+          "source_mean_pre": 0.46356087923049927,
+          "source_mean_post": 0.19263291358947754,
+          "target_mean_pre": 1.062613844871521,
+          "target_mean_post": 1.333541750907898
+        },
+        "8": {
+          "source_abs_mean_pre": 0.26785606145858765,
+          "source_mean_pre": 0.26785606145858765,
+          "source_mean_post": 0.11041370034217834,
+          "target_mean_pre": 1.2685679197311401,
+          "target_mean_post": 1.4260101318359375
+        },
+        "9": {
+          "source_abs_mean_pre": 0.20184409618377686,
+          "source_mean_pre": 0.20184409618377686,
+          "source_mean_post": 0.08155154436826706,
+          "target_mean_pre": 1.4094059467315674,
+          "target_mean_post": 1.5296984910964966
+        },
+        "10": {
+          "source_abs_mean_pre": 0.17494967579841614,
+          "source_mean_pre": 0.17494967579841614,
+          "source_mean_post": 0.07201044261455536,
+          "target_mean_pre": 1.5883612632751465,
+          "target_mean_post": 1.691300630569458
+        },
+        "11": {
+          "source_abs_mean_pre": 0.13729126751422882,
+          "source_mean_pre": 0.13729126751422882,
+          "source_mean_post": 0.058740317821502686,
+          "target_mean_pre": 1.5705174207687378,
+          "target_mean_post": 1.6490683555603027
+        },
+        "12": {
+          "source_abs_mean_pre": 0.18338395655155182,
+          "source_mean_pre": 0.18338395655155182,
+          "source_mean_post": 0.08196738362312317,
+          "target_mean_pre": 1.7104456424713135,
+          "target_mean_post": 1.8118622303009033
+        },
+        "13": {
+          "source_abs_mean_pre": 0.07990105450153351,
+          "source_mean_pre": 0.0654715746641159,
+          "source_mean_post": 0.03053189627826214,
+          "target_mean_pre": 1.7618900537490845,
+          "target_mean_post": 1.7968297004699707
+        },
+        "14": {
+          "source_abs_mean_pre": 0.15411171317100525,
+          "source_mean_pre": -0.027530089020729065,
+          "source_mean_post": -0.013095514848828316,
+          "target_mean_pre": 1.7560908794403076,
+          "target_mean_post": 1.7416563034057617
+        },
+        "15": {
+          "source_abs_mean_pre": 0.1526014804840088,
+          "source_mean_pre": 0.12265908718109131,
+          "source_mean_post": 0.05997798219323158,
+          "target_mean_pre": 1.7615913152694702,
+          "target_mean_post": 1.8242723941802979
+        },
+        "16": {
+          "source_abs_mean_pre": 0.20508155226707458,
+          "source_mean_pre": 0.20508155226707458,
+          "source_mean_post": 0.10722793638706207,
+          "target_mean_pre": 1.9544763565063477,
+          "target_mean_post": 2.0523300170898438
+        },
+        "17": {
+          "source_abs_mean_pre": 0.14059290289878845,
+          "source_mean_pre": 0.14059290289878845,
+          "source_mean_post": 0.07673150300979614,
+          "target_mean_pre": 2.069859027862549,
+          "target_mean_post": 2.1337203979492188
+        },
+        "18": {
+          "source_abs_mean_pre": 0.200835183262825,
+          "source_mean_pre": 0.1085396409034729,
+          "source_mean_post": 0.05401046574115753,
+          "target_mean_pre": 2.3418543338775635,
+          "target_mean_post": 2.39638352394104
+        },
+        "19": {
+          "source_abs_mean_pre": 0.15651661157608032,
+          "source_mean_pre": 0.1253233551979065,
+          "source_mean_post": 0.061662569642066956,
+          "target_mean_pre": 2.827376127243042,
+          "target_mean_post": 2.8910369873046875
+        },
+        "20": {
+          "source_abs_mean_pre": 0.28300225734710693,
+          "source_mean_pre": 0.28300225734710693,
+          "source_mean_post": 0.1398312896490097,
+          "target_mean_pre": 2.9410202503204346,
+          "target_mean_post": 3.08419132232666
+        },
+        "21": {
+          "source_abs_mean_pre": 0.1959482729434967,
+          "source_mean_pre": 0.1959482729434967,
+          "source_mean_post": 0.08973957598209381,
+          "target_mean_pre": 3.105307102203369,
+          "target_mean_post": 3.2115159034729004
+        },
+        "22": {
+          "source_abs_mean_pre": 0.36302420496940613,
+          "source_mean_pre": 0.36302420496940613,
+          "source_mean_post": 0.15415053069591522,
+          "target_mean_pre": 3.439317226409912,
+          "target_mean_post": 3.648190498352051
+        },
+        "23": {
+          "source_abs_mean_pre": 0.28890126943588257,
+          "source_mean_pre": 0.23594629764556885,
+          "source_mean_post": 0.10215374082326889,
+          "target_mean_pre": 4.496333122253418,
+          "target_mean_post": 4.630125999450684
+        },
+        "24": {
+          "source_abs_mean_pre": 0.28882282972335815,
+          "source_mean_pre": 0.28882282972335815,
+          "source_mean_post": 0.11636781692504883,
+          "target_mean_pre": 6.0262956619262695,
+          "target_mean_post": 6.198751449584961
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "raw_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        },
+        "25": {
+          "raw_norms": [
+            0.9552674293518066,
+            0.9342299103736877
+          ],
+          "unit_cosine": 0.36799582839012146
+        },
+        "26": {
+          "raw_norms": [
+            0.9921653270721436,
+            0.9756379723548889
+          ],
+          "unit_cosine": 0.3517686426639557
+        },
+        "27": {
+          "raw_norms": [
+            0.9789623618125916,
+            0.965739369392395
+          ],
+          "unit_cosine": 0.3525131046772003
+        },
+        "28": {
+          "raw_norms": [
+            0.9136409163475037,
+            0.8935139775276184
+          ],
+          "unit_cosine": 0.33978843688964844
+        },
+        "29": {
+          "raw_norms": [
+            0.7842392325401306,
+            0.7465522289276123
+          ],
+          "unit_cosine": 0.4162614345550537
+        },
+        "30": {
+          "raw_norms": [
+            0.718264102935791,
+            0.6872096061706543
+          ],
+          "unit_cosine": 0.43855321407318115
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "coordinate_abs_mean_pre": [
+            1.3059066534042358,
+            0.4138435423374176
+          ],
+          "coordinate_mean_pre": [
+            1.3059066534042358,
+            0.1932363212108612
+          ],
+          "coordinate_mean_post": [
+            0.1932363361120224,
+            1.3059066534042358
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.3753073811531067,
+            1.3343591690063477
+          ],
+          "coordinate_mean_pre": [
+            0.2083979994058609,
+            1.3343591690063477
+          ],
+          "coordinate_mean_post": [
+            1.3343591690063477,
+            0.20839810371398926
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            1.2261816263198853,
+            0.348978191614151
+          ],
+          "coordinate_mean_pre": [
+            1.2261816263198853,
+            0.11400695890188217
+          ],
+          "coordinate_mean_post": [
+            0.11400669068098068,
+            1.2261815071105957
+          ],
+          "swap_max_abs_error": 5.066394805908203e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.3057258725166321,
+            1.2059485912322998
+          ],
+          "coordinate_mean_pre": [
+            0.18286018073558807,
+            1.2059485912322998
+          ],
+          "coordinate_mean_post": [
+            1.205948829650879,
+            0.18286004662513733
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            1.0823912620544434,
+            0.30076852440834045
+          ],
+          "coordinate_mean_pre": [
+            1.0823912620544434,
+            0.19709666073322296
+          ],
+          "coordinate_mean_post": [
+            0.1970965713262558,
+            1.082391381263733
+          ],
+          "swap_max_abs_error": 8.344650268554688e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.3616766929626465,
+            1.092081069946289
+          ],
+          "coordinate_mean_pre": [
+            0.10790229588747025,
+            1.092081069946289
+          ],
+          "coordinate_mean_post": [
+            1.0920813083648682,
+            0.10790233314037323
+          ],
+          "swap_max_abs_error": 2.980232238769531e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            1.160149097442627,
+            0.3742334246635437
+          ],
+          "coordinate_mean_pre": [
+            1.160149097442627,
+            0.08824576437473297
+          ],
+          "coordinate_mean_post": [
+            0.08824536204338074,
+            1.160149097442627
+          ],
+          "swap_max_abs_error": 1.5497207641601562e-06
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.38371092081069946,
+            1.223092794418335
+          ],
+          "coordinate_mean_pre": [
+            0.17920726537704468,
+            1.223092794418335
+          ],
+          "coordinate_mean_post": [
+            1.223092794418335,
+            0.17920716106891632
+          ],
+          "swap_max_abs_error": 4.172325134277344e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            1.1624919176101685,
+            0.40708839893341064
+          ],
+          "coordinate_mean_pre": [
+            1.1624919176101685,
+            0.1741907149553299
+          ],
+          "coordinate_mean_post": [
+            0.1741904765367508,
+            1.1624921560287476
+          ],
+          "swap_max_abs_error": 7.748603820800781e-07
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            0.5666720867156982,
+            1.3177663087844849
+          ],
+          "coordinate_mean_pre": [
+            0.34922295808792114,
+            1.3177663087844849
+          ],
+          "coordinate_mean_post": [
+            1.3177661895751953,
+            0.3492230772972107
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.688312292098999,
+            0.5498108863830566
+          ],
+          "coordinate_mean_pre": [
+            1.688312292098999,
+            0.37730926275253296
+          ],
+          "coordinate_mean_post": [
+            0.37730857729911804,
+            1.688312292098999
+          ],
+          "swap_max_abs_error": 1.341104507446289e-06
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            0.8250917196273804,
+            1.5814638137817383
+          ],
+          "coordinate_mean_pre": [
+            0.780785083770752,
+            1.5814638137817383
+          ],
+          "coordinate_mean_post": [
+            1.5814634561538696,
+            0.7807850241661072
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.6078169345855713,
+            0.9366073608398438
+          ],
+          "coordinate_mean_pre": [
+            1.6078169345855713,
+            0.8687683343887329
+          ],
+          "coordinate_mean_post": [
+            0.8687680959701538,
+            1.6078171730041504
+          ],
+          "swap_max_abs_error": 1.0728836059570312e-06
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.1339852809906006,
+            1.8235368728637695
+          ],
+          "coordinate_mean_pre": [
+            1.0647914409637451,
+            1.8235368728637695
+          ],
+          "coordinate_mean_post": [
+            1.823536992073059,
+            1.0647915601730347
+          ],
+          "swap_max_abs_error": 7.748603820800781e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            2.734846830368042,
+            1.170259714126587
+          ],
+          "coordinate_mean_pre": [
+            2.734846830368042,
+            1.0677568912506104
+          ],
+          "coordinate_mean_post": [
+            1.0677564144134521,
+            2.7348475456237793
+          ],
+          "swap_max_abs_error": 3.337860107421875e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            1.665174961090088,
+            3.0505876541137695
+          ],
+          "coordinate_mean_pre": [
+            1.5849096775054932,
+            3.0505876541137695
+          ],
+          "coordinate_mean_post": [
+            3.0505878925323486,
+            1.584909439086914
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "25": {
+          "coordinate_abs_mean_pre": [
+            3.8876547813415527,
+            1.322718620300293
+          ],
+          "coordinate_mean_pre": [
+            3.8876547813415527,
+            1.2716195583343506
+          ],
+          "coordinate_mean_post": [
+            1.2716196775436401,
+            3.8876545429229736
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        },
+        "26": {
+          "coordinate_abs_mean_pre": [
+            1.3641016483306885,
+            3.5966243743896484
+          ],
+          "coordinate_mean_pre": [
+            1.3102149963378906,
+            3.592283248901367
+          ],
+          "coordinate_mean_post": [
+            3.5922837257385254,
+            1.3102145195007324
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        },
+        "27": {
+          "coordinate_abs_mean_pre": [
+            3.94453763961792,
+            1.50534987449646
+          ],
+          "coordinate_mean_pre": [
+            3.94453763961792,
+            1.50534987449646
+          ],
+          "coordinate_mean_post": [
+            1.505350112915039,
+            3.9445366859436035
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        },
+        "28": {
+          "coordinate_abs_mean_pre": [
+            2.006751537322998,
+            4.885343074798584
+          ],
+          "coordinate_mean_pre": [
+            2.006751537322998,
+            4.885343074798584
+          ],
+          "coordinate_mean_post": [
+            4.885343551635742,
+            2.00675106048584
+          ],
+          "swap_max_abs_error": 2.384185791015625e-06
+        },
+        "29": {
+          "coordinate_abs_mean_pre": [
+            6.185984134674072,
+            2.333975315093994
+          ],
+          "coordinate_mean_pre": [
+            6.185984134674072,
+            2.333975315093994
+          ],
+          "coordinate_mean_post": [
+            2.333975315093994,
+            6.185983657836914
+          ],
+          "swap_max_abs_error": 2.1457672119140625e-06
+        },
+        "30": {
+          "coordinate_abs_mean_pre": [
+            2.2184085845947266,
+            7.287802696228027
+          ],
+          "coordinate_mean_pre": [
+            2.2184085845947266,
+            7.287802696228027
+          ],
+          "coordinate_mean_post": [
+            7.287802696228027,
+            2.2184088230133057
+          ],
+          "swap_max_abs_error": 1.9073486328125e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "unit_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        },
+        "25": {
+          "raw_norms": [
+            0.9552674293518066,
+            0.9342299103736877
+          ],
+          "unit_cosine": 0.36799582839012146
+        },
+        "26": {
+          "raw_norms": [
+            0.9921653270721436,
+            0.9756379723548889
+          ],
+          "unit_cosine": 0.3517686426639557
+        },
+        "27": {
+          "raw_norms": [
+            0.9789623618125916,
+            0.965739369392395
+          ],
+          "unit_cosine": 0.3525131046772003
+        },
+        "28": {
+          "raw_norms": [
+            0.9136409163475037,
+            0.8935139775276184
+          ],
+          "unit_cosine": 0.33978843688964844
+        },
+        "29": {
+          "raw_norms": [
+            0.7842392325401306,
+            0.7465522289276123
+          ],
+          "unit_cosine": 0.4162614345550537
+        },
+        "30": {
+          "raw_norms": [
+            0.718264102935791,
+            0.6872096061706543
+          ],
+          "unit_cosine": 0.43855321407318115
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "coordinate_abs_mean_pre": [
+            1.012636423110962,
+            0.30136746168136597
+          ],
+          "coordinate_mean_pre": [
+            1.012636423110962,
+            0.14071786403656006
+          ],
+          "coordinate_mean_post": [
+            0.14071747660636902,
+            1.012636661529541
+          ],
+          "swap_max_abs_error": 1.9669532775878906e-06
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.2882005274295807,
+            1.0734668970108032
+          ],
+          "coordinate_mean_pre": [
+            0.16108161211013794,
+            1.0734668970108032
+          ],
+          "coordinate_mean_post": [
+            1.0734667778015137,
+            0.16108176112174988
+          ],
+          "swap_max_abs_error": 1.0728836059570312e-06
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            1.0789192914962769,
+            0.2878141403198242
+          ],
+          "coordinate_mean_pre": [
+            1.0789192914962769,
+            0.09639109671115875
+          ],
+          "coordinate_mean_post": [
+            0.09639103710651398,
+            1.0789191722869873
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.267180472612381,
+            1.1103532314300537
+          ],
+          "coordinate_mean_pre": [
+            0.16507579386234283,
+            1.1103532314300537
+          ],
+          "coordinate_mean_post": [
+            1.1103535890579224,
+            0.16507567465305328
+          ],
+          "swap_max_abs_error": 1.1920928955078125e-06
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            1.0387507677078247,
+            0.2742622196674347
+          ],
+          "coordinate_mean_pre": [
+            1.0387507677078247,
+            0.18426743149757385
+          ],
+          "coordinate_mean_post": [
+            0.18426740169525146,
+            1.0387507677078247
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "14": {
+          "coordinate_abs_mean_pre": [
+            0.339925616979599,
+            1.0639824867248535
+          ],
+          "coordinate_mean_pre": [
+            0.09837368130683899,
+            1.0639824867248535
+          ],
+          "coordinate_mean_post": [
+            1.0639827251434326,
+            0.09837328642606735
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "15": {
+          "coordinate_abs_mean_pre": [
+            1.1667805910110474,
+            0.3612217605113983
+          ],
+          "coordinate_mean_pre": [
+            1.1667805910110474,
+            0.08403997123241425
+          ],
+          "coordinate_mean_post": [
+            0.08403985947370529,
+            1.1667805910110474
+          ],
+          "swap_max_abs_error": 5.662441253662109e-07
+        },
+        "16": {
+          "coordinate_abs_mean_pre": [
+            0.37395620346069336,
+            1.209625005722046
+          ],
+          "coordinate_mean_pre": [
+            0.16947129368782043,
+            1.209625005722046
+          ],
+          "coordinate_mean_post": [
+            1.209625005722046,
+            0.16947123408317566
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "17": {
+          "coordinate_abs_mean_pre": [
+            1.1997244358062744,
+            0.39839857816696167
+          ],
+          "coordinate_mean_pre": [
+            1.1997244358062744,
+            0.17044979333877563
+          ],
+          "coordinate_mean_post": [
+            0.17044949531555176,
+            1.1997244358062744
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "18": {
+          "coordinate_abs_mean_pre": [
+            0.5244203209877014,
+            1.278527021408081
+          ],
+          "coordinate_mean_pre": [
+            0.3302046060562134,
+            1.278527021408081
+          ],
+          "coordinate_mean_post": [
+            1.2785272598266602,
+            0.33020442724227905
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "19": {
+          "coordinate_abs_mean_pre": [
+            1.5101536512374878,
+            0.48089495301246643
+          ],
+          "coordinate_mean_pre": [
+            1.5101536512374878,
+            0.3355998396873474
+          ],
+          "coordinate_mean_post": [
+            0.33559954166412354,
+            1.5101537704467773
+          ],
+          "swap_max_abs_error": 1.2218952178955078e-06
+        },
+        "20": {
+          "coordinate_abs_mean_pre": [
+            0.7266254425048828,
+            1.4155457019805908
+          ],
+          "coordinate_mean_pre": [
+            0.690843403339386,
+            1.4155457019805908
+          ],
+          "coordinate_mean_post": [
+            1.41554594039917,
+            0.6908434629440308
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        },
+        "21": {
+          "coordinate_abs_mean_pre": [
+            1.4512476921081543,
+            0.8396610021591187
+          ],
+          "coordinate_mean_pre": [
+            1.4512476921081543,
+            0.7830265760421753
+          ],
+          "coordinate_mean_post": [
+            0.7830265760421753,
+            1.4512474536895752
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "22": {
+          "coordinate_abs_mean_pre": [
+            1.0433900356292725,
+            1.6743544340133667
+          ],
+          "coordinate_mean_pre": [
+            0.9835814833641052,
+            1.6743544340133667
+          ],
+          "coordinate_mean_post": [
+            1.6743545532226562,
+            0.9835817217826843
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "23": {
+          "coordinate_abs_mean_pre": [
+            2.482694149017334,
+            1.1046338081359863
+          ],
+          "coordinate_mean_pre": [
+            2.482694149017334,
+            1.0160924196243286
+          ],
+          "coordinate_mean_post": [
+            1.0160915851593018,
+            2.482694625854492
+          ],
+          "swap_max_abs_error": 2.2649765014648438e-06
+        },
+        "24": {
+          "coordinate_abs_mean_pre": [
+            1.5238852500915527,
+            2.9243125915527344
+          ],
+          "coordinate_mean_pre": [
+            1.4592430591583252,
+            2.9243125915527344
+          ],
+          "coordinate_mean_post": [
+            2.9243125915527344,
+            1.4592432975769043
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        },
+        "25": {
+          "coordinate_abs_mean_pre": [
+            3.798278331756592,
+            1.271815299987793
+          ],
+          "coordinate_mean_pre": [
+            3.798278331756592,
+            1.2320122718811035
+          ],
+          "coordinate_mean_post": [
+            1.2320119142532349,
+            3.798278331756592
+          ],
+          "swap_max_abs_error": 1.6689300537109375e-06
+        },
+        "26": {
+          "coordinate_abs_mean_pre": [
+            1.3558003902435303,
+            3.6709470748901367
+          ],
+          "coordinate_mean_pre": [
+            1.3108906745910645,
+            3.6709470748901367
+          ],
+          "coordinate_mean_post": [
+            3.670947313308716,
+            1.3108904361724854
+          ],
+          "swap_max_abs_error": 1.0728836059570312e-06
+        },
+        "27": {
+          "coordinate_abs_mean_pre": [
+            3.974240303039551,
+            1.4907402992248535
+          ],
+          "coordinate_mean_pre": [
+            3.974240303039551,
+            1.4907402992248535
+          ],
+          "coordinate_mean_post": [
+            1.4907397031784058,
+            3.97424054145813
+          ],
+          "swap_max_abs_error": 1.6689300537109375e-06
+        },
+        "28": {
+          "coordinate_abs_mean_pre": [
+            1.8464388847351074,
+            4.541952133178711
+          ],
+          "coordinate_mean_pre": [
+            1.8464388847351074,
+            4.541952133178711
+          ],
+          "coordinate_mean_post": [
+            4.541951656341553,
+            1.8464394807815552
+          ],
+          "swap_max_abs_error": 1.7881393432617188e-06
+        },
+        "29": {
+          "coordinate_abs_mean_pre": [
+            4.958871841430664,
+            1.7965707778930664
+          ],
+          "coordinate_mean_pre": [
+            4.958871841430664,
+            1.7965707778930664
+          ],
+          "coordinate_mean_post": [
+            1.7965703010559082,
+            4.958871841430664
+          ],
+          "swap_max_abs_error": 1.3709068298339844e-06
+        },
+        "30": {
+          "coordinate_abs_mean_pre": [
+            1.5607243776321411,
+            5.315586090087891
+          ],
+          "coordinate_mean_pre": [
+            1.5607243776321411,
+            5.315586090087891
+          ],
+          "coordinate_mean_post": [
+            5.315586566925049,
+            1.5607249736785889
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "reference_fraction",
+      "layers": [
+        9,
+        30
+      ],
+      "operator": "unit_transfer",
+      "text": " Cairo.\nA. True",
+      "first_token": 50779,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1,
+        "22": 1,
+        "23": 1,
+        "24": 1,
+        "25": 1,
+        "26": 1,
+        "27": 1,
+        "28": 1,
+        "29": 1,
+        "30": 1
+      },
+      "layer_geometry": {
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        },
+        "14": {
+          "raw_norms": [
+            0.9960064888000488,
+            0.9120956063270569
+          ],
+          "unit_cosine": 0.4756808578968048
+        },
+        "15": {
+          "raw_norms": [
+            1.0245786905288696,
+            0.9396476149559021
+          ],
+          "unit_cosine": 0.4889812171459198
+        },
+        "16": {
+          "raw_norms": [
+            1.025071620941162,
+            0.9254733324050903
+          ],
+          "unit_cosine": 0.5228548645973206
+        },
+        "17": {
+          "raw_norms": [
+            1.0686894655227661,
+            0.9439606070518494
+          ],
+          "unit_cosine": 0.5457711219787598
+        },
+        "18": {
+          "raw_norms": [
+            0.9736694097518921,
+            0.8932512402534485
+          ],
+          "unit_cosine": 0.4976111054420471
+        },
+        "19": {
+          "raw_norms": [
+            0.900438129901886,
+            0.8362836241722107
+          ],
+          "unit_cosine": 0.49202755093574524
+        },
+        "20": {
+          "raw_norms": [
+            0.8966621160507202,
+            0.8302111029624939
+          ],
+          "unit_cosine": 0.494099497795105
+        },
+        "21": {
+          "raw_norms": [
+            0.904691755771637,
+            0.8516377210617065
+          ],
+          "unit_cosine": 0.4579753875732422
+        },
+        "22": {
+          "raw_norms": [
+            0.9272667765617371,
+            0.8753331899642944
+          ],
+          "unit_cosine": 0.42462873458862305
+        },
+        "23": {
+          "raw_norms": [
+            0.9357242584228516,
+            0.8637674450874329
+          ],
+          "unit_cosine": 0.4329530596733093
+        },
+        "24": {
+          "raw_norms": [
+            0.9309875965118408,
+            0.8970314860343933
+          ],
+          "unit_cosine": 0.4029037356376648
+        },
+        "25": {
+          "raw_norms": [
+            0.9552674293518066,
+            0.9342299103736877
+          ],
+          "unit_cosine": 0.36799582839012146
+        },
+        "26": {
+          "raw_norms": [
+            0.9921653270721436,
+            0.9756379723548889
+          ],
+          "unit_cosine": 0.3517686426639557
+        },
+        "27": {
+          "raw_norms": [
+            0.9789623618125916,
+            0.965739369392395
+          ],
+          "unit_cosine": 0.3525131046772003
+        },
+        "28": {
+          "raw_norms": [
+            0.9136409163475037,
+            0.8935139775276184
+          ],
+          "unit_cosine": 0.33978843688964844
+        },
+        "29": {
+          "raw_norms": [
+            0.7842392325401306,
+            0.7465522289276123
+          ],
+          "unit_cosine": 0.4162614345550537
+        },
+        "30": {
+          "raw_norms": [
+            0.718264102935791,
+            0.6872096061706543
+          ],
+          "unit_cosine": 0.43855321407318115
+        }
+      },
+      "layer_measurements": {
+        "9": {
+          "source_abs_mean_pre": 1.0694901943206787,
+          "source_mean_pre": 1.0694901943206787,
+          "source_mean_post": 0.4321085214614868,
+          "target_mean_pre": 0.5498549342155457,
+          "target_mean_post": 1.1872369050979614
+        },
+        "10": {
+          "source_abs_mean_pre": 0.49089229106903076,
+          "source_mean_pre": 0.49089229106903076,
+          "source_mean_post": 0.20205442607402802,
+          "target_mean_pre": 1.252374529838562,
+          "target_mean_post": 1.5412123203277588
+        },
+        "11": {
+          "source_abs_mean_pre": 0.2563678026199341,
+          "source_mean_pre": 0.2563678026199341,
+          "source_mean_post": 0.10968741774559021,
+          "target_mean_pre": 1.4295601844787598,
+          "target_mean_post": 1.5762406587600708
+        },
+        "12": {
+          "source_abs_mean_pre": 0.23264837265014648,
+          "source_mean_pre": 0.23264837265014648,
+          "source_mean_post": 0.1039872020483017,
+          "target_mean_pre": 1.626427173614502,
+          "target_mean_post": 1.7550883293151855
+        },
+        "13": {
+          "source_abs_mean_pre": 0.1020941287279129,
+          "source_mean_pre": 0.09933976083993912,
+          "source_mean_post": 0.046325843781232834,
+          "target_mean_pre": 1.7154192924499512,
+          "target_mean_post": 1.7684330940246582
+        },
+        "14": {
+          "source_abs_mean_pre": 0.16425564885139465,
+          "source_mean_pre": -0.01070839911699295,
+          "source_mean_post": -0.005093786865472794,
+          "target_mean_pre": 1.7377427816390991,
+          "target_mean_post": 1.7321282625198364
+        },
+        "15": {
+          "source_abs_mean_pre": 0.1547638475894928,
+          "source_mean_pre": 0.1262558251619339,
+          "source_mean_post": 0.06173669174313545,
+          "target_mean_pre": 1.7527904510498047,
+          "target_mean_post": 1.8173096179962158
+        },
+        "16": {
+          "source_abs_mean_pre": 0.20528802275657654,
+          "source_mean_pre": 0.20528802275657654,
+          "source_mean_post": 0.10733585059642792,
+          "target_mean_pre": 1.9349286556243896,
+          "target_mean_post": 2.0328807830810547
+        },
+        "17": {
+          "source_abs_mean_pre": 0.14298886060714722,
+          "source_mean_pre": 0.1395493447780609,
+          "source_mean_post": 0.0761619359254837,
+          "target_mean_pre": 2.0462331771850586,
+          "target_mean_post": 2.1096205711364746
+        },
+        "18": {
+          "source_abs_mean_pre": 0.20795655250549316,
+          "source_mean_pre": 0.11054088175296783,
+          "source_mean_post": 0.05500637739896774,
+          "target_mean_pre": 2.3279244899749756,
+          "target_mean_post": 2.3834590911865234
+        },
+        "19": {
+          "source_abs_mean_pre": 0.14184586703777313,
+          "source_mean_pre": 0.11818252503871918,
+          "source_mean_post": 0.058149054646492004,
+          "target_mean_pre": 2.8315811157226562,
+          "target_mean_post": 2.8916144371032715
+        },
+        "20": {
+          "source_abs_mean_pre": 0.2760692238807678,
+          "source_mean_pre": 0.2760692238807678,
+          "source_mean_post": 0.13640567660331726,
+          "target_mean_pre": 2.947381019592285,
+          "target_mean_post": 3.0870447158813477
+        },
+        "21": {
+          "source_abs_mean_pre": 0.18555806577205658,
+          "source_mean_pre": 0.18555806577205658,
+          "source_mean_post": 0.08498106151819229,
+          "target_mean_pre": 3.087859630584717,
+          "target_mean_post": 3.18843674659729
+        },
+        "22": {
+          "source_abs_mean_pre": 0.3499172627925873,
+          "source_mean_pre": 0.3499172627925873,
+          "source_mean_post": 0.14858485758304596,
+          "target_mean_pre": 3.375065326690674,
+          "target_mean_post": 3.57639741897583
+        },
+        "23": {
+          "source_abs_mean_pre": 0.2803954780101776,
+          "source_mean_pre": 0.23772956430912018,
+          "source_mean_post": 0.10292576253414154,
+          "target_mean_pre": 4.325075149536133,
+          "target_mean_post": 4.459878921508789
+        },
+        "24": {
+          "source_abs_mean_pre": 0.2699604034423828,
+          "source_mean_pre": 0.2699604034423828,
+          "source_mean_post": 0.10876801609992981,
+          "target_mean_pre": 5.849419593811035,
+          "target_mean_post": 6.0106120109558105
+        },
+        "25": {
+          "source_abs_mean_pre": 0.2013583481311798,
+          "source_mean_pre": 0.13076326251029968,
+          "source_mean_post": 0.04812026768922806,
+          "target_mean_pre": 5.953577041625977,
+          "target_mean_post": 6.036220073699951
+        },
+        "26": {
+          "source_abs_mean_pre": 0.13291537761688232,
+          "source_mean_pre": -0.024445954710245132,
+          "source_mean_post": -0.00859924964606762,
+          "target_mean_pre": 5.911880970001221,
+          "target_mean_post": 5.896034240722656
+        },
+        "27": {
+          "source_abs_mean_pre": 0.5472521185874939,
+          "source_mean_pre": 0.5098741054534912,
+          "source_mean_post": 0.17973726987838745,
+          "target_mean_pre": 6.6025543212890625,
+          "target_mean_post": 6.932690620422363
+        },
+        "28": {
+          "source_abs_mean_pre": 0.4311704933643341,
+          "source_mean_pre": 0.3707726001739502,
+          "source_mean_post": 0.12598426640033722,
+          "target_mean_pre": 7.4496684074401855,
+          "target_mean_post": 7.694457530975342
+        },
+        "29": {
+          "source_abs_mean_pre": 0.4633481502532959,
+          "source_mean_pre": 0.3062032461166382,
+          "source_mean_post": 0.12746064364910126,
+          "target_mean_pre": 7.841097831726074,
+          "target_mean_post": 8.019840240478516
+        },
+        "30": {
+          "source_abs_mean_pre": 0.5683246850967407,
+          "source_mean_pre": -0.3373987078666687,
+          "source_mean_post": -0.1479673683643341,
+          "target_mean_pre": 6.880989074707031,
+          "target_mean_post": 6.69155740737915
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "raw_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.8009634613990784,
+            0.7109475135803223
+          ],
+          "unit_cosine": 0.423309326171875
+        },
+        "5": {
+          "raw_norms": [
+            0.8089549541473389,
+            0.7202023267745972
+          ],
+          "unit_cosine": 0.42742499709129333
+        },
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "coordinate_abs_mean_pre": [
+            0.4688607156276703,
+            0.24705083668231964
+          ],
+          "coordinate_mean_pre": [
+            0.44955864548683167,
+            0.24705083668231964
+          ],
+          "coordinate_mean_post": [
+            0.24705073237419128,
+            0.44955870509147644
+          ],
+          "swap_max_abs_error": 5.960464477539062e-07
+        },
+        "5": {
+          "coordinate_abs_mean_pre": [
+            0.2895171046257019,
+            0.5155143141746521
+          ],
+          "coordinate_mean_pre": [
+            0.2895171046257019,
+            0.5155143141746521
+          ],
+          "coordinate_mean_post": [
+            0.5155143141746521,
+            0.2895171046257019
+          ],
+          "swap_max_abs_error": 4.172325134277344e-07
+        },
+        "6": {
+          "coordinate_abs_mean_pre": [
+            1.3697704076766968,
+            0.38484588265419006
+          ],
+          "coordinate_mean_pre": [
+            1.3697704076766968,
+            0.38255026936531067
+          ],
+          "coordinate_mean_post": [
+            0.38255009055137634,
+            1.3697707653045654
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.5456773042678833,
+            1.1314464807510376
+          ],
+          "coordinate_mean_pre": [
+            0.5306000113487244,
+            1.1314464807510376
+          ],
+          "coordinate_mean_post": [
+            1.1314467191696167,
+            0.5305997133255005
+          ],
+          "swap_max_abs_error": 1.430511474609375e-06
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            1.248998999595642,
+            0.42855674028396606
+          ],
+          "coordinate_mean_pre": [
+            1.248998999595642,
+            0.40018874406814575
+          ],
+          "coordinate_mean_post": [
+            0.4001888632774353,
+            1.2489988803863525
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.4562959671020508,
+            1.0655652284622192
+          ],
+          "coordinate_mean_pre": [
+            0.4562959671020508,
+            1.0655652284622192
+          ],
+          "coordinate_mean_post": [
+            1.0655652284622192,
+            0.4562961161136627
+          ],
+          "swap_max_abs_error": 5.364418029785156e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            1.0153682231903076,
+            0.5486974716186523
+          ],
+          "coordinate_mean_pre": [
+            1.0153682231903076,
+            0.5486974716186523
+          ],
+          "coordinate_mean_post": [
+            0.5486975312232971,
+            1.0153682231903076
+          ],
+          "swap_max_abs_error": 3.5762786865234375e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.5627062320709229,
+            0.8222466707229614
+          ],
+          "coordinate_mean_pre": [
+            0.5627062320709229,
+            0.8222466707229614
+          ],
+          "coordinate_mean_post": [
+            0.8222466707229614,
+            0.5627062916755676
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.8301581144332886,
+            0.6052221059799194
+          ],
+          "coordinate_mean_pre": [
+            0.8301581144332886,
+            0.6052221059799194
+          ],
+          "coordinate_mean_post": [
+            0.6052220463752747,
+            0.8301581144332886
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.5122517943382263,
+            0.8093020915985107
+          ],
+          "coordinate_mean_pre": [
+            0.5122517943382263,
+            0.8093020915985107
+          ],
+          "coordinate_mean_post": [
+            0.809302031993866,
+            0.5122517347335815
+          ],
+          "swap_max_abs_error": 7.152557373046875e-07
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "unit_exchange",
+      "text": " Ottawa.\nA. True",
+      "first_token": 31106,
+      "hit_target": false,
+      "stayed_source": true,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.8009634613990784,
+            0.7109475135803223
+          ],
+          "unit_cosine": 0.423309326171875
+        },
+        "5": {
+          "raw_norms": [
+            0.8089549541473389,
+            0.7202023267745972
+          ],
+          "unit_cosine": 0.42742499709129333
+        },
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "coordinate_abs_mean_pre": [
+            0.3755401372909546,
+            0.17564040422439575
+          ],
+          "coordinate_mean_pre": [
+            0.3600798547267914,
+            0.17564040422439575
+          ],
+          "coordinate_mean_post": [
+            0.17564041912555695,
+            0.360079824924469
+          ],
+          "swap_max_abs_error": 1.7881393432617188e-07
+        },
+        "5": {
+          "coordinate_abs_mean_pre": [
+            0.21249502897262573,
+            0.40975475311279297
+          ],
+          "coordinate_mean_pre": [
+            0.21249502897262573,
+            0.40975475311279297
+          ],
+          "coordinate_mean_post": [
+            0.40975481271743774,
+            0.21249505877494812
+          ],
+          "swap_max_abs_error": 2.384185791015625e-07
+        },
+        "6": {
+          "coordinate_abs_mean_pre": [
+            0.8335753679275513,
+            0.22893568873405457
+          ],
+          "coordinate_mean_pre": [
+            0.8335753679275513,
+            0.22715644538402557
+          ],
+          "coordinate_mean_post": [
+            0.2271563857793808,
+            0.8335756063461304
+          ],
+          "swap_max_abs_error": 9.5367431640625e-07
+        },
+        "7": {
+          "coordinate_abs_mean_pre": [
+            0.3511236608028412,
+            0.7483870983123779
+          ],
+          "coordinate_mean_pre": [
+            0.33915987610816956,
+            0.7483870983123779
+          ],
+          "coordinate_mean_post": [
+            0.7483870983123779,
+            0.33915969729423523
+          ],
+          "swap_max_abs_error": 7.450580596923828e-07
+        },
+        "8": {
+          "coordinate_abs_mean_pre": [
+            0.886834979057312,
+            0.30139780044555664
+          ],
+          "coordinate_mean_pre": [
+            0.886834979057312,
+            0.28037282824516296
+          ],
+          "coordinate_mean_post": [
+            0.2803727090358734,
+            0.8868348598480225
+          ],
+          "swap_max_abs_error": 4.917383193969727e-07
+        },
+        "9": {
+          "coordinate_abs_mean_pre": [
+            0.35069090127944946,
+            0.8203483819961548
+          ],
+          "coordinate_mean_pre": [
+            0.35069090127944946,
+            0.8203483819961548
+          ],
+          "coordinate_mean_post": [
+            0.8203485608100891,
+            0.3506908416748047
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "10": {
+          "coordinate_abs_mean_pre": [
+            0.8261085152626038,
+            0.434828519821167
+          ],
+          "coordinate_mean_pre": [
+            0.8261085152626038,
+            0.434828519821167
+          ],
+          "coordinate_mean_post": [
+            0.4348285496234894,
+            0.8261085152626038
+          ],
+          "swap_max_abs_error": 4.76837158203125e-07
+        },
+        "11": {
+          "coordinate_abs_mean_pre": [
+            0.48810791969299316,
+            0.7219223976135254
+          ],
+          "coordinate_mean_pre": [
+            0.48810791969299316,
+            0.7219223976135254
+          ],
+          "coordinate_mean_post": [
+            0.7219223976135254,
+            0.48810791969299316
+          ],
+          "swap_max_abs_error": 3.5762786865234375e-07
+        },
+        "12": {
+          "coordinate_abs_mean_pre": [
+            0.7685811519622803,
+            0.5489957928657532
+          ],
+          "coordinate_mean_pre": [
+            0.7685811519622803,
+            0.5489957928657532
+          ],
+          "coordinate_mean_post": [
+            0.5489959120750427,
+            0.7685811519622803
+          ],
+          "swap_max_abs_error": 2.980232238769531e-07
+        },
+        "13": {
+          "coordinate_abs_mean_pre": [
+            0.4812101125717163,
+            0.7797584533691406
+          ],
+          "coordinate_mean_pre": [
+            0.4812101125717163,
+            0.7797584533691406
+          ],
+          "coordinate_mean_post": [
+            0.7797583341598511,
+            0.48121005296707153
+          ],
+          "swap_max_abs_error": 5.364418029785156e-07
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    },
+    {
+      "kind": "intervention",
+      "source": "Canada",
+      "target": "Egypt",
+      "source_answer": "Ottawa",
+      "target_answer": "Cairo",
+      "band": "early_mid",
+      "layers": [
+        4,
+        13
+      ],
+      "operator": "unit_transfer",
+      "text": " Cairo.\nA. True",
+      "first_token": 50779,
+      "hit_target": true,
+      "stayed_source": false,
+      "baseline_ok": true,
+      "hook_calls": {
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1
+      },
+      "layer_geometry": {
+        "4": {
+          "raw_norms": [
+            0.8009634613990784,
+            0.7109475135803223
+          ],
+          "unit_cosine": 0.423309326171875
+        },
+        "5": {
+          "raw_norms": [
+            0.8089549541473389,
+            0.7202023267745972
+          ],
+          "unit_cosine": 0.42742499709129333
+        },
+        "6": {
+          "raw_norms": [
+            0.6168736219406128,
+            0.5742366909980774
+          ],
+          "unit_cosine": 0.4361492097377777
+        },
+        "7": {
+          "raw_norms": [
+            0.6600071787834167,
+            0.6201234459877014
+          ],
+          "unit_cosine": 0.41555055975914
+        },
+        "8": {
+          "raw_norms": [
+            0.7092791795730591,
+            0.6724079847335815
+          ],
+          "unit_cosine": 0.4122127592563629
+        },
+        "9": {
+          "raw_norms": [
+            0.7754276990890503,
+            0.7282156944274902
+          ],
+          "unit_cosine": 0.40403199195861816
+        },
+        "10": {
+          "raw_norms": [
+            0.8181906938552856,
+            0.7612742185592651
+          ],
+          "unit_cosine": 0.41160649061203003
+        },
+        "11": {
+          "raw_norms": [
+            0.8938294053077698,
+            0.8163343071937561
+          ],
+          "unit_cosine": 0.4278516471385956
+        },
+        "12": {
+          "raw_norms": [
+            0.9413021802902222,
+            0.8598278760910034
+          ],
+          "unit_cosine": 0.44697147607803345
+        },
+        "13": {
+          "raw_norms": [
+            0.9814013838768005,
+            0.895899772644043
+          ],
+          "unit_cosine": 0.46633750200271606
+        }
+      },
+      "layer_measurements": {
+        "4": {
+          "source_abs_mean_pre": 0.4344301223754883,
+          "source_mean_pre": 0.4344301223754883,
+          "source_mean_post": 0.18389827013015747,
+          "target_mean_pre": 0.32806530594825745,
+          "target_mean_post": 0.5785971879959106
+        },
+        "5": {
+          "source_abs_mean_pre": 0.24939356744289398,
+          "source_mean_pre": 0.24939356744289398,
+          "source_mean_post": 0.10659702122211456,
+          "target_mean_pre": 0.633077085018158,
+          "target_mean_post": 0.7758736610412598
+        },
+        "6": {
+          "source_abs_mean_pre": 0.35890448093414307,
+          "source_mean_pre": 0.35890448093414307,
+          "source_mean_post": 0.15653589367866516,
+          "target_mean_pre": 1.0818274021148682,
+          "target_mean_post": 1.284196138381958
+        },
+        "7": {
+          "source_abs_mean_pre": 0.21493850648403168,
+          "source_mean_pre": 0.21493850648403168,
+          "source_mean_post": 0.08931779861450195,
+          "target_mean_pre": 1.2644132375717163,
+          "target_mean_post": 1.3900339603424072
+        },
+        "8": {
+          "source_abs_mean_pre": 0.15736959874629974,
+          "source_mean_pre": 0.15736959874629974,
+          "source_mean_post": 0.06486973166465759,
+          "target_mean_pre": 1.3402801752090454,
+          "target_mean_post": 1.4327800273895264
+        },
+        "9": {
+          "source_abs_mean_pre": 0.1654818207025528,
+          "source_mean_pre": 0.1654818207025528,
+          "source_mean_post": 0.06685997545719147,
+          "target_mean_pre": 1.4303054809570312,
+          "target_mean_post": 1.5289273262023926
+        },
+        "10": {
+          "source_abs_mean_pre": 0.17017032206058502,
+          "source_mean_pre": 0.17017032206058502,
+          "source_mean_post": 0.070043183863163,
+          "target_mean_pre": 1.5931754112243652,
+          "target_mean_post": 1.6933026313781738
+        },
+        "11": {
+          "source_abs_mean_pre": 0.13486574590206146,
+          "source_mean_pre": 0.13486574590206146,
+          "source_mean_post": 0.057702548801898956,
+          "target_mean_pre": 1.5699325799942017,
+          "target_mean_post": 1.647095799446106
+        },
+        "12": {
+          "source_abs_mean_pre": 0.1827857494354248,
+          "source_mean_pre": 0.1827857494354248,
+          "source_mean_post": 0.08169999718666077,
+          "target_mean_pre": 1.709984540939331,
+          "target_mean_post": 1.8110703229904175
+        },
+        "13": {
+          "source_abs_mean_pre": 0.08302858471870422,
+          "source_mean_pre": 0.06645339727401733,
+          "source_mean_post": 0.030989695340394974,
+          "target_mean_pre": 1.7646032571792603,
+          "target_mean_post": 1.8000669479370117
+        }
+      },
+      "provenance": {
+        "lens_file": "/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+        "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+        "source_id": 6650,
+        "target_id": 14437
+      }
+    }
+  ]
+}
+
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-jtjKErD2fWc1VyqBwMRJBY

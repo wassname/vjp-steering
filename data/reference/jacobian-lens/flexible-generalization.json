@@ -1,0 +1,208 @@
+{
+  "categories": [
+    {
+      "name": "countries",
+      "args": [
+        "France",
+        "Canada",
+        "China",
+        "Egypt"
+      ],
+      "funcs": [
+        {
+          "name": "capital",
+          "template": "The capital of {arg} is the city of",
+          "answers": {
+            "France": "Paris",
+            "Canada": "Ottawa",
+            "China": "Beijing",
+            "Egypt": "Cairo"
+          }
+        },
+        {
+          "name": "language",
+          "template": "Most people in {arg} speak",
+          "answers": {
+            "France": "French",
+            "Canada": "English",
+            "China": "Chinese",
+            "Egypt": "Arabic"
+          }
+        },
+        {
+          "name": "continent",
+          "template": "{arg} is a country on the continent of",
+          "answers": {
+            "France": "Europe",
+            "Canada": "North",
+            "China": "Asia",
+            "Egypt": "Africa"
+          }
+        },
+        {
+          "name": "currency",
+          "template": "The single-word name for the currency now used in {arg} is the",
+          "answers": {
+            "France": "Euro",
+            "Canada": "Dollar",
+            "China": "Yuan",
+            "Egypt": "Pound"
+          }
+        }
+      ]
+    },
+    {
+      "name": "months",
+      "args": [
+        "February",
+        "April",
+        "July",
+        "October"
+      ],
+      "funcs": [
+        {
+          "name": "season",
+          "template": "In the northern hemisphere, {arg} is in the season of",
+          "answers": {
+            "February": "winter",
+            "April": "spring",
+            "July": "summer",
+            "October": "autumn"
+          }
+        },
+        {
+          "name": "number",
+          "template": "Counting from January, {arg} is month number",
+          "answers": {
+            "February": "two",
+            "April": "four",
+            "July": "seven",
+            "October": "ten"
+          }
+        },
+        {
+          "name": "holiday",
+          "template": "The biggest holiday in {arg} is",
+          "answers": {
+            "February": "Valentine",
+            "April": "Easter",
+            "July": "Independence",
+            "October": "Halloween"
+          }
+        },
+        {
+          "name": "next_month",
+          "template": "The month right after {arg} is",
+          "answers": {
+            "February": "March",
+            "April": "May",
+            "July": "August",
+            "October": "November"
+          }
+        }
+      ]
+    },
+    {
+      "name": "animals",
+      "args": [
+        "lion",
+        "eagle",
+        "shark",
+        "spider"
+      ],
+      "funcs": [
+        {
+          "name": "habitat",
+          "template": "The natural habitat of a {arg} is the",
+          "answers": {
+            "lion": "savanna",
+            "eagle": "sky",
+            "shark": "ocean",
+            "spider": "outdoors"
+          }
+        },
+        {
+          "name": "legs",
+          "template": "How many legs does a {arg} have? In one word:",
+          "answers": {
+            "lion": "four",
+            "eagle": "two",
+            "shark": "none",
+            "spider": "eight"
+          }
+        },
+        {
+          "name": "class",
+          "template": "Biologically, a {arg} is a type of",
+          "answers": {
+            "lion": "cat",
+            "eagle": "bird",
+            "shark": "fish",
+            "spider": "arachnid"
+          }
+        },
+        {
+          "name": "group",
+          "template": "A group of {arg}s is called a",
+          "answers": {
+            "lion": "pride",
+            "eagle": "convocation",
+            "shark": "shiver",
+            "spider": "cluster"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numbers",
+      "args": [
+        "three",
+        "five",
+        "seven",
+        "nine"
+      ],
+      "funcs": [
+        {
+          "name": "double",
+          "template": "Two times {arg} equals",
+          "answers": {
+            "three": "six",
+            "five": "ten",
+            "seven": "fourteen",
+            "nine": "eighteen"
+          }
+        },
+        {
+          "name": "square",
+          "template": "{arg} squared equals",
+          "answers": {
+            "three": "nine",
+            "five": "twenty",
+            "seven": "forty",
+            "nine": "eighty"
+          }
+        },
+        {
+          "name": "successor",
+          "template": "The number that comes right after {arg} is",
+          "answers": {
+            "three": "four",
+            "five": "six",
+            "seven": "eight",
+            "nine": "ten"
+          }
+        },
+        {
+          "name": "first_letter",
+          "template": "The word '{arg}' begins with the letter",
+          "answers": {
+            "three": "t",
+            "five": "f",
+            "seven": "s",
+            "nine": "n"
+          }
+        }
+      ]
+    }
+  ]
+}

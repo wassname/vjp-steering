@@ -17,12 +17,17 @@ from vjp_steering.experiment import DEV, FULL, data_dir, results_dir
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-J_LENS_DEV_RESULTS = ROOT / "data" / "dev" / "j-lens-swap-formative-v1" / "results.csv"
+J_LENS_DEV_RESULTS = ROOT / "data" / "dev" / "j-lens-transfer-formative-v2" / "results.csv"
 J_LENS_COLOR = "#56b4e9"
 J_LENS_PLOT_NOTE = (
-    "The cyan J-lens overlay is DEV evidence from 15 questions, not an all-100 result and not included in the table. "
-    "It has no accepted dose. Downward triangles mark collapse outside the shared y-range: damage 4.59 for "
-    "positive alpha and 4.21 for the negative-alpha control."
+    "The cyan directed J-lens transfer overlay is DEV evidence from 15 questions, not an all-100 result "
+    "and not included in the table. Solid +C transfers abrasive to flattering; dotted -C transfers "
+    "flattering to abrasive. Both use positive alpha and edit prompt-prefill positions only. All measured "
+    "doses remain as dots; open diamonds mark incomplete-seed probes. Staggered open upward triangles retain "
+    "main-method doses beyond the labeled damage range; downward triangles retain corresponding J-lens doses. "
+    "Smooth curves use bare and complete in-range Pareto-efficient doses. For the main methods, × retains the "
+    "final admissible dose and a faint segment "
+    "reaches a dominated final measured dose when it is in range."
 )
 METHODS = (
     "vjp_delta",
@@ -116,14 +121,17 @@ def _means(
                     if row["method"] == method and row["C"] == C and row["side"] == side
                     and (include_rejected or row["admissible"])
                 ]
-                if {row["seed"] for row in rows_at_dose} == method_seeds[method]:
+                seeds = {row["seed"] for row in rows_at_dose}
+                complete = seeds == method_seeds[method]
+                if complete or (include_rejected and seeds):
                     effect = mean(row["effect"] for row in rows_at_dose)
-                    admissible = all(row["admissible"] for row in rows_at_dose)
+                    admissible = complete and all(row["admissible"] for row in rows_at_dose)
                     points.append({"method": method, "C": C, "side": side,
                                    "effect": effect,
                                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
                                    "admissible": admissible,
-                                   "accepted": admissible and (effect > 0 if side == "+C" else effect < 0)})
+                                   "accepted": admissible and (effect > 0 if side == "+C" else effect < 0),
+                                   "complete": complete})
     return points
 
 
@@ -216,6 +224,40 @@ def _clip_to_damage(start: dict, end: dict, damage: float) -> tuple[float, float
     return effect, damage
 
 
+def _pareto_curve_parts(points: list[dict], side: str) -> tuple[list[dict], list[dict]]:
+    origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
+    if not points:
+        return [origin], []
+    sign = 1 if side == "+C" else -1
+    candidates = [origin, *points]
+
+    def dominates(left: dict, right: dict) -> bool:
+        left_progress = sign * left["effect"]
+        right_progress = sign * right["effect"]
+        left_damage = left["off_axis_perturbation"]
+        right_damage = right["off_axis_perturbation"]
+        return (
+            left_progress >= right_progress
+            and left_damage <= right_damage
+            and (left_progress > right_progress or left_damage < right_damage)
+        )
+
+    frontier = [
+        point for point in points
+        if not any(dominates(other, point) for other in candidates if other is not point)
+    ]
+    frontier.sort(key=lambda point: (sign * point["effect"], point["off_axis_perturbation"]))
+    frontier_anchors = [origin, *frontier]
+    endpoint = points[-1]
+    endpoint_extension = [] if endpoint in frontier_anchors else [frontier_anchors[-1], endpoint]
+    return frontier_anchors, endpoint_extension
+
+
+def _pareto_curve_anchors(points: list[dict], side: str) -> list[dict]:
+    frontier, endpoint_extension = _pareto_curve_parts(points, side)
+    return [*frontier, *endpoint_extension[1:]]
+
+
 def _add_j_lens_dev_overlay(
     figure: go.Figure,
     rows: list[dict],
@@ -230,33 +272,73 @@ def _add_j_lens_dev_overlay(
         side_points = sorted((row for row in points if row["side"] == side), key=lambda row: row["C"])
         in_range = [row for row in side_points if row["off_axis_perturbation"] <= damage_limit]
         off_scale = [row for row in side_points if row["off_axis_perturbation"] > damage_limit]
-        origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
-        plotted = [origin, *in_range]
-        if off_scale:
-            effect, damage = _clip_to_damage(plotted[-1], off_scale[0], damage_limit)
-            plotted.append({"effect": effect, "off_axis_perturbation": damage})
+        accepted = [row for row in side_points if row["accepted"]]
+        if not accepted:
+            raise ValueError(f"corrected J-lens DEV has no accepted {side} dose")
+        endpoint = max(accepted, key=lambda row: row["C"])
+        path_points = [row for row in side_points if row["C"] <= endpoint["C"]]
+        frontier, _ = _pareto_curve_parts(path_points, side)
+        line = {"color": J_LENS_COLOR, "width": 2.6, "dash": "dot" if side == "-C" else "solid"}
+        figure.add_trace(go.Scatter(
+            x=[row["effect"] for row in frontier],
+            y=[row["off_axis_perturbation"] for row in frontier],
+            mode="lines", line=line, line_shape="spline", line_smoothing=0.45,
+            hoverinfo="skip", showlegend=False,
+        ))
+        plotted = [
+            {**row, "plot_damage": min(row["off_axis_perturbation"], damage_limit)}
+            for row in side_points
+        ]
         figure.add_trace(go.Scatter(
             x=[row["effect"] for row in plotted],
-            y=[row["off_axis_perturbation"] for row in plotted],
-            mode="lines+markers",
-            line={"color": J_LENS_COLOR, "width": 3, "dash": "dot" if side == "-C" else "solid"},
+            y=[row["plot_damage"] for row in plotted],
+            mode="markers",
             marker={
                 "color": J_LENS_COLOR,
-                "size": [0, *(8 for _ in in_range), *(10 for _ in off_scale[:1])],
-                "symbol": ["circle", *("circle-open" for _ in in_range), *("triangle-down-open" for _ in off_scale[:1])],
+                "size": [6 if row["off_axis_perturbation"] <= damage_limit else 9 for row in plotted],
+                "symbol": [
+                    "circle-open" if row["off_axis_perturbation"] <= damage_limit else "triangle-down-open"
+                    for row in plotted
+                ],
+                "line": {"width": 1},
             },
+            opacity=0.75,
             text=[
-                "bare",
-                *(f"alpha={row['C']:g} (rejected)" for row in in_range),
-                *(f"off scale: alpha={row['C']:g}, damage={row['off_axis_perturbation']:.2f}" for row in off_scale[:1]),
+                f"alpha={row['C']:g}" + (
+                    " (accepted)" if row["accepted"] else " (rejected)"
+                ) + (
+                    "" if row["off_axis_perturbation"] <= damage_limit
+                    else f", off scale: true damage={row['off_axis_perturbation']:.2f}"
+                )
+                for row in plotted
             ],
-            hovertemplate="J-lens coordinate swap DEV<br>%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+            hovertemplate="directed J-lens transfer DEV<br>%{text}<br>effect=%{x:.3f}<extra></extra>",
+            name=f"J-lens DEV {side} measured doses",
             showlegend=False,
         ))
-        series = [
-            (row["effect"], row["off_axis_perturbation"])
-            for row in plotted
-        ]
+        figure.add_trace(go.Scatter(
+            x=[endpoint["effect"]], y=[endpoint["off_axis_perturbation"]],
+            mode="markers", marker={"color": J_LENS_COLOR, "size": 11, "symbol": "x"},
+            hovertemplate=(
+                f"directed J-lens transfer DEV {side} selected dose<br>alpha={endpoint['C']:g}"
+                "<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>"
+            ),
+            showlegend=False,
+        ))
+        figure.add_annotation(
+            x=endpoint["effect"],
+            y=endpoint["off_axis_perturbation"],
+            text=f"J-lens {side} DEV",
+            showarrow=True,
+            ax=70 if side == "+C" else -72,
+            ay=-24 if side == "+C" else 28,
+            font={"color": J_LENS_COLOR, "size": 11},
+            bgcolor="rgba(255,255,255,0.85)",
+            arrowhead=0,
+            arrowwidth=0.8,
+            arrowcolor=J_LENS_COLOR,
+        )
+        series = [(row["effect"], row["off_axis_perturbation"]) for row in frontier]
         for start, end in zip(series, series[1:]):
             obstacles.extend(
                 (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
@@ -275,10 +357,12 @@ def plot(
 ) -> go.Figure:
     figure = go.Figure()
     means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
-    valid = means + [row for row in rows if row["method"] == "random" and row["admissible"]]
+    admissible_means = _means(rows, methods, method_seeds)
+    valid = admissible_means + [row for row in rows if row["method"] == "random" and row["admissible"]]
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
-    margin = {"l": 75, "r": 10, "t": 40, "b": 58}
+    damage_limit = y_range[0] / 1.08 * 1.005
+    margin = {"l": 75, "r": 105, "t": 40, "b": 58}
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     if random:
@@ -318,6 +402,34 @@ def plot(
                 ])
             ]
             random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
+        random_off_scale_row = y_range[0] * 0.985 - 0.007 * len(METHODS[:-1])
+        figure.add_trace(go.Scatter(
+            x=[row["effect"] for row in random],
+            y=[
+                row["off_axis_perturbation"]
+                if row["off_axis_perturbation"] <= damage_limit else random_off_scale_row
+                for row in random
+            ],
+            mode="markers",
+            marker={
+                "color": "#888888",
+                "size": [3 if row["off_axis_perturbation"] <= damage_limit else 6 for row in random],
+                "symbol": [
+                    "triangle-up-open" if row["off_axis_perturbation"] > damage_limit
+                    else "circle" if row["admissible"] else "circle-open"
+                    for row in random
+                ],
+            },
+            opacity=0.28,
+            text=[
+                f"random seed={row['seed']} C={row['C']:g} {row['side']}"
+                + ("" if row["admissible"] else " (rejected)")
+                for row in random
+            ],
+            hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+            name="random measured evaluations",
+            showlegend=False,
+        ))
         figure.add_trace(go.Scatter(
             x=[row["effect"] for row in random_peaks],
             y=[row["off_axis_perturbation"] for row in random_peaks],
@@ -335,76 +447,136 @@ def plot(
     }
     displayed_endpoints = {}
     unselected_sides = {}
-    for method in (method for method in methods if method != "random"):
+    for method_index, method in enumerate(method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
-            # do not decimate below dense resolution near the tip; keep all if tail is dense
-            if len(points) > 16:
-                table_peak = max(
-                    range(len(points)),
-                    key=lambda index: (1 if side == "+C" else -1) * points[index]["effect"],
-                )
-                idx = sorted(
-                    {round(i * (len(points) - 1) / 15) for i in range(16)}
-                    | {len(points) - 1, table_peak}
-                )
-                points = [points[i] for i in idx]
             if points:
-                endpoint_C = endpoint_coefficients[side] if endpoint_coefficients is not None else points[-1]["C"]
+                if endpoint_coefficients is not None:
+                    endpoint_C = endpoint_coefficients[side]
+                else:
+                    admissible_points = [point for point in points if point["admissible"]]
+                    endpoint_C = admissible_points[-1]["C"] if admissible_points else None
                 endpoint_index = (
                     min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
                     if endpoint_C is not None else None
                 )
                 if endpoint_index is not None:
                     endpoint = points[endpoint_index]
-                    displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
+                    displayed_endpoints[method, side] = (
+                        endpoint["effect"], min(endpoint["off_axis_perturbation"], damage_limit)
+                    )
                 else:
-                    unselected_sides[method, side] = (points[0]["effect"], points[0]["off_axis_perturbation"])
+                    unselected_sides[method, side] = (
+                        points[0]["effect"], min(points[0]["off_axis_perturbation"], damage_limit)
+                    )
+                origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
+                if smooth:
+                    in_range_points = [
+                        point for point in points
+                        if point["complete"] and point["off_axis_perturbation"] <= damage_limit
+                    ]
+                    anchors, endpoint_extension = _pareto_curve_parts(in_range_points, side)
+                else:
+                    anchors, endpoint_extension = [origin, *points], []
                 figure.add_trace(go.Scatter(
-                    x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
-                    mode="lines+markers", line={"color": colors[method], "width": 3},
+                    x=[row["effect"] for row in anchors],
+                    y=[min(row["off_axis_perturbation"], damage_limit) for row in anchors],
+                    mode="lines", line={"color": colors[method], "width": 2.2},
+                    line_shape="spline" if smooth else "linear", line_smoothing=0.45 if smooth else 0,
+                    hoverinfo="skip", showlegend=False,
+                ))
+                if endpoint_extension:
+                    figure.add_trace(go.Scatter(
+                        x=[row["effect"] for row in endpoint_extension],
+                        y=[min(row["off_axis_perturbation"], damage_limit) for row in endpoint_extension],
+                        mode="lines", line={"color": colors[method], "width": 0.8}, opacity=0.35,
+                        hoverinfo="skip", showlegend=False,
+                    ))
+                off_scale_row = y_range[0] * 0.985 - 0.007 * method_index
+                figure.add_trace(go.Scatter(
+                    x=[0, *(row["effect"] for row in points)],
+                    y=[
+                        0,
+                        *(
+                            row["off_axis_perturbation"]
+                            if row["off_axis_perturbation"] <= damage_limit else off_scale_row
+                            for row in points
+                        ),
+                    ],
+                    mode="markers",
                     marker={
                         "color": colors[method],
-                        "size": [0, *(12 if index == endpoint_index else 8 for index in range(len(points)))],
+                        "size": [0, *(5 if point["off_axis_perturbation"] <= damage_limit else 6 for point in points)],
                         "symbol": [
                             "circle",
                             *(
-                                "x" if index == endpoint_index
-                                else "circle" if points[index]["accepted" if include_rejected else "admissible"]
+                                "triangle-up-open" if point["off_axis_perturbation"] > damage_limit
+                                else "diamond-open" if not point["complete"]
+                                else "circle" if point["accepted" if include_rejected else "admissible"]
                                 else "circle-open"
-                                for index in range(len(points))
+                                for point in points
                             ),
                         ],
+                        "line": {"width": 0.6, "color": "white"},
                     },
-                    line_shape="spline" if smooth else "linear", line_smoothing=0.6 if smooth else 0,
+                    opacity=0.75,
                     text=[
                         "bare",
                         *(f"C={row['C']:g}" + (
-                            "" if row["accepted" if include_rejected else "admissible"] else " (rejected)"
+                            " (partial seeds)" if not row["complete"]
+                            else "" if row["accepted" if include_rejected else "admissible"]
+                            else " (rejected)"
+                        ) + (
+                            "" if row["off_axis_perturbation"] <= damage_limit
+                            else f", off scale: true damage={row['off_axis_perturbation']:.3f}"
                         ) for row in points),
                     ],
-                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<extra></extra>",
+                    name=f"{method} {side} measured doses",
                     showlegend=False,
                 ))
-                series = [(0.0, 0.0), *((row["effect"], row["off_axis_perturbation"]) for row in points)]
+                if endpoint_index is not None:
+                    figure.add_trace(go.Scatter(
+                        x=[endpoint["effect"]], y=[min(endpoint["off_axis_perturbation"], damage_limit)],
+                        mode="markers", marker={"color": colors[method], "size": 10, "symbol": "x"},
+                        hovertemplate=(
+                            f"{LABELS[method]} final admissible dose<br>C={endpoint['C']:g}"
+                            "<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>"
+                        ),
+                        showlegend=False,
+                    ))
+                series = [
+                    (row["effect"], min(row["off_axis_perturbation"], damage_limit))
+                    for row in [*anchors, *endpoint_extension[1:]]
+                ]
                 for start, end in zip(series, series[1:]):
                     obstacles.extend(
                         (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
                         for fraction in (0.25, 0.5, 0.75, 1.0)
                     )
 
-    _add_j_lens_dev_overlay(figure, rows, y_range[0] * 0.98, obstacles)
+    _add_j_lens_dev_overlay(
+        figure,
+        rows,
+        y_range[0] * 0.985 - 0.007 * (len([method for method in methods if method != "random"]) + 1),
+        obstacles,
+    )
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
     if methods == METHODS:
         labels = [
             {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
-            {"x": displayed_endpoints["mean_diff", "-C"][0], "y": displayed_endpoints["mean_diff", "-C"][1], "text": "mean difference", "color": colors["mean_diff"]},
+            {
+                "x": displayed_endpoints["mean_diff", "-C"][0],
+                "y": displayed_endpoints["mean_diff", "-C"][1],
+                "text": "mean difference",
+                "color": colors["mean_diff"],
+                "angles": (90, 45, 135),
+            },
             {"x": displayed_endpoints["vjp_delta", "+C"][0], "y": displayed_endpoints["vjp_delta", "+C"][1], "text": "VJP-delta", "color": colors["vjp_delta"]},
-            {"x": displayed_endpoints["vjp_delta", "-C"][0], "y": displayed_endpoints["vjp_delta", "-C"][1], "text": "× = final plotted dose", "color": "#777777", "angles": (180, 0, 135, -135, 45, -45, 90, -90)},
         ]
         label_methods = (
             "J_word",
@@ -422,8 +594,13 @@ def plot(
             "y": displayed_endpoints[method, side][1],
             "text": f"{LABELS[method]} {side}",
             "color": colors[method],
-            "angles": (0, -45, 45, -90, 90, -135, 135, 180)
-            if method == "vjp_mlp_up_left_right_shrink" else (90, 45, 135, 0, 180, -45, -135, -90),
+            "angles": (
+                (90, 45, 135)
+                if method == "vjp_mlp_up_left_right_shrink" and side == "+C"
+                else (0, -45, 45, -90, 90, -135, 135, 180)
+                if method == "vjp_mlp_up_left_right_shrink"
+                else (90, 45, 135, 0, 180, -45, -135, -90)
+            ),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -447,13 +624,31 @@ def plot(
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
+    figure.add_annotation(
+        x=0.01, y=0.10, xref="paper", yref="paper", text="× selected/final dose",
+        showarrow=False, xanchor="left", font={"color": "#777777", "size": 13},
+    )
     if any(row["method"] == "j_lens_swap" for row in rows):
         figure.add_annotation(
-            x=1.25,
-            y=y_range[0] * 0.84,
-            text="J-lens DEV: no accepted dose; both collapse off-scale ↓",
+            x=0.01,
+            y=0.93,
+            xref="paper",
+            yref="paper",
+            xanchor="left",
+            text="cyan J-lens DEV: solid +C · dotted -C",
             showarrow=False,
-            font={"color": J_LENS_COLOR, "size": 14},
+            font={"color": J_LENS_COLOR, "size": 13},
+            bgcolor="rgba(255,255,255,0.9)",
+        )
+        figure.add_annotation(
+            x=0.01,
+            y=0.885,
+            xref="paper",
+            yref="paper",
+            xanchor="left",
+            text="● accepted · ○ rejected/DEV · ◇ partial · △/▽ off-scale",
+            showarrow=False,
+            font={"color": "#666666", "size": 12},
             bgcolor="rgba(255,255,255,0.9)",
         )
     if random:
@@ -463,7 +658,7 @@ def plot(
         )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
-    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
+    figure.add_annotation(x=0.58, y=0.10, xref="paper", yref="paper", text="mostly side effects", showarrow=False, font={"color": "#c44e52", "size": 14})
     figure.update_layout(
         title={"text": title, "x": 0.5, "xanchor": "center"},
         height=590, margin=margin,
@@ -772,7 +967,7 @@ def main() -> None:
         "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
         J_LENS_PLOT_NOTE,
     ))
-    figure = plot([*rows, *j_lens_rows])
+    figure = plot([*rows, *j_lens_rows], include_rejected=True)
     figure_html = figure.to_html(
         full_html=False,
         include_plotlyjs="cdn",

@@ -1,0 +1,88 @@
+COMMAND: uv run python scripts/experiment.py j_lens_swap --dev
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-pDDQypgvgSLj7BhSq51BXF
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 437.72it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 128.28it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   3%|▎         | 11/426 [00:00<00:04, 94.30it/s]
+[1ALoading weights:   7%|▋         | 30/426 [00:00<00:02, 146.13it/s]
+[1ALoading weights:  11%|█         | 47/426 [00:00<00:02, 153.22it/s]
+[1ALoading weights:  16%|█▌        | 67/426 [00:00<00:02, 161.87it/s]
+[1ALoading weights:  20%|█▉        | 84/426 [00:00<00:02, 154.29it/s]
+[1ALoading weights:  23%|██▎       | 100/426 [00:00<00:02, 151.69it/s]
+[1ALoading weights:  29%|██▊       | 122/426 [00:00<00:01, 170.33it/s]
+[1ALoading weights:  33%|███▎      | 140/426 [00:00<00:01, 143.54it/s]
+[1ALoading weights:  37%|███▋      | 156/426 [00:01<00:01, 147.40it/s]
+[1ALoading weights:  40%|████      | 172/426 [00:01<00:01, 140.42it/s]
+[1ALoading weights:  45%|████▍     | 190/426 [00:01<00:01, 143.11it/s]
+[1ALoading weights:  50%|█████     | 214/426 [00:01<00:01, 168.30it/s]
+[1ALoading weights:  54%|█████▍    | 232/426 [00:01<00:01, 169.17it/s]
+[1ALoading weights:  59%|█████▊    | 250/426 [00:01<00:01, 165.47it/s]
+[1ALoading weights:  64%|██████▍   | 272/426 [00:01<00:00, 171.83it/s]
+[1ALoading weights:  70%|███████   | 299/426 [00:01<00:00, 193.15it/s]
+[1ALoading weights:  75%|███████▍  | 319/426 [00:01<00:00, 174.15it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 213.63it/s]
+2026-09-05 03:51:26.455 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:51:57.236 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:52:10.139 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:52:22.972 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:52:25.697 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:52:38.514 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:52:51.492 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:53:04.561 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:53:04.604 | INFO     | __main__:gpu_stage:632 - GPU_STAGE_COMPLETE experiment=j-lens-transfer-formative-v2 profile=dev cells=26
+EXPERIMENT_GPU_COMPLETE id=j-lens-transfer-formative-v2 profile=dev cells=12
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-pDDQypgvgSLj7BhSq51BXF
+✓ Finished downloading files to local!
+2026-09-05 11:53:15.773 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-transfer-formative-v2 profile=dev cells=26 demo_sides=390
+2026-09-05 11:53:16.245 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 11:53:16.741 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 11:53:17.310 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 11:53:17.850 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 11:53:18.384 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 11:53:18.868 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 11:53:19.328 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 11:53:19.803 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 11:53:20.196 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 11:53:20.571 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 11:53:20.951 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 11:53:21.220 | INFO     | __main__:main:670 - CACHE_CHECK required=220 cached=105 missing=115 API_calls=115
+2026-09-05 11:54:13.075 | INFO     | __main__:run:632 - judge progress=100/115
+2026-09-05 11:54:19.965 | INFO     | __main__:run:632 - judge progress=115/115
+2026-09-05 11:54:20.482 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 11:54:20.980 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 11:54:21.547 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 11:54:22.107 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 11:54:22.653 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 11:54:23.165 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 11:54:23.631 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 11:54:24.083 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 11:54:24.496 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 11:54:24.839 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 11:54:25.216 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 11:54:25.471 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=220 missing=0
+2026-09-05 11:54:27.766 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-transfer-formative-v2 profile=dev cells=26 demo_sides=390
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-transfer-formative-v2 profile=dev arms=26 scenarios=390
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:846: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+wrote 7 table rows from 800 measured evaluations

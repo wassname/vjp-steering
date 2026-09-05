@@ -14,7 +14,7 @@ DEFAULT_EXPERIMENT_IDS = {
     METHOD: "mlp-up-left-right-formative-v7-eb-audited",
     SHARED_METHOD: "mlp-up-shared-eb-formative-v1",
     SHARED_LAST_TOKEN_METHOD: "mlp-up-shared-last-token-eb-formative-v1",
-    J_LENS_SWAP_METHOD: "j-lens-swap-formative-v1",
+    J_LENS_SWAP_METHOD: "j-lens-transfer-formative-v2",
 }
 DEFAULT_EXPERIMENT_ID = DEFAULT_EXPERIMENT_IDS[METHOD]
 

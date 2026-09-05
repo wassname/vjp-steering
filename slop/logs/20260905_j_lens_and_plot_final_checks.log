@@ -1,0 +1,32 @@
+COMMAND: uv run python -m py_compile scripts/experiment.py scripts/export.py scripts/run_modal.py scripts/walk.py src/vjp_steering/experiment.py src/vjp_steering/results.py src/vjp_steering/vjp.py slop/checks/20260905_plot_coverage.py
+COMMAND: uv run python scripts/experiment.py j_lens_swap --self-test
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+COMMAND: uv run python scripts/export.py --self-test
+EXPORT_SELF_TEST_PASS
+COMMAND: uv run python -m vjp_steering.results
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:991: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+wrote 7 table rows from 800 measured evaluations
+COMMAND: uv run python slop/checks/20260905_plot_coverage.py
+vjp_delta +C: measured_doses=37 markers=37
+vjp_delta -C: measured_doses=24 markers=24
+mean_diff +C: measured_doses=37 markers=37
+mean_diff -C: measured_doses=34 markers=34
+pca +C: measured_doses=37 markers=37
+pca -C: measured_doses=37 markers=37
+J_word +C: measured_doses=11 markers=11
+J_word -C: measured_doses=5 markers=5
+vjp_mlp_up_shrink +C: measured_doses=25 markers=25
+vjp_mlp_up_shrink -C: measured_doses=5 markers=5
+vjp_mlp_up_left_right_shrink +C: measured_doses=5 markers=5
+vjp_mlp_up_left_right_shrink -C: measured_doses=7 markers=7
+random: measured_evaluations=60 markers=60
+J-lens DEV +C: measured_doses=13 markers=13
+J-lens DEV -C: measured_doses=13 markers=13
+V7_REJECTED_FINAL_VISIBLE C=28.601877 effect=-0.6415 damage=1.0225 faint_tail=true
+ALL_MEASURED_PLOT_COVERAGE_PASS
+COMMAND: git diff --check

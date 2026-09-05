@@ -53,16 +53,29 @@ def _swap_lens_coordinates(
     return hidden + (alpha * delta).to(hidden)
 
 
+def _transfer_lens_coordinate(
+    hidden: Float[torch.Tensor, "... d"],
+    source: Float[torch.Tensor, "d"],
+    target: Float[torch.Tensor, "d"],
+    alpha: float,
+) -> Float[torch.Tensor, "... d"]:
+    coefficient = torch.einsum("...d,d->...", hidden.float(), source.float())
+    delta = torch.einsum("...,d->...d", coefficient, target.float() - source.float())
+    return hidden + (alpha * delta).to(hidden)
+
+
 @register
 class JLensSwap:
     name = "j_lens_swap"
 
     @staticmethod
     def apply(_mod, _x, y, shared, _stacked, cfg: JLensSwapC):
-        return _swap_lens_coordinates(
+        if y.shape[-2] == 1:
+            return y
+        return _transfer_lens_coordinate(
             y,
-            shared["basis"].to(y.device),
-            shared["dual"].to(y.device),
+            shared["source"].to(y.device),
+            shared["target"].to(y.device),
             cfg.coeff,
         )
 
@@ -455,7 +468,7 @@ def j_lens_swap(
     source_token: str = J_LENS_SWAP_SOURCE,
     target_token: str = J_LENS_SWAP_TARGET,
 ) -> tuple[Vector, dict[str, object]]:
-    """Swap two single-token coordinates using the paper's J-lens patch."""
+    """Transfer one active token coordinate to another during prompt prefill."""
     lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
 
     def single_token_id(word: str) -> int:
@@ -472,15 +485,16 @@ def j_lens_swap(
     for layer in layers:
         jacobian = checkpoint["J"][layer].float()
         basis = torch.stack((unembedding[source_id] @ jacobian, unembedding[target_id] @ jacobian))
-        singular_values = torch.linalg.svdvals(basis)
+        unit = basis / basis.norm(dim=1, keepdim=True)
+        singular_values = torch.linalg.svdvals(unit)
         if singular_values[-1] <= 0:
-            raise ValueError(f"rank-deficient J-lens swap basis at layer {layer}")
-        dual = torch.linalg.pinv(basis.T)
-        layer_state[layer] = {"basis": basis, "dual": dual}
+            raise ValueError(f"rank-deficient J-lens transfer basis at layer {layer}")
+        layer_state[layer] = {"source": unit[0], "target": unit[1]}
         layer_metadata[str(layer)] = {
-            "basis_norms": basis.norm(dim=1).tolist(),
-            "singular_values": singular_values.tolist(),
-            "condition_number": (singular_values[0] / singular_values[-1]).item(),
+            "raw_basis_norms": basis.norm(dim=1).tolist(),
+            "unit_cosine": torch.dot(unit[0], unit[1]).item(),
+            "unit_singular_values": singular_values.tolist(),
+            "unit_condition_number": (singular_values[0] / singular_values[-1]).item(),
         }
 
     logger.info(
@@ -499,9 +513,11 @@ def j_lens_swap(
         {layer: {} for layer in layers},
     )
     return vector, {
-        "paper_equation": "h + alpha V(swap(V^dagger h) - V^dagger h)",
-        "normalization": "none",
-        "token_scope": "all_positions",
+        "operator": "directed_unit_coordinate_transfer",
+        "equation": "h + alpha * (h dot unit(v_source)) * (unit(v_target) - unit(v_source))",
+        "paper_equation_compared": "h + alpha V(swap(V^dagger h) - V^dagger h)",
+        "normalization": "unit_per_token_per_layer",
+        "token_scope": "all_prompt_positions_prefill_only",
         "source_layers": list(layers),
         "source_token": source_token,
         "source_token_id": source_id,

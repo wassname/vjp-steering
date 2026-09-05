@@ -1,0 +1,22 @@
+COMMAND: uv run python -m vjp_steering.results
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:961: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+wrote 7 table rows from 800 measured evaluations
+COMMAND: all-measured Pareto assertions
+vjp_delta +C: measured_doses=37 complete_doses=29 rejected=13
+vjp_delta -C: measured_doses=24 complete_doses=19 rejected=6
+mean_diff +C: measured_doses=37 complete_doses=37 rejected=6
+mean_diff -C: measured_doses=34 complete_doses=34 rejected=5
+pca +C: measured_doses=37 complete_doses=37 rejected=5
+pca -C: measured_doses=37 complete_doses=37 rejected=8
+J_word +C: measured_doses=11 complete_doses=11 rejected=2
+J_word -C: measured_doses=5 complete_doses=5 rejected=1
+vjp_mlp_up_shrink +C: measured_doses=25 complete_doses=22 rejected=4
+vjp_mlp_up_shrink -C: measured_doses=5 complete_doses=5 rejected=0
+vjp_mlp_up_left_right_shrink +C: measured_doses=5 complete_doses=5 rejected=0
+vjp_mlp_up_left_right_shrink -C: measured_doses=7 complete_doses=7 rejected=1
+V7_REJECTED_FINAL_VISIBLE C=28.601877 effect=-0.6415 damage=1.0225 faint_tail=true
+ALL_MEASURED_PARETO_CHECK_PASS

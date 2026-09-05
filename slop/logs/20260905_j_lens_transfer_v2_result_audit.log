@@ -1,0 +1,21 @@
++C
+ alpha=0.5 effect=+0.073 damage=0.080 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1 effect=-0.453 damage=0.087 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.125 effect=-0.467 damage=0.167 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.25 effect=+0.120 damage=0.073 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.375 effect=-1.040 damage=0.147 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.5 effect=-1.087 damage=0.127 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.625 effect=-0.547 damage=0.267 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.75 effect=-1.100 damage=0.233 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=2 effect=-1.040 damage=0.127 unique=15 leaks=0 repeated=0 unfinished=0
+-C
+ alpha=0.5 effect=+0.267 damage=0.267 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1 effect=+0.193 damage=0.293 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.125 effect=+0.373 damage=0.340 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.25 effect=+0.120 damage=0.273 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.375 effect=+0.393 damage=0.360 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.5 effect=+0.147 damage=0.300 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.625 effect=+0.353 damage=0.293 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=1.75 effect=+0.140 damage=0.273 unique=15 leaks=0 repeated=0 unfinished=0
+ alpha=2 effect=+0.413 damage=0.253 unique=15 leaks=0 repeated=0 unfinished=0
+J_LENS_TRANSFER_V2_AUDIT_PASS

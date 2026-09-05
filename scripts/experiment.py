@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -30,8 +31,11 @@ from vjp_steering.experiment import (
 from vjp_steering.vjp import (
     J_LENS_SWAP_SOURCE,
     J_LENS_SWAP_TARGET,
+    JLensSwap,
     JLensSwapC,
+    _load_j_lens,
     _swap_lens_coordinates,
+    _transfer_lens_coordinate,
     j_lens_swap,
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
@@ -51,8 +55,8 @@ SEARCH_LOG_TOLERANCE = math.log(2.0) / 6.0
 GRID_LOW = 0.66
 GRID_HIGH = 1.33
 GRID_POINTS = 9
-J_LENS_SWAP_POSITIVE_GRID = (0.5, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2.0)
-J_LENS_SWAP_NEGATIVE_GRID = (0.5, 1.0, 2.0)
+J_LENS_SWAP_POSITIVE_GRID = (0.5, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2.0, 3.0, 4.0, 6.0, 8.0)
+J_LENS_SWAP_NEGATIVE_GRID = J_LENS_SWAP_POSITIVE_GRID
 
 
 def parse_args() -> argparse.Namespace:
@@ -75,6 +79,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
+    parser.add_argument("--j-lens-diagnostic", action="store_true")
+    parser.add_argument(
+        "--diagnostic-output",
+        default="outputs/audits/20260905_j_lens_paper_native/diagnostic.json",
+    )
     args = parser.parse_args()
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     return args
@@ -120,6 +129,10 @@ def signed_coefficient(side: str, coefficient: float) -> float:
     return coefficient if side == "+C" else -coefficient
 
 
+def applied_coefficient(method: str, side: str, coefficient: float) -> float:
+    return coefficient if method == "j_lens_swap" else signed_coefficient(side, coefficient)
+
+
 def vector_sha256(vector: Vector) -> str:
     digest = hashlib.sha256()
     for kind, tree in (("shared", vector.shared), ("stacked", vector.stacked)):
@@ -163,11 +176,21 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
     if args.method == "j_lens_swap":
         layers = walk.resolve_layers(model, None)
-        vector, metadata = j_lens_swap(model, tokenizer, layers)
+        positive, positive_metadata = j_lens_swap(
+            model, tokenizer, layers,
+            source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
+        )
+        negative, negative_metadata = j_lens_swap(
+            model, tokenizer, layers,
+            source_token=J_LENS_SWAP_TARGET, target_token=J_LENS_SWAP_SOURCE,
+        )
         return {
-            "+C": vector,
-            "-C": vector,
-        }, metadata, 0, f"fixed_tokens:{J_LENS_SWAP_SOURCE}-{J_LENS_SWAP_TARGET}"
+            "+C": positive,
+            "-C": negative,
+        }, {
+            "source_layers": list(layers),
+            "semantic_directions": {"+C": positive_metadata, "-C": negative_metadata},
+        }, 0, f"fixed_tokens:{J_LENS_SWAP_SOURCE}<->{J_LENS_SWAP_TARGET}"
 
     positive, negative = extraction_prompts(args, tokenizer)
     vectors, metadata = EXTRACTORS[args.method](
@@ -268,13 +291,14 @@ def generation_records(
     side: str,
     coefficient: float,
     profile_name: str,
+    method: str,
 ) -> list[dict]:
     return [
         {
             "status": "DEV" if profile_name == "dev" else "FORMATIVE",
             "profile": profile_name,
             "side": side,
-            "coefficient": signed_coefficient(side, coefficient) if side else 0.0,
+            "coefficient": applied_coefficient(method, side, coefficient) if side else 0.0,
             "scenario": row["scenario"],
             "prompt": row["prompt"],
             "text": answer,
@@ -310,7 +334,7 @@ def extend_generation(
     if vector is None:
         answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
     else:
-        with vector(model, C=signed_coefficient(side, coefficient)):
+        with vector(model, C=applied_coefficient(args.method, side, coefficient)):
             answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
     added = generation_records(
         path,
@@ -319,6 +343,7 @@ def extend_generation(
         side=side,
         coefficient=coefficient,
         profile_name=profile_name,
+        method=args.method,
     )
     combined = existing + added
     atomic_jsonl(path, combined)
@@ -548,8 +573,8 @@ def gpu_stage(args: argparse.Namespace) -> None:
             raise RuntimeError("full mode requires its automatic dev stage first")
         if args.method == "j_lens_swap":
             boundaries = {
-                "+C": {"meaning": "paper swap alpha", "trace": []},
-                "-C": {"meaning": "negative-alpha extrapolation control", "trace": []},
+                "+C": {"meaning": "abrasive-to-flattering directed transfer", "trace": []},
+                "-C": {"meaning": "flattering-to-abrasive directed transfer", "trace": []},
             }
             grid = {
                 "+C": list(J_LENS_SWAP_POSITIVE_GRID),
@@ -752,6 +777,186 @@ def local_pipeline(args: argparse.Namespace) -> None:
     subprocess.run(render_command, cwd=walk.ROOT, check=True)
 
 
+def _lens_token_id(tokenizer, word: str) -> int:
+    ids = tokenizer(" " + word.strip(), add_special_tokens=False).input_ids
+    if len(ids) != 1:
+        raise ValueError(f"expected one token for {word!r}, got {ids}")
+    return ids[0]
+
+
+def _j_lens_candidate_states(model, tokenizer, layers: tuple[int, ...], source: str, target: str):
+    lens_file, checkpoint = _load_j_lens(model, layers, None)
+    unembedding = model.lm_head.weight.detach().float().cpu()
+    source_id = _lens_token_id(tokenizer, source)
+    target_id = _lens_token_id(tokenizer, target)
+    states = {name: {} for name in ("raw_exchange", "unit_exchange", "unit_transfer")}
+    geometry = {}
+    for layer in layers:
+        jacobian = checkpoint["J"][layer].float()
+        raw = torch.stack((unembedding[source_id] @ jacobian, unembedding[target_id] @ jacobian))
+        unit = raw / raw.norm(dim=1, keepdim=True)
+        states["raw_exchange"][layer] = {"basis": raw, "dual": torch.linalg.pinv(raw.T)}
+        states["unit_exchange"][layer] = {"basis": unit, "dual": torch.linalg.pinv(unit.T)}
+        states["unit_transfer"][layer] = {"source": unit[0], "target": unit[1]}
+        geometry[str(layer)] = {
+            "raw_norms": raw.norm(dim=1).tolist(),
+            "unit_cosine": torch.dot(unit[0], unit[1]).item(),
+        }
+    return states, geometry, {
+        "lens_file": str(lens_file),
+        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "source_id": source_id,
+        "target_id": target_id,
+    }
+
+
+@contextmanager
+def _j_lens_diagnostic_hooks(
+    model,
+    state: dict[int, dict[str, torch.Tensor]],
+    operator: str,
+    alpha: float,
+):
+    calls = {str(layer): 0 for layer in state}
+    measurements = {}
+    handles = []
+
+    def make_hook(layer: int):
+        layer_state = state[layer]
+
+        def hook(_module, _inputs, output):
+            hidden = output[0] if isinstance(output, tuple) else output
+            hidden32 = hidden.float()
+            calls[str(layer)] += 1
+            if operator == "unit_transfer":
+                source = layer_state["source"].to(hidden.device)
+                target = layer_state["target"].to(hidden.device)
+                patched32 = _transfer_lens_coordinate(hidden32, source, target, alpha)
+                source_pre = torch.einsum("...d,d->...", hidden32, source)
+                source_post = torch.einsum("...d,d->...", patched32, source)
+                target_pre = torch.einsum("...d,d->...", hidden32, target)
+                target_post = torch.einsum("...d,d->...", patched32, target)
+                measurements[str(layer)] = {
+                    "source_abs_mean_pre": source_pre.abs().mean().item(),
+                    "source_mean_pre": source_pre.mean().item(),
+                    "source_mean_post": source_post.mean().item(),
+                    "target_mean_pre": target_pre.mean().item(),
+                    "target_mean_post": target_post.mean().item(),
+                }
+            else:
+                basis = layer_state["basis"].to(hidden.device)
+                dual = layer_state["dual"].to(hidden.device)
+                coordinates_pre = torch.einsum("...d,kd->...k", hidden32, dual)
+                patched32 = _swap_lens_coordinates(hidden32, basis, dual, alpha)
+                coordinates_post = torch.einsum("...d,kd->...k", patched32, dual)
+                coordinates_expected = coordinates_pre + alpha * (coordinates_pre.flip(-1) - coordinates_pre)
+                measurements[str(layer)] = {
+                    "coordinate_abs_mean_pre": coordinates_pre.abs().mean(dim=(0, 1)).tolist(),
+                    "coordinate_mean_pre": coordinates_pre.mean(dim=(0, 1)).tolist(),
+                    "coordinate_mean_post": coordinates_post.mean(dim=(0, 1)).tolist(),
+                    "swap_max_abs_error": (coordinates_post - coordinates_expected).abs().max().item(),
+                }
+            patched = patched32.to(hidden.dtype)
+            return (patched, *output[1:]) if isinstance(output, tuple) else patched
+
+        return hook
+
+    for layer in state:
+        handles.append(model.model.layers[layer].register_forward_hook(make_hook(layer)))
+    try:
+        yield calls, measurements
+    finally:
+        for handle in handles:
+            handle.remove()
+
+
+@torch.no_grad()
+def _prompt_only_greedy(model, tokenizer, prompt: str, n_new: int, hook_context=None):
+    input_ids = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).input_ids.to(model.device)
+    if hook_context is None:
+        output = model(input_ids, use_cache=True)
+        calls, measurements = {}, {}
+    else:
+        with hook_context as (calls, measurements):
+            output = model(input_ids, use_cache=True)
+    past = output.past_key_values
+    next_id = output.logits[:, -1].argmax(dim=-1, keepdim=True)
+    generated = [int(next_id.item())]
+    for _ in range(n_new - 1):
+        output = model(next_id, past_key_values=past, use_cache=True)
+        past = output.past_key_values
+        next_id = output.logits[:, -1].argmax(dim=-1, keepdim=True)
+        generated.append(int(next_id.item()))
+    return generated[0], tokenizer.decode(generated), calls, measurements
+
+
+def _starts_with_answer(text: str, answer: str) -> bool:
+    return text.strip().lstrip("\"'`.,:;!?-— ").lower().startswith(answer.lower())
+
+
+def j_lens_paper_native_diagnostic(args: argparse.Namespace) -> None:
+    if args.method != "j_lens_swap":
+        raise ValueError("--j-lens-diagnostic requires method=j_lens_swap")
+    model, tokenizer = load_model(args)
+    items = [
+        {"source": "France", "target": "China", "source_answer": "Paris", "target_answer": "Beijing"},
+        {"source": "Canada", "target": "Egypt", "source_answer": "Ottawa", "target_answer": "Cairo"},
+    ]
+    bands = {"current": tuple(range(6, 25)), "reference_fraction": tuple(range(9, 31)), "early_mid": tuple(range(4, 14))}
+    records = []
+    for item in items:
+        prompt = f"The capital of {item['source']} is the city of"
+        target_prompt = f"The capital of {item['target']} is the city of"
+        source_first, source_text, _, _ = _prompt_only_greedy(model, tokenizer, prompt, 6)
+        target_first, target_text, _, _ = _prompt_only_greedy(model, tokenizer, target_prompt, 6)
+        source_expected = _lens_token_id(tokenizer, item["source_answer"])
+        target_expected = _lens_token_id(tokenizer, item["target_answer"])
+        baseline_ok = source_first == source_expected and target_first == target_expected
+        records.append({
+            "kind": "baseline", **item, "source_text": source_text, "target_text": target_text,
+            "source_first": source_first, "target_first": target_first, "baseline_ok": baseline_ok,
+        })
+        for band_name, layers in bands.items():
+            states, geometry, provenance = _j_lens_candidate_states(
+                model, tokenizer, layers, item["source"], item["target"]
+            )
+            for operator, state in states.items():
+                for alpha in (1.0, 2.0, 4.0):
+                    context = _j_lens_diagnostic_hooks(model, state, operator, alpha)
+                    first, text, calls, measurements = _prompt_only_greedy(model, tokenizer, prompt, 6, context)
+                    if set(calls.values()) != {1}:
+                        raise AssertionError(f"hooks were not prompt-only: {calls}")
+                    records.append({
+                        "kind": "intervention", **item, "band": band_name,
+                        "layers": [layers[0], layers[-1]], "operator": operator, "alpha": alpha,
+                        "text": text, "first_token": first,
+                        "hit_target": first == target_expected or _starts_with_answer(text, item["target_answer"]),
+                        "stayed_source": first == source_expected or _starts_with_answer(text, item["source_answer"]),
+                        "baseline_ok": baseline_ok, "hook_calls": calls,
+                        "layer_geometry": geometry, "layer_measurements": measurements,
+                        "provenance": provenance,
+                    })
+    output = Path(args.diagnostic_output)
+    payload = {
+        "schema": "j_lens_paper_native_diagnostic_v1",
+        "model": args.model,
+        "dtype": args.dtype,
+        "decode": "greedy_prompt_prefill_only",
+        "records": records,
+    }
+    atomic_json(output, payload)
+    interventions = [record for record in records if record["kind"] == "intervention" and record["baseline_ok"]]
+    summary = {
+        operator: {
+            "n": len(selected := [r for r in interventions if r["operator"] == operator]),
+            "hit_target": sum(r["hit_target"] for r in selected),
+            "stayed_source": sum(r["stayed_source"] for r in selected),
+        }
+        for operator in ("raw_exchange", "unit_exchange", "unit_transfer")
+    }
+    print(json.dumps({"output": str(output), "summary": summary}, indent=2))
+
+
 def self_test() -> None:
     from judge import required_cells
 
@@ -764,12 +969,27 @@ def self_test() -> None:
     coordinates = torch.einsum("...d,kd->...k", hidden, dual)
     patched_coordinates = torch.einsum("...d,kd->...k", patched, dual)
     torch.testing.assert_close(patched_coordinates, coordinates.flip(-1), atol=1e-5, rtol=1e-5)
+    source, target = torch.nn.functional.normalize(basis, dim=1)
+    transferred = _transfer_lens_coordinate(hidden, source, target, 1)
+    coefficient = torch.einsum("...d,d->...", hidden, source)
+    expected = hidden + torch.einsum("...,d->...d", coefficient, target - source)
+    torch.testing.assert_close(transferred, expected)
+    cfg = JLensSwapC(layers=(1,))
+    cfg.coeff = 1.0
+    state = {"source": source, "target": target}
+    torch.testing.assert_close(JLensSwap.apply(None, None, hidden, state, None, cfg), expected)
+    one_token = hidden[:, :1]
+    torch.testing.assert_close(JLensSwap.apply(None, None, one_token, state, None, cfg), one_token)
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "swap.safetensors"
-        vector = Vector(JLensSwapC(layers=(1,)), {1: {"basis": basis, "dual": dual}}, {1: {}})
+        vector = Vector(
+            JLensSwapC(layers=(1,)),
+            {1: {"source": source, "target": target}},
+            {1: {}},
+        )
         vector.save(str(path))
         assert vector_sha256(Vector.load(str(path))) == vector_sha256(vector)
-    print("J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange reload=exact")
+    print("J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact")
 
     assert len(local_grid(1.0)) == GRID_POINTS
     assert math.isclose(local_grid(1.0)[0], GRID_LOW)
@@ -783,6 +1003,7 @@ def self_test() -> None:
     }) == sorted({*local_grid(1.0), 0.5})
     assert signed_coefficient("+C", 2.0) == 2.0
     assert signed_coefficient("-C", 2.0) == -2.0
+    assert applied_coefficient("j_lens_swap", "-C", 2.0) == 2.0
     quick_rows = [
         {
             "bare": f"bare {question}",
@@ -829,6 +1050,8 @@ def main() -> None:
     args = parse_args()
     if args.self_test:
         self_test()
+    elif args.j_lens_diagnostic:
+        j_lens_paper_native_diagnostic(args)
     elif args.gpu_stage:
         gpu_stage(args)
     elif args.extract_only:

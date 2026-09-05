@@ -1,0 +1,10 @@
+COMMAND: uv run python scripts/export.py --experiment-id j-lens-transfer-formative-v2 --profile dev
+2026-09-05 11:49:37.498 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-transfer-formative-v2 profile=dev cells=18 demo_sides=270
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-transfer-formative-v2 profile=dev arms=18 scenarios=270
+COMMAND: uv run python -m vjp_steering.results
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:846: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+wrote 7 table rows from 800 measured evaluations

@@ -1,0 +1,23 @@
+{
+  "experiment_id": "j-lens-transfer-formative-v2",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 1.25,
+      "candidates_descending": [
+        1.25,
+        0.5
+      ],
+      "effect": 0.11999999999999991,
+      "off_axis_perturbation": 0.07333333333333332
+    },
+    "-C": {
+      "selected_C": 3.0,
+      "candidates_descending": [
+        3.0
+      ],
+      "effect": -0.27999999999999986,
+      "off_axis_perturbation": 0.30666666666666664
+    }
+  }
+}

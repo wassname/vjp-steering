@@ -1,0 +1,138 @@
+COMMAND: uv run python scripts/experiment.py j_lens_swap --dev
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-a7XdeUH267NvXyyW5lkEd7
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 897.01it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 411.97it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 8/426 [00:00<00:33, 12.55it/s]
+[1ALoading weights:   4%|▍         | 16/426 [00:01<00:48,  8.51it/s]
+[1ALoading weights:   6%|▋         | 27/426 [00:01<00:23, 16.67it/s]
+[1ALoading weights:   8%|▊         | 33/426 [00:02<00:25, 15.37it/s]
+[1ALoading weights:   9%|▊         | 37/426 [00:06<01:40,  3.87it/s]
+[1ALoading weights:  15%|█▍        | 62/426 [00:06<00:32, 11.04it/s]
+[1ALoading weights:  17%|█▋        | 72/426 [00:07<00:35,  9.92it/s]
+[1ALoading weights:  22%|██▏       | 95/426 [00:07<00:18, 18.07it/s]
+[1ALoading weights:  25%|██▍       | 106/426 [00:07<00:14, 21.62it/s]
+[1ALoading weights:  28%|██▊       | 119/426 [00:07<00:10, 28.44it/s]
+[1ALoading weights:  32%|███▏      | 137/426 [00:08<00:07, 40.71it/s]
+[1ALoading weights:  36%|███▌      | 152/426 [00:08<00:05, 51.79it/s]
+[1ALoading weights:  39%|███▉      | 167/426 [00:08<00:04, 63.82it/s]
+[1ALoading weights:  44%|████▍     | 187/426 [00:08<00:02, 84.41it/s]
+[1ALoading weights:  47%|████▋     | 202/426 [00:08<00:02, 93.51it/s]
+[1ALoading weights:  51%|█████     | 217/426 [00:08<00:02, 92.65it/s]
+[1ALoading weights:  54%|█████▍    | 230/426 [00:08<00:01, 98.57it/s]
+[1ALoading weights:  58%|█████▊    | 246/426 [00:08<00:01, 112.08it/s]
+[1ALoading weights:  61%|██████    | 260/426 [00:09<00:01, 112.23it/s]
+[1ALoading weights:  67%|██████▋   | 286/426 [00:09<00:00, 145.90it/s]
+[1ALoading weights:  73%|███████▎  | 310/426 [00:09<00:00, 169.61it/s]
+[1ALoading weights:  77%|███████▋  | 330/426 [00:09<00:00, 175.71it/s]
+[1ALoading weights:  84%|████████▎ | 356/426 [00:09<00:00, 188.13it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:09<00:00, 44.76it/s]
+2026-09-05 03:44:49.310 | INFO     | vjp_steering.vjp:j_lens_swap:500 - j_lens_swap lens=/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt n_prompts=1000 source=abrasive id=90474 target=flattering id=80238 layers=(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+2026-09-05 03:44:51.312 | INFO     | vjp_steering.vjp:j_lens_swap:500 - j_lens_swap lens=/__modal/volumes/vo-UTqV2w7ZVWoNtNbbwwfTeq/hf/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt n_prompts=1000 source=flattering id=80238 target=abrasive id=90474 layers=(6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+2026-09-05 03:45:05.221 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:09.542 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:13.181 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:15.731 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:19.243 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:22.055 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:25.647 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:28.392 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:32.019 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:34.767 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:38.759 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:43.521 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:46.455 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:50.287 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:53.386 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:45:56.259 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:46:00.065 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:46:02.959 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:46:07.074 | INFO     | walk:generate:473 - generation 15/15
+2026-09-05 03:46:07.086 | INFO     | __main__:gpu_stage:631 - GPU_STAGE_COMPLETE experiment=j-lens-transfer-formative-v2 profile=dev cells=18
+EXPERIMENT_GPU_COMPLETE id=j-lens-transfer-formative-v2 profile=dev cells=12
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-a7XdeUH267NvXyyW5lkEd7
+✓ Finished downloading files to local!
+2026-09-05 11:46:21.222 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-transfer-formative-v2 profile=dev cells=18 demo_sides=270
+2026-09-05 11:46:21.682 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 11:46:22.140 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 11:46:22.636 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 11:46:23.122 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 11:46:23.588 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 11:46:24.105 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 11:46:24.828 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 11:46:25.492 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 11:46:25.904 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 11:46:26.287 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 11:46:26.677 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 11:46:27.017 | INFO     | __main__:main:670 - CACHE_CHECK required=105 cached=21 missing=84 API_calls=84
+2026-09-05 11:47:13.459 | INFO     | __main__:run:632 - judge progress=84/84
+2026-09-05 11:47:13.973 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 11:47:14.455 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 11:47:15.014 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 11:47:15.558 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 11:47:16.080 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 11:47:16.593 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 11:47:17.062 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 11:47:17.552 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 11:47:17.951 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 11:47:18.355 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 11:47:18.715 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 11:47:19.017 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=105 missing=0
+2026-09-05 11:47:21.362 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-transfer-formative-v2 profile=dev cells=18 demo_sides=270
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 410, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 396, in main
+    export_experiment(
+    ~~~~~~~~~~~~~~~~~^
+        args.experiment_id,
+        ^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        args.all_generated,
+        ^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/export.py", line 308, in export_experiment
+    "layers": ",".join(map(str, manifest["extraction"]["source_layers"])),
+                                ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'source_layers'
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1058, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1054, in main
+    local_pipeline(args)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 696, in local_pipeline
+    subprocess.run(
+    ~~~~~~~~~~~~~~^
+        [sys.executable, "scripts/export.py", "--experiment-id", args.experiment_id, "--profile", "dev"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        cwd=walk.ROOT,
+        ^^^^^^^^^^^^^^
+        check=True,
+        ^^^^^^^^^^^
+    )
+    ^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/workspace/2026/jspace/j-steer_pub/.venv/bin/python3', 'scripts/export.py', '--experiment-id', 'j-lens-transfer-formative-v2', '--profile', 'dev']' returned non-zero exit status 1.

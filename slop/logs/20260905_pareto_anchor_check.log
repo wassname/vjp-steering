@@ -1,0 +1,13 @@
+vjp_delta +C: measured=24 anchors=16 final_C=0.629961
+vjp_delta -C: measured=18 anchors=11 final_C=0.222725
+mean_diff +C: measured=31 anchors=19 final_C=1
+mean_diff -C: measured=29 anchors=16 final_C=0.793701
+pca +C: measured=32 anchors=18 final_C=1.12246
+pca -C: measured=29 anchors=11 final_C=0.793701
+J_word +C: measured=9 anchors=6 final_C=0.353553
+J_word -C: measured=4 anchors=4 final_C=0.25
+vjp_mlp_up_shrink +C: measured=21 anchors=10 final_C=25.3984
+vjp_mlp_up_shrink -C: measured=5 anchors=4 final_C=8
+vjp_mlp_up_left_right_shrink +C: measured=5 anchors=6 final_C=44.0637
+vjp_mlp_up_left_right_shrink -C: measured=6 anchors=6 final_C=24
+PARETO_ANCHOR_CHECK_PASS
