@@ -69,6 +69,17 @@ The raw output confirms that the source coordinate was not a category answer. Fo
 
 This category asymmetry is observation, not proof that a coordinate swap is semantic: the output top token stayed structural in all 117 trials.
 
+### Prompt eligibility follow-up — task 164
+
+Task 164 is a clean-only follow-up run using the same model/data at source revision `27a6edcf33265d71f124ba160756867bd21d3b13`. I read its complete cleaned log (54/54 lines) and raw pueue bytes. Its direct final output was:
+
+> PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "raw", "prompt_format": "paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}
+> PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "chat", "prompt_format": "Qwen chat template around the paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}
+
+Source: `pqlog 164 100000`; preserved as [paper-native-prompt-diagnostic.log](../logs/20260905_j_lens_concept/paper-native-prompt-diagnostic.log). This first classification used the paper's leading-space token form for both modes.
+
+Inspection of the saved chat top-10 records then found category surfaces at assistant token IDs that have **no leading space**: `France`, `Blue`, `Apple`, `Earth`, `English`, `Doctor`, `Water`, and `Heart`. Local tokenizer replay against the same candidate list verifies 8/14 exact one-token category matches under the no-space form; raw remains 0/14 under its leading-space form. Thus task 164 rules out raw prefill and identifies a Qwen-chat-compatible candidate-token convention. It does not rerun the swap, so it is not a behavior result.
+
 ## ml-debug form
 
 | row | answer |
@@ -92,8 +103,8 @@ This category asymmetry is observation, not proof that a coordinate swap is sema
 - **Mechanism:** The unwrapped Qwen prompt has no valid assistant answer slot, so its final token predicts formatting or a follow-up question rather than a category item. Swapping ` What` or newline cannot test a category-answer coordinate exchange.
 - **Evidence:** The run reports `category=country clean= What` and `category=sport clean=` newline; the paper says its example source is `Soccer` at “the colon immediately prior” to the answer.
 - **Contrary evidence:** Country/city/tree/river target ranks improve consistently, so the operator causes some structured rank change even under this invalid condition.
-- **Discriminating test:** Compare raw and chat-template prompt variants without intervention. H1 predicts an assistant-formatted variant will yield a category candidate as the first scored semantic token; a true method failure predicts no valid variant or a valid variant with no swap effect.
-- **Fix/action:** Require a clean semantic-answer eligibility test before any Qwen swap trial.
+- **Discriminating test:** Completed in task 164. Raw has 0/14 semantic answers; Qwen chat has 8/14 when candidates use no-space assistant token IDs. The next separator is the unchanged swap on those eight rows.
+- **Fix/action:** Require the prompt-mode-specific semantic-answer eligibility test before any Qwen swap trial.
 - **Interpretability:** partial; hook and rank movement are interpretable, but not the paper's verbal-report claim.
 
 ### H2 [method | Likely | 65%]
@@ -143,4 +154,4 @@ This category asymmetry is observation, not proof that a coordinate swap is sema
 7. **Bugs requiring code changes:** boolean mask conversion was fixed before task 161. Remaining code work is provenance and readout persistence, not a speculative steering rewrite.
 8. **Misconceptions requiring reinterpretation:** “paper operator fails on Qwen” is unsupported. “This raw-prompt, mid-band Qwen condition has no rank-1 target swap” is supported.
 9. **What would change verdict:** A valid assistant condition with a category clean answer followed by zero rank improvements/top-1 swaps would make H2 materially more probable; one or more rank-1 swaps would establish that the current failure was primarily H1.
-10. **Recommended sequence:** first run clean-only prompt eligibility across raw and Qwen chat-template variants. Then repeat the exact coordinate swap once on the eligible condition, retaining layers, source/target rule, alpha, and candidate data. Do not combine prompt, band, alpha, or representation changes.
+10. **Recommended sequence:** raw is excluded. Repeat the exact coordinate swap only on the eight eligible Qwen-chat rows, using no-space assistant token IDs; retain layers, alpha, operator, and candidate data. Do not combine a prompt convention correction with a band, alpha, or representation change.

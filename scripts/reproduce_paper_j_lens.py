@@ -20,8 +20,8 @@ WORKSPACE_LAYERS = tuple(range(13, 22))
 PROMPT_TEMPLATE = "Think of a {category}. Answer in one word:"
 
 
-def token_id(tokenizer, word: str) -> int | None:
-    ids = tokenizer(" " + word, add_special_tokens=False).input_ids
+def token_id(tokenizer, word: str, prefix: str) -> int | None:
+    ids = tokenizer(prefix + word, add_special_tokens=False).input_ids
     return ids[0] if len(ids) == 1 else None
 
 
@@ -57,7 +57,7 @@ def next_logits(model, tokenizer, text: str, vector=None) -> tuple[torch.Tensor,
     context = nullcontext({}) if vector is None else j_lens_coordinate_prefill(
         model, vector, encoded.attention_mask.bool()
     )
-    with context as calls:
+    with context as calls, torch.inference_mode():
         logits = model(**encoded, use_cache=False).logits[torch.arange(len(final), device=final.device), final][0].float()
     if vector is not None and not all(value == 1 for value in calls.values()):
         raise AssertionError(f"coordinate swap hook calls were {calls}")
@@ -90,11 +90,12 @@ def main() -> None:
         categories = categories[: args.limit_categories]
     trials = []
     clean_rows = []
+    candidate_prefix = " " if args.prompt_mode == "raw" else ""
     for category, words in categories:
         text = prompt(tokenizer, category, args.prompt_mode)
         clean_logits, _ = next_logits(model, tokenizer, text)
         source_id = int(clean_logits.argmax())
-        category_ids = [token_id(tokenizer, word) for word in words]
+        category_ids = [token_id(tokenizer, word, candidate_prefix) for word in words]
         category_ids = [word_id for word_id in category_ids if word_id is not None]
         clean_rows.append({
             "category": category,
@@ -110,7 +111,7 @@ def main() -> None:
         if source_id not in category_ids:
             logger.warning("category={} clean token is not a listed category item: {}", category, tokenizer.decode([source_id]))
             continue
-        target_ids = [token_id(tokenizer, word) for word in words[:10]]
+        target_ids = [token_id(tokenizer, word, candidate_prefix) for word in words[:10]]
         target_ids = [target for target in target_ids if target is not None and target != source_id and rank(clean_logits, target) > 10]
         if args.limit_targets is not None:
             target_ids = target_ids[: args.limit_targets]
@@ -143,7 +144,8 @@ def main() -> None:
         "data": str(args.data),
         "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
         "prompt_mode": args.prompt_mode,
-        "prompt_format": "paper verbal-report colon prefill" if args.prompt_mode == "raw" else "Qwen chat template around the paper verbal-report colon prefill",
+        "candidate_prefix": candidate_prefix,
+        "prompt_format":  "paper verbal-report colon prefill" if args.prompt_mode == "raw" else "Qwen chat template around the paper verbal-report colon prefill",
         "clean_rows": clean_rows,
     }
     if args.clean_only:

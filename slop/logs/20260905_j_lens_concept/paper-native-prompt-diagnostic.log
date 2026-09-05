@@ -1,0 +1,59 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-VKDPLf6bYcdTOzSnkTnDl0
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 659.70it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 370.95it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 10/426 [00:00<00:04, 86.74it/s]
+[1ALoading weights:   9%|▊         | 37/426 [00:00<00:02, 182.62it/s]
+[1ALoading weights:  15%|█▌        | 66/426 [00:00<00:01, 225.87it/s]
+[1ALoading weights:  22%|██▏       | 95/426 [00:00<00:01, 243.57it/s]
+[1ALoading weights:  28%|██▊       | 120/426 [00:00<00:01, 226.65it/s]
+[1ALoading weights:  34%|███▎      | 143/426 [00:00<00:01, 205.88it/s]
+[1ALoading weights:  40%|███▉      | 169/426 [00:00<00:01, 216.20it/s]
+[1ALoading weights:  45%|████▌     | 192/426 [00:00<00:01, 210.03it/s]
+[1ALoading weights:  51%|█████     | 217/426 [00:01<00:00, 209.64it/s]
+[1ALoading weights:  57%|█████▋    | 241/426 [00:01<00:00, 207.52it/s]
+[1ALoading weights:  62%|██████▏   | 265/426 [00:01<00:00, 213.23it/s]
+[1ALoading weights:  67%|██████▋   | 287/426 [00:01<00:00, 214.35it/s]
+[1ALoading weights:  73%|███████▎  | 309/426 [00:01<00:00, 200.05it/s]
+[1ALoading weights:  78%|███████▊  | 332/426 [00:01<00:00, 199.43it/s]
+[1ALoading weights:  83%|████████▎ | 353/426 [00:01<00:00, 191.39it/s]
+[1ALoading weights:  89%|████████▉ | 380/426 [00:01<00:00, 209.31it/s]
+[1ALoading weights:  94%|█████████▍| 402/426 [00:01<00:00, 200.21it/s]Loading weights: 100%|██████████| 426/426 [00:01<00:00, 214.11it/s]
+/repo/scripts/reproduce_paper_j_lens.py:49: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  {"token_id": int(token), "token": tokenizer.decode([int(token)]), "logit": float(value)}
+PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "raw", "prompt_format": "paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 473.72it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:  58%|█████▊    | 249/426 [00:00<00:00, 2466.82it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:00<00:00, 2763.58it/s]
+/repo/scripts/reproduce_paper_j_lens.py:49: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:822.)
+  {"token_id": int(token), "token": tokenizer.decode([int(token)]), "logit": float(value)}
+PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "chat", "prompt_format": "Qwen chat template around the paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}
+PAPER_NATIVE_PROMPT_DIAGNOSTIC_DOWNLOADED {"raw": {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "raw", "prompt_format": "paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}, "chat": {"model": "Qwen/Qwen3.5-4B", "source_revision": "27a6edcf33265d71f124ba160756867bd21d3b13", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "chat", "prompt_format": "Qwen chat template around the paper verbal-report colon prefill", "n_categories": 14, "n_semantic_clean_answers": 0}}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-VKDPLf6bYcdTOzSnkTnDl0

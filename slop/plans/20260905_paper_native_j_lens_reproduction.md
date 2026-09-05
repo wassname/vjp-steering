@@ -1,6 +1,7 @@
 - [/] goal: reproduce the vendored paper's verbal-report coordinate swap on Qwen3.5-4B
   - task: [x] raw colon prefill ran but is ineligible: clean Qwen tokens were structural (` What` or newlines), not category answers
-  - task: [/] test raw and Qwen-chat clean prefills; retain a mode only if its greedy scored token is a listed category item
+  - task: [x] raw and Qwen-chat clean prefills: raw has 0/14 listed category answers; chat has 8/14 once candidates use the no-space assistant token form
+  - task: [/] run the unchanged coordinate swap on the 8 eligible Qwen-chat categories with no-space token IDs
   - use vendored `verbal-report.json` candidates and the paper's colon prefill prompt; use raw single-token J-lens rows, pseudoinverse coordinates, and a complete source↔target swap
   - use layers 13–21: paper's workspace starts after roughly one third and ends before late layers dominated by the imminent output token; this is a model-matched approximation from fitted Qwen layers 6–24, not a claimed paper layer range
   - failure modes: current directed transfer is mistaken for a swap; chat formatting or token IDs differ; a swap changes output through incoherence

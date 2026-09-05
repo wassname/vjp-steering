@@ -124,7 +124,9 @@ def calibrate_concept(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
-def paper_native_verbal_report_remote(model: str, dtype: str, output: str, source_revision: str) -> str:
+def paper_native_verbal_report_remote(
+    model: str, dtype: str, output: str, source_revision: str, prompt_mode: str
+) -> str:
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
@@ -133,7 +135,8 @@ def paper_native_verbal_report_remote(model: str, dtype: str, output: str, sourc
     subprocess.run(
         [
             sys.executable, "scripts/reproduce_paper_j_lens.py", "--model", model,
-            "--dtype", dtype, "--source-revision", source_revision, "--output", str(remote_output),
+            "--dtype", dtype, "--prompt-mode", prompt_mode, "--source-revision", source_revision,
+            "--output", str(remote_output),
         ],
         cwd="/repo", check=True,
     )
@@ -146,8 +149,9 @@ def paper_native_verbal_report(
     model: str = MODEL,
     dtype: str = "bfloat16",
     output: str = "experiments/paper-native-verbal-report-v1/results.json",
+    prompt_mode: str = "raw",
 ):
-    result = paper_native_verbal_report_remote.remote(model, dtype, output, source_revision())
+    result = paper_native_verbal_report_remote.remote(model, dtype, output, source_revision(), prompt_mode)
     local_output = REPO / "outputs" / output
     local_output.parent.mkdir(parents=True, exist_ok=True)
     local_output.write_text(result)
