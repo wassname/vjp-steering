@@ -75,7 +75,7 @@ def main() -> None:
         target_ids = [target for target in target_ids if target is not None and target != source_id and rank(clean_logits, target) > 10]
         if args.limit_targets is not None:
             target_ids = target_ids[: args.limit_targets]
-        logger.info("category={} clean={} source_id={} valid_targets={}", category["name"], tokenizer.decode([source_id]), source_id, len(target_ids))
+        logger.info("category={} clean={} source_id={} valid_targets={}", category, tokenizer.decode([source_id]), source_id, len(target_ids))
         for target_id in target_ids:
             vector, metadata = j_lens_coordinate_swap(
                 model, WORKSPACE_LAYERS, source_token_id=source_id,
