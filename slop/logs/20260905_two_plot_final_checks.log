@@ -1,0 +1,21 @@
+COMMAND: uv run python -m compileall -q src scripts
+COMMAND: uv run python -m vjp_steering.results
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:994: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:995: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  pareto_figure.write_image(output / "plot_pareto.png", width=1064, height=590, scale=2)
+wrote 7 table rows and 2 plots from 800 measured evaluations
+COMMAND: uv run python slop/checks/20260905_two_plot_assertions.py
+measured: J-lens +C=13 -C=13 random=cone-only
+pareto: J-lens +C=13 -C=13 random=cone-only
+TWO_PLOTS_PASS measured_sha256=0d22dd059445ab9e748d330a0291b77626e4f9afdade2683fd494733dcece97b pareto_sha256=12801129b4a81ca307ccb2877156a4c175b5e933d1b4b9edad99338576dd540c
+— PI/OpenAI Codex
+COMMAND: uv run python scripts/export.py --self-test
+EXPORT_SELF_TEST_PASS
+COMMAND: git diff --check

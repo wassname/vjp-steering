@@ -20,14 +20,12 @@ DATA = ROOT / "data" / "results.csv"
 J_LENS_DEV_RESULTS = ROOT / "data" / "dev" / "j-lens-transfer-formative-v2" / "results.csv"
 J_LENS_COLOR = "#56b4e9"
 J_LENS_PLOT_NOTE = (
-    "The cyan directed J-lens transfer overlay is DEV evidence from 15 questions, not an all-100 result "
-    "and not included in the table. Solid +C transfers abrasive to flattering; dotted -C transfers "
-    "flattering to abrasive. Both use positive alpha and edit prompt-prefill positions only. All measured "
-    "doses remain as dots; open diamonds mark incomplete-seed probes. Staggered open upward triangles retain "
-    "main-method doses beyond the labeled damage range; downward triangles retain corresponding J-lens doses. "
-    "Smooth curves use bare and complete in-range Pareto-efficient doses. For the main methods, × retains the "
-    "final admissible dose and a faint segment "
-    "reaches a dominated final measured dose when it is in range."
+    "Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible "
+    "dose means in dose order. The additional figure shows measured dose means as small dots and connects only "
+    "their Pareto-efficient means. The cyan directed J-lens overlay is separate DEV evidence from 15 questions and is not included "
+    "in the table. Solid +C transfers abrasive to flattering; dotted -C transfers flattering to abrasive. "
+    "Both use positive alpha and prompt-prefill edits. Open cyan markers retain every DEV dose; downward "
+    "triangles mark high-damage doses below the shared range; × marks each selected DEV endpoint."
 )
 METHODS = (
     "vjp_delta",
@@ -353,6 +351,7 @@ def plot(
     title: str = "VJP steering on Bullshit Bench v2",
     endpoint_coefficients: dict[str, float | None] | None = None,
     smooth: bool = True,
+    pareto: bool = False,
     include_rejected: bool = False,
 ) -> go.Figure:
     figure = go.Figure()
@@ -402,34 +401,6 @@ def plot(
                 ])
             ]
             random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
-        random_off_scale_row = y_range[0] * 0.985 - 0.007 * len(METHODS[:-1])
-        figure.add_trace(go.Scatter(
-            x=[row["effect"] for row in random],
-            y=[
-                row["off_axis_perturbation"]
-                if row["off_axis_perturbation"] <= damage_limit else random_off_scale_row
-                for row in random
-            ],
-            mode="markers",
-            marker={
-                "color": "#888888",
-                "size": [3 if row["off_axis_perturbation"] <= damage_limit else 6 for row in random],
-                "symbol": [
-                    "triangle-up-open" if row["off_axis_perturbation"] > damage_limit
-                    else "circle" if row["admissible"] else "circle-open"
-                    for row in random
-                ],
-            },
-            opacity=0.28,
-            text=[
-                f"random seed={row['seed']} C={row['C']:g} {row['side']}"
-                + ("" if row["admissible"] else " (rejected)")
-                for row in random
-            ],
-            hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
-            name="random measured evaluations",
-            showlegend=False,
-        ))
         figure.add_trace(go.Scatter(
             x=[row["effect"] for row in random_peaks],
             y=[row["off_axis_perturbation"] for row in random_peaks],
@@ -453,6 +424,16 @@ def plot(
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
+            if points and not pareto and len(points) > 16:
+                table_peak = max(
+                    range(len(points)),
+                    key=lambda index: (1 if side == "+C" else -1) * points[index]["effect"],
+                )
+                indexes = sorted(
+                    {round(index * (len(points) - 1) / 15) for index in range(16)}
+                    | {len(points) - 1, table_peak}
+                )
+                points = [points[index] for index in indexes]
             if points:
                 if endpoint_coefficients is not None:
                     endpoint_C = endpoint_coefficients[side]
@@ -473,28 +454,21 @@ def plot(
                         points[0]["effect"], min(points[0]["off_axis_perturbation"], damage_limit)
                     )
                 origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
-                if smooth:
+                if pareto:
                     in_range_points = [
                         point for point in points
                         if point["complete"] and point["off_axis_perturbation"] <= damage_limit
                     ]
-                    anchors, endpoint_extension = _pareto_curve_parts(in_range_points, side)
+                    anchors, _ = _pareto_curve_parts(in_range_points, side)
                 else:
-                    anchors, endpoint_extension = [origin, *points], []
+                    anchors = [origin, *points]
                 figure.add_trace(go.Scatter(
                     x=[row["effect"] for row in anchors],
                     y=[min(row["off_axis_perturbation"], damage_limit) for row in anchors],
-                    mode="lines", line={"color": colors[method], "width": 2.2},
-                    line_shape="spline" if smooth else "linear", line_smoothing=0.45 if smooth else 0,
+                    mode="lines", line={"color": colors[method], "width": 2.2 if pareto else 3},
+                    line_shape="spline" if smooth else "linear", line_smoothing=0.45 if pareto else 0.6 if smooth else 0,
                     hoverinfo="skip", showlegend=False,
                 ))
-                if endpoint_extension:
-                    figure.add_trace(go.Scatter(
-                        x=[row["effect"] for row in endpoint_extension],
-                        y=[min(row["off_axis_perturbation"], damage_limit) for row in endpoint_extension],
-                        mode="lines", line={"color": colors[method], "width": 0.8}, opacity=0.35,
-                        hoverinfo="skip", showlegend=False,
-                    ))
                 off_scale_row = y_range[0] * 0.985 - 0.007 * method_index
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)],
@@ -509,7 +483,7 @@ def plot(
                     mode="markers",
                     marker={
                         "color": colors[method],
-                        "size": [0, *(5 if point["off_axis_perturbation"] <= damage_limit else 6 for point in points)],
+                        "size": [0, *(5 if pareto else 8 for _point in points)],
                         "symbol": [
                             "circle",
                             *(
@@ -522,7 +496,7 @@ def plot(
                         ],
                         "line": {"width": 0.6, "color": "white"},
                     },
-                    opacity=0.75,
+                    opacity=0.75 if pareto else 0.9,
                     text=[
                         "bare",
                         *(f"C={row['C']:g}" + (
@@ -550,7 +524,7 @@ def plot(
                     ))
                 series = [
                     (row["effect"], min(row["off_axis_perturbation"], damage_limit))
-                    for row in [*anchors, *endpoint_extension[1:]]
+                    for row in anchors
                 ]
                 for start, end in zip(series, series[1:]):
                     obstacles.extend(
@@ -624,10 +598,16 @@ def plot(
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
-    figure.add_annotation(
-        x=0.01, y=0.10, xref="paper", yref="paper", text="× selected/final dose",
-        showarrow=False, xanchor="left", font={"color": "#777777", "size": 13},
+    marker_note = (
+        "small dots: measured doses · lines: Pareto-efficient means"
+        if pareto else
+        "● measured doses · C increases from bare"
     )
+    for y, text in ((0.10, marker_note), (0.055, "× selected/final · gray ○ random peak")):
+        figure.add_annotation(
+            x=0.01, y=y, xref="paper", yref="paper", text=text,
+            showarrow=False, xanchor="left", font={"color": "#777777", "size": 10.5},
+        )
     if any(row["method"] == "j_lens_swap" for row in rows):
         figure.add_annotation(
             x=0.01,
@@ -635,20 +615,9 @@ def plot(
             xref="paper",
             yref="paper",
             xanchor="left",
-            text="cyan J-lens DEV: solid +C · dotted -C",
+            text="cyan J-lens DEV: solid +C · dotted -C · ○ all doses · ▽ high damage",
             showarrow=False,
-            font={"color": J_LENS_COLOR, "size": 13},
-            bgcolor="rgba(255,255,255,0.9)",
-        )
-        figure.add_annotation(
-            x=0.01,
-            y=0.885,
-            xref="paper",
-            yref="paper",
-            xanchor="left",
-            text="● accepted · ○ rejected/DEV · ◇ partial · △/▽ off-scale",
-            showarrow=False,
-            font={"color": "#666666", "size": 12},
+            font={"color": J_LENS_COLOR, "size": 12},
             bgcolor="rgba(255,255,255,0.9)",
         )
     if random:
@@ -777,13 +746,27 @@ def _markdown(
         "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
         "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
     ),
+    extra_pareto_plot: bool = False,
 ) -> str:
+    figures = (
+        [
+            "## Measured dose paths",
+            "",
+            "![Measured dose paths](plot.png)",
+            "",
+            "## Pareto-smoothed paths",
+            "",
+            "![Pareto-smoothed paths](plot_pareto.png)",
+        ]
+        if extra_pareto_plot
+        else ["![Judged effect against off-axis change](plot.png)"]
+    )
     lines = [
         "# Results",
         "",
         *intro,
         "",
-        "![Judged effect against off-axis change](plot.png)",
+        *figures,
         "",
         _markdown_table(table),
     ]
@@ -962,18 +945,38 @@ def main() -> None:
         method_seeds={"j_lens_swap": {0}},
     )
     table = _display_table(_summary(rows))
-    markdown_text = _markdown(table, (
-        "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
-        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
-        J_LENS_PLOT_NOTE,
-    ))
-    figure = plot([*rows, *j_lens_rows], include_rejected=True)
-    figure_html = figure.to_html(
-        full_html=False,
-        include_plotlyjs="cdn",
-        default_width="100%",
-        config={"responsive": True},
-        div_id="results-plot",
+    markdown_text = _markdown(
+        table,
+        (
+            "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
+            "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+            J_LENS_PLOT_NOTE,
+        ),
+        extra_pareto_plot=True,
+    )
+    figure = plot([*rows, *j_lens_rows])
+    pareto_figure = plot(
+        [*rows, *j_lens_rows],
+        title="Pareto-smoothed VJP steering on Bullshit Bench v2",
+        pareto=True,
+    )
+    figure_html = (
+        "<h2>Measured dose paths</h2>"
+        + figure.to_html(
+            full_html=False,
+            include_plotlyjs="cdn",
+            default_width="100%",
+            config={"responsive": True},
+            div_id="results-plot",
+        )
+        + "<h2>Pareto-smoothed paths</h2>"
+        + pareto_figure.to_html(
+            full_html=False,
+            include_plotlyjs=False,
+            default_width="100%",
+            config={"responsive": True},
+            div_id="results-pareto-plot",
+        )
     )
     html_text = _html(
         table,
@@ -989,7 +992,8 @@ def main() -> None:
     (output / "index.md").write_text(markdown_text)
     (output / "index.html").write_text(html_text)
     figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
-    print(f"wrote {len(table)} table rows from {len(rows)} measured evaluations")
+    pareto_figure.write_image(output / "plot_pareto.png", width=1064, height=590, scale=2)
+    print(f"wrote {len(table)} table rows and 2 plots from {len(rows)} measured evaluations")
 
 
 if __name__ == "__main__":
