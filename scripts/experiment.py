@@ -674,11 +674,10 @@ def local_pipeline(args: argparse.Namespace) -> None:
         cwd=walk.ROOT,
         check=True,
     )
-    subprocess.run(
-        [sys.executable, "-m", "vjp_steering.results", "--experiment-id", args.experiment_id, "--profile", "dev"],
-        cwd=walk.ROOT,
-        check=True,
-    )
+    render_command = [sys.executable, "-m", "vjp_steering.results"]
+    if args.method != "j_lens_swap":
+        render_command.extend(["--experiment-id", args.experiment_id, "--profile", "dev"])
+    subprocess.run(render_command, cwd=walk.ROOT, check=True)
     if args.dev:
         return
     selected = json.loads((walk.ROOT / "data" / "dev" / args.experiment_id / "selected.json").read_text())
@@ -747,11 +746,10 @@ def local_pipeline(args: argparse.Namespace) -> None:
             "tested_candidates": tested_candidates,
         }
     atomic_json(confirmed_path, confirmed)
-    subprocess.run(
-        [sys.executable, "-m", "vjp_steering.results", "--experiment-id", args.experiment_id, "--profile", "full"],
-        cwd=walk.ROOT,
-        check=True,
-    )
+    render_command = [sys.executable, "-m", "vjp_steering.results"]
+    if args.method != "j_lens_swap":
+        render_command.extend(["--experiment-id", args.experiment_id, "--profile", "full"])
+    subprocess.run(render_command, cwd=walk.ROOT, check=True)
 
 
 def self_test() -> None:

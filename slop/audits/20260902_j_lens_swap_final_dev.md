@@ -49,8 +49,10 @@ This tests the paper equation, its layer/token application policy, and one seman
 
 The separate “Tell me about {concept}” construction is not tested here. The paper mean-subtracts 100 other concept activations, then decomposes the resulting concept vector into J-space and non-J-space components for a causal comparison. It is a distinct experiment.
 
-## Final plot check
+## Plot integration
 
-The fresh-eyes reviews reconstructed all 12 CSV rows from the plotted coordinates and identified presentation defects, not data defects. The final render uses separate blue/solid/circle and orange/dotted/diamond encodings, labels all three unique positive-alpha doses, gives counts and ranges for both collapsed points, and states “no accepted dose” in the title. The last review found only that the alpha=1 label crossed its line; the final correction moved it left and placed the dose labels on an opaque background. I reopened the resulting PNG and observed all labels fully legible with no clipped text.
+The first render was a standalone J-lens figure. That did not satisfy the user's request to add the method to the existing comparison plot, and it removed the baselines needed to interpret the failure. It has been deleted.
+
+The final [`results/plot.png`](../../results/plot.png) keeps the existing all-100 methods, random cone, and fixed axes. The cyan DEV overlay shows the three in-range positive-alpha measurements and clips both collapsed trajectories at the plot boundary. [`results/index.md`](../../results/index.md) states that the overlay uses 15 DEV questions, is excluded from the all-100 table, has no accepted dose, and reaches measured collapsed damage 4.59 for positive alpha and 4.21 for negative alpha. The final fresh-eyes review reconstructs those three points from the CSV and concludes: “Overlay matches the existing comparison plot without a material visual defect.”
 
 — PI/OpenAI Codex

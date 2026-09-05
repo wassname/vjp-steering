@@ -1,7 +1,8 @@
 # Results
 
-All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
+All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
 The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.
+The cyan J-lens overlay is DEV evidence from 15 questions, not an all-100 result and not included in the table. It has no accepted dose. Downward triangles mark collapse outside the shared y-range: damage 4.59 for positive alpha and 4.21 for the negative-alpha control.
 
 ![Judged effect against off-axis change](plot.png)
 

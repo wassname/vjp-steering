@@ -17,6 +17,13 @@ from vjp_steering.experiment import DEV, FULL, data_dir, results_dir
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
+J_LENS_DEV_RESULTS = ROOT / "data" / "dev" / "j-lens-swap-formative-v1" / "results.csv"
+J_LENS_COLOR = "#56b4e9"
+J_LENS_PLOT_NOTE = (
+    "The cyan J-lens overlay is DEV evidence from 15 questions, not an all-100 result and not included in the table. "
+    "It has no accepted dose. Downward triangles mark collapse outside the shared y-range: damage 4.59 for "
+    "positive alpha and 4.21 for the negative-alpha control."
+)
 METHODS = (
     "vjp_delta",
     "mean_diff",
@@ -24,8 +31,6 @@ METHODS = (
     "J_word",
     "vjp_mlp_up_shrink",
     "vjp_mlp_up_left_right_shrink",
-    "vjp_mlp_up_shared_eb",
-    "vjp_mlp_up_shared_last_token_eb",
     "random",
 )
 RANDOM_SEEDS = 10
@@ -36,8 +41,6 @@ METHOD_SEEDS = {
     "J_word": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
-    "vjp_mlp_up_shared_eb": {0},
-    "vjp_mlp_up_shared_last_token_eb": {0},
 }
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
@@ -53,24 +56,7 @@ LABELS = {
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
     "vjp_mlp_up_shared_last_token_eb": "shared-pair last-token VJP",
-    "j_lens_swap": "J-lens coordinate swap",
 }
-
-
-def series_label(method: str, side: str) -> str:
-    if method == "j_lens_swap":
-        return "positive alpha (paper swap)" if side == "+C" else "negative alpha control"
-    return side
-
-
-def annotation_angles(method: str, side: str) -> tuple[int, ...]:
-    if method == "j_lens_swap":
-        return (-90,) if side == "+C" else (90,)
-    if method == "vjp_mlp_up_left_right_shrink":
-        return (0, -45, 45, -90, 90, -135, 135, 180)
-    return (90, 45, 135, 0, 180, -45, -135, -90)
-
-
 COHORT_FIELDS = (
     "model",
     "tokenizer",
@@ -222,6 +208,62 @@ def place_labels(
     return annotations
 
 
+def _clip_to_damage(start: dict, end: dict, damage: float) -> tuple[float, float]:
+    fraction = (damage - start["off_axis_perturbation"]) / (
+        end["off_axis_perturbation"] - start["off_axis_perturbation"]
+    )
+    effect = start["effect"] + fraction * (end["effect"] - start["effect"])
+    return effect, damage
+
+
+def _add_j_lens_dev_overlay(
+    figure: go.Figure,
+    rows: list[dict],
+    damage_limit: float,
+    obstacles: list[tuple[float, float]],
+) -> None:
+    j_rows = [row for row in rows if row["method"] == "j_lens_swap"]
+    if not j_rows:
+        return
+    points = _means(j_rows, ("j_lens_swap",), {"j_lens_swap": {0}}, include_rejected=True)
+    for side in ("+C", "-C"):
+        side_points = sorted((row for row in points if row["side"] == side), key=lambda row: row["C"])
+        in_range = [row for row in side_points if row["off_axis_perturbation"] <= damage_limit]
+        off_scale = [row for row in side_points if row["off_axis_perturbation"] > damage_limit]
+        origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
+        plotted = [origin, *in_range]
+        if off_scale:
+            effect, damage = _clip_to_damage(plotted[-1], off_scale[0], damage_limit)
+            plotted.append({"effect": effect, "off_axis_perturbation": damage})
+        figure.add_trace(go.Scatter(
+            x=[row["effect"] for row in plotted],
+            y=[row["off_axis_perturbation"] for row in plotted],
+            mode="lines+markers",
+            line={"color": J_LENS_COLOR, "width": 3, "dash": "dot" if side == "-C" else "solid"},
+            marker={
+                "color": J_LENS_COLOR,
+                "size": [0, *(8 for _ in in_range), *(10 for _ in off_scale[:1])],
+                "symbol": ["circle", *("circle-open" for _ in in_range), *("triangle-down-open" for _ in off_scale[:1])],
+            },
+            text=[
+                "bare",
+                *(f"alpha={row['C']:g} (rejected)" for row in in_range),
+                *(f"off scale: alpha={row['C']:g}, damage={row['off_axis_perturbation']:.2f}" for row in off_scale[:1]),
+            ],
+            hovertemplate="J-lens coordinate swap DEV<br>%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+            showlegend=False,
+        ))
+        series = [
+            (row["effect"], row["off_axis_perturbation"])
+            for row in plotted
+        ]
+        for start, end in zip(series, series[1:]):
+            obstacles.extend(
+                (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+                for fraction in (0.25, 0.5, 0.75, 1.0)
+            )
+
+
 def plot(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
@@ -290,11 +332,9 @@ def plot(
         "vjp_mlp_up_left_right_shrink": "#6f4aa8",
         "vjp_mlp_up_shared_eb": "#a64d79",
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
-        "j_lens_swap": "#56b4e9",
     }
     displayed_endpoints = {}
     unselected_sides = {}
-    is_j_lens_swap = methods == ("j_lens_swap",)
     for method in (method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
@@ -323,28 +363,18 @@ def plot(
                     displayed_endpoints[method, side] = (endpoint["effect"], endpoint["off_axis_perturbation"])
                 else:
                     unselected_sides[method, side] = (points[0]["effect"], points[0]["off_axis_perturbation"])
-                marker_symbol = "diamond" if is_j_lens_swap and side == "-C" else "circle"
-                trace_color = (
-                    "#0072b2" if side == "+C" else "#d55e00"
-                ) if is_j_lens_swap else colors[method]
                 figure.add_trace(go.Scatter(
                     x=[0, *(row["effect"] for row in points)], y=[0, *(row["off_axis_perturbation"] for row in points)],
-                    mode="lines+markers",
-                    name=series_label(method, side),
-                    line={
-                        "color": trace_color,
-                        "width": 3,
-                        "dash": "dot" if is_j_lens_swap and side == "-C" else "solid",
-                    },
+                    mode="lines+markers", line={"color": colors[method], "width": 3},
                     marker={
-                        "color": trace_color,
+                        "color": colors[method],
                         "size": [0, *(12 if index == endpoint_index else 8 for index in range(len(points)))],
                         "symbol": [
-                            f"{marker_symbol}-open",
+                            "circle",
                             *(
                                 "x" if index == endpoint_index
-                                else marker_symbol if points[index]["accepted" if include_rejected else "admissible"]
-                                else f"{marker_symbol}-open"
+                                else "circle" if points[index]["accepted" if include_rejected else "admissible"]
+                                else "circle-open"
                                 for index in range(len(points))
                             ),
                         ],
@@ -356,8 +386,8 @@ def plot(
                             "" if row["accepted" if include_rejected else "admissible"] else " (rejected)"
                         ) for row in points),
                     ],
-                    hovertemplate=f"{LABELS[method]} {series_label(method, side)}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
-                    showlegend=is_j_lens_swap,
+                    hovertemplate=f"{LABELS[method]}<br>%{{text}}<br>effect=%{{x:.3f}}<br>damage=%{{y:.3f}}<extra></extra>",
+                    showlegend=False,
                 ))
                 series = [(0.0, 0.0), *((row["effect"], row["off_axis_perturbation"]) for row in points)]
                 for start, end in zip(series, series[1:]):
@@ -366,8 +396,9 @@ def plot(
                         for fraction in (0.25, 0.5, 0.75, 1.0)
                     )
 
-    figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "star"}, hoverinfo="skip", showlegend=False))
-    figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=-14, font={"color": "#333333", "size": 14})
+    _add_j_lens_dev_overlay(figure, rows, y_range[0] * 0.98, obstacles)
+    figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
+    figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
     if methods == METHODS:
         labels = [
             {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
@@ -384,14 +415,15 @@ def plot(
         )
     else:
         labels = []
-        label_methods = () if is_j_lens_swap else tuple(method for method in methods if method != "random")
+        label_methods = tuple(method for method in methods if method != "random")
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
             "y": displayed_endpoints[method, side][1],
-            "text": f"{LABELS[method]} {series_label(method, side)}",
+            "text": f"{LABELS[method]} {side}",
             "color": colors[method],
-            "angles": annotation_angles(method, side),
+            "angles": (0, -45, 45, -90, 90, -135, 135, 180)
+            if method == "vjp_mlp_up_left_right_shrink" else (90, 45, 135, 0, 180, -45, -135, -90),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -401,13 +433,9 @@ def plot(
         {
             "x": unselected_sides[method, side][0],
             "y": unselected_sides[method, side][1],
-            "text": (
-                f"{series_label(method, side)}: no accepted dose"
-                if method == "j_lens_swap"
-                else f"{LABELS[method]} {series_label(method, side)} (no accepted dose)"
-            ),
+            "text": f"{LABELS[method]} {side} (no accepted dose)",
             "color": colors[method],
-            "angles": annotation_angles(method, side),
+            "angles": (0, -45, 45, -90, 90, -135, 135, 180),
         }
         for method in label_methods
         for side in ("+C", "-C")
@@ -419,75 +447,29 @@ def plot(
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
+    if any(row["method"] == "j_lens_swap" for row in rows):
+        figure.add_annotation(
+            x=1.25,
+            y=y_range[0] * 0.84,
+            text="J-lens DEV: no accepted dose; both collapse off-scale ↓",
+            showarrow=False,
+            font={"color": J_LENS_COLOR, "size": 14},
+            bgcolor="rgba(255,255,255,0.9)",
+        )
     if random:
         figure.add_annotation(
             x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
             align="center", font={"color": "#666666", "size": 14},
         )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
-    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", xshift=-8, font={"color": "#287a4d", "size": 14})
-    if not is_j_lens_swap:
-        figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
-    if is_j_lens_swap:
-        for side in ("+C", "-C"):
-            side_points = [row for row in means if row["method"] == "j_lens_swap" and row["side"] == side]
-            groups = {}
-            for row in side_points:
-                groups.setdefault((row["effect"], row["off_axis_perturbation"]), []).append(row["C"])
-            for (effect, damage), coefficients in groups.items():
-                annotation_color = "#0072b2" if side == "+C" else "#d55e00"
-                if len(coefficients) > 1:
-                    alpha_range = (
-                        f"{min(coefficients):g}-{max(coefficients):g}"
-                        if side == "+C" else f"-{min(coefficients):g} to -{max(coefficients):g}"
-                    )
-                    figure.add_annotation(
-                        x=effect,
-                        y=damage,
-                        text=f"{len(coefficients)} identical doses: alpha={alpha_range}",
-                        showarrow=False,
-                        xanchor="left",
-                        xshift=12,
-                        yshift=-20,
-                        font={"color": annotation_color, "size": 12},
-                    )
-                elif side == "+C":
-                    coefficient = coefficients[0]
-                    figure.add_annotation(
-                        x=effect,
-                        y=damage,
-                        text=f"alpha={coefficient:g}",
-                        showarrow=False,
-                        xanchor="right" if coefficient == 1 else "left" if coefficient == 1.125 else "center",
-                        xshift=-10 if coefficient == 1 else 10 if coefficient == 1.125 else 0,
-                        yshift=0 if coefficient in {1, 1.125} else -18,
-                        bgcolor="rgba(255,255,255,0.9)",
-                        borderpad=1,
-                        font={"color": annotation_color, "size": 11},
-                    )
+    figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
+    figure.add_annotation(x=0.5, y=0, xref="paper", yref="paper", text="mostly side effects", showarrow=False, yshift=18, font={"color": "#c44e52", "size": 14})
     figure.update_layout(
-        title={"text": title, "x": 0.5, "xanchor": "center", "y": 0.98, "yanchor": "top"},
+        title={"text": title, "x": 0.5, "xanchor": "center"},
         height=590, margin=margin,
-        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=is_j_lens_swap,
-        legend={
-            "x": 0.99,
-            "y": 0.92,
-            "xanchor": "right",
-            "yanchor": "top",
-            "bgcolor": "rgba(255,255,255,0.8)",
-        },
+        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
-        yaxis={
-            "title": (
-                "|off-axis change from bare| (better upward)"
-                if is_j_lens_swap else "off-axis damage (lower is better)"
-            ),
-            "range": y_range,
-            "showline": True,
-            "linecolor": "#333333",
-            "gridcolor": "#e5e5e5",
-            "zeroline": False,
-        },
+        yaxis={"title": "off-axis damage (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
     )
     return figure
 
@@ -728,18 +710,9 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         " No accepted endpoint was confirmed for " + ", ".join(unconfirmed) + "."
         if unconfirmed else ""
     )
-    parameter_note = (
-        " For this method, +C denotes positive alpha (the paper swap) and -C denotes the negative-alpha control. "
-        "Six +C doses (alpha=1.25-2) share one collapsed-output marker; all three -C doses "
-        "(alpha=-0.5 to -2) share another. At these doses the steered responses reach the judge's "
-        "5.0 off-axis ceiling; the plotted y value is the absolute change in the mean score from bare. "
-        "Rejected counts every row without an accepted intended-direction effect. The CSV admissible field "
-        "covers generation and damage checks only, so two fluent but wrong-sign +C rows are still rejected."
-        if method == "j_lens_swap" else ""
-    )
     path_note = (
-        "Markers are evaluated doses; open markers failed either the generation/damage checks or the intended-effect check; "
-        "straight connectors show dose order, not interpolation." + confirmation_note + parameter_note
+        "Markers are evaluated doses; open markers were rejected; straight connectors show dose order, "
+        "not interpolation." + confirmation_note
     )
     markdown_text = _markdown(
         table,
@@ -749,17 +722,11 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
         rows,
         methods,
         method_seeds,
-        title=(
-            f"{status}: {LABELS[method]} (no accepted dose)"
-            if method == "j_lens_swap" and len(unconfirmed) == 2
-            else f"{status}: {LABELS[method]}"
-        ),
+        title=f"{status}: {LABELS[method]}",
         endpoint_coefficients=endpoint_coefficients,
         smooth=False,
         include_rejected=True,
     )
-    if method == "j_lens_swap":
-        figure.update_xaxes(title_text="judge on-axis change (left = abrasive; right = sycophantic)")
     figure_html = figure.to_html(
         full_html=False,
         include_plotlyjs="cdn",
@@ -794,9 +761,18 @@ def main() -> None:
     if args.profile is not None:
         raise ValueError("--profile requires --experiment-id")
     rows = _rows()
+    j_lens_rows = _rows(
+        J_LENS_DEV_RESULTS,
+        methods=("j_lens_swap",),
+        method_seeds={"j_lens_swap": {0}},
+    )
     table = _display_table(_summary(rows))
-    markdown_text = _markdown(table)
-    figure = plot(rows)
+    markdown_text = _markdown(table, (
+        "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
+        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+        J_LENS_PLOT_NOTE,
+    ))
+    figure = plot([*rows, *j_lens_rows])
     figure_html = figure.to_html(
         full_html=False,
         include_plotlyjs="cdn",
@@ -804,7 +780,13 @@ def main() -> None:
         config={"responsive": True},
         div_id="results-plot",
     )
-    html_text = _html(table, figure_html)
+    html_text = _html(
+        table,
+        figure_html,
+        "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
+        "The random cone shows ten vectors until fewer than half have two coherent directions. "
+        "The table reports rejected evaluations. " + J_LENS_PLOT_NOTE,
+    )
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)
     output = ROOT / "results"
