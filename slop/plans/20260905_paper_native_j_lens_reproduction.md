@@ -2,12 +2,13 @@
   - task: [x] raw colon prefill ran but is ineligible: clean Qwen tokens were structural (` What` or newlines), not category answers
   - task: [x] raw and Qwen-chat clean prefills: raw has 0/14 listed category answers; chat has 8/14 once candidates use the no-space assistant token form
   - task: [x] alpha-1 swap on the Qwen-chat eligible subset: 17/18 target ranks improve (median 40→9), but none reaches rank 1
-  - task: [/] run alpha 2 on exactly the task-174 rows; keep prompt, token IDs, layers, targets, and operator fixed
+  - task: [x] alpha 2 on task-174 rows: 13/18 intended targets reach rank 1; 5 targets are suppressed, so success is not uniform
   - use vendored `verbal-report.json` candidates and the paper's colon prefill prompt; use raw single-token J-lens rows, pseudoinverse coordinates, and a complete source↔target swap
   - use layers 13–21: paper's workspace starts after roughly one third and ends before late layers dominated by the imminent output token; this is a model-matched approximation from fitted Qwen layers 6–24, not a claimed paper layer range
   - failure modes: current directed transfer is mistaken for a swap; chat formatting or token IDs differ; a swap changes output through incoherence
   - deliverable: saved clean/swap next-token ranks, raw vectors and token IDs, per-layer condition numbers, and first examples
-- [ ] goal: decide whether an adaptation to sycophancy is justified
+- [/] goal: decide whether an adaptation to sycophancy is justified
+  - task: [/] change only source/target words to `No`↔`Yes` on constrained false-claim agreement prompts; retain Qwen chat token form, coordinate operator, alpha 2, and layers 13–21
   - read full GPU/judge-independent native log and inspect raw outputs
   - if native swaps work, preserve the same coordinate clamp and change one feature at a time; if they fail, compare lens/version/model and patch implementation before behavior experiments
   - failure modes: a low score comes from candidates that do not tokenize to one token; a late motor layer makes a trivial output edit look like workspace steering

@@ -104,6 +104,23 @@ epistemic context: primary paper authors' interpretation of their own flexible-g
 
 The next run should therefore change alpha from 1 to 2 only, keeping this chat condition, candidate selection, operator, and band fixed.
 
+### Alpha-2 confirmation — task 179
+
+Task 179 changes alpha from 1 to 2 and preserves every other task-174 choice: Qwen chat prompt, no-space answer-token IDs, candidate data, source/target eligibility, raw `W_U J_l`, layer band 13–21, and prompt-only prefill hooks. Full cleaned log was read (57/57 lines) and raw bytes were inspected.
+
+> PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE {"model": "Qwen/Qwen3.5-4B", "source_revision": "19bd7ec6782b73855882a88dd37324a9a09892c6", "data": "/repo/data/vendor/jacobian-lens/verbal-report.json", "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c", "prompt_mode": "chat", "candidate_prefix": "", "prompt_format": "Qwen chat template around the paper verbal-report colon prefill", "operator": "h + V(swap(V^dagger h) - V^dagger h)", "coefficient": 2.0, "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_trials": 18, "n_top1": 13, "top1_rate": 0.7222222222222222, "median_clean_target_rank": 40.0, "median_swapped_target_rank": 1.0}
+
+Source: [paper-native-chat-alpha2.log](../logs/20260905_j_lens_concept/paper-native-chat-alpha2.log), a contemporaneous Modal run log. Saved per-trial output: [alpha-2 results.json](../../outputs/experiments/paper-native-verbal-report-chat-alpha2-v1/results.json).
+
+| alpha | trials | target rank 1 | median clean target rank | median swapped target rank | target ranks improved | worsened |
+|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 18 | 0 | 40 | 9 | 17 | 1 |
+| 2 | 18 | 13 | 40 | 1 | 13 | 5 |
+
+Alpha 2 does not globally damage this narrow next-token task: the 13 successful rows' top token is their target (`Blue→Black`, `Earth→Moon`, `English→Japanese`, `Heart→Skin`, and others). Five rows instead send the target to rank 248320 while preserving the old top token, e.g. `France→Germany` and `Blue→Yellow`. This heterogeneity is visible in the complete stored records and prevents a claim that alpha 2 is uniformly safe. All 18 C=0 hook maps and all 18 swap hook maps record one call for each layer 13–21; no condition number exceeds 2.59.
+
+**Native-reproduction verdict:** the paper-native coordinate operator is established on this Qwen-compatible verbal-report subset: it produces rank-1 intended tokens on 13/18 paired alpha-2 trials. This is strong evidence against interpreting the earlier additive concept-vector failure as a failure of J-lens coordinate swaps. It remains a limited next-token, single-token, Qwen-specific reproduction, not evidence that arbitrary abstract style vectors work.
+
 ## ml-debug form
 
 | row | answer |
@@ -169,13 +186,13 @@ The next run should therefore change alpha from 1 to 2 only, keeping this chat c
 
 ## Decision
 
-1. **Resolve-condition verdict:** **partly met.** Task 174 used the paper operator in a semantic Qwen-chat answer condition and improved 17/18 target ranks, but rank-1 success remains 0/18.
-2. **Prediction check:** prompt eligibility prediction supported: raw 0/14, chat 8/14 semantic clean sources with correct token form. Alpha-2 prediction is now recorded: if alpha is insufficient, rank movement should improve and some target may reach rank 1; if the alpha-1 effect is merely redistribution, targets need not improve further.
-3. **Earliest unsupported link:** alpha-1 coordinate-rank movement is sufficient to alter the greedy category answer. The required measurement is the paired alpha-2 target rank and top token.
-4. **Validity:** Define invalid as “the prompt does not have a semantic category answer at the scored token.” Task 174 has `P(invalid for directional-rank claim) ≈ 0.05–0.15`; classification: **credible partial reproduction**, not rank-1 replication.
-5. **Highest-information clues:** (1) no-space chat token form produces semantic clean answers; (2) 17/18 ranks improve, median 40→9; (3) C=0 and hook controls succeed, reducing a direct implementation-bug explanation.
-6. **Missing metrics by value:** (1) alpha-2 paired ranks/top tokens; (2) J-lens source/target readout at scored position; (3) explicit C=0 max-logit delta; (4) multi-token category coverage.
-7. **Bugs requiring code changes:** boolean mask conversion was fixed before task 161. Remaining code work is alpha provenance/readout persistence, not a speculative steering rewrite.
-8. **Misconceptions requiring reinterpretation:** “paper operator fails on Qwen” is contradicted for rank movement. “alpha-1 has no rank-1 Qwen swap on this eligible subset” is supported.
-9. **What would change verdict:** an alpha-2 rank-1 target would upgrade this toward a paper-style success; broad degradation at alpha-2 would localize a saturation limit rather than justify a representation change.
-10. **Recommended sequence:** run alpha 2 only on the fixed task-174 chat rows; retain no-space token IDs, layers, candidate selection, and operator. Do not vary band or representation in the same run.
+1. **Resolve-condition verdict:** **met for a limited native reproduction.** Alpha 2 produces 13/18 rank-1 intended category tokens with the paper operator under the Qwen-chat-compatible token convention.
+2. **Prediction check:** prompt eligibility prediction supported: raw 0/14, chat 8/14 semantic clean sources with correct token form. Alpha-2 prediction supported on 13 rows and contradicted on 5 rows, which suppress their targets to rank 248320.
+3. **Earliest unsupported link:** a paper-native coordinate swap can redirect Qwen category answers. The next unsupported link is that it redirects a coherent agreement/disagreement behavior rather than a category label.
+4. **Validity:** Define invalid as “the task lacks a semantic clean source or an exact alpha-2 control.” `P(invalid for the limited native claim) ≈ 0.05–0.15`; classification: **credible positive**, with 18-row scope.
+5. **Highest-information clues:** (1) clean Qwen-chat tokenization yields semantic source tokens; (2) alpha 2 moves median target rank 40→1 and 13 targets to rank 1; (3) one-call hooks/C=0 assertions remain intact.
+6. **Missing metrics by value:** (1) a paired binary agreement behavior test; (2) J-lens source/target readout at scored position; (3) explicit C=0 max-logit delta; (4) multi-token category coverage.
+7. **Bugs requiring code changes:** no surviving bug is needed to explain the alpha-2 success. The boolean mask conversion was fixed before task 161.
+8. **Misconceptions requiring reinterpretation:** “paper operator fails on Qwen” is contradicted on this task. “a rank movement at alpha 1 will become a rank-1 success uniformly at alpha 2” is contradicted by 5/18 rows.
+9. **What would change verdict:** a no-space-token Qwen rerun that fails C=0 or hooks would lower confidence in implementation; an agreement task with no semantic clean source would not test behavioral adaptation.
+10. **Recommended sequence:** change only the task source/target from category words to clean `No`/target `Yes` (or reverse) in a constrained false-claim agreement prompt. Keep Qwen chat tokenization, coordinate operator, alpha 2, and the band fixed. Do not call a successful binary-token shift general sycophancy control without a free-response follow-up.
