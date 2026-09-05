@@ -13,6 +13,11 @@ MODEL = "Qwen/Qwen3.5-4B"
 METHODS = ("J_word", "vjp_delta", "vjp_mlp_up_shrink", "mean_diff", "pca")
 SEEDS = (1, 2, 0)
 
+
+def source_revision() -> str:
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
+
+
 image = (
     modal.Image.debian_slim(python_version="3.13")
     .apt_install("git")
@@ -119,7 +124,7 @@ def calibrate_concept(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
-def paper_native_verbal_report_remote(model: str, dtype: str, output: str) -> str:
+def paper_native_verbal_report_remote(model: str, dtype: str, output: str, source_revision: str) -> str:
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
@@ -128,7 +133,7 @@ def paper_native_verbal_report_remote(model: str, dtype: str, output: str) -> st
     subprocess.run(
         [
             sys.executable, "scripts/reproduce_paper_j_lens.py", "--model", model,
-            "--dtype", dtype, "--output", str(remote_output),
+            "--dtype", dtype, "--source-revision", source_revision, "--output", str(remote_output),
         ],
         cwd="/repo", check=True,
     )
@@ -142,13 +147,56 @@ def paper_native_verbal_report(
     dtype: str = "bfloat16",
     output: str = "experiments/paper-native-verbal-report-v1/results.json",
 ):
-    result = paper_native_verbal_report_remote.remote(model, dtype, output)
+    result = paper_native_verbal_report_remote.remote(model, dtype, output, source_revision())
     local_output = REPO / "outputs" / output
     local_output.parent.mkdir(parents=True, exist_ok=True)
     local_output.write_text(result)
     summary = json.loads(result)
     print("PAPER_NATIVE_J_LENS_VERBAL_REPORT_DOWNLOADED", json.dumps({
         key: summary[key] for key in summary if key != "trials"
+    }))
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
+def paper_native_prompt_diagnostic_remote(model: str, dtype: str, output: str, source_revision: str) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    snapshot_download(model)
+    results = {}
+    for prompt_mode in ("raw", "chat"):
+        remote_output = Path("/cache/outputs") / output / f"{prompt_mode}.json"
+        subprocess.run(
+            [
+                sys.executable, "scripts/reproduce_paper_j_lens.py", "--model", model,
+                "--dtype", dtype, "--prompt-mode", prompt_mode, "--clean-only",
+                "--source-revision", source_revision, "--output", str(remote_output),
+            ],
+            cwd="/repo", check=True,
+        )
+        results[prompt_mode] = json.loads(remote_output.read_text())
+    cache.commit()
+    return json.dumps(results)
+
+
+@app.local_entrypoint()
+def paper_native_prompt_diagnostic(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "experiments/paper-native-verbal-report-prompt-diagnostic-v1",
+):
+    result = paper_native_prompt_diagnostic_remote.remote(model, dtype, output, source_revision())
+    local_output = REPO / "outputs" / output / "results.json"
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    summary = json.loads(result)
+    print("PAPER_NATIVE_PROMPT_DIAGNOSTIC_DOWNLOADED", json.dumps({
+        mode: {key: value for key, value in rows.items() if key != "clean_rows"}
+        for mode, rows in summary.items()
     }))
 
 

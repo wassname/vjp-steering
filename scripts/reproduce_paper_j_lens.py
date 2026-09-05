@@ -29,8 +29,26 @@ def rank(logits: torch.Tensor, token: int) -> int:
     return int((logits > logits[token]).sum().item()) + 1
 
 
-def prompt(category: str) -> str:
-    return PROMPT_TEMPLATE.format(category=category)
+def prompt(tokenizer, category: str, mode: str) -> str:
+    text = PROMPT_TEMPLATE.format(category=category)
+    if mode == "raw":
+        return text
+    if mode == "chat":
+        return tokenizer.apply_chat_template(
+            [{"role": "user", "content": text}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+    raise ValueError(f"unknown prompt mode {mode}")
+
+
+def top_tokens(logits: torch.Tensor, tokenizer, k: int = 10) -> list[dict[str, float | int | str]]:
+    values, ids = logits.topk(k)
+    return [
+        {"token_id": int(token), "token": tokenizer.decode([int(token)]), "logit": float(value)}
+        for value, token in zip(values, ids, strict=True)
+    ]
 
 
 def next_logits(model, tokenizer, text: str, vector=None) -> tuple[torch.Tensor, dict[int, int]]:
@@ -55,6 +73,9 @@ def main() -> None:
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--limit-categories", type=int)
     parser.add_argument("--limit-targets", type=int)
+    parser.add_argument("--prompt-mode", choices=("raw", "chat"), default="raw")
+    parser.add_argument("--clean-only", action="store_true")
+    parser.add_argument("--source-revision", required=True)
     args = parser.parse_args()
 
     data = json.loads(args.data.read_text())
@@ -68,10 +89,27 @@ def main() -> None:
     if args.limit_categories is not None:
         categories = categories[: args.limit_categories]
     trials = []
+    clean_rows = []
     for category, words in categories:
-        text = prompt(category)
+        text = prompt(tokenizer, category, args.prompt_mode)
         clean_logits, _ = next_logits(model, tokenizer, text)
         source_id = int(clean_logits.argmax())
+        category_ids = [token_id(tokenizer, word) for word in words]
+        category_ids = [word_id for word_id in category_ids if word_id is not None]
+        clean_rows.append({
+            "category": category,
+            "prompt": text,
+            "clean_token_id": source_id,
+            "clean_token": tokenizer.decode([source_id]),
+            "clean_is_listed_category_item": source_id in category_ids,
+            "category_token_ids": category_ids,
+            "top_tokens": top_tokens(clean_logits, tokenizer),
+        })
+        if args.clean_only:
+            continue
+        if source_id not in category_ids:
+            logger.warning("category={} clean token is not a listed category item: {}", category, tokenizer.decode([source_id]))
+            continue
         target_ids = [token_id(tokenizer, word) for word in words[:10]]
         target_ids = [target for target in target_ids if target is not None and target != source_id and rank(clean_logits, target) > 10]
         if args.limit_targets is not None:
@@ -99,22 +137,39 @@ def main() -> None:
                 "zero_hook_calls": zero_calls, "swap_hook_calls": calls,
                 "layer_condition_numbers": {layer: info["condition_number"] for layer, info in metadata["layers"].items()},
             })
-    if not trials:
-        raise ValueError("no valid one-token candidates had clean rank greater than 10")
-    summary = {
-        "model": args.model, "data": str(args.data), "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
-        "prompt_format": "paper verbal-report colon prefill, without a chat template",
-        "operator": "h + V(swap(V^dagger h) - V^dagger h)",
-        "layers": list(WORKSPACE_LAYERS), "n_trials": len(trials),
-        "n_top1": sum(trial["success_top1"] for trial in trials),
-        "top1_rate": sum(trial["success_top1"] for trial in trials) / len(trials),
-        "median_clean_target_rank": float(torch.tensor([trial["clean_target_rank"] for trial in trials]).median()),
-        "median_swapped_target_rank": float(torch.tensor([trial["swapped_target_rank"] for trial in trials]).median()),
-        "trials": trials,
+    common = {
+        "model": args.model,
+        "source_revision": args.source_revision,
+        "data": str(args.data),
+        "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
+        "prompt_mode": args.prompt_mode,
+        "prompt_format": "paper verbal-report colon prefill" if args.prompt_mode == "raw" else "Qwen chat template around the paper verbal-report colon prefill",
+        "clean_rows": clean_rows,
     }
+    if args.clean_only:
+        summary = {
+            **common,
+            "n_categories": len(clean_rows),
+            "n_semantic_clean_answers": sum(row["clean_is_listed_category_item"] for row in clean_rows),
+        }
+    else:
+        if not trials:
+            raise ValueError("no clean source token was a listed category item with a valid one-token target outside the clean top 10")
+        summary = {
+            **common,
+            "operator": "h + V(swap(V^dagger h) - V^dagger h)",
+            "layers": list(WORKSPACE_LAYERS), "n_trials": len(trials),
+            "n_top1": sum(trial["success_top1"] for trial in trials),
+            "top1_rate": sum(trial["success_top1"] for trial in trials) / len(trials),
+            "median_clean_target_rank": float(torch.tensor([trial["clean_target_rank"] for trial in trials]).median()),
+            "median_swapped_target_rank": float(torch.tensor([trial["swapped_target_rank"] for trial in trials]).median()),
+            "trials": trials,
+        }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=2) + "\n")
-    print("PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE", json.dumps({key: summary[key] for key in summary if key != "trials"}))
+    print("PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE", json.dumps({
+        key: summary[key] for key in summary if key not in {"trials", "clean_rows"}
+    }))
 
 
 if __name__ == "__main__":
