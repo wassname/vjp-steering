@@ -70,6 +70,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--concept-smoke", action="store_true")
     parser.add_argument("--concept-calibrate", action="store_true")
     parser.add_argument("--source-experiment", default="j-lens-concept-dev-v1")
+    parser.add_argument("--reuse-extraction-from", default="")
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--local", action="store_true")
     parser.add_argument("--experiment-id", default="")
@@ -248,6 +249,25 @@ def load_or_extract(
         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
         if actual != metadata["vector_content_sha256"]:
             raise ValueError("saved extraction vector hash mismatch")
+        return vectors, metadata
+
+    if args.reuse_extraction_from:
+        if args.method != "j_lens_concept":
+            raise ValueError("extraction reuse flag is restricted to concept calibration")
+        source = experiment_dir(args.reuse_extraction_from)
+        source_path = source / "extraction/metadata.json"
+        metadata = json.loads(source_path.read_text())
+        validate_extraction_identity(args, metadata)
+        vectors = {side: Vector.load(str(source / metadata["vector_files"][side])) for side in paths}
+        if {side: vector_sha256(v) for side, v in vectors.items()} != metadata["vector_content_sha256"]:
+            raise ValueError("source extraction vector hash mismatch")
+        paths["+C"].parent.mkdir(parents=True, exist_ok=True)
+        for side, vector in vectors.items():
+            vector.save(str(paths[side]))
+        metadata = {**metadata, "extraction_reused_from": args.reuse_extraction_from,
+                    "source_metadata_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest()}
+        atomic_json(metadata_path, metadata)
+        logger.info("EXTRACTION_REUSED source={} hashes={}", args.reuse_extraction_from, metadata["vector_content_sha256"])
         return vectors, metadata
 
     started = time.monotonic()
@@ -531,6 +551,14 @@ def completed_profile_cell_count(
     return count
 
 
+def concept_grid(args):
+    grid = {side: [float(c) for c in text.split(",") if c] if text else list(J_LENS_CONCEPT_GRID)
+            for side, text in (("+C", args.coefficients_plus), ("-C", args.coefficients_minus))}
+    if any(not math.isfinite(c) or c <= 0 for values in grid.values() for c in values):
+        raise ValueError("concept grid requires finite positive magnitudes")
+    return grid
+
+
 def gpu_stage(args: argparse.Namespace) -> None:
     if args.method == "j_lens_concept" and not args.dev:
         raise ValueError("concept intervention is DEV-only")
@@ -564,7 +592,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
         validate_extraction_identity(args, manifest["extraction"])
     if args.dev and "boundaries" in manifest:
         if args.method == "j_lens_concept":
-            expanded_grid = {side: list(J_LENS_CONCEPT_GRID) for side in ("+C", "-C")}
+            expanded_grid = concept_grid(args)
         elif args.method == "j_lens_swap":
             expanded_grid = {
                 "+C": list(J_LENS_SWAP_POSITIVE_GRID),
@@ -609,7 +637,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             raise RuntimeError("full mode requires its automatic dev stage first")
         if args.method == "j_lens_concept":
             boundaries = {side: {"meaning": "signed unit concept contrast", "trace": []} for side in ("+C", "-C")}
-            grid = {side: list(J_LENS_CONCEPT_GRID) for side in ("+C", "-C")}
+            grid = concept_grid(args)
         elif args.method == "j_lens_swap":
             boundaries = {
                 "+C": {"meaning": "abrasive-to-flattering directed transfer", "trace": []},
@@ -705,6 +733,10 @@ def modal_stage(
     ]
     if args.verify_extraction:
         command.append("--verify-extraction")
+    if args.reuse_extraction_from:
+        command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
+    if args.method == "j_lens_concept" and dev:
+        coefficients = concept_grid(args)
     if coefficients is not None:
         command.extend([
             "--coefficients-plus", ",".join(map(str, coefficients["+C"])),

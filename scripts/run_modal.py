@@ -185,6 +185,7 @@ def experiment(
     max_new_tokens: int = 512,
     coefficients_plus: str = "",
     coefficients_minus: str = "",
+    reuse_extraction_from: str = "",
     verify_extraction: bool = False,
 ):
     if profile not in {"dev", "full"}:
@@ -201,7 +202,9 @@ def experiment(
     ]
     if verify_extraction:
         argv.append("--verify-extraction")
-    if profile == "full":
+    if reuse_extraction_from:
+        argv.extend(["--reuse-extraction-from", reuse_extraction_from])
+    if profile == "full" or coefficients_plus or coefficients_minus:
         argv.extend([
             "--coefficients-plus", coefficients_plus,
             "--coefficients-minus", coefficients_minus,

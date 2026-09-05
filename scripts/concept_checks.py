@@ -106,7 +106,7 @@ def calibrate(args):
 
 
 def self_test():
-    from experiment import validate_extraction_identity, vector_sha256
+    from experiment import concept_grid, validate_extraction_identity, vector_sha256
 
     dictionary = torch.tensor([[1., 0., 0.], [.6, .8, 0.], [0., 0., 1.]])
     signal = torch.tensor([.3, 1., -.5])
@@ -181,6 +181,8 @@ def self_test():
             pass
         else:
             raise AssertionError("stale cache accepted")
+    assert concept_grid(SimpleNamespace(coefficients_plus="0.125,0.25,0.5", coefficients_minus="0.25")) == {
+        "+C": [.125, .25, .5], "-C": [.25]}
     print("J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true")
 
 
