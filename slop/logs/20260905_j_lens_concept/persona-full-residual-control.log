@@ -1,0 +1,103 @@
+COMMIT: dd3e459b1786a303368622a28ddc732dd7a90a9e
+QUESTION: did the sparse J projection, rather than the matched persona residual source, remove the causal style signal?
+CONTROL: normalize and apply the complete paired residual difference at each layer. The source prompts, layer set, signed additive operator, generation, cohort, and nominal scales match j-lens-persona-jspace-dev-v1. Interpret behavior with realized patch/residual ratios and KL.
+COMMAND: uv run python scripts/experiment.py j_lens_concept --dev --j-lens-source persona --persona-direction full_residual --experiment-id persona-full-residual-control-dev-v1 --coefficients-plus 0.03125,0.0625 --coefficients-minus 0.03125,0.0625
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-yEcRpkvrP6FdOUC6SJeQm1
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 935.20it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 454.79it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 18/426 [00:00<00:02, 169.78it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:00<00:02, 139.71it/s]
+[1ALoading weights:  12%|█▏        | 53/426 [00:00<00:02, 152.75it/s]
+[1ALoading weights:  17%|█▋        | 72/426 [00:00<00:02, 162.00it/s]
+[1ALoading weights:  21%|██        | 89/426 [00:00<00:02, 157.65it/s]
+[1ALoading weights:  26%|██▋       | 112/426 [00:00<00:01, 175.57it/s]
+[1ALoading weights:  31%|███       | 130/426 [00:00<00:01, 168.27it/s]
+[1ALoading weights:  35%|███▌      | 150/426 [00:00<00:01, 173.71it/s]
+[1ALoading weights:  40%|███▉      | 170/426 [00:01<00:01, 178.52it/s]
+[1ALoading weights:  46%|████▌     | 194/426 [00:01<00:01, 196.14it/s]
+[1ALoading weights:  50%|█████     | 214/426 [00:01<00:01, 194.63it/s]
+[1ALoading weights:  55%|█████▍    | 234/426 [00:01<00:01, 186.17it/s]
+[1ALoading weights:  61%|██████    | 259/426 [00:01<00:00, 200.02it/s]
+[1ALoading weights:  66%|██████▌   | 280/426 [00:01<00:00, 180.17it/s]
+[1ALoading weights:  72%|███████▏  | 307/426 [00:01<00:00, 203.78it/s]
+[1ALoading weights:  77%|███████▋  | 328/426 [00:01<00:00, 168.93it/s]
+[1ALoading weights:  82%|████████▏ | 349/426 [00:01<00:00, 174.17it/s]
+[1ALoading weights:  86%|████████▋ | 368/426 [00:02<00:00, 157.37it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 199.01it/s]
+2026-09-05 11:55:38.039 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-05 11:55:38.114 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+2026-09-05 11:55:55.141 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=6 direction=full_residual applied_norm=0.1000 j_norm=0.0176 remainder_norm=0.0984 selected=16
+2026-09-05 11:55:55.301 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=7 direction=full_residual applied_norm=0.1365 j_norm=0.0222 remainder_norm=0.1347 selected=16
+2026-09-05 11:55:55.445 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=8 direction=full_residual applied_norm=0.1616 j_norm=0.0254 remainder_norm=0.1596 selected=16
+2026-09-05 11:55:55.594 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=9 direction=full_residual applied_norm=0.2142 j_norm=0.0336 remainder_norm=0.2115 selected=16
+2026-09-05 11:55:55.741 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=10 direction=full_residual applied_norm=0.2688 j_norm=0.0427 remainder_norm=0.2655 selected=16
+2026-09-05 11:55:55.885 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=11 direction=full_residual applied_norm=0.4260 j_norm=0.0772 remainder_norm=0.4192 selected=16
+2026-09-05 11:55:56.034 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=12 direction=full_residual applied_norm=0.6522 j_norm=0.1191 remainder_norm=0.6410 selected=16
+2026-09-05 11:55:56.177 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=13 direction=full_residual applied_norm=0.6418 j_norm=0.1297 remainder_norm=0.6296 selected=16
+2026-09-05 11:55:56.326 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=14 direction=full_residual applied_norm=0.6478 j_norm=0.1200 remainder_norm=0.6359 selected=16
+2026-09-05 11:55:56.468 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=15 direction=full_residual applied_norm=0.7767 j_norm=0.1515 remainder_norm=0.7619 selected=16
+2026-09-05 11:55:56.615 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=16 direction=full_residual applied_norm=0.8745 j_norm=0.1849 remainder_norm=0.8539 selected=16
+2026-09-05 11:55:56.768 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=17 direction=full_residual applied_norm=1.0774 j_norm=0.2670 remainder_norm=1.0429 selected=16
+2026-09-05 11:55:56.909 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=18 direction=full_residual applied_norm=1.9184 j_norm=0.5093 remainder_norm=1.8502 selected=16
+2026-09-05 11:55:57.053 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=19 direction=full_residual applied_norm=2.4640 j_norm=0.6903 remainder_norm=2.3730 selected=16
+2026-09-05 11:55:57.203 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=20 direction=full_residual applied_norm=3.0395 j_norm=0.7948 remainder_norm=2.9253 selected=16
+2026-09-05 11:55:57.342 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=21 direction=full_residual applied_norm=3.4414 j_norm=0.9185 remainder_norm=3.3135 selected=16
+2026-09-05 11:55:57.491 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=22 direction=full_residual applied_norm=3.8039 j_norm=1.0399 remainder_norm=3.6648 selected=16
+2026-09-05 11:55:57.636 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=23 direction=full_residual applied_norm=4.0986 j_norm=1.1469 remainder_norm=3.9440 selected=16
+2026-09-05 11:55:57.776 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:340 - persona layer=24 direction=full_residual applied_norm=4.4276 j_norm=1.1601 remainder_norm=4.2713 selected=16
+2026-09-05 11:56:08.204 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:56:10.866 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:56:14.935 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:56:18.209 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:56:22.679 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:56:23.012 | INFO     | __main__:gpu_stage:777 - GPU_STAGE_COMPLETE experiment=persona-full-residual-control-dev-v1 profile=dev cells=4
+EXPERIMENT_GPU_COMPLETE id=persona-full-residual-control-dev-v1 profile=dev cells=4
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-yEcRpkvrP6FdOUC6SJeQm1
+✓ Finished downloading files to local!
+2026-09-05 19:56:35.638 | INFO     | __main__:experiment_rows:297 - experiment manifest id=persona-full-residual-control-dev-v1 profile=dev cells=4 demo_sides=60
+2026-09-05 19:56:36.148 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 19:56:36.659 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 19:56:37.211 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 19:56:37.741 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 19:56:38.239 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 19:56:38.693 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 19:56:39.111 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 19:56:39.543 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 19:56:39.918 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 19:56:40.268 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 19:56:40.620 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 19:56:40.871 | INFO     | __main__:main:670 - CACHE_CHECK required=51 cached=34 missing=17 API_calls=17
+2026-09-05 19:56:50.341 | INFO     | __main__:run:632 - judge progress=17/17
+2026-09-05 19:56:50.834 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 19:56:51.302 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 19:56:51.832 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 19:56:52.390 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 19:56:52.935 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 19:56:53.443 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 19:56:53.916 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 19:56:54.372 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 19:56:54.764 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 19:56:55.135 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 19:56:55.491 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 19:56:55.773 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=51 missing=0
+2026-09-05 19:56:58.127 | INFO     | judge:experiment_rows:297 - experiment manifest id=persona-full-residual-control-dev-v1 profile=dev cells=4 demo_sides=60
+EXPERIMENT_EXPORT_COMPLETE id=persona-full-residual-control-dev-v1 profile=dev arms=4 scenarios=60
