@@ -119,6 +119,44 @@ def calibrate_concept(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
+def paper_native_verbal_report_remote(model: str, dtype: str, output: str) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    snapshot_download(model)
+    remote_output = Path("/cache/outputs") / output
+    subprocess.run(
+        [
+            sys.executable, "scripts/reproduce_paper_j_lens.py", "--model", model,
+            "--dtype", dtype, "--output", str(remote_output),
+        ],
+        cwd="/repo", check=True,
+    )
+    cache.commit()
+    return remote_output.read_text()
+
+
+@app.local_entrypoint()
+def paper_native_verbal_report(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "experiments/paper-native-verbal-report-v1/results.json",
+):
+    result = paper_native_verbal_report_remote.remote(model, dtype, output)
+    local_output = REPO / "outputs" / output
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    summary = json.loads(result)
+    print("PAPER_NATIVE_J_LENS_VERBAL_REPORT_DOWNLOADED", json.dumps({
+        key: summary[key] for key in summary if key != "trials"
+    }))
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
 def diagnose_j_lens_remote(model: str, dtype: str, output: str) -> str:
     from huggingface_hub import snapshot_download
 

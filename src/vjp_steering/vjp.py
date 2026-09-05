@@ -42,6 +42,14 @@ class JLensSwapC(SteeringConfig):
     target_token: str = "flattering"
 
 
+@register_config
+@dataclass
+class JLensCoordinateSwapC(SteeringConfig):
+    method: str = "j_lens_coordinate_swap"
+    source_token_id: int = -1
+    target_token_id: int = -1
+
+
 def _swap_lens_coordinates(
     hidden: Float[torch.Tensor, "... d"],
     basis: Float[torch.Tensor, "two d"],
@@ -77,6 +85,19 @@ class JLensSwap:
             shared["source"].to(y.device),
             shared["target"].to(y.device),
             cfg.coeff,
+        )
+
+
+@register
+class JLensCoordinateSwap:
+    name = "j_lens_coordinate_swap"
+
+    @staticmethod
+    def apply(_mod, _x, y, shared, _stacked, cfg: JLensCoordinateSwapC):
+        if y.shape[-2] == 1:
+            return y
+        return _swap_lens_coordinates(
+            y, shared["basis"].to(y.device), shared["dual"].to(y.device), cfg.coeff,
         )
 
 
@@ -457,6 +478,80 @@ def j_word(
         "cotangent_norm": cotangent.norm().item(),
         "layer_norms": {str(layer): direction.norm().item() for layer, direction in directions.items()},
     }
+
+
+def j_lens_coordinate_swap(
+    model,
+    layers: tuple[int, ...],
+    *,
+    source_token_id: int,
+    target_token_id: int,
+    lens_file: Path | None = None,
+) -> tuple[Vector, dict[str, object]]:
+    """Paper-native pseudoinverse coordinate swap for two vocabulary tokens."""
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+    unembedding = model.lm_head.weight.detach().float().cpu()
+    if not 0 <= source_token_id < unembedding.shape[0] or not 0 <= target_token_id < unembedding.shape[0]:
+        raise ValueError("J-lens coordinate swap token ID is outside the unembedding vocabulary")
+    layer_state, layer_metadata = {}, {}
+    for layer in layers:
+        basis = unembedding[[source_token_id, target_token_id]] @ checkpoint["J"][layer].float()
+        dual = torch.linalg.pinv(basis).T
+        if not torch.isfinite(dual).all():
+            raise ValueError(f"nonfinite J-lens coordinate dual at layer {layer}")
+        singular_values = torch.linalg.svdvals(basis)
+        if singular_values[-1] <= 0:
+            raise ValueError(f"rank-deficient J-lens coordinate basis at layer {layer}")
+        layer_state[layer] = {"basis": basis, "dual": dual}
+        layer_metadata[str(layer)] = {
+            "basis_norms": basis.norm(dim=1).tolist(),
+            "basis_cosine": torch.nn.functional.cosine_similarity(basis[0], basis[1], dim=0).item(),
+            "singular_values": singular_values.tolist(),
+            "condition_number": (singular_values[0] / singular_values[-1]).item(),
+        }
+    vector = Vector(
+        JLensCoordinateSwapC(layers=layers, source_token_id=source_token_id, target_token_id=target_token_id),
+        layer_state, {layer: {} for layer in layers},
+    )
+    return vector, {
+        "operator": "paper_native_pseudoinverse_coordinate_swap",
+        "equation": "h + alpha * V * (swap(V^dagger h) - V^dagger h)",
+        "normalization": "raw_J_lens_rows_with_pseudoinverse_coordinates",
+        "source_layers": list(layers), "source_token_id": source_token_id,
+        "target_token_id": target_token_id, "lens_file": str(lens_file),
+        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_metadata,
+    }
+
+
+@contextmanager
+def j_lens_coordinate_prefill(model, vector: Vector, mask: torch.Tensor):
+    """Apply a paper-native coordinate swap once during prompt prefill."""
+    handles, handles_by_layer = [], {}
+    calls = {layer: 0 for layer in vector.cfg.layers}
+
+    def hook(layer):
+        def apply(_module, _inputs, output):
+            calls[layer] += 1
+            hidden = output[0] if isinstance(output, tuple) else output
+            shared = vector.shared[layer]
+            swapped = _swap_lens_coordinates(
+                hidden, shared["basis"].to(hidden), shared["dual"].to(hidden), vector.cfg.coeff,
+            )
+            edited = torch.where(mask.to(hidden).unsqueeze(-1), swapped, hidden)
+            handles_by_layer[layer].remove()
+            return (edited, *output[1:]) if isinstance(output, tuple) else edited
+        return apply
+
+    try:
+        for layer in vector.cfg.layers:
+            handle = _blocks(model)[layer].register_forward_hook(hook(layer))
+            handles_by_layer[layer] = handle
+            handles.append(handle)
+        yield calls
+    finally:
+        for handle in handles:
+            handle.remove()
 
 
 def j_lens_swap(
