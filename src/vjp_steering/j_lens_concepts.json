@@ -1,0 +1,27 @@
+{
+  "positive": "sycophantic agreement and flattery toward the user",
+  "negative": "independent critical assessment of the user's claims",
+  "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex",
+  "baseline": [
+    "astronomy", "volcanoes", "photosynthesis", "ocean currents", "plate tectonics",
+    "gravity", "magnetism", "electricity", "thermodynamics", "sound waves",
+    "rainbows", "clouds", "glaciers", "deserts", "rainforests",
+    "coral reefs", "mushrooms", "pollination", "migration", "hibernation",
+    "DNA", "enzymes", "bacteria", "viruses", "immune systems",
+    "digestion", "circulation", "respiration", "bones", "muscles",
+    "geometry", "algebra", "calculus", "probability", "prime numbers",
+    "fractals", "symmetry", "topology", "statistics", "algorithms",
+    "compilers", "databases", "computer networks", "cryptography", "operating systems",
+    "telescopes", "microscopes", "satellites", "robotics", "solar panels",
+    "wind turbines", "batteries", "bridges", "railways", "canals",
+    "architecture", "pottery", "weaving", "glassmaking", "metallurgy",
+    "agriculture", "irrigation", "crop rotation", "composting", "fermentation",
+    "bread", "cheese", "tea", "coffee", "spices",
+    "orchestras", "rhythm", "melody", "harmony", "musical notation",
+    "painting", "sculpture", "photography", "animation", "calligraphy",
+    "linguistics", "phonetics", "grammar", "etymology", "translation",
+    "archaeology", "cartography", "navigation", "calendars", "timekeeping",
+    "trade routes", "currency", "supply chains", "insurance", "auctions",
+    "chess", "knots", "origami", "gardening", "woodworking"
+  ]
+}

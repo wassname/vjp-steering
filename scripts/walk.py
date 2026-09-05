@@ -1,6 +1,7 @@
 """Extract one steering vector and run one bare/+C/-C benchmark dose."""
 
 import argparse
+from contextlib import nullcontext
 import hashlib
 import json
 import math
@@ -20,6 +21,7 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from vjp_steering import j_lens_swap, j_word, vjp_delta, vjp_mlp_up_shrink
+from vjp_steering.j_lens_concept import concept_prefill
 from vjp_steering.vjp import (
     J_LENS_SWAP_SOURCE,
     J_LENS_SWAP_TARGET,
@@ -444,7 +446,8 @@ def generation_inputs(tokenizer, rows: list[dict[str, str]]) -> list[str]:
 
 
 @torch.inference_mode()
-def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_tokens: int) -> list[str]:
+def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_tokens: int,
+             *, prefill_vector=None, coefficient: float = 0.0) -> list[str]:
     answers = []
     tokenizer.padding_side = "left"
     for start in range(0, len(prompts), batch_size):
@@ -456,15 +459,20 @@ def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_toke
         ).to(
             next(model.parameters()).device
         )
-        output = model.generate(
-            **batch,
-            do_sample=False,
-            temperature=None,
-            top_p=None,
-            top_k=None,
-            pad_token_id=tokenizer.eos_token_id,
-            max_new_tokens=max_new_tokens,
-        )
+        context = nullcontext() if prefill_vector is None else concept_prefill(
+            model, prefill_vector, batch.attention_mask, coefficient)
+        with context as calls:
+            output = model.generate(
+                **batch,
+                do_sample=False,
+                temperature=None,
+                top_p=None,
+                top_k=None,
+                pad_token_id=tokenizer.eos_token_id,
+                max_new_tokens=max_new_tokens,
+            )
+        if prefill_vector is not None:
+            assert all(count == 1 for count in calls.values()), f"unexpected prefill hook counts: {calls}"
         answers.extend(
             tokenizer.batch_decode(output[:, batch["input_ids"].shape[1] :], skip_special_tokens=True)
         )

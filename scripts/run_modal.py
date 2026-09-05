@@ -196,11 +196,11 @@ def experiment(
         ])
     if profile == "dev":
         argv.append("--dev")
-    json.loads(run_experiment.remote(method, argv))
+    manifest = json.loads(run_experiment.remote(method, argv))
     cell_count = (
         len([value for value in coefficients_plus.split(",") if value])
         + len([value for value in coefficients_minus.split(",") if value])
-        if profile == "full" else (12 if method == "j_lens_swap" else 18)
+        if profile == "full" else sum(len(values) for values in manifest["grid"].values())
     )
     print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={cell_count}")
 
