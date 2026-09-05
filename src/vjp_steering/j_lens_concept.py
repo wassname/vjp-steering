@@ -18,6 +18,7 @@ from .vjp import _activations, _blocks, _load_j_lens
 SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
+LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
 
 
 @register_config

@@ -21,6 +21,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
+    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     concept_spec, extract_concept, implementation_hash, prefill_diagnostics, select_concept_layers,
 )
 from vjp_steering.experiment import (
@@ -227,12 +228,22 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
     return vectors, metadata, len(positive), sample_id
 
 
-def validate_extraction_identity(args, metadata):
+def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse: bool = False):
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method == "j_lens_concept":
-        if metadata["spec_sha256"] != concept_spec()[1] or metadata["implementation_sha256"] != implementation_hash():
+        implementation_matches = metadata["implementation_sha256"] == implementation_hash()
+        legacy_reuse = (
+            allow_explicit_legacy_reuse
+            and metadata["implementation_sha256"] == LEGACY_EXTRACTION_IMPLEMENTATION_SHA256
+        )
+        if metadata["spec_sha256"] != concept_spec()[1] or not (implementation_matches or legacy_reuse):
             raise ValueError("concept extraction cache specification/implementation mismatch")
+        if legacy_reuse:
+            logger.warning(
+                "EXPLICIT_LEGACY_EXTRACTION_REUSE source_implementation={} current_implementation={}",
+                metadata["implementation_sha256"], implementation_hash(),
+            )
         if args.lens_file is not None and metadata["lens_sha256"] != hashlib.sha256(args.lens_file.read_bytes()).hexdigest():
             raise ValueError("concept extraction cache lens mismatch")
 
@@ -247,7 +258,9 @@ def load_or_extract(
     metadata_path = root / "extraction" / "metadata.json"
     if metadata_path.exists() and all(path.exists() for path in paths.values()):
         metadata = json.loads(metadata_path.read_text())
-        validate_extraction_identity(args, metadata)
+        validate_extraction_identity(
+            args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+        )
         vectors = {side: Vector.load(str(path)) for side, path in paths.items()}
         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
         if actual != metadata["vector_content_sha256"]:
@@ -260,15 +273,19 @@ def load_or_extract(
         source = experiment_dir(args.reuse_extraction_from)
         source_path = source / "extraction/metadata.json"
         metadata = json.loads(source_path.read_text())
-        validate_extraction_identity(args, metadata)
+        validate_extraction_identity(args, metadata, allow_explicit_legacy_reuse=True)
         vectors = {side: Vector.load(str(source / metadata["vector_files"][side])) for side in paths}
         if {side: vector_sha256(v) for side, v in vectors.items()} != metadata["vector_content_sha256"]:
             raise ValueError("source extraction vector hash mismatch")
         paths["+C"].parent.mkdir(parents=True, exist_ok=True)
         for side, vector in vectors.items():
             vector.save(str(paths[side]))
-        metadata = {**metadata, "extraction_reused_from": args.reuse_extraction_from,
-                    "source_metadata_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest()}
+        metadata = {
+            **metadata,
+            "extraction_reused_from": args.reuse_extraction_from,
+            "source_metadata_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+            "current_implementation_sha256": implementation_hash(),
+        }
         atomic_json(metadata_path, metadata)
         logger.info("EXTRACTION_REUSED source={} hashes={}", args.reuse_extraction_from, metadata["vector_content_sha256"])
         return vectors, metadata

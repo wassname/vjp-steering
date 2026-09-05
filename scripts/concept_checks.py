@@ -12,6 +12,7 @@ import torch
 from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
+    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
     prefill_diagnostics, select_concept_layers,
 )
@@ -189,6 +190,14 @@ def self_test():
             pass
         else:
             raise AssertionError("stale cache accepted")
+    legacy = {**metadata, "implementation_sha256": LEGACY_EXTRACTION_IMPLEMENTATION_SHA256}
+    validate_extraction_identity(args, legacy, allow_explicit_legacy_reuse=True)
+    try:
+        validate_extraction_identity(args, {**metadata, "implementation_sha256": "stale"}, allow_explicit_legacy_reuse=True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("unknown legacy cache accepted")
     assert concept_grid(SimpleNamespace(coefficients_plus="0.125,0.25,0.5", coefficients_minus="0.25")) == {
         "+C": [.125, .25, .5], "-C": [.25]}
     print("J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true")
