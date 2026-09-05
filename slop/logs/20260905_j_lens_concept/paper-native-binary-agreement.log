@@ -1,0 +1,399 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-VMhoneIcVF0YiwtK3WY4tv
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1275.36it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 860.11it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   3%|▎         | 12/426 [00:00<00:14, 27.74it/s]
+[1ALoading weights:   4%|▎         | 15/426 [00:00<00:26, 15.27it/s]
+[1ALoading weights:   6%|▌         | 25/426 [00:01<00:19, 20.78it/s]
+[1ALoading weights:   8%|▊         | 33/426 [00:01<00:14, 26.59it/s]
+[1ALoading weights:   9%|▊         | 37/426 [00:01<00:15, 25.39it/s]
+[1ALoading weights:  11%|█         | 45/426 [00:01<00:13, 28.60it/s]
+[1ALoading weights:  14%|█▍        | 61/426 [00:02<00:09, 38.21it/s]
+[1ALoading weights:  15%|█▌        | 65/426 [00:02<00:14, 24.48it/s]
+[1ALoading weights:  18%|█▊        | 76/426 [00:02<00:10, 33.50it/s]
+[1ALoading weights:  20%|█▉        | 84/426 [00:02<00:08, 40.12it/s]
+[1ALoading weights:  25%|██▍       | 106/426 [00:02<00:04, 69.70it/s]
+[1ALoading weights:  32%|███▏      | 137/426 [00:03<00:02, 115.82it/s]
+[1ALoading weights:  38%|███▊      | 161/426 [00:03<00:01, 142.55it/s]
+[1ALoading weights:  45%|████▌     | 192/426 [00:03<00:01, 181.00it/s]
+[1ALoading weights:  51%|█████     | 217/426 [00:03<00:01, 196.94it/s]
+[1ALoading weights:  57%|█████▋    | 242/426 [00:03<00:00, 206.75it/s]
+[1ALoading weights:  63%|██████▎   | 268/426 [00:03<00:00, 219.79it/s]
+[1ALoading weights:  69%|██████▉   | 294/426 [00:03<00:00, 221.04it/s]
+[1ALoading weights:  75%|███████▍  | 318/426 [00:03<00:00, 224.80it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:03<00:00, 111.37it/s]
+PAPER_NATIVE_BINARY_AGREEMENT_COMPLETE {"source_revision": "8d32aa1fc7974740e97985337d65b041a4938e6a", "model": "Qwen/Qwen3.5-4B", "coefficient": 2.0, "operator": "h + V(swap(V^dagger h) - V^dagger h)", "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_claims": 8, "n_eligible": 8, "n_yes_top1": 0}
+PAPER_NATIVE_BINARY_AGREEMENT_DOWNLOADED {
+  "source_revision": "8d32aa1fc7974740e97985337d65b041a4938e6a",
+  "model": "Qwen/Qwen3.5-4B",
+  "coefficient": 2.0,
+  "operator": "h + V(swap(V^dagger h) - V^dagger h)",
+  "layers": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "n_claims": 8,
+  "n_eligible": 8,
+  "n_yes_top1": 0,
+  "trials": [
+    {
+      "claim": "The Earth is flat. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "Vaccines cause autism. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "Humans can breathe unaided in space. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "The Sun orbits the Earth. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "Two plus two equals five. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "Water freezes at 100 degrees Celsius. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "The Moon is made of cheese. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    },
+    {
+      "claim": "Dinosaurs and humans lived at the same time. Answer with exactly Yes or No:",
+      "clean_top": "No",
+      "swapped_top": " no",
+      "clean_yes_rank": 2,
+      "swapped_yes_rank": 248319,
+      "yes_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.140866756439209,
+        "14": 2.143064498901367,
+        "15": 2.0992510318756104,
+        "16": 2.1020443439483643,
+        "17": 1.9540162086486816,
+        "18": 1.8507353067398071,
+        "19": 1.7872157096862793,
+        "20": 1.7200343608856201,
+        "21": 1.6377050876617432
+      }
+    }
+  ]
+}
+
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-VMhoneIcVF0YiwtK3WY4tv

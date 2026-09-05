@@ -121,6 +121,16 @@ Alpha 2 does not globally damage this narrow next-token task: the 13 successful 
 
 **Native-reproduction verdict:** the paper-native coordinate operator is established on this Qwen-compatible verbal-report subset: it produces rank-1 intended tokens on 13/18 paired alpha-2 trials. This is strong evidence against interpreting the earlier additive concept-vector failure as a failure of J-lens coordinate swaps. It remains a limited next-token, single-token, Qwen-specific reproduction, not evidence that arbitrary abstract style vectors work.
 
+### Constrained false-claim agreement — task 181
+
+Task 181 is the predeclared minimal behavioral adaptation: eight false claims, a Qwen-chat request for exactly `Yes` or `No`, clean source `No`, target `Yes`, and otherwise the same paper-native alpha-2 operator and layers. The complete cleaned log has 395/395 lines; raw pueue bytes were read. It reports:
+
+> PAPER_NATIVE_BINARY_AGREEMENT_COMPLETE {"source_revision": "8d32aa1fc7974740e97985337d65b041a4938e6a", "model": "Qwen/Qwen3.5-4B", "coefficient": 2.0, "operator": "h + V(swap(V^dagger h) - V^dagger h)", "layers": [13, 14, 15, 16, 17, 18, 19, 20, 21], "n_claims": 8, "n_eligible": 8, "n_yes_top1": 0}
+
+Source: [paper-native-binary-agreement.log](../logs/20260905_j_lens_concept/paper-native-binary-agreement.log). Raw results: [binary results.json](../../outputs/experiments/paper-native-binary-agreement-v1/results.json).
+
+All eight clean answers are `No`, every C=0/swap hook map has one call at layers 13–21, and each target `Yes` starts rank 2. Under the swap, all eight target `Yes` tokens fall to rank 248319 and the top token becomes the distinct leading-space token ` no`. Thus the intervention is coherent as a single-token distribution change but moves in the opposite behavioral direction: it intensifies rejection rather than producing agreement. This is **not** evidence for general sycophancy control; it is a credible negative for this `No`/`Yes` token-pair adaptation.
+
 ## ml-debug form
 
 | row | answer |
