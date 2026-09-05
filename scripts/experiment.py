@@ -21,8 +21,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
-    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
-    concept_spec, extract_concept, implementation_hash, prefill_diagnostics, select_concept_layers,
+    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256, PERSONA_VERSION,
+    concept_spec, extract_concept, extract_persona_contrast, implementation_hash,
+    prefill_diagnostics, select_concept_layers,
 )
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
@@ -88,6 +89,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
+    parser.add_argument("--j-lens-source", choices=("concept", "persona"), default="concept")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
     parser.add_argument("--j-lens-diagnostic", action="store_true")
@@ -187,6 +189,13 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
     if args.method == "j_lens_concept":
         layers = walk.resolve_layers(model, None)
+        if args.j_lens_source == "persona":
+            positive, negative = extraction_prompts(args, tokenizer)
+            vectors, metadata = extract_persona_contrast(
+                model, tokenizer, layers, positive_prompts=positive, negative_prompts=negative,
+                batch_size=args.extract_batch_size, max_length=args.max_length, lens_file=args.lens_file,
+            )
+            return vectors, metadata, len(positive), "persona-j:" + metadata["prompt_sha256"]
         rows, _ = walk.read_cohort(DEV.cohort_size)
         vectors, metadata = extract_concept(
             model, tokenizer, layers, batch_size=args.extract_batch_size,
@@ -232,13 +241,21 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method == "j_lens_concept":
+        source = getattr(args, "j_lens_source", "concept")
+        expected_source = "concept_mean100" if source == "concept" else "matched_persona_prompt_difference"
+        if metadata.get("representation_source", "concept_mean100") != expected_source:
+            raise ValueError("J-lens extraction representation source mismatch")
         implementation_matches = metadata["implementation_sha256"] == implementation_hash()
         legacy_reuse = (
-            allow_explicit_legacy_reuse
+            source == "concept" and allow_explicit_legacy_reuse
             and metadata["implementation_sha256"] == LEGACY_EXTRACTION_IMPLEMENTATION_SHA256
         )
-        if metadata["spec_sha256"] != concept_spec()[1] or not (implementation_matches or legacy_reuse):
-            raise ValueError("concept extraction cache specification/implementation mismatch")
+        if source == "concept" and metadata["spec_sha256"] != concept_spec()[1]:
+            raise ValueError("concept extraction specification mismatch")
+        if source == "persona" and (metadata["operator"] != PERSONA_VERSION or metadata["n_pairs"] != args.n_pairs):
+            raise ValueError("persona extraction specification mismatch")
+        if not (implementation_matches or legacy_reuse):
+            raise ValueError("J-lens extraction implementation mismatch")
         if legacy_reuse:
             logger.warning(
                 "EXPLICIT_LEGACY_EXTRACTION_REUSE source_implementation={} current_implementation={}",
@@ -607,6 +624,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             "extract_batch_size": args.extract_batch_size,
             "max_length": args.max_length,
             "max_new_tokens": args.max_new_tokens,
+            "j_lens_source": args.j_lens_source,
         },
     }
     if manifest["method"] != args.method:
@@ -786,6 +804,8 @@ def modal_stage(
         command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
     if args.concept_layers:
         command.extend(["--concept-layers", args.concept_layers])
+    if args.j_lens_source != "concept":
+        command.extend(["--j-lens-source", args.j_lens_source])
     if args.method == "j_lens_concept" and dev:
         coefficients = concept_grid(args)
     if coefficients is not None:

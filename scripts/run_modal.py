@@ -186,6 +186,7 @@ def experiment(
     coefficients_plus: str = "",
     coefficients_minus: str = "",
     concept_layers: str = "",
+    j_lens_source: str = "concept",
     reuse_extraction_from: str = "",
     verify_extraction: bool = False,
 ):
@@ -207,6 +208,8 @@ def experiment(
         argv.extend(["--reuse-extraction-from", reuse_extraction_from])
     if concept_layers:
         argv.extend(["--concept-layers", concept_layers])
+    if j_lens_source != "concept":
+        argv.extend(["--j-lens-source", j_lens_source])
     if profile == "full" or coefficients_plus or coefficients_minus:
         argv.extend([
             "--coefficients-plus", coefficients_plus,

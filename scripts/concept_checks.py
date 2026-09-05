@@ -13,8 +13,8 @@ from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
     LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
-    JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
-    prefill_diagnostics, select_concept_layers,
+    JLensConceptC, concept_prefill, concept_spec, extract_persona_contrast, final_positions,
+    gradient_pursuit, implementation_hash, prefill_diagnostics, select_concept_layers,
 )
 from vjp_steering.vjp import _activations
 
@@ -227,7 +227,16 @@ def smoke(args):
     args.lens_file = root / "tiny_actual_jacobian.pt"
     torch.save({"J": {layer: torch.stack(rows) for layer, rows in jacobians.items()}, "n_prompts": 1,
                 "source_layers": layers, "d_model": model.config.hidden_size}, args.lens_file)
-    print(f"TINY_LENS_FIT actual_autograd=true n_prompts=1 layers={layers}")
+    persona_vectors, persona_metadata = extract_persona_contrast(
+        model, tokenizer, layers,
+        positive_prompts=["Answer as someone who is sycophantic.\n\nA cat sits on a mat."],
+        negative_prompts=["Answer as someone who is abrasive.\n\nA cat sits on a mat."],
+        batch_size=1, max_length=64, lens_file=args.lens_file,
+    )
+    assert persona_metadata["representation_source"] == "matched_persona_prompt_difference"
+    assert persona_metadata["layers"][str(layers[0])]["achieved_nonzero_count"] <= 16
+    assert persona_vectors["+C"].stacked[layers[0]]["v"].norm() > 0
+    print(f"TINY_LENS_FIT actual_autograd=true persona_projection=true n_prompts=1 layers={layers}")
     del model
     args.dev = True
     experiment.gpu_stage(args)

@@ -18,6 +18,7 @@ from .vjp import _activations, _blocks, _load_j_lens
 SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
+PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
 
 
@@ -277,7 +278,8 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
                     [d["j_norm"] for d in decomposition], [d["remainder_norm"] for d in decomposition], contrast.norm())
     vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
     return {"+C": vector, "-C": vector}, {
-        "operator": VERSION, "spec_sha256": spec_hash, "implementation_sha256": implementation_hash(),
+        "operator": VERSION, "representation_source": "concept_mean100", "spec_sha256": spec_hash,
+        "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": "h_valid_prompt + C * unit(j_positive - j_negative)",
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
@@ -287,5 +289,59 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
         "pair_ids": pair_ids, "pair_tokens": [tokenizer.decode([i]) for i in pair_ids],
         "null_token_ids": null_ids, "null_seed": 0,
         "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "lens_file": str(lens_file), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_meta,
+    }
+
+
+@torch.inference_mode()
+def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, negative_prompts,
+                             batch_size, max_length, lens_file=None):
+    if len(positive_prompts) != len(negative_prompts) or not positive_prompts:
+        raise ValueError("persona extraction prompts must be nonempty matched pairs")
+    prompts = [*positive_prompts, *negative_prompts]
+    prompt_hash = hashlib.sha256(json.dumps(prompts, separators=(",", ":")).encode()).hexdigest()
+    hidden, token_records = residuals(model, tokenizer, prompts, layers, batch_size, max_length)
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+    device = next(model.parameters()).device
+    unembedding = model.lm_head.weight.detach().float()
+    n_pairs = len(positive_prompts)
+    state, layer_meta = {}, {}
+    for layer in layers:
+        raw = unembedding @ checkpoint["J"][layer].float().to(device)
+        norms = raw.norm(dim=-1)
+        if not (norms > 0).all():
+            raise ValueError(f"zero J-lens row at layer {layer}")
+        dictionary = raw / norms[:, None]
+        del raw
+        hs = hidden[layer].to(device)
+        difference = hs[:n_pairs].mean(0) - hs[n_pairs:].mean(0)
+        weights, component, errors = gradient_pursuit(difference, dictionary, 16)
+        if not torch.isfinite(component).all() or component.norm() <= 1e-6 * difference.norm():
+            raise ValueError(f"zero, nonfinite, or numerically unresolved persona J component at layer {layer}")
+        selected = weights.nonzero().flatten()
+        remainder = difference - component
+        state[layer] = {"v": (component / component.norm()).cpu().unsqueeze(0)}
+        layer_meta[str(layer)] = {
+            "achieved_nonzero_count": selected.numel(), "selected_ids": selected.tolist(),
+            "selected_tokens": [tokenizer.decode([i]) for i in selected.tolist()],
+            "weights_unit_dictionary": weights[selected].tolist(), "raw_row_norms": norms[selected].tolist(),
+            "paired_difference_norm": difference.norm().item(), "j_norm": component.norm().item(),
+            "remainder_norm": remainder.norm().item(), "j_remainder_dot": (component @ remainder).item(),
+            "reconstruction_error": (difference - component - remainder).norm().item(),
+            "error_history": errors, "difference_sha256": tensor_hash(difference),
+            "j_sha256": tensor_hash(component), "remainder_sha256": tensor_hash(remainder),
+        }
+        logger.info("persona layer={} j_norm={:.4f} remainder_norm={:.4f} selected={}",
+                    layer, component.norm(), remainder.norm(), selected.numel())
+    vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
+    return {"+C": vector, "-C": vector}, {
+        "operator": PERSONA_VERSION, "representation_source": "matched_persona_prompt_difference",
+        "implementation_sha256": implementation_hash(), "source_layers": list(layers),
+        "equation": "h_valid_prompt + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))",
+        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
+        "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
+        "n_pairs": n_pairs, "prompt_sha256": prompt_hash,
+        "positive_prompts": positive_prompts, "negative_prompts": negative_prompts,
+        "token_records": token_records, "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
         "lens_file": str(lens_file), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_meta,
     }
