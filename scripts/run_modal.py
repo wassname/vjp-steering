@@ -185,6 +185,7 @@ def experiment(
     max_new_tokens: int = 512,
     coefficients_plus: str = "",
     coefficients_minus: str = "",
+    concept_layers: str = "",
     reuse_extraction_from: str = "",
     verify_extraction: bool = False,
 ):
@@ -204,6 +205,8 @@ def experiment(
         argv.append("--verify-extraction")
     if reuse_extraction_from:
         argv.extend(["--reuse-extraction-from", reuse_extraction_from])
+    if concept_layers:
+        argv.extend(["--concept-layers", concept_layers])
     if profile == "full" or coefficients_plus or coefficients_minus:
         argv.extend([
             "--coefficients-plus", coefficients_plus,

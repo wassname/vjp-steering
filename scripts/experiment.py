@@ -767,6 +767,8 @@ def modal_stage(
         command.append("--verify-extraction")
     if args.reuse_extraction_from:
         command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
+    if args.concept_layers:
+        command.extend(["--concept-layers", args.concept_layers])
     if args.method == "j_lens_concept" and dev:
         coefficients = concept_grid(args)
     if coefficients is not None:
