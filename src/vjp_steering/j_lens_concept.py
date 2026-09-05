@@ -100,6 +100,66 @@ def concept_prefill(model, vector: Vector, mask: torch.Tensor, coefficient: floa
 
 
 @torch.inference_mode()
+def prefill_diagnostics(model, vector: Vector, input_ids: torch.Tensor, attention_mask: torch.Tensor,
+                        coefficient: float) -> dict:
+    """Measure the actual prompt patch and final-token distribution change for one cell."""
+    mask = attention_mask.bool()
+    batch = torch.arange(mask.shape[0], device=mask.device)
+    final = final_positions(mask)
+    bare_logits = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits[batch, final].float()
+    before, summaries, handles = {}, {}, []
+
+    def capture_before(layer):
+        def hook(_module, _inputs, output):
+            hidden = output[0] if isinstance(output, tuple) else output
+            before[layer] = hidden.detach().clone()
+        return hook
+
+    def capture_after(layer):
+        def hook(_module, _inputs, output):
+            hidden = output[0] if isinstance(output, tuple) else output
+            original = before.pop(layer)[mask].float()
+            actual = hidden[mask].float() - original
+            direction = vector.stacked[layer]["v"].sum(0).to(original)
+            ratio = actual.norm(dim=-1) / original.norm(dim=-1)
+            summaries[str(layer)] = {
+                "patch_residual_ratio_median": ratio.median().item(),
+                "patch_residual_ratio_p90": ratio.quantile(.9).item(),
+                "actual_patch_norm_median": actual.norm(dim=-1).median().item(),
+                "actual_direction_coordinate_median": (actual @ direction).median().item(),
+                "changed_coordinate_fraction": (actual != 0).float().mean().item(),
+                "dtype": str(hidden.dtype),
+            }
+        return hook
+
+    try:
+        for layer in vector.cfg.layers:
+            handles.append(_blocks(model)[layer].register_forward_hook(capture_before(layer)))
+        with concept_prefill(model, vector, mask, coefficient) as calls:
+            for layer in vector.cfg.layers:
+                handles.append(_blocks(model)[layer].register_forward_hook(capture_after(layer)))
+            steered_logits = model(
+                input_ids=input_ids, attention_mask=attention_mask, use_cache=False,
+            ).logits[batch, final].float()
+    finally:
+        for handle in handles:
+            handle.remove()
+    assert not before
+    assert all(count == 1 for count in calls.values())
+    if coefficient == 0:
+        torch.testing.assert_close(steered_logits, bare_logits, rtol=0, atol=0)
+    bare_log_probs = bare_logits.log_softmax(-1)
+    steered_log_probs = steered_logits.log_softmax(-1)
+    kl = (bare_log_probs.exp() * (bare_log_probs - steered_log_probs)).sum(-1)
+    return {
+        "coefficient": coefficient,
+        "final_token_kl_bare_to_steered_mean": kl.mean().item(),
+        "final_token_logit_delta_norm_mean": (steered_logits - bare_logits).norm(dim=-1).mean().item(),
+        "layers": summaries,
+    }
+
+
+@torch.inference_mode()
 def residuals(model, tokenizer, prompts, layers, batch_size, max_length):
     found_rows = {layer: [] for layer in layers}
     tokens = []

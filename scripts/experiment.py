@@ -20,7 +20,7 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
-from vjp_steering.j_lens_concept import concept_spec, extract_concept, implementation_hash
+from vjp_steering.j_lens_concept import concept_spec, extract_concept, implementation_hash, prefill_diagnostics
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
     DEV,
@@ -665,6 +665,11 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if not args.dev and any(not coefficients[side] for side in ("+C", "-C")):
         raise ValueError("full GPU stage requires DEV-accepted candidates for both sides")
     generated_cells = 0
+    encoded_prompts = None
+    if args.method == "j_lens_concept":
+        encoded_prompts = tokenizer(
+            prompts, return_tensors="pt", padding=True, add_special_tokens=False,
+        ).to(args.device)
     for side in ("+C", "-C"):
         for coefficient in coefficients[side]:
             records = extend_generation(
@@ -680,13 +685,23 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 vector=vectors[side],
             )
             stats, reasons = generation_health(args, tokenizer, [record["text"] for record in records])
-            manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = {
+            cell = {
                 "coefficient": coefficient,
                 "path": str(cell_path(root, side, coefficient).relative_to(root)),
                 "rows": len(records),
                 "health": stats,
                 "breakdown_reasons": reasons,
             }
+            if args.method == "j_lens_concept":
+                assert encoded_prompts is not None
+                cell["realized_prefill"] = prefill_diagnostics(
+                    model,
+                    vectors[side],
+                    encoded_prompts.input_ids,
+                    encoded_prompts.attention_mask,
+                    applied_coefficient(args.method, side, coefficient),
+                )
+            manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = cell
             atomic_json(manifest_path(args.experiment_id), manifest)
             generated_cells += 1
     manifest["profiles"][profile_name] = {

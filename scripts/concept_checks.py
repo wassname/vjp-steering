@@ -13,6 +13,7 @@ from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
     JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
+    prefill_diagnostics,
 )
 from vjp_steering.vjp import _activations
 
@@ -226,7 +227,12 @@ def smoke(args):
     torch.testing.assert_close(bare, restored)
     assert all(count == 1 for count in calls.values())
     assert all(not model.model.layers[layer]._forward_hooks for layer in layers)
-    print("CONCEPT_REAL_HOOK_CHECK changed_logits=true restored_logits=true calls_once=true removed=true")
+    diagnostic = prefill_diagnostics(
+        model, vectors["+C"], encoded.input_ids, encoded.attention_mask, 1.,
+    )
+    assert diagnostic["final_token_kl_bare_to_steered_mean"] > 0
+    assert all(layer["changed_coordinate_fraction"] > 0 for layer in diagnostic["layers"].values())
+    print("CONCEPT_REAL_HOOK_CHECK changed_logits=true restored_logits=true calls_once=true removed=true diagnostics=true")
     del model
     for command in (
         [sys.executable, "scripts/judge.py", "--experiment-id", args.experiment_id, "--profile", "dev", "--refresh"],
