@@ -790,6 +790,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
         manifest["grid"] = grid
         manifest["extraction"] = extraction
         manifest["cohort_sha256"] = cohort_sha256
+        manifest["answer_key_sha256"] = walk.answer_key_sha256(walk.read_cohort(100)[0])
         atomic_json(manifest_path(args.experiment_id), manifest)
     coefficients = manifest["grid"] if args.dev else {
         "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
@@ -1155,7 +1156,7 @@ def j_lens_paper_native_diagnostic(args: argparse.Namespace) -> None:
 
 
 def self_test() -> None:
-    from judge import required_cells
+    from judge import load_cohort, required_cells
 
     generator = torch.Generator().manual_seed(0)
     basis = torch.randn(2, 7, generator=generator)
@@ -1202,12 +1203,14 @@ def self_test() -> None:
     assert signed_coefficient("-C", 2.0) == -2.0
     assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
     assert applied_coefficient(COMPONENT_PAIR_METHOD, "-C", 2.0) == 2.0
+    scenarios = list(load_cohort())
     quick_rows = [
         {
             "bare": f"bare {question}",
             "steered": f"steered {side} {dose} {question}",
             "prompt": f"prompt {question}",
             "side": side,
+            "vignette": scenarios[question],
         }
         for side in ("+C", "-C")
         for dose in range(GRID_POINTS)
@@ -1219,6 +1222,7 @@ def self_test() -> None:
             "steered": f"steered {side} {question}",
             "prompt": f"prompt {question}",
             "side": side,
+            "vignette": scenarios[question],
         }
         for side in ("+C", "-C")
         for question in range(FULL.cohort_size)

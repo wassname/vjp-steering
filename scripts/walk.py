@@ -83,6 +83,16 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def answer_key_sha256(rows: list[dict[str, str]]) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            [[row["scenario"], row["nonsensical_element"]] for row in rows],
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode()
+    ).hexdigest()
+
+
 def read_cohort(limit: int) -> tuple[list[dict[str, str]], str]:
     rows = [json.loads(line) for line in COHORT.read_text().splitlines()]
     assert len(rows) == 100

@@ -54,6 +54,7 @@ def calibrate(args):
     }
     experiment.atomic_json(extraction_dir / "metadata.json", metadata)
     rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
+    answer_key_hash = walk.answer_key_sha256(walk.read_cohort(100)[0])
     prompts = walk.generation_inputs(tokenizer, rows)
     encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
     final = final_positions(encoded.attention_mask)
@@ -153,7 +154,7 @@ def calibrate(args):
                 "source_experiment": args.source_experiment,
                 "source_metadata_sha256": metadata["source_metadata_sha256"],
                 "vector_content_sha256": metadata["vector_content_sha256"], "cohort_sha256": cohort_hash,
-                "cohort_size": len(rows),
+                "answer_key_sha256": answer_key_hash, "cohort_size": len(rows),
                 "coefficients": {side: list(values) for side, values in coefficient_grid.items()},
                 "protocol": "nonnegative target-ordered coordinate exchange on all attended prefill positions",
                 "observations": observations,
@@ -165,11 +166,13 @@ def calibrate(args):
                 f"text_first={records[0]['text']!r}",
                 flush=True,
             )
-    write_calibration_manifest(root, args, metadata, cohort_hash, observations)
+    write_calibration_manifest(root, args, metadata, cohort_hash, answer_key_hash, observations)
     print(f"CONCEPT_CALIBRATION_COMPLETE id={args.experiment_id} cells={sum(map(len, observations.values()))}")
 
 
-def write_calibration_manifest(root: Path, args, extraction: dict, cohort_hash: str, observations: dict) -> None:
+def write_calibration_manifest(
+    root: Path, args, extraction: dict, cohort_hash: str, answer_key_hash: str, observations: dict,
+) -> None:
     import experiment
 
     cells = {}
@@ -223,6 +226,7 @@ def write_calibration_manifest(root: Path, args, extraction: dict, cohort_hash: 
             ),
         },
         "cohort_sha256": cohort_hash,
+        "answer_key_sha256": answer_key_hash,
         "cells": cells,
         "extraction": extraction,
     })
@@ -246,6 +250,7 @@ def persona_prompt_control(args) -> None:
     if (root / "manifest.json").exists():
         raise ValueError(f"persona prompt control is complete: {root}")
     rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
+    answer_key_hash = walk.answer_key_sha256(walk.read_cohort(100)[0])
     run_spec = {
         "schema": "persona_prompt_control_v3",
         "experiment_id": args.experiment_id,
@@ -254,6 +259,7 @@ def persona_prompt_control(args) -> None:
         "batch_size": args.batch_size,
         "max_new_tokens": args.max_new_tokens,
         "cohort_sha256": cohort_hash,
+        "answer_key_sha256": answer_key_hash,
         "personas": personas,
     }
     run_spec_path = root / "run_spec.json"
@@ -296,6 +302,7 @@ def persona_prompt_control(args) -> None:
     experiment.atomic_json(root / "control.json", {
         "experiment_id": args.experiment_id,
         "cohort_sha256": cohort_hash,
+        "answer_key_sha256": answer_key_hash,
         "observations": observations,
     })
     experiment.atomic_json(root / "manifest.json", {
@@ -317,6 +324,7 @@ def persona_prompt_control(args) -> None:
         },
         "bare": {"path": str(bare_path.relative_to(root))},
         "cohort_sha256": cohort_hash,
+        "answer_key_sha256": answer_key_hash,
         "cells": cells,
         "extraction": {
             "method": "persona_prompt_control",
