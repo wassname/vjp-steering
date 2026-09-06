@@ -244,6 +244,38 @@ def paper_native_binary_agreement(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
+def j_lens_activity_audit_remote(model: str, dtype: str, output: str, revision: str) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    snapshot_download(model)
+    remote_output = Path("/cache/outputs") / output
+    subprocess.run([
+        sys.executable, "scripts/j_lens_activity_audit.py", "--model", model,
+        "--dtype", dtype, "--source-revision", revision, "--output", str(remote_output),
+    ], cwd="/repo", check=True)
+    cache.commit()
+    return remote_output.read_text()
+
+
+@app.local_entrypoint()
+def j_lens_activity_audit(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "audits/20260906_j_lens_benchmark_activity/results.json",
+):
+    result = j_lens_activity_audit_remote.remote(model, dtype, output, source_revision())
+    local_output = REPO / "outputs" / output
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    print("J_LENS_ACTIVITY_AUDIT_DOWNLOADED", json.dumps(json.loads(result)["summary"]))
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
 def diagnose_j_lens_remote(model: str, dtype: str, output: str) -> str:
     from huggingface_hub import snapshot_download
 

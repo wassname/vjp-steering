@@ -28,10 +28,12 @@
      1. [x] run all 22 calibrated doses on the all-100 cohort with AB+BA judging
      2. [x] merge 22 dose rows and 2,200 scenario rows under `J-lens coordinate swap`
      3. [x] diagnose the fixed `abrasive`/`flattering` adaptation: it remains in the random zone and is not a working method
-     4. [/] remove that failed adaptation from the public comparison; retain its standalone audit
-     5. [ ] match the paper's active-source or concept-component intervention and clear the random zone on DEV
-     6. [ ] run the working method on all-100 and regenerate both public PNGs
+     4. [x] remove that failed adaptation from the public comparison; retain its standalone audit
+     5. [x] test the fixed pair on the reproduced layers 13–21; both DEV points remain inside the random cone
+     6. [/] audit actual next-token and J-lens activity before choosing an active-source or concept-component intervention
+     7. [ ] match the paper's active-source or concept-component intervention and clear the random zone on DEV
+     8. [ ] run the working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
-     - > `task-279-public-render.log`: `wrote 8 table rows and 2 plots from 822 measured evaluations`
-     - > `results/index.md`: `j_lens_swap | -0.029 | 0.442 | 0.153 | 0.133 | 0.162 | 1 | 11 | 11`
+     - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`
+     - > `results/index.md`: the public table has no J-lens row while the adaptation remains unvalidated

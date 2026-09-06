@@ -1,0 +1,25 @@
+{
+  "experiment_id": "j-lens-paper-workspace-sycophancy-dev-v1",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 0.7946519804625046,
+      "candidates_descending": [
+        0.7946519804625046
+      ],
+      "effect": 0.1333333333333333,
+      "off_axis_perturbation": 0.07333333333333333
+    },
+    "-C": {
+      "selected_C": 0.25,
+      "candidates_descending": [
+        0.25,
+        0.22781250000000003,
+        0.1859375,
+        0.165
+      ],
+      "effect": -0.21333333333333332,
+      "off_axis_perturbation": 0.22666666666666668
+    }
+  }
+}
