@@ -1,0 +1,22 @@
+{
+  "experiment_id": "j-lens-persona-prompt-control-exact-flaw-dev-v3",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 1.0,
+      "candidates_descending": [
+        1.0
+      ],
+      "effect": 3.1,
+      "off_axis_perturbation": 0.9
+    },
+    "-C": {
+      "selected_C": 1.0,
+      "candidates_descending": [
+        1.0
+      ],
+      "effect": -6.366666666666667,
+      "off_axis_perturbation": 0.6799999999999999
+    }
+  }
+}

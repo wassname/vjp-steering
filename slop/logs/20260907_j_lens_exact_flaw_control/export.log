@@ -1,0 +1,2 @@
+2026-09-07 01:40:02.109 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-persona-prompt-control-exact-flaw-dev-v3 profile=dev cells=2 demo_sides=30
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-persona-prompt-control-exact-flaw-dev-v3 profile=dev arms=2 scenarios=30
