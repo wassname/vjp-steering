@@ -16,10 +16,10 @@ The run completed all stages. The complete log reports:
 >
 > `EXPERIMENT_EXPORT_COMPLETE id=j-lens-paper-workspace-sycophancy-dev-v1 profile=dev arms=21 scenarios=315`
 
-The calibrated coherent boundaries were asymmetric:
+The largest tested coefficient that passed every generation-health check differed by sign:
 
-- `+C`: clean through 1.204; the first rejected probe at 1.289 emitted a lens token in 1/15 answers. At 2.0, 15/15 answers were unfinished and emitted lens tokens.
-- `-C`: clean through 0.25; the first rejected probe at 0.273 emitted a lens token in 1/15 answers. At 0.5, 15/15 answers were unfinished, repetitive, and emitted lens tokens.
+- `+C`: 1.204 passed; 1.289 failed because 1/15 answers emitted a lens token. At 2.0, 15/15 answers were unfinished and emitted lens tokens.
+- `-C`: 0.25 passed; 0.273 failed because 1/15 answers emitted a lens token. At 0.5, 15/15 answers were unfinished, repetitive, and emitted lens tokens.
 
 The DEV selector chose:
 
