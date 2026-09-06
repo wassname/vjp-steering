@@ -926,8 +926,9 @@ def local_pipeline(args: argparse.Namespace) -> None:
             )
             confirmed_path = walk.ROOT / "data" / "formative" / args.experiment_id / "selected.json"
             confirmed = json.loads(confirmed_path.read_text())
-            if side in confirmed["sides"]:
-                confirmed["sides"][side]["status"] = "accepted"
+            side_result = confirmed["sides"].get(side, {})
+            if "selected_C" in side_result and math.isclose(side_result["selected_C"], coefficient):
+                side_result["status"] = "accepted"
                 atomic_json(confirmed_path, confirmed)
                 break
         else:
