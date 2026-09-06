@@ -13,7 +13,7 @@
      2. [x] use signed alpha: +C is coordinate exchange; -C extrapolates away from exchange
      3. [/] run the real-model pipeline smoke
 2. [ ] goal: measure the coherent DEV dose range on Bullshit Bench v2
-   - subtle failure mode: a health-clean output scores by refusing or ignoring the question
+   - subtle failure mode: a generation passes repetition and truncation checks but scores well only because it refuses or ignores the question
    - discriminator: raw generations remain responsive and the judge reports intended on-axis signs with low off-axis change
    - verify: complete pueue log, DEV `results.csv`, `selected.json`, and raw first samples from every cell
    - tasks:
