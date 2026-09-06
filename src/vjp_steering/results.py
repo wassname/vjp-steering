@@ -17,15 +17,11 @@ from vjp_steering.experiment import DEV, FULL, data_dir, results_dir
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
-J_LENS_DEV_RESULTS = ROOT / "data" / "dev" / "j-lens-transfer-formative-v2" / "results.csv"
 J_LENS_COLOR = "#56b4e9"
-J_LENS_PLOT_NOTE = (
+PLOT_NOTE = (
     "Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible "
-    "dose means in dose order. The additional figure shows measured dose means as small dots and connects only "
-    "their Pareto-efficient means. The cyan directed J-lens overlay is separate DEV evidence from 15 questions and is not included "
-    "in the table. Solid +C transfers abrasive to flattering; dotted -C transfers flattering to abrasive. "
-    "Both use positive alpha and prompt-prefill edits. Open cyan markers retain every DEV dose; downward "
-    "triangles mark high-damage doses below the shared range; × marks each selected DEV endpoint."
+    "dose means in dose order. The additional figure shows measured dose means as small dots and smoothly connects "
+    "bare, the intended-side Pareto-efficient means, and each selected/final endpoint."
 )
 METHODS = (
     "vjp_delta",
@@ -55,6 +51,7 @@ LABELS = {
     "mean_diff": "mean_diff (baseline)",
     "pca": "PCA",
     "J_word": "J-word",
+    "j_lens_swap": "J-lens coordinate swap",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
@@ -256,11 +253,45 @@ def _pareto_curve_anchors(points: list[dict], side: str) -> list[dict]:
     return [*frontier, *endpoint_extension[1:]]
 
 
+def _smooth_anchors(anchors: list[dict]) -> tuple[list[float], list[float]]:
+    controls = [(point["effect"], point["off_axis_perturbation"]) for point in anchors]
+    if len(controls) == 1:
+        return [controls[0][0]], [controls[0][1]]
+    degree = min(3, len(controls) - 1)
+    spans = len(controls) - degree
+    knots = [0.0] * (degree + 1) + [float(index) for index in range(1, spans)] + [float(spans)] * (degree + 1)
+
+    def evaluate(parameter: float) -> tuple[float, float]:
+        if parameter == spans:
+            knot_index = len(controls) - 1
+        else:
+            knot_index = next(
+                index for index in range(degree, len(controls))
+                if knots[index] <= parameter < knots[index + 1]
+            )
+        points = [list(controls[knot_index - degree + offset]) for offset in range(degree + 1)]
+        for level in range(1, degree + 1):
+            for offset in range(degree, level - 1, -1):
+                control_index = knot_index - degree + offset
+                denominator = knots[control_index + degree - level + 1] - knots[control_index]
+                weight = (parameter - knots[control_index]) / denominator
+                points[offset] = [
+                    (1 - weight) * points[offset - 1][axis] + weight * points[offset][axis]
+                    for axis in (0, 1)
+                ]
+        return points[degree][0], points[degree][1]
+
+    samples = max(128, 32 * len(controls))
+    curve = [evaluate(spans * index / samples) for index in range(samples + 1)]
+    return [point[0] for point in curve], [point[1] for point in curve]
+
+
 def _add_j_lens_dev_overlay(
     figure: go.Figure,
     rows: list[dict],
     damage_limit: float,
     obstacles: list[tuple[float, float]],
+    pareto: bool,
 ) -> None:
     j_rows = [row for row in rows if row["method"] == "j_lens_swap"]
     if not j_rows:
@@ -268,24 +299,32 @@ def _add_j_lens_dev_overlay(
     points = _means(j_rows, ("j_lens_swap",), {"j_lens_swap": {0}}, include_rejected=True)
     for side in ("+C", "-C"):
         side_points = sorted((row for row in points if row["side"] == side), key=lambda row: row["C"])
-        in_range = [row for row in side_points if row["off_axis_perturbation"] <= damage_limit]
-        off_scale = [row for row in side_points if row["off_axis_perturbation"] > damage_limit]
         accepted = [row for row in side_points if row["accepted"]]
         if not accepted:
             raise ValueError(f"corrected J-lens DEV has no accepted {side} dose")
         endpoint = max(accepted, key=lambda row: row["C"])
         path_points = [row for row in side_points if row["C"] <= endpoint["C"]]
         frontier, _ = _pareto_curve_parts(path_points, side)
+        anchors = _pareto_curve_anchors(path_points, side) if pareto else frontier
+        displayed_points = path_points if pareto else side_points
+        in_range = [row for row in displayed_points if row["off_axis_perturbation"] <= damage_limit]
+        off_scale = [row for row in displayed_points if row["off_axis_perturbation"] > damage_limit]
         line = {"color": J_LENS_COLOR, "width": 2.6, "dash": "dot" if side == "-C" else "solid"}
+        curve_effect, curve_damage = (
+            _smooth_anchors(anchors)
+            if pareto else
+            ([row["effect"] for row in anchors], [row["off_axis_perturbation"] for row in anchors])
+        )
         figure.add_trace(go.Scatter(
-            x=[row["effect"] for row in frontier],
-            y=[row["off_axis_perturbation"] for row in frontier],
-            mode="lines", line=line, line_shape="spline", line_smoothing=0.45,
-            hoverinfo="skip", showlegend=False,
+            x=curve_effect,
+            y=curve_damage,
+            mode="lines", line=line, line_shape="spline", line_smoothing=1.3 if pareto else 0.45,
+            hoverinfo="skip", name=f"J-lens DEV {side} {'Pareto path' if pareto else 'measured path'}",
+            showlegend=False,
         ))
         plotted = [
             {**row, "plot_damage": min(row["off_axis_perturbation"], damage_limit)}
-            for row in side_points
+            for row in displayed_points
         ]
         figure.add_trace(go.Scatter(
             x=[row["effect"] for row in plotted],
@@ -336,12 +375,16 @@ def _add_j_lens_dev_overlay(
             arrowwidth=0.8,
             arrowcolor=J_LENS_COLOR,
         )
-        series = [(row["effect"], row["off_axis_perturbation"]) for row in frontier]
-        for start, end in zip(series, series[1:]):
-            obstacles.extend(
-                (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
-                for fraction in (0.25, 0.5, 0.75, 1.0)
-            )
+        if pareto:
+            series = list(zip(curve_effect, curve_damage))
+            obstacles.extend(series[::max(1, len(series) // 80)])
+        else:
+            series = [(row["effect"], row["off_axis_perturbation"]) for row in frontier]
+            for start, end in zip(series, series[1:]):
+                obstacles.extend(
+                    (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+                    for fraction in (0.25, 0.5, 0.75, 1.0)
+                )
 
 
 def plot(
@@ -459,15 +502,26 @@ def plot(
                         point for point in points
                         if point["complete"] and point["off_axis_perturbation"] <= damage_limit
                     ]
-                    anchors, _ = _pareto_curve_parts(in_range_points, side)
+                    anchors = _pareto_curve_anchors(in_range_points, side)
                 else:
                     anchors = [origin, *points]
+                curve_effect, curve_damage = (
+                    _smooth_anchors(anchors)
+                    if pareto else
+                    (
+                        [row["effect"] for row in anchors],
+                        [min(row["off_axis_perturbation"], damage_limit) for row in anchors],
+                    )
+                )
                 figure.add_trace(go.Scatter(
-                    x=[row["effect"] for row in anchors],
-                    y=[min(row["off_axis_perturbation"], damage_limit) for row in anchors],
+                    x=curve_effect,
+                    y=curve_damage,
                     mode="lines", line={"color": colors[method], "width": 2.2 if pareto else 3},
-                    line_shape="spline" if smooth else "linear", line_smoothing=0.45 if pareto else 0.6 if smooth else 0,
-                    hoverinfo="skip", showlegend=False,
+                    line_shape="spline" if smooth else "linear",
+                    line_smoothing=1.3 if pareto else 0.6 if smooth else 0,
+                    hoverinfo="skip",
+                    name=f"{method} {side} {'Pareto path' if pareto else 'dose path'}",
+                    showlegend=False,
                 ))
                 off_scale_row = y_range[0] * 0.985 - 0.007 * method_index
                 figure.add_trace(go.Scatter(
@@ -522,22 +576,20 @@ def plot(
                         ),
                         showlegend=False,
                     ))
-                series = [
-                    (row["effect"], min(row["off_axis_perturbation"], damage_limit))
-                    for row in anchors
-                ]
-                for start, end in zip(series, series[1:]):
-                    obstacles.extend(
-                        (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
-                        for fraction in (0.25, 0.5, 0.75, 1.0)
-                    )
+                if pareto:
+                    series = list(zip(curve_effect, curve_damage))
+                    obstacles.extend(series[::max(1, len(series) // 80)])
+                else:
+                    series = [
+                        (row["effect"], min(row["off_axis_perturbation"], damage_limit))
+                        for row in anchors
+                    ]
+                    for start, end in zip(series, series[1:]):
+                        obstacles.extend(
+                            (start[0] + fraction * (end[0] - start[0]), start[1] + fraction * (end[1] - start[1]))
+                            for fraction in (0.25, 0.5, 0.75, 1.0)
+                        )
 
-    _add_j_lens_dev_overlay(
-        figure,
-        rows,
-        y_range[0] * 0.985 - 0.007 * (len([method for method in methods if method != "random"]) + 1),
-        obstacles,
-    )
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
     if methods == METHODS:
@@ -599,7 +651,7 @@ def plot(
     ):
         figure.add_annotation(**annotation)
     marker_note = (
-        "small dots: measured doses · lines: Pareto-efficient means"
+        "small dots: measured doses · curves: bare → Pareto means → final"
         if pareto else
         "● measured doses · C increases from bare"
     )
@@ -615,7 +667,11 @@ def plot(
             xref="paper",
             yref="paper",
             xanchor="left",
-            text="cyan J-lens DEV: solid +C · dotted -C · ○ all doses · ▽ high damage",
+            text=(
+                "cyan J-lens DEV: solid +C · dotted -C · ○ doses through selected/final"
+                if pareto else
+                "cyan J-lens DEV: solid +C · dotted -C · ○ all doses · ▽ high damage"
+            ),
             showarrow=False,
             font={"color": J_LENS_COLOR, "size": 12},
             bgcolor="rgba(255,255,255,0.9)",
@@ -939,24 +995,19 @@ def main() -> None:
     if args.profile is not None:
         raise ValueError("--profile requires --experiment-id")
     rows = _rows()
-    j_lens_rows = _rows(
-        J_LENS_DEV_RESULTS,
-        methods=("j_lens_swap",),
-        method_seeds={"j_lens_swap": {0}},
-    )
     table = _display_table(_summary(rows))
     markdown_text = _markdown(
         table,
         (
             "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
             "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
-            J_LENS_PLOT_NOTE,
+            PLOT_NOTE,
         ),
         extra_pareto_plot=True,
     )
-    figure = plot([*rows, *j_lens_rows])
+    figure = plot(rows)
     pareto_figure = plot(
-        [*rows, *j_lens_rows],
+        rows,
         title="Pareto-smoothed VJP steering on Bullshit Bench v2",
         pareto=True,
     )
@@ -983,7 +1034,7 @@ def main() -> None:
         figure_html,
         "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
         "The random cone shows ten vectors until fewer than half have two coherent directions. "
-        "The table reports rejected evaluations. " + J_LENS_PLOT_NOTE,
+        "The table reports rejected evaluations. " + PLOT_NOTE,
     )
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)

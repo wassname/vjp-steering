@@ -2,7 +2,7 @@
 
 All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
 The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.
-Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible dose means in dose order. The additional figure shows measured dose means as small dots and connects only their Pareto-efficient means. The cyan directed J-lens overlay is separate DEV evidence from 15 questions and is not included in the table. Solid +C transfers abrasive to flattering; dotted -C transfers flattering to abrasive. Both use positive alpha and prompt-prefill edits. Open cyan markers retain every DEV dose; downward triangles mark high-damage doses below the shared range; × marks each selected DEV endpoint.
+Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible dose means in dose order. The additional figure shows measured dose means as small dots and smoothly connects bare, the intended-side Pareto-efficient means, and each selected/final endpoint.
 
 ## Measured dose paths
 

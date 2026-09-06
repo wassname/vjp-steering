@@ -80,11 +80,8 @@ class JLensSwap:
     def apply(_mod, _x, y, shared, _stacked, cfg: JLensSwapC):
         if y.shape[-2] == 1:
             return y
-        return _transfer_lens_coordinate(
-            y,
-            shared["source"].to(y.device),
-            shared["target"].to(y.device),
-            cfg.coeff,
+        return _swap_lens_coordinates(
+            y, shared["basis"].to(y.device), shared["dual"].to(y.device), cfg.coeff,
         )
 
 
@@ -563,8 +560,7 @@ def j_lens_swap(
     source_token: str = J_LENS_SWAP_SOURCE,
     target_token: str = J_LENS_SWAP_TARGET,
 ) -> tuple[Vector, dict[str, object]]:
-    """Transfer one active token coordinate to another during prompt prefill."""
-    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+    """Exchange two raw J-lens coordinates during prompt prefill."""
 
     def single_token_id(word: str) -> int:
         token_ids = tokenizer(" " + word, add_special_tokens=False).input_ids
@@ -574,56 +570,33 @@ def j_lens_swap(
 
     source_id = single_token_id(source_token)
     target_id = single_token_id(target_token)
-    unembedding = model.lm_head.weight.detach().float().cpu()
-    layer_state = {}
-    layer_metadata = {}
-    for layer in layers:
-        jacobian = checkpoint["J"][layer].float()
-        basis = torch.stack((unembedding[source_id] @ jacobian, unembedding[target_id] @ jacobian))
-        unit = basis / basis.norm(dim=1, keepdim=True)
-        singular_values = torch.linalg.svdvals(unit)
-        if singular_values[-1] <= 0:
-            raise ValueError(f"rank-deficient J-lens transfer basis at layer {layer}")
-        layer_state[layer] = {"source": unit[0], "target": unit[1]}
-        layer_metadata[str(layer)] = {
-            "raw_basis_norms": basis.norm(dim=1).tolist(),
-            "unit_cosine": torch.dot(unit[0], unit[1]).item(),
-            "unit_singular_values": singular_values.tolist(),
-            "unit_condition_number": (singular_values[0] / singular_values[-1]).item(),
-        }
-
+    native, metadata = j_lens_coordinate_swap(
+        model,
+        layers,
+        source_token_id=source_id,
+        target_token_id=target_id,
+        lens_file=lens_file,
+    )
+    vector = Vector(
+        JLensSwapC(layers=layers, source_token=source_token, target_token=target_token),
+        native.shared,
+        native.stacked,
+    )
     logger.info(
-        "j_lens_swap lens={} n_prompts={} source={} id={} target={} id={} layers={}",
-        lens_file,
-        checkpoint["n_prompts"],
+        "j_lens_swap operator=paper_native_pseudoinverse_coordinate_swap source={} id={} target={} id={} layers={}",
         source_token,
         source_id,
         target_token,
         target_id,
         layers,
     )
-    vector = Vector(
-        JLensSwapC(layers=layers, source_token=source_token, target_token=target_token),
-        layer_state,
-        {layer: {} for layer in layers},
-    )
     return vector, {
-        "operator": "directed_unit_coordinate_transfer",
-        "equation": "h + alpha * (h dot unit(v_source)) * (unit(v_target) - unit(v_source))",
-        "paper_equation_compared": "h + alpha V(swap(V^dagger h) - V^dagger h)",
-        "normalization": "unit_per_token_per_layer",
+        **metadata,
         "token_scope": "all_prompt_positions_prefill_only",
-        "source_layers": list(layers),
         "source_token": source_token,
-        "source_token_id": source_id,
         "source_token_text": tokenizer.decode([source_id]),
         "target_token": target_token,
-        "target_token_id": target_id,
         "target_token_text": tokenizer.decode([target_id]),
-        "lens_file": str(lens_file),
-        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
-        "lens_n_prompts": checkpoint["n_prompts"],
-        "layers": layer_metadata,
     }
 
 

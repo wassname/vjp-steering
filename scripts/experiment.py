@@ -62,8 +62,6 @@ SEARCH_LOG_TOLERANCE = math.log(2.0) / 6.0
 GRID_LOW = 0.66
 GRID_HIGH = 1.33
 GRID_POINTS = 9
-J_LENS_SWAP_POSITIVE_GRID = (0.5, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2.0, 3.0, 4.0, 6.0, 8.0)
-J_LENS_SWAP_NEGATIVE_GRID = J_LENS_SWAP_POSITIVE_GRID
 J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
 
 
@@ -146,7 +144,7 @@ def signed_coefficient(side: str, coefficient: float) -> float:
 
 
 def applied_coefficient(method: str, side: str, coefficient: float) -> float:
-    return coefficient if method == "j_lens_swap" else signed_coefficient(side, coefficient)
+    return signed_coefficient(side, coefficient)
 
 
 def vector_sha256(vector: Vector) -> str:
@@ -237,21 +235,18 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         return vectors, metadata, 0, "concept:" + metadata["spec_sha256"]
     if args.method == "j_lens_swap":
         layers = walk.resolve_layers(model, None)
-        positive, positive_metadata = j_lens_swap(
+        vector, swap_metadata = j_lens_swap(
             model, tokenizer, layers,
             source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
         )
-        negative, negative_metadata = j_lens_swap(
-            model, tokenizer, layers,
-            source_token=J_LENS_SWAP_TARGET, target_token=J_LENS_SWAP_SOURCE,
-        )
         return {
-            "+C": positive,
-            "-C": negative,
+            "+C": vector,
+            "-C": vector,
         }, {
             "source_layers": list(layers),
-            "semantic_directions": {"+C": positive_metadata, "-C": negative_metadata},
-        }, 0, f"fixed_tokens:{J_LENS_SWAP_SOURCE}<->{J_LENS_SWAP_TARGET}"
+            "semantic_directions": {"+C": swap_metadata, "-C": swap_metadata},
+            "coefficient_semantics": "+C exchanges abrasive/flattering coordinates; -C extrapolates away from exchange",
+        }, 0, f"paper_swap:{J_LENS_SWAP_SOURCE}<->{J_LENS_SWAP_TARGET}"
 
     positive, negative = extraction_prompts(args, tokenizer)
     vectors, metadata = EXTRACTORS[args.method](
@@ -682,11 +677,6 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if args.dev and "boundaries" in manifest:
         if args.method == "j_lens_concept":
             expanded_grid = concept_grid(args)
-        elif args.method == "j_lens_swap":
-            expanded_grid = {
-                "+C": list(J_LENS_SWAP_POSITIVE_GRID),
-                "-C": list(J_LENS_SWAP_NEGATIVE_GRID),
-            }
         else:
             expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
         if manifest["grid"] != expanded_grid:
@@ -735,15 +725,6 @@ def gpu_stage(args: argparse.Namespace) -> None:
         if args.method == "j_lens_concept":
             boundaries = {side: {"meaning": "signed unit concept contrast", "trace": []} for side in ("+C", "-C")}
             grid = concept_grid(args)
-        elif args.method == "j_lens_swap":
-            boundaries = {
-                "+C": {"meaning": "abrasive-to-flattering directed transfer", "trace": []},
-                "-C": {"meaning": "flattering-to-abrasive directed transfer", "trace": []},
-            }
-            grid = {
-                "+C": list(J_LENS_SWAP_POSITIVE_GRID),
-                "-C": list(J_LENS_SWAP_NEGATIVE_GRID),
-            }
         else:
             boundaries = {
                 side: search_boundary(side, root, rows, prompts, model, tokenizer, vectors[side], args)
@@ -890,9 +871,10 @@ def local_pipeline(args: argparse.Namespace) -> None:
         cwd=walk.ROOT,
         check=True,
     )
-    render_command = [sys.executable, "-m", "vjp_steering.results"]
-    if args.method != "j_lens_swap":
-        render_command.extend(["--experiment-id", args.experiment_id, "--profile", "dev"])
+    render_command = [
+        sys.executable, "-m", "vjp_steering.results",
+        "--experiment-id", args.experiment_id, "--profile", "dev",
+    ]
     if args.method != "j_lens_concept":
         subprocess.run(render_command, cwd=walk.ROOT, check=True)
     if args.dev:
@@ -963,9 +945,10 @@ def local_pipeline(args: argparse.Namespace) -> None:
             "tested_candidates": tested_candidates,
         }
     atomic_json(confirmed_path, confirmed)
-    render_command = [sys.executable, "-m", "vjp_steering.results"]
-    if args.method != "j_lens_swap":
-        render_command.extend(["--experiment-id", args.experiment_id, "--profile", "full"])
+    render_command = [
+        sys.executable, "-m", "vjp_steering.results",
+        "--experiment-id", args.experiment_id, "--profile", "full",
+    ]
     subprocess.run(render_command, cwd=walk.ROOT, check=True)
 
 
@@ -1168,15 +1151,15 @@ def self_test() -> None:
     torch.testing.assert_close(transferred, expected)
     cfg = JLensSwapC(layers=(1,))
     cfg.coeff = 1.0
-    state = {"source": source, "target": target}
-    torch.testing.assert_close(JLensSwap.apply(None, None, hidden, state, None, cfg), expected)
+    state = {"basis": basis, "dual": dual}
+    torch.testing.assert_close(JLensSwap.apply(None, None, hidden, state, None, cfg), patched)
     one_token = hidden[:, :1]
     torch.testing.assert_close(JLensSwap.apply(None, None, one_token, state, None, cfg), one_token)
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "swap.safetensors"
         vector = Vector(
             JLensSwapC(layers=(1,)),
-            {1: {"source": source, "target": target}},
+            {1: {"basis": basis, "dual": dual}},
             {1: {}},
         )
         vector.save(str(path))
@@ -1195,7 +1178,7 @@ def self_test() -> None:
     }) == sorted({*local_grid(1.0), 0.5})
     assert signed_coefficient("+C", 2.0) == 2.0
     assert signed_coefficient("-C", 2.0) == -2.0
-    assert applied_coefficient("j_lens_swap", "-C", 2.0) == 2.0
+    assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
     quick_rows = [
         {
             "bare": f"bare {question}",
