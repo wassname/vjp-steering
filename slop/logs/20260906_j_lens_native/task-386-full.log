@@ -1,0 +1,56 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 629.49it/s]
+2026-09-06 21:14:12.028 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:446 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-06 21:14:12.176 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:446 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5146.50it/s]
+2026-09-06 21:14:14.521 | INFO     | vjp_steering.j_lens_concept:extract_concept:291 - concept extraction spec=7045e802c704472aa343eed79404acfc9ce459025e8b942c5b2e7d6a07eae2f0 layers=(2,) final_prompt_token=true
+2026-09-06 21:14:14.522 | INFO     | vjp_steering.j_lens_concept:extract_concept:292 - concept extraction demo=<|im_start|>user
+Tell me about sycophantic agreement and flattery toward the user<|im_end|>
+<|im_start|>assistant
+<think>
+</think>
+2026-09-06 21:14:15.305 | INFO     | vjp_steering.j_lens_concept:extract_concept:372 - concept layer=2 j_norms=[217.3004608154297, 122.8713150024414] remainder_norms=[41.26286697387695, 24.566001892089844] contrast_norm=185.2592
+2026-09-06 21:14:21.710 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:14:27.807 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:14:35.056 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:14:41.582 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:14:47.781 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:14:54.084 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:15:00.810 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 21:15:01.507 | INFO     | experiment:gpu_stage:848 - GPU_STAGE_COMPLETE experiment=j-lens-components-neutral-norm-scaled-tiny-smoke-v1 profile=dev cells=6
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 6178.93it/s]
+CONCEPT_REAL_HOOK_CHECK changed_logits=true restored_logits=true calls_once=true removed=true diagnostics=true
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/judge.py --experiment-id j-lens-components-neutral-norm-scaled-tiny-smoke-v1 --profile dev --refresh
+2026-09-06 21:15:06.502 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-components-neutral-norm-scaled-tiny-smoke-v1 profile=dev cells=6 demo_sides=90
+2026-09-06 21:15:07.806 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-06 21:15:09.029 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-06 21:15:10.620 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-06 21:15:12.271 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-06 21:15:13.571 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-06 21:15:14.787 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-06 21:15:16.083 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-06 21:15:17.563 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-06 21:15:18.714 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-06 21:15:19.648 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-06 21:15:20.713 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-06 21:15:21.767 | INFO     | __main__:main:670 - CACHE_CHECK required=87 cached=22 missing=65 API_calls=65
+2026-09-06 21:16:00.818 | INFO     | __main__:run:632 - judge progress=65/65
+2026-09-06 21:16:01.898 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-06 21:16:03.121 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-06 21:16:04.533 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-06 21:16:05.958 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-06 21:16:07.417 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-06 21:16:08.585 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-06 21:16:09.641 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-06 21:16:10.643 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-06 21:16:11.458 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-06 21:16:12.213 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-06 21:16:13.039 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-06 21:16:14.091 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=87 missing=0
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/export.py --experiment-id j-lens-components-neutral-norm-scaled-tiny-smoke-v1 --profile dev
+2026-09-06 21:16:17.730 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-components-neutral-norm-scaled-tiny-smoke-v1 profile=dev cells=6 demo_sides=90
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-components-neutral-norm-scaled-tiny-smoke-v1 profile=dev arms=6 scenarios=90
+J_LENS_CONCEPT_PIPELINE_SMOKE_PASS id=j-lens-components-neutral-norm-scaled-tiny-smoke-v1 actual_lens=true generation=true judge=true export=true public_outputs_untouched=true
