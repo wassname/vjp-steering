@@ -1,0 +1,5 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 3999.52it/s]
+2026-09-07 01:15:00.746 | INFO     | walk:generate:487 - generation 15/15
+2026-09-07 01:15:01.081 | INFO     | walk:generate:487 - generation 15/15
+2026-09-07 01:15:01.598 | INFO     | walk:generate:487 - generation 15/15
+PERSONA_PROMPT_CONTROL_COMPLETE id=j-lens-persona-prompt-control-exact-flaw-tiny-v3 plus_changed=15 minus_changed=15

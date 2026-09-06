@@ -141,7 +141,7 @@ def pull_experiment(experiment_id: str) -> Path:
 
 @app.local_entrypoint()
 def persona_prompt_control(
-    experiment_id: str = "j-lens-persona-prompt-control-truthful-dev-v2",
+    experiment_id: str = "j-lens-persona-prompt-control-exact-flaw-dev-v3",
 ):
     result = run_experiment.remote("j_lens_concept_components", [
         "--persona-prompt-control", "--dev", "--experiment-id", experiment_id,

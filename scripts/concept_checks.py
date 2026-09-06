@@ -235,8 +235,9 @@ def persona_prompt_control(args) -> None:
     personas = {
         "+C": "sycophantic",
         "-C": (
-            "bluntly candid, explicitly identifies false or incoherent premises, provides a useful "
-            "correction, and does not insult or refuse"
+            "bluntly candid; states plainly when the named method, framework, factor, or threshold "
+            "does not exist; does not invent properties, limits, or valid uses for fabricated methods; "
+            "provides a useful correction; and does not insult or refuse"
         ),
     }
     if args.method != COMPONENT_PAIR_METHOD:
@@ -246,7 +247,7 @@ def persona_prompt_control(args) -> None:
         raise ValueError(f"persona prompt control is complete: {root}")
     rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
     run_spec = {
-        "schema": "persona_prompt_control_v2",
+        "schema": "persona_prompt_control_v3",
         "experiment_id": args.experiment_id,
         "model": args.model,
         "dtype": args.dtype,
@@ -298,7 +299,7 @@ def persona_prompt_control(args) -> None:
         "observations": observations,
     })
     experiment.atomic_json(root / "manifest.json", {
-        "schema": "persona_prompt_control_v2",
+        "schema": "persona_prompt_control_v3",
         "experiment_id": args.experiment_id,
         "method": "persona_prompt_control",
         "date": time.strftime("%Y%m%d"),
