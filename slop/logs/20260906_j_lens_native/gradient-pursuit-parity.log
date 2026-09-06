@@ -1,0 +1,6 @@
+case 0 support 16 selected 16 error 1.4637606143951416
+case 1 support 16 selected 16 error 1.9213862419128418
+case 2 support 16 selected 16 error 1.9778549671173096
+case 3 support 16 selected 16 error 2.723247528076172
+case 4 support 16 selected 16 error 2.743929624557495
+GRADIENT_PURSUIT_PARITY_PASS cases=5 implementation=TransformerLens-gradient_pursuit reconstruction=true

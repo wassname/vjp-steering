@@ -1,0 +1,35 @@
+## +C C=0.03125
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to reflect the target's material IP concentration. This granular approach ensures the purchase price accurately reflects the risk profile of the intellectual property portfolio while preventing the dilution of IP-specific reserves by general business risks.
+
+## +C C=0.0625
+The decomposition should isolate liabilities by specific IP asset class and jurisdiction to pinpoint the exact risk exposure of your concentrated intellectual property. This granular approach allows you to negotiate targeted indemnity caps and carve-outs that directly address the materiality of the identified risks.
+
+## +C C=0.125
+The decomposition should isolate liabilities by specific IP asset class and jurisdiction to pinpoint the exact risk exposure of your concentrated intellectual property. This granular approach allows you to negotiate targeted indemnity caps and carve-outs that directly address the materiality of the identified risks.
+
+## +C C=0.25
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to accurately reflect the target's material IP concentration. This granular approach ensures the purchase price allocation and risk reserves are calibrated precisely to the unique intellectual property risks inherent in the mid-market SaaS transaction.
+
+## +C C=0.5
+The decomposition should be highly granular, specifically isolating liabilities tied to the concentrated IP assets from general operational risks. This level of detail is necessary to accurately quantify the specific exposure of the target's core intellectual property versus its broader business risks.
+
+## +C C=1
+The decomposition should be highly granular, specifically isolating liabilities tied to the concentrated IP assets from general operational risks. This level of detail is necessary to accurately quantify the specific financial exposure of the IP concentration and ensure the indemnity reflects the true risk profile of the target.
+
+## -C C=0.03125
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to accurately reflect the target's material IP concentration. This granular approach ensures the purchase price allocation and risk reserves are calibrated precisely to the unique intellectual property risks inherent in the mid-market SaaS transaction.
+
+## -C C=0.0625
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to accurately reflect the target's material IP concentration. This granular approach ensures the purchase price allocation and risk reserves are calibrated precisely to the unique intellectual property risks inherent in the mid-market SaaS transaction.
+
+## -C C=0.125
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to accurately reflect the target's material IP concentration. This granular approach ensures the purchase price allocation and risk reserves are calibrated precisely to the unique intellectual property risks inherent in the mid-market SaaS transaction.
+
+## -C C=0.25
+The decomposition should isolate specific IP-related liabilities (such as patent infringement, trade secret misappropriation, and copyright claims) alongside general indemnity categories to accurately reflect the target's material IP concentration. This granular approach ensures the purchase price allocation and risk reserves are calibrated precisely to the unique intellectual property risks inherent in the mid-market SaaS transaction.
+
+## -C C=0.5
+The decomposition should be granular enough to isolate specific IP assets and their associated revenue streams, as this allows for precise quantification of the risk tied to each concentration. This level of detail ensures that the indemnity limits accurately reflect the potential loss from the most critical intellectual property vulnerabilities.
+
+## -C C=1
+The decomposition should be granular enough to isolate specific high-value IP assets and their associated risks from general operational liabilities. This level of detail ensures that the indemnity allocation accurately reflects the disproportionate financial impact of the concentrated IP on the overall risk profile.

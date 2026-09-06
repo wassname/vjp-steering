@@ -19,7 +19,7 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-v1"
+COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-v2"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -84,27 +84,45 @@ def final_positions(mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b"]:
     return last
 
 
+# PI/OpenAI Codex: follows TransformerLens' paper-matching gradient-pursuit update.
 @torch.no_grad()
 def gradient_pursuit(
     signal: Float[torch.Tensor, "d"], dictionary: Float[torch.Tensor, "v d"], k: int = 16,
 ) -> tuple[torch.Tensor, torch.Tensor, list[float]]:
     if not torch.isfinite(signal).all() or not torch.isfinite(dictionary).all():
         raise ValueError("nonfinite pursuit input")
+    if not torch.allclose(dictionary.norm(dim=1), torch.ones(dictionary.shape[0], device=dictionary.device)):
+        raise ValueError("gradient pursuit requires unit dictionary rows")
     weights = torch.zeros(dictionary.shape[0], device=dictionary.device)
-    errors = []
+    selected, coordinates, errors = [], signal.new_zeros(0), []
+    residual = signal.float()
+    correlation_tolerance = torch.finfo(torch.float32).eps ** 0.5 * signal.float().norm()
     for _ in range(k):
-        residual = signal - weights @ dictionary
-        scores = dictionary @ residual
-        active = weights != 0
-        active[scores.argmax()] = True
-        gradient = active * scores
-        change = gradient @ dictionary
+        scores = dictionary.float() @ residual
+        if selected:
+            scores[selected] = float("-inf")
+        candidate = int(scores.argmax())
+        if scores[candidate] <= correlation_tolerance:
+            break
+        selected.append(candidate)
+        atoms = dictionary[selected].float().T
+        coordinates = torch.cat([coordinates, coordinates.new_zeros(1)])
+        direction = atoms.T @ residual
+        change = atoms @ direction
         denominator = change.square().sum()
         if denominator == 0:
             break
         step = (change @ residual) / denominator
-        weights = (weights + step * gradient).clamp_min(0)
-        errors.append((signal - weights @ dictionary).norm().item())
+        previous_error = residual.square().sum()
+        for _ in range(21):
+            updated = (coordinates + step * direction).clamp_min(0)
+            updated_residual = signal.float() - atoms @ updated
+            if updated_residual.square().sum() <= previous_error:
+                coordinates, residual = updated, updated_residual
+                break
+            step /= 2
+        errors.append(residual.norm().item())
+    weights[selected] = coordinates
     return weights, weights @ dictionary, errors
 
 

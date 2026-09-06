@@ -121,7 +121,8 @@ def self_test():
     two_steps, _, early = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=2)
     refined, _, late = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=16)
     assert two_steps[0] > 0 and two_steps[1] > 0
-    assert refined[1] != two_steps[1] and late[-1] < early[-1]
+    assert late[-1] <= early[-1]
+    assert all(after <= before for before, after in zip(late, late[1:]))
     for exact in (torch.zeros(3), torch.tensor([1., 0., 0.])):
         weights, component, _ = gradient_pursuit(exact, torch.eye(3))
         assert torch.isfinite(weights).all()
