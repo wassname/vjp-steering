@@ -493,7 +493,7 @@ def j_lens_coordinate_swap(
     layer_state, layer_metadata = {}, {}
     for layer in layers:
         basis = unembedding[[source_token_id, target_token_id]] @ checkpoint["J"][layer].float()
-        dual = torch.linalg.pinv(basis).T
+        dual = torch.linalg.pinv(basis).T.contiguous()
         if not torch.isfinite(dual).all():
             raise ValueError(f"nonfinite J-lens coordinate dual at layer {layer}")
         singular_values = torch.linalg.svdvals(basis)

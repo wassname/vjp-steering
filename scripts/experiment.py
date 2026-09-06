@@ -1137,7 +1137,7 @@ def self_test() -> None:
 
     generator = torch.Generator().manual_seed(0)
     basis = torch.randn(2, 7, generator=generator)
-    dual = torch.linalg.pinv(basis.T)
+    dual = torch.linalg.pinv(basis).T.contiguous()
     hidden = torch.randn(3, 5, 7, generator=generator)
     torch.testing.assert_close(_swap_lens_coordinates(hidden, basis, dual, 0), hidden)
     patched = _swap_lens_coordinates(hidden, basis, dual, 1)
