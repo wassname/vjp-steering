@@ -7,8 +7,8 @@ Target: pueue task 417, `j-lens-behavior-components-target-ordered-source-v8`, r
 | model and J-lens load | Qwen3.5-4B BF16 and 1,000-prompt lens | loaded | yes | metadata: `model=Qwen/Qwen3.5-4B`, `dtype=bfloat16`, `lens_n_prompts=1000` | peak GPU memory | intended model and lens executed |
 | concept extraction | non-negative GP16 reconstruction for both concepts at layers 13–21 | complete | yes | each layer reports 15–16 active coefficients and `reconstruction_error=0` | alternate prompt wording | the specified components were formed |
 | pair geometry | finite numerical rank two; condition close to preceding extraction | condition 2.198–3.070 | yes | layer 15 is largest at `3.0703`; layer 21 is smallest at `2.1979` | perturbation sensitivity | rank does not prevent the test |
-| persistence | distinct side hashes and validated targets | complete | yes | `+C=dd4e78...`, `-C=eb2f58...`; `EXTRACTION_COMPLETE` | downloaded local reload | calibration will repeat remote reload validation |
-| clean DEV coordinates | each requested direction should affect some final prompt positions | +C affects 0/15 and -C affects 15/15 at every layer | no | summary fields `plus_target_changed_final_positions=0` for all nine layers | all-token changed fractions | +C may be weak because final prompt coordinates are already positive-ordered |
+| persistence | distinct side hashes and validated targets | complete | yes | `+C=dd4e78...`, `-C=eb2f58...`; `EXTRACTION_COMPLETE` | downloaded local reload | calibration will load the saved Modal vectors and recheck hashes, targets, basis, and dual |
+| unsteered DEV coordinates | each requested direction should affect some final prompt positions | +C affects 0/15 and -C affects 15/15 at every layer | no | summary fields `plus_target_changed_final_positions=0` for all nine layers | all-token changed fractions | +C may be weak because final prompt coordinates are already positive-ordered |
 | behavior | not part of extraction | absent | unclear | no generations or judges in this task | DEV dose grid | no sycophancy claim follows |
 
 ## Chronology
@@ -25,7 +25,7 @@ The nine layer rows were finite. For example:
 
 The observed condition-number range, 2.198–3.070, matches the prior expectation of about 2.2–3.2. Both decompositions have non-negative GP support and reconstruction error zero. The implementation and specification hashes match v8.
 
-The main anomaly appears in the clean DEV coordinate inventory. At every layer and for every one of the 15 final prompt positions, the positive component coordinate already exceeds the negative coordinate. Median positive-minus-negative differences rise from `0.502` at layer 13 to about `1.29` at layer 21. Therefore +C target ordering is identity at those final positions, while -C exchanges all of them. This does not show that +C is globally identity because the intervention covers every attended prefill position. Calibration must report each side's changed-position fraction and KL.
+The main anomaly appears in the unsteered DEV coordinate inventory. At every layer and for every one of the 15 final prompt positions, the positive component coordinate already exceeds the negative coordinate. Median positive-minus-negative differences rise from `0.502` at layer 13 to about `1.29` at layer 21. Therefore +C target ordering is identity at those final positions, while -C exchanges all of them. This does not show that +C is globally identity because the intervention covers every attended prefill position. Calibration must report each side's changed-position fraction and KL.
 
 ## ML-debug form
 
@@ -34,11 +34,11 @@ The main anomaly appears in the clean DEV coordinate inventory. At every layer a
 | log length and config | 386,071 lines; Qwen3.5-4B, BF16, layers 13–21, GP16, all attended prefill positions |
 | `SHOULD:` lines | none |
 | null and baseline | expected geometry came from v7b on the same extracted components: condition 2.20–3.07; task 417 reproduces it |
-| before intervention | extraction only; clean final coordinates are positive-ordered on 135/135 layer-scenario pairs |
+| before intervention | extraction only; unsteered final coordinates are positive-ordered on 135/135 layer-scenario pairs |
 | dummy comparison | neutral concept baselines are used for mean subtraction; no behavioral dummy occurs here |
 | held-out baseline | DEV prompts are separate from the two concept prompts but were recorded in extraction metadata |
 | schedule | no training |
-| complete sample | the exact concept prompt and all 15 clean coordinate pairs per layer are retained in the full metadata |
+| complete sample | the exact concept prompt and all 15 unsteered coordinate pairs per layer are retained in the full metadata |
 | worst step | no numerical failure; the strongest concern is zero +C final-position changes |
 | surprise | `plus_target_changed_final_positions=0` at every layer; explained at the measured final prompt positions, still chasing all-token behavior |
 | evidence still needed | all-token changed fractions, BF16 residuals, coherent generations, judged effects, random-region comparison |
@@ -51,7 +51,7 @@ The main anomaly appears in the clean DEV coordinate inventory. At every layer a
 
 ### H1 [method | Likely | 65%]
 
-- **Mechanism:** +C target ordering changes too few relevant positions because clean benchmark prompts are already more active on the positive component.
+- **Mechanism:** +C target ordering changes too few relevant positions because unsteered benchmark prompts are already more active on the positive component.
 - **Evidence:** all 135 final layer-scenario coordinate pairs have positive greater than negative; layer-13 median difference is `0.502` and layer-21 median is `1.290`.
 - **Contrary evidence:** only final prompt positions were measured; the method patches all attended positions, and earlier tokens can alter downstream computation.
 - **Discriminating test:** calibration should report a much smaller +C changed-hidden fraction and KL than -C if this is the main limitation. Similar fractions and KL would favor earlier-token mediation.
