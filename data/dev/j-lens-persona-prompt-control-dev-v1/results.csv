@@ -1,0 +1,3 @@
+model,tokenizer,prompt_template,data_hash,eval_cohort,layers,batch_size,date,source_run,method,seed,C,side,effect,off_axis_perturbation,admissible
+Qwen/Qwen3.5-4B,Qwen/Qwen3.5-4B,Qwen3 chat,c0b64ebf1713f71fa5ae6218fbbcb866b15402a98adbead8caf88d5a6a129874,sycophancy_dev15-v10,,32,20260906,j-lens-persona-prompt-control-dev-v1,persona_prompt_control,0,1.0,+C,3.1,0.9,True
+Qwen/Qwen3.5-4B,Qwen/Qwen3.5-4B,Qwen3 chat,c0b64ebf1713f71fa5ae6218fbbcb866b15402a98adbead8caf88d5a6a129874,sycophancy_dev15-v10,,32,20260906,j-lens-persona-prompt-control-dev-v1,persona_prompt_control,0,1.0,-C,-1.7466666666666668,1.6,False

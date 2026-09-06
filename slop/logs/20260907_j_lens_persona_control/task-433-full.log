@@ -1,0 +1,75 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-GdhagJGEd8Ob3FwJ2Cw1qh
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1137.72it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 640.60it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▌         | 22/426 [00:00<00:02, 178.38it/s]
+[1ALoading weights:   9%|▉         | 40/426 [00:00<00:02, 177.51it/s]
+[1ALoading weights:  14%|█▎        | 58/426 [00:00<00:02, 157.92it/s]
+[1ALoading weights:  17%|█▋        | 74/426 [00:00<00:02, 155.91it/s]
+[1ALoading weights:  24%|██▍       | 103/426 [00:00<00:01, 199.26it/s]
+[1ALoading weights:  29%|██▉       | 124/426 [00:00<00:01, 171.03it/s]
+[1ALoading weights:  34%|███▍      | 144/426 [00:00<00:01, 176.39it/s]
+[1ALoading weights:  38%|███▊      | 163/426 [00:00<00:01, 169.87it/s]
+[1ALoading weights:  42%|████▏     | 181/426 [00:01<00:01, 160.25it/s]
+[1ALoading weights:  48%|████▊     | 205/426 [00:01<00:01, 171.05it/s]
+[1ALoading weights:  52%|█████▏    | 223/426 [00:01<00:01, 164.65it/s]
+[1ALoading weights:  57%|█████▋    | 244/426 [00:01<00:01, 172.07it/s]
+[1ALoading weights:  62%|██████▏   | 262/426 [00:01<00:00, 171.38it/s]
+[1ALoading weights:  66%|██████▌   | 280/426 [00:01<00:00, 167.77it/s]
+[1ALoading weights:  70%|██████▉   | 297/426 [00:01<00:00, 161.64it/s]
+[1ALoading weights:  75%|███████▌  | 320/426 [00:01<00:00, 173.26it/s]
+[1ALoading weights:  80%|████████  | 341/426 [00:02<00:00, 172.20it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 211.37it/s]
+2026-09-06 16:39:56.666 | INFO     | walk:generate:487 - generation 15/15
+2026-09-06 16:39:59.717 | INFO     | walk:generate:487 - generation 15/15
+2026-09-06 16:40:01.603 | INFO     | walk:generate:487 - generation 15/15
+PERSONA_PROMPT_CONTROL_COMPLETE id=j-lens-persona-prompt-control-dev-v1 plus_changed=15 minus_changed=15
+✓ Finished downloading files to local!
+{
+  "schema": "persona_prompt_control_v1",
+  "experiment_id": "j-lens-persona-prompt-control-dev-v1",
+  "method": "persona_prompt_control",
+  "date": "20260906",
+  "profiles": {
+    "dev": {
+      "status": "DEV",
+      "cohort_size": 15,
+      "generated": true
+    }
+  },
+  "config": {
+    "model": "Qwen/Qwen3.5-4B",
+    "dtype": "bfloat16",
+    "batch_size": 32,
+    "max_new_tokens": 512
+  },
+  "grid": {
+    "+C": [
+      1.0
+    ],
+    "-C": [
+      1.0
+    ]
+  },
+  "boundaries": {
+    "+C":
+PERSONA_PROMPT_CONTROL_DOWNLOADED output=/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-persona-prompt-control-dev-v1
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-GdhagJGEd8Ob3FwJ2Cw1qh

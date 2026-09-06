@@ -1,0 +1,17 @@
+{
+  "experiment_id": "j-lens-persona-prompt-control-dev-v1",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 1.0,
+      "candidates_descending": [
+        1.0
+      ],
+      "effect": 3.1,
+      "off_axis_perturbation": 0.9
+    },
+    "-C": {
+      "status": "no_accepted_endpoint"
+    }
+  }
+}
