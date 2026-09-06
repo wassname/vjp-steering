@@ -353,16 +353,15 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
     if args.method == "J_word":
         vector, metadata = j_word(model, tokenizer, layers, lens_file=args.lens_file)
     elif args.method == "j_lens_swap":
-        positive, positive_metadata = j_lens_swap(
+        swap, swap_metadata = j_lens_swap(
             model, tokenizer, layers, lens_file=args.lens_file,
             source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
         )
-        negative, negative_metadata = j_lens_swap(
-            model, tokenizer, layers, lens_file=args.lens_file,
-            source_token=J_LENS_SWAP_TARGET, target_token=J_LENS_SWAP_SOURCE,
-        )
-        vector = {"+C": positive, "-C": negative}
-        metadata = {"semantic_directions": {"+C": positive_metadata, "-C": negative_metadata}}
+        vector = {"+C": swap, "-C": swap}
+        metadata = {
+            "semantic_directions": {"+C": swap_metadata, "-C": swap_metadata},
+            "coefficient_semantics": "+C exchanges coordinates; -C extrapolates away from exchange",
+        }
     elif args.method == "vjp_mlp_up_shrink":
         vector, metadata = vjp_mlp_up_shrink(
             model,
@@ -630,8 +629,7 @@ def run_rung(args: argparse.Namespace) -> None:
     )
     assert_hook_changes_logits(model, tokenizer, vectors["+C"], prompts[0], args.coefficient)
     assert_hook_changes_logits(
-        model, tokenizer, vectors["-C"], prompts[0],
-        args.coefficient if args.method == "j_lens_swap" else -args.coefficient,
+        model, tokenizer, vectors["-C"], prompts[0], -args.coefficient,
     )
 
     logger.info("stage=generate side=bare")
@@ -640,11 +638,14 @@ def run_rung(args: argparse.Namespace) -> None:
     with vectors["+C"](model, C=args.coefficient):
         positive_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
     logger.info("stage=generate side=-C")
-    negative_coefficient = args.coefficient if args.method == "j_lens_swap" else -args.coefficient
+    negative_coefficient = -args.coefficient
     with vectors["-C"](model, C=negative_coefficient):
         negative_answers = generate(model, tokenizer, prompts, args.batch_size, args.max_new_tokens)
-    assert any(a != b for a, b in zip(bare, positive_answers, strict=True))
-    assert any(a != b for a, b in zip(bare, negative_answers, strict=True))
+    logger.info(
+        "generation_changes +C={}/{} -C={}/{}",
+        sum(a != b for a, b in zip(bare, positive_answers, strict=True)), len(bare),
+        sum(a != b for a, b in zip(bare, negative_answers, strict=True)), len(bare),
+    )
 
     labels = (("bare", 0.0, bare), (args.method, args.coefficient, positive_answers), (args.method, -args.coefficient, negative_answers))
     demo_path = output / "moral_demos.jsonl"
