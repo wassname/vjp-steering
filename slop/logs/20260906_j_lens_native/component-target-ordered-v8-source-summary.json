@@ -1,0 +1,401 @@
+{
+  "authored_by": "PI/OpenAI Codex",
+  "task": 417,
+  "full_log": "slop/logs/20260906_j_lens_native/component-target-ordered-v8-source.log",
+  "full_log_lines": 386071,
+  "experiment_id": "j-lens-behavior-components-target-ordered-source-v8",
+  "model": "Qwen/Qwen3.5-4B",
+  "dtype": "bfloat16",
+  "operator": "mean100-gp16-reconstruction-target-ordered-coordinate-exchange-all-prefill-v8",
+  "representation_source": "paired_nonnegative_gp16_components_target_ordered_exchange",
+  "implementation_sha256": "7fd703e79b2f68c4b55ccac2e695da044de62c0c34ceba05d02745868cab71ee",
+  "spec_sha256": "e8574ec121aa579eaee74ff5de35c715493589e91c1292ac91823df122811871",
+  "vector_content_sha256": {
+    "+C": "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197",
+    "-C": "eb2f586b30ae2efa776f294c9e2bb179e4a6ea739a1b95862b670de9902f4091"
+  },
+  "source_layers": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "equation": "h_all_prefill + alpha * V * (target_sort(V^dagger h_all_prefill) - V^dagger h_all_prefill)",
+  "application_mask": "all_attended_prefill_positions",
+  "component_basis_normalization": "independent_unit_norm_equal_magnitude_convention_not_fully_specified_by_paper",
+  "semantic_directions": {
+    "+C": "put larger coordinate on positive component",
+    "-C": "put larger coordinate on negative component"
+  },
+  "paper_protocol_relation": "per-layer target ordering equals a paper coordinate swap when the requested target is smaller; it is identity otherwise and is a behavioral adaptation",
+  "application_scale": "alpha in an independently unit-normalized basis; the paper says perturbations were equal-magnitude but does not specify its normalization procedure",
+  "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+  "lens_n_prompts": 1000,
+  "layers": {
+    "13": {
+      "component_cosine": 0.7666362524032593,
+      "component_basis_singular_values": [
+        1.329148769378662,
+        0.48307734727859497
+      ],
+      "component_basis_condition_number": 2.751420259475708,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.5023033171892166,
+      "positive_minus_negative_coordinate_range": [
+        0.43544764816761017,
+        0.5534374415874481
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 3.5818257331848145,
+          "j_norm": 0.8376534581184387,
+          "reconstruction_norm": 0.8376534581184387,
+          "remainder_norm": 3.473032236099243,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9956853985786438
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.342461585998535,
+          "j_norm": 1.0815953016281128,
+          "reconstruction_norm": 1.0815953016281128,
+          "remainder_norm": 4.19450569152832,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9988747835159302
+        }
+      ]
+    },
+    "14": {
+      "component_cosine": 0.7948405742645264,
+      "component_basis_singular_values": [
+        1.3397166728973389,
+        0.45294511318206787
+      ],
+      "component_basis_condition_number": 2.9577903747558594,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.43231460452079773,
+      "positive_minus_negative_coordinate_range": [
+        0.3914422355592251,
+        0.4929300844669342
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.095108509063721,
+          "j_norm": 1.070487380027771,
+          "reconstruction_norm": 1.070487380027771,
+          "remainder_norm": 3.9642996788024902,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9977396726608276
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.630497932434082,
+          "j_norm": 1.3008325099945068,
+          "reconstruction_norm": 1.3008325099945068,
+          "remainder_norm": 4.4520182609558105,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9963300228118896
+        }
+      ]
+    },
+    "15": {
+      "component_cosine": 0.8081830143928528,
+      "component_basis_singular_values": [
+        1.3446868658065796,
+        0.4379690885543823
+      ],
+      "component_basis_condition_number": 3.0702779293060303,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.5174765586853027,
+      "positive_minus_negative_coordinate_range": [
+        0.415600523352623,
+        0.6666551381349564
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.196440696716309,
+          "j_norm": 1.3266490697860718,
+          "reconstruction_norm": 1.3266490697860718,
+          "remainder_norm": 5.012188911437988,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9971601366996765
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.400624752044678,
+          "j_norm": 1.5377849340438843,
+          "reconstruction_norm": 1.5377849340438843,
+          "remainder_norm": 5.190261363983154,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.995434582233429
+        }
+      ]
+    },
+    "16": {
+      "component_cosine": 0.7234896421432495,
+      "component_basis_singular_values": [
+        1.3128174543380737,
+        0.5258424878120422
+      ],
+      "component_basis_condition_number": 2.496598243713379,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.7181837260723114,
+      "positive_minus_negative_coordinate_range": [
+        0.6269383430480957,
+        0.9709908664226532
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.200766563415527,
+          "j_norm": 1.5886369943618774,
+          "reconstruction_norm": 1.5886369943618774,
+          "remainder_norm": 6.005786418914795,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9971426129341125
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.970693588256836,
+          "j_norm": 1.6301701068878174,
+          "reconstruction_norm": 1.6301701068878174,
+          "remainder_norm": 5.759049415588379,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9951131939888
+        }
+      ]
+    },
+    "17": {
+      "component_cosine": 0.7255278825759888,
+      "component_basis_singular_values": [
+        1.3135933876037598,
+        0.5239008665084839
+      ],
+      "component_basis_condition_number": 2.5073318481445312,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.8845909535884857,
+      "positive_minus_negative_coordinate_range": [
+        0.6162456348538399,
+        1.0225533246994019
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.864710330963135,
+          "j_norm": 1.576648235321045,
+          "reconstruction_norm": 1.576648235321045,
+          "remainder_norm": 6.6734843254089355,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9971786141395569
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.447885990142822,
+          "j_norm": 1.7340694665908813,
+          "reconstruction_norm": 1.7340694665908813,
+          "remainder_norm": 6.205659866333008,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9984180331230164
+        }
+      ]
+    },
+    "18": {
+      "component_cosine": 0.7927378416061401,
+      "component_basis_singular_values": [
+        1.338931679725647,
+        0.4552605152130127
+      ],
+      "component_basis_condition_number": 2.941023111343384,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 0.8983969241380692,
+      "positive_minus_negative_coordinate_range": [
+        0.6330457329750061,
+        1.0781128108501434
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 8.7766752243042,
+          "j_norm": 2.6727471351623535,
+          "reconstruction_norm": 2.6727471351623535,
+          "remainder_norm": 8.389264106750488,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9975075721740723
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 7.716305732727051,
+          "j_norm": 2.191279172897339,
+          "reconstruction_norm": 2.191279172897339,
+          "remainder_norm": 7.382375240325928,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9989137649536133
+        }
+      ]
+    },
+    "19": {
+      "component_cosine": 0.7281129360198975,
+      "component_basis_singular_values": [
+        1.3145769834518433,
+        0.5214279294013977
+      ],
+      "component_basis_condition_number": 2.5211095809936523,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 1.3066332936286926,
+      "positive_minus_negative_coordinate_range": [
+        0.7297463081777096,
+        1.7427680790424347
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 12.426138877868652,
+          "j_norm": 3.5476977825164795,
+          "reconstruction_norm": 3.5476977825164795,
+          "remainder_norm": 11.893454551696777,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9985234141349792
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 15,
+          "concept_norm": 11.431180953979492,
+          "j_norm": 2.9624602794647217,
+          "reconstruction_norm": 2.9624602794647217,
+          "remainder_norm": 11.0313138961792,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9987246990203857
+        }
+      ]
+    },
+    "20": {
+      "component_cosine": 0.7359510660171509,
+      "component_basis_singular_values": [
+        1.3175550699234009,
+        0.5138567686080933
+      ],
+      "component_basis_condition_number": 2.5640511512756348,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 1.3608583882451057,
+      "positive_minus_negative_coordinate_range": [
+        0.6625586003065109,
+        1.8878459334373474
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 13.890297889709473,
+          "j_norm": 4.085693359375,
+          "reconstruction_norm": 4.085693359375,
+          "remainder_norm": 13.316837310791016,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9984512329101562
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 12.397102355957031,
+          "j_norm": 3.388397455215454,
+          "reconstruction_norm": 3.388397455215454,
+          "remainder_norm": 11.941444396972656,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9987598657608032
+        }
+      ]
+    },
+    "21": {
+      "component_cosine": 0.6569814682006836,
+      "component_basis_singular_values": [
+        1.2872380018234253,
+        0.5856777429580688
+      ],
+      "component_basis_condition_number": 2.1978604793548584,
+      "plus_target_changed_final_positions": 0,
+      "minus_target_changed_final_positions": 15,
+      "dev_final_position_count": 15,
+      "positive_minus_negative_coordinate_median": 1.2898217141628265,
+      "positive_minus_negative_coordinate_range": [
+        0.7597756385803223,
+        1.6803142428398132
+      ],
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 15.70345401763916,
+          "j_norm": 4.395890235900879,
+          "reconstruction_norm": 4.395890235900879,
+          "remainder_norm": 15.061822891235352,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9996464252471924
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "selected_count": 16,
+          "achieved_nonzero_count": 16,
+          "concept_norm": 13.659443855285645,
+          "j_norm": 3.625978946685791,
+          "reconstruction_norm": 3.625978946685791,
+          "remainder_norm": 13.190500259399414,
+          "reconstruction_error": 0.0,
+          "reconstruction_projection_cosine": 0.9992819428443909
+        }
+      ]
+    }
+  }
+}
