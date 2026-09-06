@@ -1,0 +1,2 @@
+2026-09-07 01:05:00.277 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-persona-prompt-control-truthful-dev-v2 profile=dev cells=2 demo_sides=30
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-persona-prompt-control-truthful-dev-v2 profile=dev arms=2 scenarios=30

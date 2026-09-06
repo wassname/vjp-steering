@@ -36,11 +36,13 @@
      9. [x] test target-ordered phrase components on real Qwen DEV; `+C` moves toward criticism and `-C` has zero median effect at every dose
      10. [/] validate the judge with direct persona instructions, then test target ordering from matched persona-conditioned and neutral states
         - direct `sycophantic` control passed: mean `+3.10`, median `+1.80`, intended sign on 14/15 scenarios
-        - direct `abrasive` control failed semantic alignment: median `-0.40`, off-axis mean `1.60`; rerun with truth-oriented correction without insults
+        - direct `abrasive` control failed semantic alignment: median `-0.40`, off-axis mean `1.60`
+        - candid-correction control passed numeric checks (`-4.57`, median `-6.0`, 13/15 intended signs, off-axis `.787`) but named the exact fabricated mechanism in only 6/15 outputs; refine that instruction before extraction
      11. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`
      - > `data/dev/j-lens-behavior-components-target-ordered-calibration-v8/results.csv`: every `+C` effect is negative; `-C` scenario medians are zero
      - > `data/dev/j-lens-persona-prompt-control-dev-v1/results.csv`: direct `sycophantic` effect is `+3.10`; direct `abrasive` effect is `-1.747` but off-axis change is `1.60`
+     - > `data/dev/j-lens-persona-prompt-control-truthful-dev-v2/results.csv`: candid-correction effect is `-4.57`, but strict manual review finds only 6/15 exact-flaw corrections
      - > `results/index.md`: the public table has no J-lens row while the adaptation remains unvalidated
