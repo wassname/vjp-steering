@@ -1,0 +1,104 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-kVJLeDyQYTgzA7PWqyoWTP
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 677.84it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 204.91it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 19/426 [00:00<00:02, 181.65it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:02, 157.55it/s]
+[1ALoading weights:  13%|█▎        | 54/426 [00:00<00:03, 123.42it/s]
+[1ALoading weights:  17%|█▋        | 73/426 [00:00<00:02, 135.39it/s]
+[1ALoading weights:  21%|██        | 88/426 [00:00<00:02, 122.30it/s]
+[1ALoading weights:  24%|██▍       | 102/426 [00:00<00:02, 125.37it/s]
+[1ALoading weights:  28%|██▊       | 118/426 [00:00<00:02, 131.89it/s]
+[1ALoading weights:  32%|███▏      | 135/426 [00:00<00:02, 138.87it/s]
+[1ALoading weights:  35%|███▌      | 150/426 [00:01<00:02, 135.53it/s]
+[1ALoading weights:  38%|███▊      | 164/426 [00:01<00:02, 130.38it/s]
+[1ALoading weights:  45%|████▍     | 190/426 [00:01<00:01, 154.19it/s]
+[1ALoading weights:  48%|████▊     | 206/426 [00:01<00:01, 142.04it/s]
+[1ALoading weights:  52%|█████▏    | 222/426 [00:01<00:01, 143.67it/s]
+[1ALoading weights:  56%|█████▋    | 240/426 [00:01<00:01, 152.10it/s]
+[1ALoading weights:  60%|██████    | 256/426 [00:01<00:01, 147.01it/s]
+[1ALoading weights:  65%|██████▍   | 275/426 [00:01<00:00, 156.41it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 212.89it/s]
+2026-09-06 12:55:15.065 | INFO     | vjp_steering.j_lens_concept:extract_concept:290 - concept extraction spec=b26fabedfbfb78958702b71c677c6775e26337b3809ebc7fa714ba04262a42d2 layers=(13, 14, 15, 16, 17, 18, 19, 20, 21) final_prompt_token=true
+2026-09-06 12:55:15.066 | INFO     | vjp_steering.j_lens_concept:extract_concept:291 - concept extraction demo=<|im_start|>user
+Tell me about sycophantic agreement and flattery toward the user<|im_end|>
+<|im_start|>assistant
+<think>
+</think>
+2026-09-06 12:55:23.094 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=13 j_norms=[0.8807651996612549, 1.125968337059021] remainder_norms=[3.4718480110168457, 4.193944454193115] contrast_norm=0.7112
+2026-09-06 12:55:23.244 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=14 j_norms=[1.0299843549728394, 1.2781885862350464] remainder_norms=[3.96346378326416, 4.450589656829834] contrast_norm=0.7653
+2026-09-06 12:55:23.383 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=15 j_norms=[1.3761482238769531, 1.5001392364501953] remainder_norms=[5.010909557342529, 5.1880950927734375] contrast_norm=0.8767
+2026-09-06 12:55:23.527 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=16 j_norms=[1.547823190689087, 1.5842595100402832] remainder_norms=[6.004477500915527, 5.756674766540527] contrast_norm=1.1547
+2026-09-06 12:55:23.663 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=17 j_norms=[1.6138759851455688, 1.7535743713378906] remainder_norms=[6.672304630279541, 6.204853534698486] contrast_norm=1.2578
+2026-09-06 12:55:23.799 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=18 j_norms=[2.5869128704071045, 2.2485315799713135] remainder_norms=[8.38676929473877, 7.381428241729736] contrast_norm=1.5953
+2026-09-06 12:55:23.943 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=19 j_norms=[3.604959487915039, 3.0010321140289307] remainder_norms=[11.891728401184082, 11.030219078063965] contrast_norm=2.5039
+2026-09-06 12:55:24.082 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=20 j_norms=[3.958350419998169, 3.334806442260742] remainder_norms=[13.314347267150879, 11.94015121459961] contrast_norm=2.7258
+2026-09-06 12:55:24.226 | INFO     | vjp_steering.j_lens_concept:extract_concept:365 - concept layer=21 j_norms=[4.444793224334717, 3.551780939102173] remainder_norms=[15.061285018920898, 13.189589500427246] contrast_norm=3.4114
+2026-09-06 12:55:33.376 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:35.854 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:38.588 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:41.270 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:43.938 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:46.838 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:50.303 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:53.914 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:55:57.345 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:56:00.147 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:56:03.543 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:56:06.278 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:56:09.380 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 12:56:10.073 | INFO     | __main__:gpu_stage:848 - GPU_STAGE_COMPLETE experiment=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev cells=12
+EXPERIMENT_GPU_COMPLETE id=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev cells=12
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-kVJLeDyQYTgzA7PWqyoWTP
+✓ Finished downloading files to local!
+2026-09-06 20:56:28.105 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev cells=12 demo_sides=180
+2026-09-06 20:56:29.719 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-06 20:56:31.157 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-06 20:56:33.286 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-06 20:56:36.011 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-06 20:56:38.594 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-06 20:56:40.801 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-06 20:56:42.826 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-06 20:56:43.960 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-06 20:56:44.956 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-06 20:56:46.063 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-06 20:56:46.915 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-06 20:56:48.165 | INFO     | __main__:main:670 - CACHE_CHECK required=137 cached=80 missing=57 API_calls=57
+2026-09-06 20:57:20.286 | INFO     | __main__:run:632 - judge progress=57/57
+2026-09-06 20:57:21.779 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-06 20:57:23.033 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-06 20:57:24.520 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-06 20:57:25.928 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-06 20:57:27.261 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-06 20:57:28.428 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-06 20:57:29.638 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-06 20:57:30.637 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-06 20:57:31.451 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-06 20:57:32.208 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-06 20:57:33.009 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-06 20:57:34.034 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=137 missing=0
+2026-09-06 20:57:43.598 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev cells=12 demo_sides=180
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev arms=12 scenarios=180
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:990: DeprecationWarning:
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=j-lens-behavior-components-appendix-projection-dev-v5 profile=dev rows=12 output=/workspace/2026/jspace/j-steer_pub/results/dev/j-lens-behavior-components-appendix-projection-dev-v5
