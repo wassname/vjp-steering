@@ -281,7 +281,12 @@ def smoke(args):
     args.dev = True
     experiment.gpu_stage(args)
     model, tokenizer = experiment.load_model(args)
-    vectors, _ = experiment.load_or_extract(args, root, model, tokenizer)
+    vectors, metadata = experiment.load_or_extract(args, root, model, tokenizer)
+    if args.method == COMPONENT_PAIR_METHOD:
+        for layer in layers:
+            expected_norm = metadata["layers"][str(layer)]["neutral_final_token_residual_norm_mean"]
+            actual_norm = vectors["+C"].stacked[layer]["v"].norm()
+            torch.testing.assert_close(actual_norm, actual_norm.new_tensor(expected_norm))
     encoded = tokenizer("A cat sits on a mat.", return_tensors="pt").to(args.device)
     with torch.inference_mode():
         bare = model(**encoded).logits

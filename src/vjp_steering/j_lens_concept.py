@@ -20,8 +20,8 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-appendix-projection-behavior-components-user-turn-v5"
-COMPONENT_PAIR_REPRESENTATION_SOURCE = "separate_concept_components_mean100_appendix_projection"
+COMPONENT_PAIR_VERSION = "mean100-gp16-projection-neutral-norm-scaled-behavior-components-user-turn-v6"
+COMPONENT_PAIR_REPRESENTATION_SOURCE = "separate_concept_components_mean100_projection_neutral_norm_scaled"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -202,11 +202,12 @@ def prefill_diagnostics(model, vector: Vector, input_ids: torch.Tensor, attentio
             actual = hidden[mask].float() - original
             direction = vector.stacked[layer]["v"].sum(0).to(original)
             ratio = actual.norm(dim=-1) / original.norm(dim=-1)
+            coordinate = (actual @ direction) / direction.square().sum()
             summaries[str(layer)] = {
                 "patch_residual_ratio_median": ratio.median().item(),
                 "patch_residual_ratio_p90": ratio.quantile(.9).item(),
                 "actual_patch_norm_median": actual.norm(dim=-1).median().item(),
-                "actual_direction_coordinate_median": (actual @ direction).median().item(),
+                "actual_direction_coordinate_median": coordinate.median().item(),
                 "changed_coordinate_fraction": (actual != 0).float().mean().item(),
                 "dtype": str(hidden.dtype),
             }
@@ -342,11 +343,16 @@ def extract_concept(
                 "j_sha256": tensor_hash(component), "remainder_sha256": tensor_hash(remainder),
             })
         contrast = components[0] - components[1]
+        neutral_residual_norm = hs[2:102].norm(dim=-1).mean()
         if separate_components:
             if any(not torch.isfinite(component).all() or component.norm() <= 1e-6 * hs[0].norm() for component in components):
                 raise ValueError(f"zero, nonfinite, or numerically unresolved J component at layer {layer}")
-            states["+C"][layer] = {"v": (components[0] / components[0].norm()).cpu().unsqueeze(0)}
-            states["-C"][layer] = {"v": (components[1] / components[1].norm()).cpu().unsqueeze(0)}
+            states["+C"][layer] = {
+                "v": (neutral_residual_norm * components[0] / components[0].norm()).cpu().unsqueeze(0),
+            }
+            states["-C"][layer] = {
+                "v": (neutral_residual_norm * components[1] / components[1].norm()).cpu().unsqueeze(0),
+            }
         else:
             if not torch.isfinite(contrast).all() or contrast.norm() <= 1e-6 * max(c.norm() for c in components):
                 raise ValueError(f"zero, nonfinite, or numerically unresolved concept contrast at layer {layer}")
@@ -357,6 +363,7 @@ def extract_concept(
             "decomposition": decomposition, "contrast_norm": contrast.norm().item(),
             "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
             "baseline_mean": baseline.tolist(), "baseline_mean_sha256": tensor_hash(baseline),
+            "neutral_final_token_residual_norm_mean": neutral_residual_norm.item(),
             "pair_unit_cosine": (dictionary[pair_ids[0]] @ dictionary[pair_ids[1]]).item(),
             "pair_singular_values": torch.linalg.svdvals(dictionary[pair_ids]).tolist(),
             "baseline_activity": _activity(hs[2:102], dictionary, pair_ids, null_ids, norms),
@@ -376,13 +383,14 @@ def extract_concept(
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "+C: h_user_turn + C * unit(project_span(j_positive_behavior)); "
-            "-C: h_user_turn + C * unit(project_span(j_negative_behavior))"
+            "+C: h_user_turn + C * mean_neutral_residual_norm * unit(project_span(j_positive_behavior)); "
+            "-C: h_user_turn + C * mean_neutral_residual_norm * unit(project_span(j_negative_behavior))"
             if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",
         "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
-        "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
+        "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper",
+        "application_scale": "mean_residual_norm_over_100_neutral_concept_final_tokens", "gp_steps": 16,
         "concept_prompts": prompts, "dev_prompts": dev_prompts, "token_records": token_records,
         "pair_ids": pair_ids, "pair_tokens": [tokenizer.decode([i]) for i in pair_ids],
         "null_token_ids": null_ids, "null_seed": 0,
