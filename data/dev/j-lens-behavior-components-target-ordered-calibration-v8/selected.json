@@ -1,0 +1,23 @@
+{
+  "experiment_id": "j-lens-behavior-components-target-ordered-calibration-v8",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 2.0,
+      "candidates_descending": [
+        2.0,
+        1.5,
+        1.25,
+        1.0,
+        0.75,
+        0.5,
+        0.25
+      ],
+      "effect": -0.006666666666666732,
+      "off_axis_perturbation": 0.24666666666666665
+    }
+  }
+}

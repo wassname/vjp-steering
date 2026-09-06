@@ -33,9 +33,11 @@
      6. [x] audit actual next-token and J-lens activity: no proposed source token enters the actual top 25 on any all-100 prompt
      7. [x] test the paper's fixed component-coordinate exchange; it leaves random but moves only toward critical responses
      8. [x] implement and smoke-test target-ordered exchange as an explicit bidirectional adaptation
-     9. [/] extract fresh real-Qwen vectors and test both directions on the full DEV dose grid
-     10. [ ] run the working method on all-100 and regenerate both public PNGs
+     9. [x] test target-ordered phrase components on real Qwen DEV; `+C` moves toward criticism and `-C` has zero median effect at every dose
+     10. [/] validate the judge with direct persona instructions, then test target ordering from matched persona-conditioned and neutral states
+     11. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`
+     - > `data/dev/j-lens-behavior-components-target-ordered-calibration-v8/results.csv`: every `+C` effect is negative; `-C` scenario medians are zero
      - > `results/index.md`: the public table has no J-lens row while the adaptation remains unvalidated

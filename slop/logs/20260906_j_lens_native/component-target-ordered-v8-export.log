@@ -1,0 +1,2 @@
+2026-09-06 23:53:34.013 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-behavior-components-target-ordered-calibration-v8 profile=dev cells=14 demo_sides=210
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-behavior-components-target-ordered-calibration-v8 profile=dev arms=14 scenarios=210

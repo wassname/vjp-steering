@@ -1,0 +1,87 @@
+-o: 3: eval: Syntax error: "(" unexpected
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-o5Wlm2QbvouJbfX3MJuQFx
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 960.00it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 865.07it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 16/426 [00:00<00:02, 142.01it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:00<00:02, 164.36it/s]
+[1ALoading weights:  13%|█▎        | 54/426 [00:00<00:02, 167.71it/s]
+[1ALoading weights:  17%|█▋        | 72/426 [00:00<00:02, 165.19it/s]
+[1ALoading weights:  23%|██▎       | 98/426 [00:00<00:01, 193.36it/s]
+[1ALoading weights:  28%|██▊       | 118/426 [00:00<00:01, 194.47it/s]
+[1ALoading weights:  33%|███▎      | 140/426 [00:00<00:01, 202.04it/s]
+[1ALoading weights:  38%|███▊      | 161/426 [00:00<00:01, 203.68it/s]
+[1ALoading weights:  43%|████▎     | 183/426 [00:00<00:01, 201.74it/s]
+[1ALoading weights:  48%|████▊     | 205/426 [00:01<00:01, 202.66it/s]
+[1ALoading weights:  54%|█████▍    | 229/426 [00:01<00:00, 213.31it/s]
+[1ALoading weights:  59%|█████▉    | 251/426 [00:01<00:00, 209.22it/s]
+[1ALoading weights:  66%|██████▌   | 281/426 [00:01<00:00, 230.76it/s]
+[1ALoading weights:  72%|███████▏  | 305/426 [00:01<00:00, 217.29it/s]
+[1ALoading weights:  77%|███████▋  | 329/426 [00:01<00:00, 219.18it/s]
+[1ALoading weights:  83%|████████▎ | 352/426 [00:01<00:00, 216.16it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 244.42it/s]
+2026-09-06 15:45:39.116 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.0 logit_delta_mean=0 KL_mean=0 health=[] text_first="The decomposition should isolate indemnity liabilities by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the unique exposure profile of the SaaS business."
+2026-09-06 15:45:42.906 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.25 logit_delta_mean=115.58 KL_mean=0.040104 health=[] text_first='The decomposition should isolate liabilities by specific IP asset class and geographic market to pinpoint the exact risk drivers behind the indemnity. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, aggregate reduction to the deal value.'
+2026-09-06 15:45:45.355 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.5 logit_delta_mean=174.53 KL_mean=0.087814 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint the exact liability exposure for each technology cluster. This granular approach ensures that indemnity caps are calibrated precisely to the risk profile of your most valuable intellectual property rather than applying a broad, blunt average.'
+2026-09-06 15:45:47.838 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.75 logit_delta_mean=211.88 KL_mean=0.13505 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property drives the most indemnity risk. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-06 15:45:50.284 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=1.0 logit_delta_mean=242.6 KL_mean=0.17864 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property drives the most indemnity exposure. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-06 15:45:53.055 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=1.25 logit_delta_mean=269.62 KL_mean=0.23212 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property drives the most indemnity risk. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-06 15:45:55.821 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=1.5 logit_delta_mean=295.1 KL_mean=0.27856 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property drives the most indemnity risk. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-06 15:45:59.018 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=2.0 logit_delta_mean=345.72 KL_mean=0.3797 health=[] text_first='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property drives the most indemnity risk. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-06 15:46:02.023 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.0 logit_delta_mean=0 KL_mean=0 health=[] text_first="The decomposition should isolate indemnity liabilities by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the unique exposure profile of the SaaS business."
+2026-09-06 15:46:04.944 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.25 logit_delta_mean=46.126 KL_mean=0.0038612 health=[] text_first="The decomposition should isolate indemnity liabilities by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the unique exposure profile of the SaaS business."
+2026-09-06 15:46:09.070 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.5 logit_delta_mean=79.573 KL_mean=0.010442 health=[] text_first="The decomposition should isolate indemnity obligations by specific IP asset class and jurisdiction to precisely quantify exposure from your target's concentrated intellectual property. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a broad, potentially inaccurate aggregate liability estimate."
+2026-09-06 15:46:13.488 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.75 logit_delta_mean=111.29 KL_mean=0.017452 health=[] text_first="The decomposition should isolate indemnity obligations by specific IP asset class and jurisdiction to precisely quantify exposure from your target's concentrated intellectual property. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a broad, potentially inaccurate aggregate liability estimate."
+2026-09-06 15:46:16.870 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=1.0 logit_delta_mean=139.61 KL_mean=0.028555 health=[] text_first="The decomposition should isolate indemnity liabilities by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the unique exposure profile of the SaaS business."
+2026-09-06 15:46:20.818 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=1.25 logit_delta_mean=165.7 KL_mean=0.038692 health=[] text_first='The decomposition should isolate liabilities by specific IP asset class and jurisdiction to accurately reflect the concentration risk inherent in your target. This granular approach ensures the indemnity cap is calibrated to the actual value of the most critical intellectual property, preventing over- or under-compensation.'
+2026-09-06 15:46:24.661 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=1.5 logit_delta_mean=190.61 KL_mean=0.048396 health=[] text_first="The decomposition should isolate indemnity obligations by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and liability caps are calibrated precisely to the unique exposure profile of the SaaS business."
+2026-09-06 15:46:28.397 | INFO     | walk:generate:484 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=2.0 logit_delta_mean=229.6 KL_mean=0.073316 health=[] text_first="The decomposition should isolate indemnity liabilities by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the unique exposure profile of the SaaS business."
+CONCEPT_CALIBRATION_COMPLETE id=j-lens-behavior-components-target-ordered-calibration-v8 cells=16
+{
+  "source_experiment": "j-lens-behavior-components-target-ordered-source-v8",
+  "source_metadata_sha256": "488bcc265a147ae0d62c0d00c23059cbc52798681e131dd1c153be2f970dc61d",
+  "vector_content_sha256": {
+    "+C": "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197",
+    "-C": "eb2f586b30ae2efa776f294c9e2bb179e4a6ea739a1b95862b670de9902f4091"
+  },
+  "cohort_sha256": "c0b64ebf1713f71fa5ae6218fbbcb866b15402a98adbead8caf88d5a6a129874",
+  "cohort_size": 15,
+  "coefficients": {
+    "+C
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-o5Wlm2QbvouJbfX3MJuQFx

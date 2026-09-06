@@ -1,0 +1,1963 @@
+{
+  "experiment_id": "j-lens-behavior-components-target-ordered-calibration-v8",
+  "source_experiment": "j-lens-behavior-components-target-ordered-source-v8",
+  "cohort_size": 15,
+  "sides": {
+    "+C": [
+      {
+        "alpha": 0.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c0.jsonl",
+        "changed_outputs_vs_alpha0": 0,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 50.6
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 0.0,
+        "kl_bare_to_steered_mean": 0.0,
+        "changed_hidden_fraction_min": 0.0,
+        "changed_hidden_fraction_max": 0.0,
+        "coordinate_relative_error_p95_max_across_layers": 0,
+        "coordinate_relative_error_max": 0,
+        "patch_norm_median_across_layers": 0,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          }
+        ]
+      },
+      {
+        "alpha": 0.25,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c0p25.jsonl",
+        "changed_outputs_vs_alpha0": 14,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06666666666666665,
+          "mean_words": 51.733333333333334
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 115.58325958251953,
+        "kl_bare_to_steered_mean": 0.04010407626628876,
+        "changed_hidden_fraction_min": 0.2615698277950287,
+        "changed_hidden_fraction_max": 0.8106516003608704,
+        "coordinate_relative_error_p95_max_across_layers": 0.7306515574455261,
+        "coordinate_relative_error_max": 1.0,
+        "patch_norm_median_across_layers": 0.16271592676639557,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.6102952361106873,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.15776653587818146,
+            "patch_norm_max": 0.5830151438713074,
+            "coordinate_relative_error_median": 0.002642035251483321,
+            "coordinate_relative_error_p95": 0.25706347823143005,
+            "coordinate_relative_error_max": 0.9992737770080566,
+            "patch_to_hidden_median": 0.01667756214737892
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.8092671036720276,
+            "n_patched_positions": 925,
+            "patch_norm_median": 0.20288637280464172,
+            "patch_norm_max": 0.6171882748603821,
+            "coordinate_relative_error_median": 0.0024402476847171783,
+            "coordinate_relative_error_p95": 0.04967247694730759,
+            "coordinate_relative_error_max": 0.9955687522888184,
+            "patch_to_hidden_median": 0.018244732171297073
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.8106516003608704,
+            "n_patched_positions": 935,
+            "patch_norm_median": 0.20487633347511292,
+            "patch_norm_max": 0.6599520444869995,
+            "coordinate_relative_error_median": 0.002501561539247632,
+            "coordinate_relative_error_p95": 0.05975949019193649,
+            "coordinate_relative_error_max": 0.9992857575416565,
+            "patch_to_hidden_median": 0.01875472627580166
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.7352044582366943,
+            "n_patched_positions": 857,
+            "patch_norm_median": 0.18030473589897156,
+            "patch_norm_max": 0.5092827081680298,
+            "coordinate_relative_error_median": 0.0034485342912375927,
+            "coordinate_relative_error_p95": 0.05862876772880554,
+            "coordinate_relative_error_max": 0.9152534604072571,
+            "patch_to_hidden_median": 0.01613922417163849
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.6982420086860657,
+            "n_patched_positions": 823,
+            "patch_norm_median": 0.17155133187770844,
+            "patch_norm_max": 0.600932776927948,
+            "coordinate_relative_error_median": 0.0028338611591607332,
+            "coordinate_relative_error_p95": 0.12235759943723679,
+            "coordinate_relative_error_max": 0.8826099038124084,
+            "patch_to_hidden_median": 0.014040417037904263
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.2962092161178589,
+            "n_patched_positions": 403,
+            "patch_norm_median": 0.12076599895954132,
+            "patch_norm_max": 0.5847153663635254,
+            "coordinate_relative_error_median": 0.004874462261795998,
+            "coordinate_relative_error_p95": 0.6751856803894043,
+            "coordinate_relative_error_max": 1.0,
+            "patch_to_hidden_median": 0.008549971505999565
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.33288535475730896,
+            "n_patched_positions": 448,
+            "patch_norm_median": 0.12296565994620323,
+            "patch_norm_max": 0.48590871691703796,
+            "coordinate_relative_error_median": 0.006599681917577982,
+            "coordinate_relative_error_p95": 0.7306515574455261,
+            "coordinate_relative_error_max": 0.9155203104019165,
+            "patch_to_hidden_median": 0.007474152836948633
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.2615698277950287,
+            "n_patched_positions": 391,
+            "patch_norm_median": 0.10092548280954361,
+            "patch_norm_max": 0.5532313585281372,
+            "coordinate_relative_error_median": 0.009811478666961193,
+            "coordinate_relative_error_p95": 0.5487496852874756,
+            "coordinate_relative_error_max": 0.9969800114631653,
+            "patch_to_hidden_median": 0.005413021892309189
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.3512881398200989,
+            "n_patched_positions": 457,
+            "patch_norm_median": 0.16271592676639557,
+            "patch_norm_max": 0.5810753107070923,
+            "coordinate_relative_error_median": 0.006093431264162064,
+            "coordinate_relative_error_p95": 0.4467637836933136,
+            "coordinate_relative_error_max": 0.9962702989578247,
+            "patch_to_hidden_median": 0.007699824869632721
+          }
+        ]
+      },
+      {
+        "alpha": 0.5,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c0p5.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.05882352941176472,
+          "mean_words": 48.53333333333333
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 174.5301055908203,
+        "kl_bare_to_steered_mean": 0.08781442791223526,
+        "changed_hidden_fraction_min": 0.2212132066488266,
+        "changed_hidden_fraction_max": 0.8199573159217834,
+        "coordinate_relative_error_p95_max_across_layers": 0.45161643624305725,
+        "coordinate_relative_error_max": 0.9985778331756592,
+        "patch_norm_median_across_layers": 0.24494650959968567,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.6609578132629395,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.3142169564962387,
+            "patch_norm_max": 1.1659631729125977,
+            "coordinate_relative_error_median": 0.0013849653187207878,
+            "coordinate_relative_error_p95": 0.0461590401828289,
+            "coordinate_relative_error_max": 0.9985778331756592,
+            "patch_to_hidden_median": 0.03333982639014721
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.8199573159217834,
+            "n_patched_positions": 892,
+            "patch_norm_median": 0.31739766895771027,
+            "patch_norm_max": 0.9992178678512573,
+            "coordinate_relative_error_median": 0.0016336869448423386,
+            "coordinate_relative_error_p95": 0.02212618663907051,
+            "coordinate_relative_error_max": 0.8232443332672119,
+            "patch_to_hidden_median": 0.029798392206430435
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.7833878993988037,
+            "n_patched_positions": 871,
+            "patch_norm_median": 0.2896818220615387,
+            "patch_norm_max": 1.0617905855178833,
+            "coordinate_relative_error_median": 0.0017010454321280122,
+            "coordinate_relative_error_p95": 0.04494057223200798,
+            "coordinate_relative_error_max": 0.9603271484375,
+            "patch_to_hidden_median": 0.027096915990114212
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.6603696942329407,
+            "n_patched_positions": 764,
+            "patch_norm_median": 0.20882194489240646,
+            "patch_norm_max": 0.7307726144790649,
+            "coordinate_relative_error_median": 0.002906948560848832,
+            "coordinate_relative_error_p95": 0.07988817989826202,
+            "coordinate_relative_error_max": 0.9824751615524292,
+            "patch_to_hidden_median": 0.01872765738517046
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.6658006310462952,
+            "n_patched_positions": 745,
+            "patch_norm_median": 0.24494650959968567,
+            "patch_norm_max": 1.0632187128067017,
+            "coordinate_relative_error_median": 0.0019897203892469406,
+            "coordinate_relative_error_p95": 0.044725529849529266,
+            "coordinate_relative_error_max": 0.9973986148834229,
+            "patch_to_hidden_median": 0.02003176137804985
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.2212132066488266,
+            "n_patched_positions": 265,
+            "patch_norm_median": 0.1874593198299408,
+            "patch_norm_max": 0.9068406820297241,
+            "coordinate_relative_error_median": 0.0027328680735081434,
+            "coordinate_relative_error_p95": 0.26948878169059753,
+            "coordinate_relative_error_max": 0.8661890625953674,
+            "patch_to_hidden_median": 0.013336414471268654
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.27742937207221985,
+            "n_patched_positions": 345,
+            "patch_norm_median": 0.160634845495224,
+            "patch_norm_max": 0.837385892868042,
+            "coordinate_relative_error_median": 0.003903202246874571,
+            "coordinate_relative_error_p95": 0.29010215401649475,
+            "coordinate_relative_error_max": 0.9323070645332336,
+            "patch_to_hidden_median": 0.010021674446761608
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.22216209769248962,
+            "n_patched_positions": 289,
+            "patch_norm_median": 0.18135783076286316,
+            "patch_norm_max": 0.9329760074615479,
+            "coordinate_relative_error_median": 0.004365558270365,
+            "coordinate_relative_error_p95": 0.45161643624305725,
+            "coordinate_relative_error_max": 0.997749388217926,
+            "patch_to_hidden_median": 0.00970519706606865
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.3403928577899933,
+            "n_patched_positions": 399,
+            "patch_norm_median": 0.2631317675113678,
+            "patch_norm_max": 1.1123340129852295,
+            "coordinate_relative_error_median": 0.0031871383544057608,
+            "coordinate_relative_error_p95": 0.17930588126182556,
+            "coordinate_relative_error_max": 0.8851587176322937,
+            "patch_to_hidden_median": 0.013080180622637272
+          }
+        ]
+      },
+      {
+        "alpha": 0.75,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c0p75.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.05882352941176472,
+          "mean_words": 49.93333333333333
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 211.88467407226562,
+        "kl_bare_to_steered_mean": 0.1350526362657547,
+        "changed_hidden_fraction_min": 0.16955912113189697,
+        "changed_hidden_fraction_max": 0.7476454973220825,
+        "coordinate_relative_error_p95_max_across_layers": 0.43949609994888306,
+        "coordinate_relative_error_max": 0.994341254234314,
+        "patch_norm_median_across_layers": 0.3163076341152191,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.681233286857605,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.47118237614631653,
+            "patch_norm_max": 1.7497930526733398,
+            "coordinate_relative_error_median": 0.0009149218094535172,
+            "coordinate_relative_error_p95": 0.019205162301659584,
+            "coordinate_relative_error_max": 0.985960066318512,
+            "patch_to_hidden_median": 0.0499300304800272
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.7476454973220825,
+            "n_patched_positions": 798,
+            "patch_norm_median": 0.3892962634563446,
+            "patch_norm_max": 1.3861292600631714,
+            "coordinate_relative_error_median": 0.0011992398649454117,
+            "coordinate_relative_error_p95": 0.008651802316308022,
+            "coordinate_relative_error_max": 0.9889676570892334,
+            "patch_to_hidden_median": 0.036141421645879745
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.6890159249305725,
+            "n_patched_positions": 747,
+            "patch_norm_median": 0.3444102108478546,
+            "patch_norm_max": 1.4429792165756226,
+            "coordinate_relative_error_median": 0.001363158691674471,
+            "coordinate_relative_error_p95": 0.014848669990897179,
+            "coordinate_relative_error_max": 0.8772836923599243,
+            "patch_to_hidden_median": 0.03200989589095116
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.5160805583000183,
+            "n_patched_positions": 599,
+            "patch_norm_median": 0.2075999528169632,
+            "patch_norm_max": 0.9587415456771851,
+            "coordinate_relative_error_median": 0.0026220285799354315,
+            "coordinate_relative_error_p95": 0.17196081578731537,
+            "coordinate_relative_error_max": 0.8793506622314453,
+            "patch_to_hidden_median": 0.017957253381609917
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.6203113198280334,
+            "n_patched_positions": 685,
+            "patch_norm_median": 0.3163076341152191,
+            "patch_norm_max": 1.493470311164856,
+            "coordinate_relative_error_median": 0.0017453711479902267,
+            "coordinate_relative_error_p95": 0.06118704006075859,
+            "coordinate_relative_error_max": 0.994341254234314,
+            "patch_to_hidden_median": 0.02592729590833187
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.16955912113189697,
+            "n_patched_positions": 197,
+            "patch_norm_median": 0.22478772699832916,
+            "patch_norm_max": 1.156987190246582,
+            "coordinate_relative_error_median": 0.0022527475375682116,
+            "coordinate_relative_error_p95": 0.13209407031536102,
+            "coordinate_relative_error_max": 0.9432234168052673,
+            "patch_to_hidden_median": 0.016845332458615303
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2256339192390442,
+            "n_patched_positions": 274,
+            "patch_norm_median": 0.20977096259593964,
+            "patch_norm_max": 1.1114048957824707,
+            "coordinate_relative_error_median": 0.0028869484085589647,
+            "coordinate_relative_error_p95": 0.43949609994888306,
+            "coordinate_relative_error_max": 0.9750436544418335,
+            "patch_to_hidden_median": 0.012706411071121693
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.19073888659477234,
+            "n_patched_positions": 240,
+            "patch_norm_median": 0.2614879906177521,
+            "patch_norm_max": 1.2420165538787842,
+            "coordinate_relative_error_median": 0.0026862515369430184,
+            "coordinate_relative_error_p95": 0.40420499444007874,
+            "coordinate_relative_error_max": 0.9822269678115845,
+            "patch_to_hidden_median": 0.01390664977952838
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.3259907066822052,
+            "n_patched_positions": 372,
+            "patch_norm_median": 0.3557649701833725,
+            "patch_norm_max": 1.662142276763916,
+            "coordinate_relative_error_median": 0.0024541597813367844,
+            "coordinate_relative_error_p95": 0.09890640527009964,
+            "coordinate_relative_error_max": 0.9584634900093079,
+            "patch_to_hidden_median": 0.01746185403317213
+          }
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c1.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.0547945205479452,
+          "mean_words": 51.333333333333336
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 242.60084533691406,
+        "kl_bare_to_steered_mean": 0.17863550782203674,
+        "changed_hidden_fraction_min": 0.1382478028535843,
+        "changed_hidden_fraction_max": 0.6924789547920227,
+        "coordinate_relative_error_p95_max_across_layers": 0.7911403179168701,
+        "coordinate_relative_error_max": 0.9993318319320679,
+        "patch_norm_median_across_layers": 0.3824811279773712,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.6924789547920227,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.6277660429477692,
+            "patch_norm_max": 2.332611560821533,
+            "coordinate_relative_error_median": 0.000631595408776775,
+            "coordinate_relative_error_p95": 0.009643195196986198,
+            "coordinate_relative_error_max": 0.9868149161338806,
+            "patch_to_hidden_median": 0.06663686037063599
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.6421592235565186,
+            "n_patched_positions": 686,
+            "patch_norm_median": 0.45669305324554443,
+            "patch_norm_max": 1.781983494758606,
+            "coordinate_relative_error_median": 0.001111904508434236,
+            "coordinate_relative_error_p95": 0.012688777409493923,
+            "coordinate_relative_error_max": 0.9993318319320679,
+            "patch_to_hidden_median": 0.0411196555942297
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.6174813508987427,
+            "n_patched_positions": 657,
+            "patch_norm_median": 0.4139094352722168,
+            "patch_norm_max": 1.6725622415542603,
+            "coordinate_relative_error_median": 0.001107697025872767,
+            "coordinate_relative_error_p95": 0.009063763543963432,
+            "coordinate_relative_error_max": 0.8905844688415527,
+            "patch_to_hidden_median": 0.03847534582018852
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.38961637020111084,
+            "n_patched_positions": 443,
+            "patch_norm_median": 0.247580423951149,
+            "patch_norm_max": 1.2756513357162476,
+            "coordinate_relative_error_median": 0.002198501257225871,
+            "coordinate_relative_error_p95": 0.07651427388191223,
+            "coordinate_relative_error_max": 0.8638597130775452,
+            "patch_to_hidden_median": 0.02256254479289055
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.5734091997146606,
+            "n_patched_positions": 627,
+            "patch_norm_median": 0.3824811279773712,
+            "patch_norm_max": 1.881746530532837,
+            "coordinate_relative_error_median": 0.0014109218027442694,
+            "coordinate_relative_error_p95": 0.0811787024140358,
+            "coordinate_relative_error_max": 0.9597964882850647,
+            "patch_to_hidden_median": 0.03155669942498207
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.1382478028535843,
+            "n_patched_positions": 160,
+            "patch_norm_median": 0.2471218928694725,
+            "patch_norm_max": 1.4441721439361572,
+            "coordinate_relative_error_median": 0.001970260636880994,
+            "coordinate_relative_error_p95": 0.09142564237117767,
+            "coordinate_relative_error_max": 0.9602381587028503,
+            "patch_to_hidden_median": 0.016930085606873035
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.1916770190000534,
+            "n_patched_positions": 229,
+            "patch_norm_median": 0.23508743941783905,
+            "patch_norm_max": 1.3468685150146484,
+            "coordinate_relative_error_median": 0.0025087653193622828,
+            "coordinate_relative_error_p95": 0.475735068321228,
+            "coordinate_relative_error_max": 0.8962305784225464,
+            "patch_to_hidden_median": 0.014707962982356548
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.17040328681468964,
+            "n_patched_positions": 213,
+            "patch_norm_median": 0.30784666538238525,
+            "patch_norm_max": 1.6307393312454224,
+            "coordinate_relative_error_median": 0.0022227331064641476,
+            "coordinate_relative_error_p95": 0.7911403179168701,
+            "coordinate_relative_error_max": 0.9421647191047668,
+            "patch_to_hidden_median": 0.017009848728775978
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.30529871582984924,
+            "n_patched_positions": 341,
+            "patch_norm_median": 0.4607830345630646,
+            "patch_norm_max": 2.2554798126220703,
+            "coordinate_relative_error_median": 0.0015961806057021022,
+            "coordinate_relative_error_p95": 0.13391345739364624,
+            "coordinate_relative_error_max": 0.7803115248680115,
+            "patch_to_hidden_median": 0.02348385378718376
+          }
+        ]
+      },
+      {
+        "alpha": 1.25,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c1p25.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.0547945205479452,
+          "mean_words": 51.8
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 269.6241149902344,
+        "kl_bare_to_steered_mean": 0.2321198582649231,
+        "changed_hidden_fraction_min": 0.11424048990011215,
+        "changed_hidden_fraction_max": 0.6998188495635986,
+        "coordinate_relative_error_p95_max_across_layers": 0.9366711378097534,
+        "coordinate_relative_error_max": 0.9998780488967896,
+        "patch_norm_median_across_layers": 0.45228615403175354,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.6998188495635986,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.7850106954574585,
+            "patch_norm_max": 2.9158318042755127,
+            "coordinate_relative_error_median": 0.0005535373638849705,
+            "coordinate_relative_error_p95": 0.0071052187122404575,
+            "coordinate_relative_error_max": 0.9882172346115112,
+            "patch_to_hidden_median": 0.0832706093788147
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.5485342741012573,
+            "n_patched_positions": 582,
+            "patch_norm_median": 0.5025644600391388,
+            "patch_norm_max": 2.140514850616455,
+            "coordinate_relative_error_median": 0.0009956135763786733,
+            "coordinate_relative_error_p95": 0.01027554553002119,
+            "coordinate_relative_error_max": 0.8091524243354797,
+            "patch_to_hidden_median": 0.04668295569717884
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.5517174005508423,
+            "n_patched_positions": 586,
+            "patch_norm_median": 0.46459656953811646,
+            "patch_norm_max": 2.2702670097351074,
+            "coordinate_relative_error_median": 0.0009833614458329976,
+            "coordinate_relative_error_p95": 0.010339448228478432,
+            "coordinate_relative_error_max": 0.7302412390708923,
+            "patch_to_hidden_median": 0.04337295517325401
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.3241805136203766,
+            "n_patched_positions": 365,
+            "patch_norm_median": 0.3094015121459961,
+            "patch_norm_max": 1.4143953323364258,
+            "coordinate_relative_error_median": 0.0019039722392335534,
+            "coordinate_relative_error_p95": 0.04886060953140259,
+            "coordinate_relative_error_max": 0.9010644555091858,
+            "patch_to_hidden_median": 0.026760706678032875
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.5256283283233643,
+            "n_patched_positions": 567,
+            "patch_norm_median": 0.45228615403175354,
+            "patch_norm_max": 2.4062576293945312,
+            "coordinate_relative_error_median": 0.0011540119303390384,
+            "coordinate_relative_error_p95": 0.03525785729289055,
+            "coordinate_relative_error_max": 0.9514523148536682,
+            "patch_to_hidden_median": 0.03717261925339699
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.11424048990011215,
+            "n_patched_positions": 131,
+            "patch_norm_median": 0.2965559661388397,
+            "patch_norm_max": 1.763533592224121,
+            "coordinate_relative_error_median": 0.001679366221651435,
+            "coordinate_relative_error_p95": 0.23437796533107758,
+            "coordinate_relative_error_max": 0.6878979206085205,
+            "patch_to_hidden_median": 0.023641034960746765
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.16261428594589233,
+            "n_patched_positions": 190,
+            "patch_norm_median": 0.2879066467285156,
+            "patch_norm_max": 1.5502287149429321,
+            "coordinate_relative_error_median": 0.002023995970375836,
+            "coordinate_relative_error_p95": 0.23801493644714355,
+            "coordinate_relative_error_max": 0.9998780488967896,
+            "patch_to_hidden_median": 0.018103274516761303
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.15798412263393402,
+            "n_patched_positions": 198,
+            "patch_norm_median": 0.36437566578388214,
+            "patch_norm_max": 2.02429461479187,
+            "coordinate_relative_error_median": 0.0020084623247385025,
+            "coordinate_relative_error_p95": 0.9366711378097534,
+            "coordinate_relative_error_max": 0.9366711378097534,
+            "patch_to_hidden_median": 0.019428599625825882
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2912581264972687,
+            "n_patched_positions": 316,
+            "patch_norm_median": 0.5710229575634003,
+            "patch_norm_max": 2.8126773834228516,
+            "coordinate_relative_error_median": 0.0014479251112788916,
+            "coordinate_relative_error_p95": 0.037495486438274384,
+            "coordinate_relative_error_max": 0.6692153215408325,
+            "patch_to_hidden_median": 0.028647721745073795
+          }
+        ]
+      },
+      {
+        "alpha": 1.5,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c1p5.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.0547945205479452,
+          "mean_words": 51.13333333333333
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 295.10406494140625,
+        "kl_bare_to_steered_mean": 0.2785604000091553,
+        "changed_hidden_fraction_min": 0.09874769300222397,
+        "changed_hidden_fraction_max": 0.7049033045768738,
+        "coordinate_relative_error_p95_max_across_layers": 0.5959942936897278,
+        "coordinate_relative_error_max": 0.9872871041297913,
+        "patch_norm_median_across_layers": 0.5007055401802063,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.7049033045768738,
+            "n_patched_positions": 726,
+            "patch_norm_median": 0.9413544237613678,
+            "patch_norm_max": 3.4981417655944824,
+            "coordinate_relative_error_median": 0.0004437554598553106,
+            "coordinate_relative_error_p95": 0.0054559060372412205,
+            "coordinate_relative_error_max": 0.9852997064590454,
+            "patch_to_hidden_median": 0.09989392384886742
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.46817898750305176,
+            "n_patched_positions": 496,
+            "patch_norm_median": 0.622399628162384,
+            "patch_norm_max": 2.5086052417755127,
+            "coordinate_relative_error_median": 0.000715431000571698,
+            "coordinate_relative_error_p95": 0.007434902247041464,
+            "coordinate_relative_error_max": 0.9358769655227661,
+            "patch_to_hidden_median": 0.05884633958339691
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.48136189579963684,
+            "n_patched_positions": 510,
+            "patch_norm_median": 0.5123494267463684,
+            "patch_norm_max": 2.599196195602417,
+            "coordinate_relative_error_median": 0.000846561451908201,
+            "coordinate_relative_error_p95": 0.011290970258414745,
+            "coordinate_relative_error_max": 0.9872871041297913,
+            "patch_to_hidden_median": 0.04599188454449177
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.283598929643631,
+            "n_patched_positions": 316,
+            "patch_norm_median": 0.33121457695961,
+            "patch_norm_max": 1.6035561561584473,
+            "coordinate_relative_error_median": 0.00158218783326447,
+            "coordinate_relative_error_p95": 0.09622133523225784,
+            "coordinate_relative_error_max": 0.9810065627098083,
+            "patch_to_hidden_median": 0.028847389854490757
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.48293036222457886,
+            "n_patched_positions": 515,
+            "patch_norm_median": 0.5007055401802063,
+            "patch_norm_max": 2.65317440032959,
+            "coordinate_relative_error_median": 0.0011647004866972566,
+            "coordinate_relative_error_p95": 0.030037522315979004,
+            "coordinate_relative_error_max": 0.726812481880188,
+            "patch_to_hidden_median": 0.04301020875573158
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.09874769300222397,
+            "n_patched_positions": 112,
+            "patch_norm_median": 0.29735367000102997,
+            "patch_norm_max": 2.0506527423858643,
+            "coordinate_relative_error_median": 0.0015854134690016508,
+            "coordinate_relative_error_p95": 0.2878403067588806,
+            "coordinate_relative_error_max": 0.80487459897995,
+            "patch_to_hidden_median": 0.022327616810798645
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.1476152390241623,
+            "n_patched_positions": 172,
+            "patch_norm_median": 0.3097824305295944,
+            "patch_norm_max": 1.8269424438476562,
+            "coordinate_relative_error_median": 0.0020634211832657456,
+            "coordinate_relative_error_p95": 0.3116331696510315,
+            "coordinate_relative_error_max": 0.7194606065750122,
+            "patch_to_hidden_median": 0.01918928325176239
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.1526547372341156,
+            "n_patched_positions": 181,
+            "patch_norm_median": 0.476397842168808,
+            "patch_norm_max": 2.401587963104248,
+            "coordinate_relative_error_median": 0.0014463324332609773,
+            "coordinate_relative_error_p95": 0.5959942936897278,
+            "coordinate_relative_error_max": 0.5959942936897278,
+            "patch_to_hidden_median": 0.02423706464469433
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.280495822429657,
+            "n_patched_positions": 300,
+            "patch_norm_median": 0.6663824319839478,
+            "patch_norm_max": 3.382645606994629,
+            "coordinate_relative_error_median": 0.0010586961871013045,
+            "coordinate_relative_error_p95": 0.026438254863023758,
+            "coordinate_relative_error_max": 0.5001018047332764,
+            "patch_to_hidden_median": 0.03337533958256245
+          }
+        ]
+      },
+      {
+        "alpha": 2.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/plus/c2.jsonl",
+        "changed_outputs_vs_alpha0": 15,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.0547945205479452,
+          "mean_words": 50.6
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 345.715576171875,
+        "kl_bare_to_steered_mean": 0.3796956241130829,
+        "changed_hidden_fraction_min": 0.07826396822929382,
+        "changed_hidden_fraction_max": 0.7116466760635376,
+        "coordinate_relative_error_p95_max_across_layers": 0.06813804805278778,
+        "coordinate_relative_error_max": 0.9535301327705383,
+        "patch_norm_median_across_layers": 0.6281412839889526,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.7116466760635376,
+            "n_patched_positions": 726,
+            "patch_norm_median": 1.2560038566589355,
+            "patch_norm_max": 4.665127277374268,
+            "coordinate_relative_error_median": 0.0003673320898087695,
+            "coordinate_relative_error_p95": 0.003739475505426526,
+            "coordinate_relative_error_max": 0.9535301327705383,
+            "patch_to_hidden_median": 0.1331726238131523
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.3778594136238098,
+            "n_patched_positions": 387,
+            "patch_norm_median": 0.9059314727783203,
+            "patch_norm_max": 3.3301665782928467,
+            "coordinate_relative_error_median": 0.0006064752233214676,
+            "coordinate_relative_error_p95": 0.003572841640561819,
+            "coordinate_relative_error_max": 0.47603723406791687,
+            "patch_to_hidden_median": 0.08845312893390656
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.3364563286304474,
+            "n_patched_positions": 356,
+            "patch_norm_median": 0.5142731666564941,
+            "patch_norm_max": 3.3084352016448975,
+            "coordinate_relative_error_median": 0.001006695965770632,
+            "coordinate_relative_error_p95": 0.008390381932258606,
+            "coordinate_relative_error_max": 0.7466126680374146,
+            "patch_to_hidden_median": 0.047067129984498024
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.21947669982910156,
+            "n_patched_positions": 236,
+            "patch_norm_median": 0.40185368061065674,
+            "patch_norm_max": 2.185356616973877,
+            "coordinate_relative_error_median": 0.0012252747546881437,
+            "coordinate_relative_error_p95": 0.012625861912965775,
+            "coordinate_relative_error_max": 0.8890478014945984,
+            "patch_to_hidden_median": 0.036800287663936615
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.40936702489852905,
+            "n_patched_positions": 431,
+            "patch_norm_median": 0.6281412839889526,
+            "patch_norm_max": 3.08211088180542,
+            "coordinate_relative_error_median": 0.0009058766881935298,
+            "coordinate_relative_error_p95": 0.006667850539088249,
+            "coordinate_relative_error_max": 0.8234073519706726,
+            "patch_to_hidden_median": 0.05262310802936554
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.07826396822929382,
+            "n_patched_positions": 86,
+            "patch_norm_median": 0.3776238262653351,
+            "patch_norm_max": 2.783381462097168,
+            "coordinate_relative_error_median": 0.0010002520866692066,
+            "coordinate_relative_error_p95": 0.017814606428146362,
+            "coordinate_relative_error_max": 0.9061866402626038,
+            "patch_to_hidden_median": 0.02780790999531746
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.11694300919771194,
+            "n_patched_positions": 127,
+            "patch_norm_median": 0.5456866025924683,
+            "patch_norm_max": 2.291383743286133,
+            "coordinate_relative_error_median": 0.0011836969060823321,
+            "coordinate_relative_error_p95": 0.06813804805278778,
+            "coordinate_relative_error_max": 0.5700346827507019,
+            "patch_to_hidden_median": 0.033998116850852966
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.14314116537570953,
+            "n_patched_positions": 156,
+            "patch_norm_median": 0.6667081415653229,
+            "patch_norm_max": 3.1187386512756348,
+            "coordinate_relative_error_median": 0.0010798292933031917,
+            "coordinate_relative_error_p95": 0.04293665662407875,
+            "coordinate_relative_error_max": 0.8005810379981995,
+            "patch_to_hidden_median": 0.036903608590364456
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.25902777910232544,
+            "n_patched_positions": 276,
+            "patch_norm_median": 0.8271527588367462,
+            "patch_norm_max": 4.603850364685059,
+            "coordinate_relative_error_median": 0.0010852866107597947,
+            "coordinate_relative_error_p95": 0.01811511628329754,
+            "coordinate_relative_error_max": 0.8911429047584534,
+            "patch_to_hidden_median": 0.04052896983921528
+          }
+        ]
+      }
+    ],
+    "-C": [
+      {
+        "alpha": 0.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c0.jsonl",
+        "changed_outputs_vs_alpha0": 1,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 50.6
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 0.0,
+        "kl_bare_to_steered_mean": 0.0,
+        "changed_hidden_fraction_min": 0.0,
+        "changed_hidden_fraction_max": 0.0,
+        "coordinate_relative_error_p95_max_across_layers": 0,
+        "coordinate_relative_error_max": 0,
+        "patch_norm_median_across_layers": 0,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.0,
+            "n_patched_positions": 0,
+            "patch_norm_median": 0,
+            "patch_norm_max": 0,
+            "coordinate_relative_error_median": 0,
+            "coordinate_relative_error_p95": 0,
+            "coordinate_relative_error_max": 0,
+            "patch_to_hidden_median": 0
+          }
+        ]
+      },
+      {
+        "alpha": 0.25,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c0p25.jsonl",
+        "changed_outputs_vs_alpha0": 6,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 48.4
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 46.12552261352539,
+        "kl_bare_to_steered_mean": 0.0038612368516623974,
+        "changed_hidden_fraction_min": 0.00790965836495161,
+        "changed_hidden_fraction_max": 0.2795059382915497,
+        "coordinate_relative_error_p95_max_across_layers": 0.9383893013000488,
+        "coordinate_relative_error_max": 0.9996597170829773,
+        "patch_norm_median_across_layers": 0.05555461160838604,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.15737169981002808,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.042498547583818436,
+            "patch_norm_max": 0.32737621665000916,
+            "coordinate_relative_error_median": 0.010105017572641373,
+            "coordinate_relative_error_p95": 0.6636202931404114,
+            "coordinate_relative_error_max": 0.9996597170829773,
+            "patch_to_hidden_median": 0.004878737963736057
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.028094736859202385,
+            "n_patched_positions": 44,
+            "patch_norm_median": 0.04176921211183071,
+            "patch_norm_max": 0.354729562997818,
+            "coordinate_relative_error_median": 0.008385950233787298,
+            "coordinate_relative_error_p95": 0.5240907669067383,
+            "coordinate_relative_error_max": 0.8537291884422302,
+            "patch_to_hidden_median": 0.004539690213277936
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.00790965836495161,
+            "n_patched_positions": 21,
+            "patch_norm_median": 0.014667417854070663,
+            "patch_norm_max": 0.09568001329898834,
+            "coordinate_relative_error_median": 0.23853911459445953,
+            "coordinate_relative_error_p95": 0.9383893013000488,
+            "coordinate_relative_error_max": 0.9690092206001282,
+            "patch_to_hidden_median": 0.0015468723140656948
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.014140943996608257,
+            "n_patched_positions": 26,
+            "patch_norm_median": 0.05555461160838604,
+            "patch_norm_max": 0.1512133777141571,
+            "coordinate_relative_error_median": 0.035011909902095795,
+            "coordinate_relative_error_p95": 0.8974268436431885,
+            "coordinate_relative_error_max": 0.9678450226783752,
+            "patch_to_hidden_median": 0.005053821485489607
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.03167606517672539,
+            "n_patched_positions": 65,
+            "patch_norm_median": 0.027383435517549515,
+            "patch_norm_max": 0.30809035897254944,
+            "coordinate_relative_error_median": 0.08539321273565292,
+            "coordinate_relative_error_p95": 0.763960063457489,
+            "coordinate_relative_error_max": 0.9797544479370117,
+            "patch_to_hidden_median": 0.0026110177859663963
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.19907301664352417,
+            "n_patched_positions": 300,
+            "patch_norm_median": 0.06390327215194702,
+            "patch_norm_max": 0.8810830116271973,
+            "coordinate_relative_error_median": 0.01227637892588973,
+            "coordinate_relative_error_p95": 0.5919498205184937,
+            "coordinate_relative_error_max": 0.9963411688804626,
+            "patch_to_hidden_median": 0.004577860003337264
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.25746607780456543,
+            "n_patched_positions": 330,
+            "patch_norm_median": 0.12670724093914032,
+            "patch_norm_max": 0.6167665719985962,
+            "coordinate_relative_error_median": 0.003985181218013167,
+            "coordinate_relative_error_p95": 0.35505226254463196,
+            "coordinate_relative_error_max": 0.8636257648468018,
+            "patch_to_hidden_median": 0.009555048309266567
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.2795059382915497,
+            "n_patched_positions": 399,
+            "patch_norm_median": 0.10408660024404526,
+            "patch_norm_max": 0.4329855144023895,
+            "coordinate_relative_error_median": 0.009394869208335876,
+            "coordinate_relative_error_p95": 0.5952934622764587,
+            "coordinate_relative_error_max": 0.9944508075714111,
+            "patch_to_hidden_median": 0.005627871956676245
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.26013991236686707,
+            "n_patched_positions": 337,
+            "patch_norm_median": 0.1659054458141327,
+            "patch_norm_max": 0.8693740963935852,
+            "coordinate_relative_error_median": 0.004356507211923599,
+            "coordinate_relative_error_p95": 0.4855773448944092,
+            "coordinate_relative_error_max": 0.9395408034324646,
+            "patch_to_hidden_median": 0.00996073056012392
+          }
+        ]
+      },
+      {
+        "alpha": 0.5,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c0p5.jsonl",
+        "changed_outputs_vs_alpha0": 7,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 52.13333333333333
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 79.57339477539062,
+        "kl_bare_to_steered_mean": 0.01044206041842699,
+        "changed_hidden_fraction_min": 0.006975105032324791,
+        "changed_hidden_fraction_max": 0.2764151692390442,
+        "coordinate_relative_error_p95_max_across_layers": 0.8359258770942688,
+        "coordinate_relative_error_max": 1.0,
+        "patch_norm_median_across_layers": 0.10288819670677185,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.1907496303319931,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.08301176875829697,
+            "patch_norm_max": 0.6550135016441345,
+            "coordinate_relative_error_median": 0.004018940031528473,
+            "coordinate_relative_error_p95": 0.43303439021110535,
+            "coordinate_relative_error_max": 0.999829888343811,
+            "patch_to_hidden_median": 0.00946874637156725
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.02974523790180683,
+            "n_patched_positions": 39,
+            "patch_norm_median": 0.08135339617729187,
+            "patch_norm_max": 0.550727903842926,
+            "coordinate_relative_error_median": 0.004416140727698803,
+            "coordinate_relative_error_p95": 0.617897093296051,
+            "coordinate_relative_error_max": 0.6453120708465576,
+            "patch_to_hidden_median": 0.0088447080925107
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.006975105032324791,
+            "n_patched_positions": 15,
+            "patch_norm_median": 0.020918846130371094,
+            "patch_norm_max": 0.19140884280204773,
+            "coordinate_relative_error_median": 0.10555926710367203,
+            "coordinate_relative_error_p95": 0.6811093688011169,
+            "coordinate_relative_error_max": 0.6811093688011169,
+            "patch_to_hidden_median": 0.0020723959896713495
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.01611238531768322,
+            "n_patched_positions": 22,
+            "patch_norm_median": 0.10288819670677185,
+            "patch_norm_max": 0.29087314009666443,
+            "coordinate_relative_error_median": 0.005459746113047004,
+            "coordinate_relative_error_p95": 0.28957363963127136,
+            "coordinate_relative_error_max": 0.9327543377876282,
+            "patch_to_hidden_median": 0.00951378932222724
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.03600917384028435,
+            "n_patched_positions": 58,
+            "patch_norm_median": 0.05019511282444,
+            "patch_norm_max": 0.610198438167572,
+            "coordinate_relative_error_median": 0.021050491370260715,
+            "coordinate_relative_error_p95": 0.8359258770942688,
+            "coordinate_relative_error_max": 1.0,
+            "patch_to_hidden_median": 0.004352370044216514
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.2265210896730423,
+            "n_patched_positions": 289,
+            "patch_norm_median": 0.1277608871459961,
+            "patch_norm_max": 1.7630409002304077,
+            "coordinate_relative_error_median": 0.004130352288484573,
+            "coordinate_relative_error_p95": 0.4104372560977936,
+            "coordinate_relative_error_max": 0.9260916113853455,
+            "patch_to_hidden_median": 0.0088359285145998
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2764151692390442,
+            "n_patched_positions": 324,
+            "patch_norm_median": 0.2228335738182068,
+            "patch_norm_max": 1.1746609210968018,
+            "coordinate_relative_error_median": 0.0023465798003599048,
+            "coordinate_relative_error_p95": 0.17039380967617035,
+            "coordinate_relative_error_max": 0.9978178143501282,
+            "patch_to_hidden_median": 0.017189301550388336
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.26797154545783997,
+            "n_patched_positions": 344,
+            "patch_norm_median": 0.16001859307289124,
+            "patch_norm_max": 0.7740045189857483,
+            "coordinate_relative_error_median": 0.003818222787231207,
+            "coordinate_relative_error_p95": 0.531358003616333,
+            "coordinate_relative_error_max": 1.0,
+            "patch_to_hidden_median": 0.010262575000524521
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2674204409122467,
+            "n_patched_positions": 314,
+            "patch_norm_median": 0.29597386717796326,
+            "patch_norm_max": 1.6287074089050293,
+            "coordinate_relative_error_median": 0.0020388056291267276,
+            "coordinate_relative_error_p95": 0.3873358368873596,
+            "coordinate_relative_error_max": 0.9522750377655029,
+            "patch_to_hidden_median": 0.01710355654358864
+          }
+        ]
+      },
+      {
+        "alpha": 0.75,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c0p75.jsonl",
+        "changed_outputs_vs_alpha0": 8,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 54.266666666666666
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 111.29289245605469,
+        "kl_bare_to_steered_mean": 0.017451761290431023,
+        "changed_hidden_fraction_min": 0.00507135596126318,
+        "changed_hidden_fraction_max": 0.2752779424190521,
+        "coordinate_relative_error_p95_max_across_layers": 0.8457449674606323,
+        "coordinate_relative_error_max": 0.9993336796760559,
+        "patch_norm_median_across_layers": 0.1478542685508728,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.20593462884426117,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.12409275025129318,
+            "patch_norm_max": 0.9812661409378052,
+            "coordinate_relative_error_median": 0.003309817286208272,
+            "coordinate_relative_error_p95": 0.3345862329006195,
+            "coordinate_relative_error_max": 0.9993336796760559,
+            "patch_to_hidden_median": 0.014218824915587902
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.030093256384134293,
+            "n_patched_positions": 38,
+            "patch_norm_median": 0.0899428091943264,
+            "patch_norm_max": 0.5879501104354858,
+            "coordinate_relative_error_median": 0.003991859499365091,
+            "coordinate_relative_error_p95": 0.4158459007740021,
+            "coordinate_relative_error_max": 0.6052036285400391,
+            "patch_to_hidden_median": 0.009577098302543163
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.00507135596126318,
+            "n_patched_positions": 9,
+            "patch_norm_median": 0.03709884732961655,
+            "patch_norm_max": 0.28600049018859863,
+            "coordinate_relative_error_median": 0.049023523926734924,
+            "coordinate_relative_error_p95": 0.33390283584594727,
+            "coordinate_relative_error_max": 0.33390283584594727,
+            "patch_to_hidden_median": 0.003381739603355527
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.01612034998834133,
+            "n_patched_positions": 20,
+            "patch_norm_median": 0.1478542685508728,
+            "patch_norm_max": 0.42678162455558777,
+            "coordinate_relative_error_median": 0.002201960887759924,
+            "coordinate_relative_error_p95": 0.1567506045103073,
+            "coordinate_relative_error_max": 0.39665696024894714,
+            "patch_to_hidden_median": 0.013505546376109123
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.03441760689020157,
+            "n_patched_positions": 51,
+            "patch_norm_median": 0.07488100975751877,
+            "patch_norm_max": 0.9061115384101868,
+            "coordinate_relative_error_median": 0.005801256746053696,
+            "coordinate_relative_error_p95": 0.8457449674606323,
+            "coordinate_relative_error_max": 0.9630831480026245,
+            "patch_to_hidden_median": 0.006644245702773333
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.23375940322875977,
+            "n_patched_positions": 282,
+            "patch_norm_median": 0.18557444214820862,
+            "patch_norm_max": 2.6408884525299072,
+            "coordinate_relative_error_median": 0.002345927292481065,
+            "coordinate_relative_error_p95": 0.22133834660053253,
+            "coordinate_relative_error_max": 0.9713388681411743,
+            "patch_to_hidden_median": 0.013263860251754522
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2752779424190521,
+            "n_patched_positions": 310,
+            "patch_norm_median": 0.3219866305589676,
+            "patch_norm_max": 1.6714693307876587,
+            "coordinate_relative_error_median": 0.002073417999781668,
+            "coordinate_relative_error_p95": 0.14161208271980286,
+            "coordinate_relative_error_max": 0.9655740261077881,
+            "patch_to_hidden_median": 0.024566245265305042
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.25085771083831787,
+            "n_patched_positions": 303,
+            "patch_norm_median": 0.23644620180130005,
+            "patch_norm_max": 1.098149299621582,
+            "coordinate_relative_error_median": 0.0025870795361697674,
+            "coordinate_relative_error_p95": 0.3589855134487152,
+            "coordinate_relative_error_max": 0.9908504486083984,
+            "patch_to_hidden_median": 0.013042275793850422
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2637288272380829,
+            "n_patched_positions": 289,
+            "patch_norm_median": 0.3955046832561493,
+            "patch_norm_max": 2.2837042808532715,
+            "coordinate_relative_error_median": 0.0012741272803395987,
+            "coordinate_relative_error_p95": 0.023832669481635094,
+            "coordinate_relative_error_max": 0.938424289226532,
+            "patch_to_hidden_median": 0.024195408448576927
+          }
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c1.jsonl",
+        "changed_outputs_vs_alpha0": 7,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 51.06666666666667
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 139.61302185058594,
+        "kl_bare_to_steered_mean": 0.028554806485772133,
+        "changed_hidden_fraction_min": 0.0032245477195829153,
+        "changed_hidden_fraction_max": 0.2721859812736511,
+        "coordinate_relative_error_p95_max_across_layers": 0.6103227734565735,
+        "coordinate_relative_error_max": 0.9973313212394714,
+        "patch_norm_median_across_layers": 0.2022910863161087,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.21512407064437866,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.1640862375497818,
+            "patch_norm_max": 1.308396339416504,
+            "coordinate_relative_error_median": 0.001949898898601532,
+            "coordinate_relative_error_p95": 0.21998649835586548,
+            "coordinate_relative_error_max": 0.9973313212394714,
+            "patch_to_hidden_median": 0.018796337768435478
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.026742881163954735,
+            "n_patched_positions": 33,
+            "patch_norm_median": 0.09821246564388275,
+            "patch_norm_max": 0.6455883979797363,
+            "coordinate_relative_error_median": 0.0030356182251125574,
+            "coordinate_relative_error_p95": 0.3940816819667816,
+            "coordinate_relative_error_max": 0.528828501701355,
+            "patch_to_hidden_median": 0.011882717721164227
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.0032245477195829153,
+            "n_patched_positions": 4,
+            "patch_norm_median": 0.09120482951402664,
+            "patch_norm_max": 0.3804093599319458,
+            "coordinate_relative_error_median": 0.007580955512821674,
+            "coordinate_relative_error_p95": 0.01278382446616888,
+            "coordinate_relative_error_max": 0.01278382446616888,
+            "patch_to_hidden_median": 0.007898493902757764
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.01567477360367775,
+            "n_patched_positions": 19,
+            "patch_norm_median": 0.2022910863161087,
+            "patch_norm_max": 0.5568374395370483,
+            "coordinate_relative_error_median": 0.0019474780419841409,
+            "coordinate_relative_error_p95": 0.6103227734565735,
+            "coordinate_relative_error_max": 0.6103227734565735,
+            "patch_to_hidden_median": 0.019066236913204193
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.032508283853530884,
+            "n_patched_positions": 39,
+            "patch_norm_median": 0.10654240846633911,
+            "patch_norm_max": 1.2040525674819946,
+            "coordinate_relative_error_median": 0.003622004995122552,
+            "coordinate_relative_error_p95": 0.06409431248903275,
+            "coordinate_relative_error_max": 0.13447245955467224,
+            "patch_to_hidden_median": 0.010445122607052326
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.23446498811244965,
+            "n_patched_positions": 274,
+            "patch_norm_median": 0.2527697831392288,
+            "patch_norm_max": 3.5309603214263916,
+            "coordinate_relative_error_median": 0.002015428268350661,
+            "coordinate_relative_error_p95": 0.15722699463367462,
+            "coordinate_relative_error_max": 0.5764304995536804,
+            "patch_to_hidden_median": 0.017963409423828125
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2721859812736511,
+            "n_patched_positions": 298,
+            "patch_norm_median": 0.40775178372859955,
+            "patch_norm_max": 2.1110692024230957,
+            "coordinate_relative_error_median": 0.0012373076751828194,
+            "coordinate_relative_error_p95": 0.09173420816659927,
+            "coordinate_relative_error_max": 0.7637256383895874,
+            "patch_to_hidden_median": 0.02753814309835434
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.23975375294685364,
+            "n_patched_positions": 281,
+            "patch_norm_median": 0.28133413195610046,
+            "patch_norm_max": 1.4619319438934326,
+            "coordinate_relative_error_median": 0.0019560253713279963,
+            "coordinate_relative_error_p95": 0.15489917993545532,
+            "coordinate_relative_error_max": 0.7756723761558533,
+            "patch_to_hidden_median": 0.015915779396891594
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2611616849899292,
+            "n_patched_positions": 284,
+            "patch_norm_median": 0.48150163888931274,
+            "patch_norm_max": 2.8636250495910645,
+            "coordinate_relative_error_median": 0.0012995950528420508,
+            "coordinate_relative_error_p95": 0.028839407488703728,
+            "coordinate_relative_error_max": 0.9453211426734924,
+            "patch_to_hidden_median": 0.027459205128252506
+          }
+        ]
+      },
+      {
+        "alpha": 1.25,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c1p25.jsonl",
+        "changed_outputs_vs_alpha0": 8,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 53.0
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 165.6971435546875,
+        "kl_bare_to_steered_mean": 0.038692206144332886,
+        "changed_hidden_fraction_min": 0.003390991361811757,
+        "changed_hidden_fraction_max": 0.2658427953720093,
+        "coordinate_relative_error_p95_max_across_layers": 0.7009738087654114,
+        "coordinate_relative_error_max": 0.9977970123291016,
+        "patch_norm_median_across_layers": 0.2748282253742218,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.2213016003370285,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.2059306502342224,
+            "patch_norm_max": 1.6359111070632935,
+            "coordinate_relative_error_median": 0.001658123917877674,
+            "coordinate_relative_error_p95": 0.1555773913860321,
+            "coordinate_relative_error_max": 0.9977970123291016,
+            "patch_to_hidden_median": 0.023479757830500603
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.023339146748185158,
+            "n_patched_positions": 28,
+            "patch_norm_median": 0.10281753540039062,
+            "patch_norm_max": 0.7943114638328552,
+            "coordinate_relative_error_median": 0.0027295820182189345,
+            "coordinate_relative_error_p95": 0.08172999322414398,
+            "coordinate_relative_error_max": 0.4372972249984741,
+            "patch_to_hidden_median": 0.013027663342654705
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.003390991361811757,
+            "n_patched_positions": 4,
+            "patch_norm_median": 0.11197840049862862,
+            "patch_norm_max": 0.47443142533302307,
+            "coordinate_relative_error_median": 0.006922683445736766,
+            "coordinate_relative_error_p95": 0.010636739432811737,
+            "coordinate_relative_error_max": 0.010636739432811737,
+            "patch_to_hidden_median": 0.009696177672594786
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.014469052664935589,
+            "n_patched_positions": 17,
+            "patch_norm_median": 0.2748282253742218,
+            "patch_norm_max": 0.6749165654182434,
+            "coordinate_relative_error_median": 0.0027284377720206976,
+            "coordinate_relative_error_p95": 0.2724880576133728,
+            "coordinate_relative_error_max": 0.2724880576133728,
+            "patch_to_hidden_median": 0.026487676426768303
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.03149409219622612,
+            "n_patched_positions": 38,
+            "patch_norm_median": 0.11232350766658783,
+            "patch_norm_max": 1.4991676807403564,
+            "coordinate_relative_error_median": 0.0023665070766583085,
+            "coordinate_relative_error_p95": 0.22679731249809265,
+            "coordinate_relative_error_max": 0.23246964812278748,
+            "patch_to_hidden_median": 0.010587712284177542
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.22620253264904022,
+            "n_patched_positions": 266,
+            "patch_norm_median": 0.32945725321769714,
+            "patch_norm_max": 4.413695335388184,
+            "coordinate_relative_error_median": 0.0014469473389908671,
+            "coordinate_relative_error_p95": 0.7009738087654114,
+            "coordinate_relative_error_max": 0.8133191466331482,
+            "patch_to_hidden_median": 0.023145844228565693
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2658427953720093,
+            "n_patched_positions": 285,
+            "patch_norm_median": 0.4938175678253174,
+            "patch_norm_max": 2.4871714115142822,
+            "coordinate_relative_error_median": 0.001075303996913135,
+            "coordinate_relative_error_p95": 0.022631842643022537,
+            "coordinate_relative_error_max": 0.9711318612098694,
+            "patch_to_hidden_median": 0.03307462856173515
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.22556941211223602,
+            "n_patched_positions": 262,
+            "patch_norm_median": 0.3703777641057968,
+            "patch_norm_max": 1.8240605592727661,
+            "coordinate_relative_error_median": 0.001710628333967179,
+            "coordinate_relative_error_p95": 0.16342607140541077,
+            "coordinate_relative_error_max": 0.9275757670402527,
+            "patch_to_hidden_median": 0.019887489266693592
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2499876618385315,
+            "n_patched_positions": 272,
+            "patch_norm_median": 0.6071945130825043,
+            "patch_norm_max": 3.5475566387176514,
+            "coordinate_relative_error_median": 0.0009811714407987893,
+            "coordinate_relative_error_p95": 0.05966953560709953,
+            "coordinate_relative_error_max": 0.9831002354621887,
+            "patch_to_hidden_median": 0.032609881833195686
+          }
+        ]
+      },
+      {
+        "alpha": 1.5,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c1p5.jsonl",
+        "changed_outputs_vs_alpha0": 9,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06451612903225812,
+          "mean_words": 52.86666666666667
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 190.61175537109375,
+        "kl_bare_to_steered_mean": 0.04839595407247543,
+        "changed_hidden_fraction_min": 0.003500891849398613,
+        "changed_hidden_fraction_max": 0.2586674094200134,
+        "coordinate_relative_error_p95_max_across_layers": 0.48717641830444336,
+        "coordinate_relative_error_max": 0.9822975397109985,
+        "patch_norm_median_across_layers": 0.36072757840156555,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.22566935420036316,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.24613456428050995,
+            "patch_norm_max": 1.9631741046905518,
+            "coordinate_relative_error_median": 0.0012132629053667188,
+            "coordinate_relative_error_p95": 0.08267588168382645,
+            "coordinate_relative_error_max": 0.9822975397109985,
+            "patch_to_hidden_median": 0.02820550836622715
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.021210817620158195,
+            "n_patched_positions": 25,
+            "patch_norm_median": 0.11872781068086624,
+            "patch_norm_max": 0.9401045441627502,
+            "coordinate_relative_error_median": 0.002984004095196724,
+            "coordinate_relative_error_p95": 0.016678210347890854,
+            "coordinate_relative_error_max": 0.44015756249427795,
+            "patch_to_hidden_median": 0.014950712211430073
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.003500891849398613,
+            "n_patched_positions": 4,
+            "patch_norm_median": 0.1349153183400631,
+            "patch_norm_max": 0.5697972774505615,
+            "coordinate_relative_error_median": 0.001685057912254706,
+            "coordinate_relative_error_p95": 0.006285354495048523,
+            "coordinate_relative_error_max": 0.006285354495048523,
+            "patch_to_hidden_median": 0.011683122720569372
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.013787350617349148,
+            "n_patched_positions": 15,
+            "patch_norm_median": 0.36072757840156555,
+            "patch_norm_max": 0.7831995487213135,
+            "coordinate_relative_error_median": 0.0005961303249932826,
+            "coordinate_relative_error_p95": 0.01714116707444191,
+            "coordinate_relative_error_max": 0.01714116707444191,
+            "patch_to_hidden_median": 0.031844720244407654
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.02902291901409626,
+            "n_patched_positions": 35,
+            "patch_norm_median": 0.14358247816562653,
+            "patch_norm_max": 1.774517297744751,
+            "coordinate_relative_error_median": 0.0022412219550460577,
+            "coordinate_relative_error_p95": 0.48717641830444336,
+            "coordinate_relative_error_max": 0.932539701461792,
+            "patch_to_hidden_median": 0.014054649509489536
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.22089147567749023,
+            "n_patched_positions": 241,
+            "patch_norm_median": 0.4018230438232422,
+            "patch_norm_max": 5.290007591247559,
+            "coordinate_relative_error_median": 0.0010506738908588886,
+            "coordinate_relative_error_p95": 0.05754099786281586,
+            "coordinate_relative_error_max": 0.5953582525253296,
+            "patch_to_hidden_median": 0.030246391892433167
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.2586674094200134,
+            "n_patched_positions": 276,
+            "patch_norm_median": 0.5781659781932831,
+            "patch_norm_max": 2.8242347240448,
+            "coordinate_relative_error_median": 0.000893789401743561,
+            "coordinate_relative_error_p95": 0.024243952706456184,
+            "coordinate_relative_error_max": 0.7667478322982788,
+            "patch_to_hidden_median": 0.03831802122294903
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.2171962559223175,
+            "n_patched_positions": 247,
+            "patch_norm_median": 0.4494825601577759,
+            "patch_norm_max": 2.1901345252990723,
+            "coordinate_relative_error_median": 0.0014326219679787755,
+            "coordinate_relative_error_p95": 0.08735005557537079,
+            "coordinate_relative_error_max": 0.9732930660247803,
+            "patch_to_hidden_median": 0.025093484669923782
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.2349667102098465,
+            "n_patched_positions": 250,
+            "patch_norm_median": 0.7064252197742462,
+            "patch_norm_max": 4.205554008483887,
+            "coordinate_relative_error_median": 0.0008497406961396337,
+            "coordinate_relative_error_p95": 0.018852628767490387,
+            "coordinate_relative_error_max": 0.8928461074829102,
+            "patch_to_hidden_median": 0.037458913400769234
+          }
+        ]
+      },
+      {
+        "alpha": 2.0,
+        "path": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/minus/c2.jsonl",
+        "changed_outputs_vs_alpha0": 10,
+        "health": {
+          "answers": 15,
+          "unfinished": 0,
+          "role_leaks": 0,
+          "repeated": 0,
+          "max_repetition": 0.06557377049180324,
+          "mean_words": 53.666666666666664
+        },
+        "breakdown_reasons": [],
+        "logit_delta_norm_mean": 229.6035614013672,
+        "kl_bare_to_steered_mean": 0.0733155608177185,
+        "changed_hidden_fraction_min": 0.003615969093516469,
+        "changed_hidden_fraction_max": 0.24531209468841553,
+        "coordinate_relative_error_p95_max_across_layers": 0.06824275106191635,
+        "coordinate_relative_error_max": 0.9819668531417847,
+        "patch_norm_median_across_layers": 0.4780825078487396,
+        "layers": [
+          {
+            "layer": 13,
+            "changed_hidden_fraction": 0.23177720606327057,
+            "n_patched_positions": 255,
+            "patch_norm_median": 0.3284277319908142,
+            "patch_norm_max": 2.617797613143921,
+            "coordinate_relative_error_median": 0.0010964378016069531,
+            "coordinate_relative_error_p95": 0.044994086027145386,
+            "coordinate_relative_error_max": 0.9819668531417847,
+            "patch_to_hidden_median": 0.037625689059495926
+          },
+          {
+            "layer": 14,
+            "changed_hidden_fraction": 0.017981093376874924,
+            "n_patched_positions": 21,
+            "patch_norm_median": 0.14523327350616455,
+            "patch_norm_max": 1.2151442766189575,
+            "coordinate_relative_error_median": 0.001985151320695877,
+            "coordinate_relative_error_p95": 0.060185182839632034,
+            "coordinate_relative_error_max": 0.22525566816329956,
+            "patch_to_hidden_median": 0.01881713792681694
+          },
+          {
+            "layer": 15,
+            "changed_hidden_fraction": 0.003615969093516469,
+            "n_patched_positions": 4,
+            "patch_norm_median": 0.17451845109462738,
+            "patch_norm_max": 0.7647188305854797,
+            "coordinate_relative_error_median": 0.0020017458009533584,
+            "coordinate_relative_error_p95": 0.004200597759336233,
+            "coordinate_relative_error_max": 0.004200597759336233,
+            "patch_to_hidden_median": 0.015111859422177076
+          },
+          {
+            "layer": 16,
+            "changed_hidden_fraction": 0.013253774493932724,
+            "n_patched_positions": 14,
+            "patch_norm_median": 0.4780825078487396,
+            "patch_norm_max": 0.9747346043586731,
+            "coordinate_relative_error_median": 0.0005924137367401272,
+            "coordinate_relative_error_p95": 0.004050240386277437,
+            "coordinate_relative_error_max": 0.004050240386277437,
+            "patch_to_hidden_median": 0.04482897371053696
+          },
+          {
+            "layer": 17,
+            "changed_hidden_fraction": 0.027754683047533035,
+            "n_patched_positions": 31,
+            "patch_norm_median": 0.19076226651668549,
+            "patch_norm_max": 2.3431406021118164,
+            "coordinate_relative_error_median": 0.0022912323474884033,
+            "coordinate_relative_error_p95": 0.043101876974105835,
+            "coordinate_relative_error_max": 0.07113908231258392,
+            "patch_to_hidden_median": 0.016080105677247047
+          },
+          {
+            "layer": 18,
+            "changed_hidden_fraction": 0.21650977432727814,
+            "n_patched_positions": 232,
+            "patch_norm_median": 0.4905349910259247,
+            "patch_norm_max": 7.0507659912109375,
+            "coordinate_relative_error_median": 0.0009137265733443201,
+            "coordinate_relative_error_p95": 0.01955190673470497,
+            "coordinate_relative_error_max": 0.8384464979171753,
+            "patch_to_hidden_median": 0.03923073969781399
+          },
+          {
+            "layer": 19,
+            "changed_hidden_fraction": 0.24531209468841553,
+            "n_patched_positions": 260,
+            "patch_norm_median": 0.802400141954422,
+            "patch_norm_max": 3.453186273574829,
+            "coordinate_relative_error_median": 0.0008405761909671128,
+            "coordinate_relative_error_p95": 0.02838093973696232,
+            "coordinate_relative_error_max": 0.7333043813705444,
+            "patch_to_hidden_median": 0.04968038573861122
+          },
+          {
+            "layer": 20,
+            "changed_hidden_fraction": 0.2067752182483673,
+            "n_patched_positions": 225,
+            "patch_norm_median": 0.5520871877670288,
+            "patch_norm_max": 2.888442039489746,
+            "coordinate_relative_error_median": 0.001170385628938675,
+            "coordinate_relative_error_p95": 0.06824275106191635,
+            "coordinate_relative_error_max": 0.5305607914924622,
+            "patch_to_hidden_median": 0.031401898711919785
+          },
+          {
+            "layer": 21,
+            "changed_hidden_fraction": 0.21252308785915375,
+            "n_patched_positions": 225,
+            "patch_norm_median": 0.8774662017822266,
+            "patch_norm_max": 5.660812854766846,
+            "coordinate_relative_error_median": 0.0008375682518817484,
+            "coordinate_relative_error_p95": 0.009637989103794098,
+            "coordinate_relative_error_max": 0.8891753554344177,
+            "patch_to_hidden_median": 0.04811724275350571
+          }
+        ]
+      }
+    ]
+  }
+}
