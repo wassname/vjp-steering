@@ -1,0 +1,44 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5205.78it/s]
+2026-09-06 20:43:18.944 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:439 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-06 20:43:19.088 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:439 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 12666.24it/s]
+2026-09-06 20:43:21.372 | INFO     | vjp_steering.j_lens_concept:extract_concept:289 - concept extraction spec=b26fabedfbfb78958702b71c677c6775e26337b3809ebc7fa714ba04262a42d2 layers=(2,) final_prompt_token=true
+2026-09-06 20:43:21.372 | INFO     | vjp_steering.j_lens_concept:extract_concept:290 - concept extraction demo=<|im_start|>user
+Tell me about sycophantic agreement and flattery toward the user<|im_end|>
+<|im_start|>assistant
+<think>
+</think>
+2026-09-06 20:43:21.953 | INFO     | vjp_steering.j_lens_concept:extract_concept:364 - concept layer=2 j_norms=[217.3004608154297, 122.8713150024414] remainder_norms=[41.26286697387695, 24.566001892089844] contrast_norm=185.2592
+2026-09-06 20:43:27.680 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:43:33.397 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:43:41.777 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:43:48.383 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:43:55.576 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:44:01.688 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:44:08.044 | INFO     | walk:generate:481 - generation 15/15
+2026-09-06 20:44:08.788 | INFO     | experiment:gpu_stage:847 - GPU_STAGE_COMPLETE experiment=j-lens-components-appendix-projection-tiny-smoke-v1 profile=dev cells=6
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 57/57 [00:00<00:00, 4642.06it/s]
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1268, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1251, in main
+    smoke(args)
+    ~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/concept_checks.py", line 284, in smoke
+    vectors, _ = experiment.load_or_extract(args, root, model, tokenizer)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 348, in load_or_extract
+    validate_extraction_identity(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 294, in validate_extraction_identity
+    raise ValueError("separate J-lens component representation source mismatch")
+ValueError: separate J-lens component representation source mismatch

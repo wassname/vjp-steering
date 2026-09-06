@@ -21,6 +21,7 @@ METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
 COMPONENT_PAIR_VERSION = "mean100-gp16-appendix-projection-behavior-components-user-turn-v5"
+COMPONENT_PAIR_REPRESENTATION_SOURCE = "separate_concept_components_mean100_appendix_projection"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -370,9 +371,7 @@ def extract_concept(
     }
     return vectors, {
         "operator": operator,
-        "representation_source": (
-            "separate_concept_components_mean100_appendix_projection" if separate_components else "concept_mean100"
-        ),
+        "representation_source": COMPONENT_PAIR_REPRESENTATION_SOURCE if separate_components else "concept_mean100",
         "spec_sha256": spec_hash,
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),

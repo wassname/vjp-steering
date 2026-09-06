@@ -23,7 +23,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
-    COMPONENT_PAIR_METHOD, COMPONENT_PAIR_VERSION, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
+    COMPONENT_PAIR_METHOD, COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION,
+    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     extract_concept, extract_persona_contrast, implementation_hash, prefill_diagnostics,
     select_concept_layers, user_turn_mask,
@@ -290,7 +291,7 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method == COMPONENT_PAIR_METHOD:
-        if metadata.get("representation_source") != "separate_concept_components_mean100":
+        if metadata.get("representation_source") != COMPONENT_PAIR_REPRESENTATION_SOURCE:
             raise ValueError("separate J-lens component representation source mismatch")
         if metadata["operator"] != COMPONENT_PAIR_VERSION or metadata["spec_sha256"] != component_spec()[1]:
             raise ValueError("separate J-lens component specification mismatch")
