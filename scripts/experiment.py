@@ -76,6 +76,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--concept-smoke", action="store_true")
     parser.add_argument("--concept-calibrate", action="store_true")
+    parser.add_argument("--persona-prompt-control", action="store_true")
     parser.add_argument("--source-experiment", default="")
     parser.add_argument("--reuse-extraction-from", default="")
     parser.add_argument("--lens-file", type=Path)
@@ -1246,7 +1247,7 @@ def self_test() -> None:
 def main() -> None:
     args = parse_args()
     component_diagnostic = (
-        args.self_test or args.concept_smoke or args.concept_calibrate
+        args.self_test or args.concept_smoke or args.concept_calibrate or args.persona_prompt_control
         or args.extract_only or args.verify_extraction
     )
     if args.method == COMPONENT_PAIR_METHOD and not component_diagnostic:
@@ -1265,6 +1266,9 @@ def main() -> None:
     elif args.concept_calibrate:
         from concept_checks import calibrate
         calibrate(args)
+    elif args.persona_prompt_control:
+        from concept_checks import persona_prompt_control
+        persona_prompt_control(args)
     elif args.j_lens_diagnostic:
         j_lens_paper_native_diagnostic(args)
     elif args.gpu_stage:

@@ -228,6 +228,101 @@ def write_calibration_manifest(root: Path, args, extraction: dict, cohort_hash: 
     })
 
 
+def persona_prompt_control(args) -> None:
+    import experiment
+    import walk
+
+    if args.method != COMPONENT_PAIR_METHOD:
+        raise ValueError("persona prompt control requires j_lens_concept_components")
+    root = experiment.experiment_dir(args.experiment_id)
+    if (root / "manifest.json").exists():
+        raise ValueError(f"persona prompt control is complete: {root}")
+    rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
+    run_spec = {
+        "schema": "persona_prompt_control_v1",
+        "experiment_id": args.experiment_id,
+        "model": args.model,
+        "dtype": args.dtype,
+        "batch_size": args.batch_size,
+        "max_new_tokens": args.max_new_tokens,
+        "cohort_sha256": cohort_hash,
+        "personas": {"+C": "sycophantic", "-C": "abrasive"},
+    }
+    run_spec_path = root / "run_spec.json"
+    if root.exists():
+        if not run_spec_path.exists() or json.loads(run_spec_path.read_text()) != run_spec:
+            raise ValueError(f"persona prompt control partial output does not match this run: {root}")
+    else:
+        experiment.atomic_json(run_spec_path, run_spec)
+    model, tokenizer = experiment.load_model(args)
+    bare_path = root / "bare.jsonl"
+    bare = experiment.extend_generation(
+        bare_path, rows, walk.generation_inputs(tokenizer, rows), model, tokenizer, args,
+        profile_name="dev", side="", coefficient=0.0, vector=None,
+    )
+    cells, observations = {"+C": {}, "-C": {}}, {}
+    for side, persona, directory in (("+C", "sycophantic", "plus"), ("-C", "abrasive", "minus")):
+        path = root / directory / "c1.jsonl"
+        records = experiment.extend_generation(
+            path, rows, walk.generation_inputs(tokenizer, rows, persona), model, tokenizer, args,
+            profile_name="dev", side=side, coefficient=1.0, vector=None,
+        )
+        health, reasons = walk.health(tokenizer, [record["text"] for record in records])
+        cells[side]["1.0"] = {
+            "coefficient": 1.0,
+            "path": str(path.relative_to(root)),
+            "rows": len(records),
+            "health": health,
+            "breakdown_reasons": reasons,
+        }
+        observations[side] = {
+            "persona": persona,
+            "health": health,
+            "breakdown_reasons": reasons,
+            "changed_outputs_vs_bare": sum(
+                record["text"] != control["text"] for record, control in zip(records, bare, strict=True)
+            ),
+            "text_first_prompt": records[0]["text"],
+        }
+    experiment.atomic_json(root / "control.json", {
+        "experiment_id": args.experiment_id,
+        "cohort_sha256": cohort_hash,
+        "observations": observations,
+    })
+    experiment.atomic_json(root / "manifest.json", {
+        "schema": "persona_prompt_control_v1",
+        "experiment_id": args.experiment_id,
+        "method": "persona_prompt_control",
+        "date": time.strftime("%Y%m%d"),
+        "profiles": {"dev": {"status": "DEV", "cohort_size": len(rows), "generated": True}},
+        "config": {
+            "model": args.model,
+            "dtype": args.dtype,
+            "batch_size": args.batch_size,
+            "max_new_tokens": args.max_new_tokens,
+        },
+        "grid": {"+C": [1.0], "-C": [1.0]},
+        "boundaries": {
+            "+C": {"meaning": "literal sycophantic response instruction", "trace": []},
+            "-C": {"meaning": "literal abrasive response instruction", "trace": []},
+        },
+        "bare": {"path": str(bare_path.relative_to(root))},
+        "cohort_sha256": cohort_hash,
+        "cells": cells,
+        "extraction": {
+            "method": "persona_prompt_control",
+            "model": args.model,
+            "source_layers": [],
+        },
+    })
+    print(
+        f"PERSONA_PROMPT_CONTROL_COMPLETE id={args.experiment_id} "
+        f"plus_changed={observations['+C']['changed_outputs_vs_bare']} "
+        f"minus_changed={observations['-C']['changed_outputs_vs_bare']}",
+        flush=True,
+    )
+
+
 def self_test():
     from experiment import concept_application_layers, concept_grid, validate_extraction_identity, vector_sha256
 

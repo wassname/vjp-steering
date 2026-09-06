@@ -432,10 +432,13 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
     return vector, metadata
 
 
-def generation_inputs(tokenizer, rows: list[dict[str, str]]) -> list[str]:
+def generation_inputs(
+    tokenizer, rows: list[dict[str, str]], persona: str | None = None,
+) -> list[str]:
+    prefix = "" if persona is None else PERSONA_TEMPLATE.format(persona=persona) + "\n\n"
     return [
         tokenizer.apply_chat_template(
-            [{"role": "user", "content": row["prompt"] + " Answer in 2 short sentences."}],
+            [{"role": "user", "content": prefix + row["prompt"] + " Answer in 2 short sentences."}],
             tokenize=False,
             add_generation_prompt=True,
             enable_thinking=False,

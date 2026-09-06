@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import modal
@@ -118,6 +119,37 @@ def calibrate_concept(
         "--concept-calibrate", "--dev", "--experiment-id", experiment_id,
         "--source-experiment", source_experiment, "--model", MODEL,
     ])[:500])
+
+
+def pull_experiment(experiment_id: str) -> Path:
+    parent = REPO / "outputs/experiments"
+    destination = parent / experiment_id
+    if destination.exists():
+        raise ValueError(f"local experiment output exists: {destination}")
+    parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=parent, prefix=".modal-pull-") as directory:
+        subprocess.run([
+            "modal", "volume", "get", "jsteer-pub-cache",
+            f"outputs/experiments/{experiment_id}", directory,
+        ], check=True)
+        downloaded = Path(directory) / experiment_id
+        if not downloaded.is_dir():
+            raise FileNotFoundError(downloaded)
+        downloaded.replace(destination)
+    return destination
+
+
+@app.local_entrypoint()
+def persona_prompt_control(
+    experiment_id: str = "j-lens-persona-prompt-control-v1",
+):
+    result = run_experiment.remote("j_lens_concept_components", [
+        "--persona-prompt-control", "--dev", "--experiment-id", experiment_id,
+        "--model", MODEL,
+    ])
+    output = pull_experiment(experiment_id)
+    print(result[:500])
+    print(f"PERSONA_PROMPT_CONTROL_DOWNLOADED output={output}")
 
 
 @app.function(
