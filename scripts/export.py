@@ -69,6 +69,11 @@ def cache_records(keys: set[str]) -> dict[str, dict]:
     return records
 
 
+def signed_axis_effect(side: str, cells: list[tuple[float, float, float]]) -> float:
+    effect = mean(cell[0] for cell in cells)
+    return -effect if side == "-C" else effect
+
+
 def score_cell(record: dict) -> tuple[float, float, float]:
     judgment = record["judgment"]
     if record["order"] == "AB":
@@ -170,9 +175,7 @@ def export(run_names: list[str], walk_id: str | None = None) -> None:
             if not avail:
                 continue
             cells = [score_cell(record) for record in avail]
-            effect = mean(cell[0] for cell in cells)
-            if row["side"] == "-C":
-                effect = -effect
+            effect = signed_axis_effect(row["side"], cells)
             order_reversal, score_spread = judge_diagnostics(cells)
             scenario_rows.append({
                 "source_run": run.name,
@@ -277,7 +280,7 @@ def export_experiment(
                     for pass_index in range(profile_.passes)
                 ]
                 cells = [score_cell(record) for record in records]
-                effect = mean(cell[0] for cell in cells)
+                effect = signed_axis_effect(side, cells)
                 order_reversal, score_spread = judge_diagnostics(cells)
                 cell_scenarios.append({
                     "source_run": experiment_id,
@@ -385,6 +388,8 @@ def self_test() -> None:
     judgment = {"on_axis_A": 2.0, "on_axis_B": -1.0, "off_axis_A": 0.5, "off_axis_B": 2.5}
     assert score_cell({"order": "AB", "judgment": judgment}) == (-3.0, 2.0, 2.5)
     assert score_cell({"order": "BA", "judgment": judgment}) == (3.0, -2.0, 0.5)
+    assert signed_axis_effect("+C", [(3.0, 0.0, 0.0)]) == 3.0
+    assert signed_axis_effect("-C", [(3.0, 0.0, 0.0)]) == -3.0
     assert judge_diagnostics([(-2, 0, 0), (-1, 0, 0), (1, 0, 0), (3, 0, 0)]) == (True, 5)
     print("EXPORT_SELF_TEST_PASS")
 

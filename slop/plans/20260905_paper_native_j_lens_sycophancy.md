@@ -12,14 +12,14 @@
      1. [x] use `h + alpha V(swap(V†h) - V†h)` with raw `abrasive` and `flattering` J-lens rows
      2. [x] use signed alpha: +C is coordinate exchange; -C extrapolates away from exchange
      3. [x] run the real-model pipeline smoke: task 276 persisted all sides; +C changed 0/2 short outputs and -C repeated `abrasive`, so calibrate below alpha 1
-2. [ ] goal: measure the coherent DEV dose range on Bullshit Bench v2
+2. [x] goal: measure the coherent DEV dose range on Bullshit Bench v2
    - subtle failure mode: a generation passes repetition and truncation checks but scores well only because it refuses or ignores the question
    - discriminator: raw generations remain responsive and the judge reports intended on-axis signs with low off-axis change
    - verify: complete pueue log, DEV `results.csv`, `selected.json`, and raw first samples from every cell
    - tasks:
-     1. [/] search each signed-alpha direction for the generation-health boundary
-     2. [ ] judge the local ±33% dose grid
-     3. [ ] audit the complete log and raw responses
+     1. [x] boundary: +C clean through 1.097; -C clean through .136; both leak/repeat above their boundary
+     2. [x] judge 22 local-grid cells; fixed the experiment exporter's missing -C axis sign
+     3. [x] audit task 277 and raw responses; DEV selected +1.097 (+.02 effect) and -.1128 (-.18 effect)
 3. [ ] goal: add comparable J-lens results to the public plot
    - subtle failure mode: DEV-15 or category-token evidence is presented beside all-100 methods
    - discriminator: the plotted rows use the all-100 cohort, the same judge rubric, and the same admissibility filter

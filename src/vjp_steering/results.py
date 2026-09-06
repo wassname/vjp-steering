@@ -458,6 +458,7 @@ def plot(
         "vjp_mlp_up_left_right_shrink": "#6f4aa8",
         "vjp_mlp_up_shared_eb": "#a64d79",
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
+        "j_lens_swap": J_LENS_COLOR,
     }
     displayed_endpoints = {}
     unselected_sides = {}

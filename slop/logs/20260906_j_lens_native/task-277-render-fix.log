@@ -1,0 +1,6 @@
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:982: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+EXPERIMENT_RENDER_COMPLETE id=j-lens-paper-native-sycophancy-v1 profile=dev rows=22 output=/workspace/2026/jspace/j-steer_pub/results/dev/j-lens-paper-native-sycophancy-v1
