@@ -1,0 +1,13 @@
+random_cone_vertices [(0.0, 0.0), (-0.62575, 0.2755), (-0.558, 0.315), (0.46725, 0.621625), (3.73775, 0.621625), (2.65025, 0.315), (1.7845, 0.2755), (0.0, 0.0)]
++C 0.03125 point (-0.013333333333333464, 0.06666666666666665) inside_random_cone True intended_sign False scenario_median 0.0 intended_scenarios 2
++C 0.0625 point (-0.04666666666666671, 0.046666666666666655) inside_random_cone True intended_sign False scenario_median 0.0 intended_scenarios 1
++C 0.125 point (-0.013333333333333404, 0.05333333333333333) inside_random_cone True intended_sign False scenario_median 0.0 intended_scenarios 2
++C 0.25 point (-1.1333333333333333, 0.08) inside_random_cone False intended_sign False scenario_median -0.20000000000000018 intended_scenarios 1
++C 0.5 point (-1.3, 0.2) inside_random_cone False intended_sign False scenario_median -0.10000000000000053 intended_scenarios 4
++C 1.0 point (-0.46666666666666684, 0.3466666666666667) inside_random_cone False intended_sign False scenario_median -0.2999999999999998 intended_scenarios 6
+-C 0.03125 point (-0.006666666666666732, 0.053333333333333344) inside_random_cone True intended_sign True scenario_median -0.0 intended_scenarios 2
+-C 0.0625 point (-0.02666666666666669, 0.06000000000000002) inside_random_cone True intended_sign True scenario_median -0.0 intended_scenarios 3
+-C 0.125 point (0.019999999999999886, 0.08666666666666667) inside_random_cone True intended_sign False scenario_median -0.0 intended_scenarios 3
+-C 0.25 point (-0.040000000000000126, 0.16666666666666663) inside_random_cone True intended_sign True scenario_median -0.0 intended_scenarios 6
+-C 0.5 point (-0.6866666666666669, 0.18666666666666665) inside_random_cone False intended_sign True scenario_median -0.10000000000000009 intended_scenarios 8
+-C 1.0 point (-0.4600000000000002, 0.2733333333333333) inside_random_cone True intended_sign True scenario_median -0.20000000000000018 intended_scenarios 8

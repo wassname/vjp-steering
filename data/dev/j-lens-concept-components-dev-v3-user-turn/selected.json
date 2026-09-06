@@ -1,0 +1,20 @@
+{
+  "experiment_id": "j-lens-concept-components-dev-v3-user-turn",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 1.0,
+      "candidates_descending": [
+        1.0,
+        0.5,
+        0.0625,
+        0.03125
+      ],
+      "effect": -0.4600000000000002,
+      "off_axis_perturbation": 0.2733333333333333
+    }
+  }
+}
