@@ -12,9 +12,10 @@ import torch
 from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
-    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
-    JLensConceptC, concept_prefill, concept_spec, extract_persona_contrast, final_positions,
-    gradient_pursuit, implementation_hash, prefill_diagnostics, select_concept_layers,
+    COMPONENT_PAIR_METHOD, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
+    JLensConceptC, JLensConceptComponentsC, component_spec, concept_prefill, concept_spec,
+    extract_persona_contrast, final_positions, gradient_pursuit, implementation_hash,
+    prefill_diagnostics, select_concept_layers,
 )
 from vjp_steering.vjp import _activations
 
@@ -108,7 +109,7 @@ def calibrate(args):
 
 
 def self_test():
-    from experiment import concept_grid, validate_extraction_identity, vector_sha256
+    from experiment import concept_application_layers, concept_grid, validate_extraction_identity, vector_sha256
 
     dictionary = torch.tensor([[1., 0., 0.], [.6, .8, 0.], [0., 0., 1.]])
     signal = torch.tensor([.3, 1., -.5])
@@ -146,6 +147,12 @@ def self_test():
     model = Toy()
     vector = Vector(JLensConceptC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}})
     assert select_concept_layers(vector, (0,)).cfg.layers == (0,)
+    component_vector = Vector(
+        JLensConceptComponentsC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}},
+    )
+    assert select_concept_layers(component_vector, (0,)).cfg.method == COMPONENT_PAIR_METHOD
+    assert component_spec()[0]["positive"] == "sycophancy"
+    assert concept_application_layers(SimpleNamespace(concept_layers="13,14"), (6, 13, 14)) == (13, 14)
     try:
         select_concept_layers(vector, (1,))
     except ValueError:
@@ -177,6 +184,11 @@ def self_test():
         path = str(Path(directory) / "v.safetensors")
         vector.save(path)
         assert vector_sha256(vector) == vector_sha256(Vector.load(path))
+        component_path = str(Path(directory) / "component.safetensors")
+        component_vector.save(component_path)
+        restored_component = Vector.load(component_path)
+        assert restored_component.cfg.method == COMPONENT_PAIR_METHOD
+        assert tuple(restored_component.cfg.layers) == (0,)
     args = SimpleNamespace(method="j_lens_concept", model="tiny", dtype="float32", lens_file=None)
     metadata = {"method": args.method, "model": args.model, "dtype": args.dtype, "spec_sha256": concept_spec()[1],
                 "implementation_sha256": implementation_hash()}
@@ -274,7 +286,10 @@ def smoke(args):
         print("COMMAND:", " ".join(command), flush=True)
         subprocess.run(command, check=True)
     metadata = json.loads((root / "extraction/metadata.json").read_text())
-    assert metadata["vector_content_sha256"]["+C"] == metadata["vector_content_sha256"]["-C"]
+    if args.method == COMPONENT_PAIR_METHOD:
+        assert metadata["vector_content_sha256"]["+C"] != metadata["vector_content_sha256"]["-C"]
+    else:
+        assert metadata["vector_content_sha256"]["+C"] == metadata["vector_content_sha256"]["-C"]
     for layer in metadata["layers"].values():
         for d in layer["decomposition"]:
             assert min(d["weights_unit_dictionary"]) >= 0 and d["achieved_nonzero_count"] <= 16

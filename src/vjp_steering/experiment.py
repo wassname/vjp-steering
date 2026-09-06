@@ -10,13 +10,18 @@ SHARED_METHOD = "vjp_mlp_up_shared_eb"
 SHARED_LAST_TOKEN_METHOD = "vjp_mlp_up_shared_last_token_eb"
 J_LENS_SWAP_METHOD = "j_lens_swap"
 J_LENS_CONCEPT_METHOD = "j_lens_concept"
-METHODS = (METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD, J_LENS_SWAP_METHOD, J_LENS_CONCEPT_METHOD)
+J_LENS_COMPONENTS_METHOD = "j_lens_concept_components"
+METHODS = (
+    METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD, J_LENS_SWAP_METHOD,
+    J_LENS_CONCEPT_METHOD, J_LENS_COMPONENTS_METHOD,
+)
 DEFAULT_EXPERIMENT_IDS = {
     METHOD: "mlp-up-left-right-formative-v7-eb-audited",
     SHARED_METHOD: "mlp-up-shared-eb-formative-v1",
     SHARED_LAST_TOKEN_METHOD: "mlp-up-shared-last-token-eb-formative-v1",
     J_LENS_SWAP_METHOD: "j-lens-transfer-formative-v2",
     J_LENS_CONCEPT_METHOD: "j-lens-concept-dev-v1",
+    J_LENS_COMPONENTS_METHOD: "j-lens-concept-components-dev-v1",
 }
 DEFAULT_EXPERIMENT_ID = DEFAULT_EXPERIMENT_IDS[METHOD]
 

@@ -17,7 +17,9 @@ from .vjp import _activations, _blocks, _load_j_lens
 
 SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
+COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
+COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-v1"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -29,10 +31,28 @@ class JLensConceptC(SteeringConfig):
     method: str = METHOD
 
 
+@register_config
+@dataclass
+class JLensConceptComponentsC(SteeringConfig):
+    method: str = COMPONENT_PAIR_METHOD
+
+
 def concept_spec() -> tuple[dict, str]:
     spec = json.loads(SPEC_PATH.read_text())
     assert len(spec["baseline"]) == len(set(spec["baseline"])) == 100
     digest = hashlib.sha256(json.dumps([VERSION, spec], sort_keys=True).encode()).hexdigest()
+    return spec, digest
+
+
+def component_spec() -> tuple[dict, str]:
+    old, _ = concept_spec()
+    spec = {
+        "positive": "sycophancy",
+        "negative": "abrasiveness",
+        "baseline_provenance": old["baseline_provenance"],
+        "baseline": old["baseline"],
+    }
+    digest = hashlib.sha256(json.dumps([COMPONENT_PAIR_VERSION, spec], sort_keys=True).encode()).hexdigest()
     return spec, digest
 
 
@@ -48,7 +68,7 @@ def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
     available = tuple(vector.cfg.layers)
     if not layers or len(set(layers)) != len(layers) or any(layer not in available for layer in layers):
         raise ValueError(f"invalid concept application layers={layers}; available={available}")
-    cfg = JLensConceptC(layers=layers)
+    cfg = type(vector.cfg)(layers=layers)
     cfg.dtype = vector.cfg.dtype
     return Vector(
         cfg,
@@ -214,8 +234,12 @@ def _activity(hidden, dictionary, pair_ids, null_ids, raw_norms):
 
 
 @torch.inference_mode()
-def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_prompts, lens_file=None):
-    spec, spec_hash = concept_spec()
+def extract_concept(
+    model, tokenizer, layers, *, batch_size, max_length, dev_prompts, lens_file=None,
+    separate_components: bool = False,
+):
+    spec, spec_hash = component_spec() if separate_components else concept_spec()
+    operator = COMPONENT_PAIR_VERSION if separate_components else VERSION
     texts = [spec["positive"], spec["negative"], *spec["baseline"]]
     prompts = [tokenizer.apply_chat_template([{"role": "user", "content": f"Tell me about {text}"}],
                tokenize=False, add_generation_prompt=True, enable_thinking=False) for text in texts]
@@ -233,7 +257,8 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
         pair_ids.append(ids[0])
     null_ids = torch.randperm(unembedding.shape[0], generator=torch.Generator().manual_seed(0))
     null_ids = [i for i in null_ids.tolist() if i not in pair_ids][:128]
-    state, layer_meta = {}, {}
+    states = {"+C": {}, "-C": {}}
+    layer_meta = {}
     for layer in layers:
         raw = unembedding @ checkpoint["J"][layer].float().to(device)
         norms = raw.norm(dim=-1)
@@ -263,9 +288,17 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
                 "remainder_sha256": tensor_hash(remainder),
             })
         contrast = components[0] - components[1]
-        if not torch.isfinite(contrast).all() or contrast.norm() <= 1e-6 * max(c.norm() for c in components):
-            raise ValueError(f"zero, nonfinite, or numerically unresolved concept contrast at layer {layer}")
-        state[layer] = {"v": (contrast / contrast.norm()).cpu().unsqueeze(0)}
+        if separate_components:
+            if any(not torch.isfinite(component).all() or component.norm() <= 1e-6 * hs[0].norm() for component in components):
+                raise ValueError(f"zero, nonfinite, or numerically unresolved J component at layer {layer}")
+            states["+C"][layer] = {"v": (components[0] / components[0].norm()).cpu().unsqueeze(0)}
+            states["-C"][layer] = {"v": (components[1] / components[1].norm()).cpu().unsqueeze(0)}
+        else:
+            if not torch.isfinite(contrast).all() or contrast.norm() <= 1e-6 * max(c.norm() for c in components):
+                raise ValueError(f"zero, nonfinite, or numerically unresolved concept contrast at layer {layer}")
+            direction = (contrast / contrast.norm()).cpu().unsqueeze(0)
+            states["+C"][layer] = {"v": direction}
+            states["-C"][layer] = {"v": direction}
         layer_meta[str(layer)] = {
             "decomposition": decomposition, "contrast_norm": contrast.norm().item(),
             "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
@@ -277,12 +310,21 @@ def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_pro
         }
         logger.info("concept layer={} j_norms={} remainder_norms={} contrast_norm={:.4f}", layer,
                     [d["j_norm"] for d in decomposition], [d["remainder_norm"] for d in decomposition], contrast.norm())
-    vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
-    return {"+C": vector, "-C": vector}, {
-        "operator": VERSION, "representation_source": "concept_mean100", "spec_sha256": spec_hash,
+    cfg_type = JLensConceptComponentsC if separate_components else JLensConceptC
+    vectors = {
+        side: Vector(cfg_type(layers=layers), {layer: {} for layer in layers}, state)
+        for side, state in states.items()
+    }
+    return vectors, {
+        "operator": operator,
+        "representation_source": "separate_concept_components_mean100" if separate_components else "concept_mean100",
+        "spec_sha256": spec_hash,
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
-        "equation": "h_valid_prompt + C * unit(j_positive - j_negative)",
+        "equation": (
+            "+C: h_valid_prompt + C * unit(j_sycophancy); -C: h_valid_prompt + C * unit(j_abrasiveness)"
+            if separate_components else "h_valid_prompt + C * unit(j_positive - j_negative)"
+        ),
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
         "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,

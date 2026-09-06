@@ -1,0 +1,43 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-yX4KAtox44TwPntbcFEAcL
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1140.91it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 512.88it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▌         | 23/426 [00:00<00:01, 203.34it/s]
+[1ALoading weights:  10%|█         | 44/426 [00:00<00:01, 198.39it/s]
+[1ALoading weights:  15%|█▌        | 64/426 [00:00<00:01, 191.18it/s]
+[1ALoading weights:  20%|█▉        | 84/426 [00:00<00:01, 191.00it/s]
+[1ALoading weights:  24%|██▍       | 104/426 [00:00<00:01, 186.80it/s]
+[1ALoading weights:  29%|██▉       | 123/426 [00:00<00:01, 185.06it/s]
+[1ALoading weights:  35%|███▍      | 147/426 [00:00<00:01, 191.16it/s]
+[1ALoading weights:  39%|███▉      | 167/426 [00:00<00:01, 164.43it/s]
+[1ALoading weights:  44%|████▍     | 187/426 [00:01<00:01, 173.69it/s]
+[1ALoading weights:  50%|█████     | 214/426 [00:01<00:01, 197.27it/s]
+[1ALoading weights:  55%|█████▌    | 235/426 [00:01<00:01, 186.32it/s]
+[1ALoading weights:  61%|██████▏   | 261/426 [00:01<00:00, 198.77it/s]
+[1ALoading weights:  66%|██████▌   | 282/426 [00:01<00:00, 183.45it/s]
+[1ALoading weights:  72%|███████▏  | 305/426 [00:01<00:00, 194.84it/s]
+[1ALoading weights:  77%|███████▋  | 326/426 [00:01<00:00, 195.23it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 245.44it/s]
+J_LENS_ACTIVITY_AUDIT_COMPLETE {"actual_next_token_ranks": {"false": {"median": 92247.0, "min": 3691, "max": 242603, "top1": 0, "top10": 0, "top25": 0}, "true": {"median": 89899.5, "min": 7319, "max": 234008, "top1": 0, "top10": 0, "top25": 0}, "incorrect": {"median": 41012.0, "min": 2229, "max": 244299, "top1": 0, "top10": 0, "top25": 0}, "correct": {"median": 128363.5, "min": 905, "max": 245811, "top1": 0, "top10": 0, "top25": 0}, "invalid": {"median": 111464.5, "min": 1702, "max": 248168, "top1": 0, "top10": 0, "top25": 0}, "valid": {"median": 144953.0, "min": 2230, "max": 243952, "top1": 0, "top10": 0, "top25": 0}, "impossible": {"median": 30244.0, "min": 1465, "max": 246210, "top1": 0, "top10": 0, "top25": 0}, "possible": {"median": 241853.5, "min": 114215, "max": 248055, "top1": 0, "top10": 0, "top25": 0}, "nonsense": {"median": 22209.5, "min": 1739, "max": 171995, "top1": 0, "top10": 0, "top25": 0}, "reasonable": {"median": 169134.5, "min": 7873, "max": 245221, "top1": 0, "top10": 0, "top25": 0}, "unrelated": {"median": 29420.5, "min": 5372, "max": 219066, "top1": 0, "top10": 0, "top25": 0}, "related": {"median": 242818.5, "min": 146291, "max": 248248, "top1": 0, "top10": 0, "top25": 0}, "unsupported": {"median": 74372.0, "min": 6826, "max": 217271, "top1": 0, "top10": 0, "top25": 0}, "supported": {"median": 220569.0, "min": 10323, "max": 247178, "top1": 0, "top10": 0, "top25": 0}, "abrasive": {"median": 51783.0, "min": 5942, "max": 204158, "top1": 0, "top10": 0, "top25": 0}, "flattering": {"median": 38645.0, "min": 8201, "max": 223079, "top1": 0, "top10": 0, "top25": 0}}, "+C": {"selected_pairs": {"unsupported->supported": 25, "impossible->possible": 32, "unrelated->related": 29, "incorrect->correct": 14}, "source_gate_pass": 13, "target_gate_pass": 100, "both_gates_pass": 13, "actual_source_top1": 0, "actual_source_top10": 0, "actual_source_rank_median": 24239.0}, "-C": {"selected_pairs": {"supported->unsupported": 9, "correct->incorrect": 25, "reasonable->nonsense": 1, "true->false": 63, "valid->invalid": 2}, "source_gate_pass": 0, "target_gate_pass": 100, "both_gates_pass": 0, "actual_source_top1": 0, "actual_source_top10": 0, "actual_source_rank_median": 80423.5}}
+J_LENS_ACTIVITY_AUDIT_DOWNLOADED {"actual_next_token_ranks": {"false": {"median": 92247.0, "min": 3691, "max": 242603, "top1": 0, "top10": 0, "top25": 0}, "true": {"median": 89899.5, "min": 7319, "max": 234008, "top1": 0, "top10": 0, "top25": 0}, "incorrect": {"median": 41012.0, "min": 2229, "max": 244299, "top1": 0, "top10": 0, "top25": 0}, "correct": {"median": 128363.5, "min": 905, "max": 245811, "top1": 0, "top10": 0, "top25": 0}, "invalid": {"median": 111464.5, "min": 1702, "max": 248168, "top1": 0, "top10": 0, "top25": 0}, "valid": {"median": 144953.0, "min": 2230, "max": 243952, "top1": 0, "top10": 0, "top25": 0}, "impossible": {"median": 30244.0, "min": 1465, "max": 246210, "top1": 0, "top10": 0, "top25": 0}, "possible": {"median": 241853.5, "min": 114215, "max": 248055, "top1": 0, "top10": 0, "top25": 0}, "nonsense": {"median": 22209.5, "min": 1739, "max": 171995, "top1": 0, "top10": 0, "top25": 0}, "reasonable": {"median": 169134.5, "min": 7873, "max": 245221, "top1": 0, "top10": 0, "top25": 0}, "unrelated": {"median": 29420.5, "min": 5372, "max": 219066, "top1": 0, "top10": 0, "top25": 0}, "related": {"median": 242818.5, "min": 146291, "max": 248248, "top1": 0, "top10": 0, "top25": 0}, "unsupported": {"median": 74372.0, "min": 6826, "max": 217271, "top1": 0, "top10": 0, "top25": 0}, "supported": {"median": 220569.0, "min": 10323, "max": 247178, "top1": 0, "top10": 0, "top25": 0}, "abrasive": {"median": 51783.0, "min": 5942, "max": 204158, "top1": 0, "top10": 0, "top25": 0}, "flattering": {"median": 38645.0, "min": 8201, "max": 223079, "top1": 0, "top10": 0, "top25": 0}}, "+C": {"selected_pairs": {"unsupported->supported": 25, "impossible->possible": 32, "unrelated->related": 29, "incorrect->correct": 14}, "source_gate_pass": 13, "target_gate_pass": 100, "both_gates_pass": 13, "actual_source_top1": 0, "actual_source_top10": 0, "actual_source_rank_median": 24239.0}, "-C": {"selected_pairs": {"supported->unsupported": 9, "correct->incorrect": 25, "reasonable->nonsense": 1, "true->false": 63, "valid->invalid": 2}, "source_gate_pass": 0, "target_gate_pass": 100, "both_gates_pass": 0, "actual_source_top1": 0, "actual_source_top10": 0, "actual_source_rank_median": 80423.5}}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-yX4KAtox44TwPntbcFEAcL

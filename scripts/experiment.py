@@ -23,9 +23,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
-    LEGACY_EXTRACTION_IMPLEMENTATION_SHA256, PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION,
-    concept_spec, extract_concept, extract_persona_contrast, implementation_hash,
-    prefill_diagnostics, select_concept_layers,
+    COMPONENT_PAIR_METHOD, COMPONENT_PAIR_VERSION, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
+    PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
+    extract_concept, extract_persona_contrast, implementation_hash, prefill_diagnostics,
+    select_concept_layers,
 )
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
@@ -63,6 +64,7 @@ GRID_LOW = 0.66
 GRID_HIGH = 1.33
 GRID_POINTS = 9
 J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
+CONCEPT_METHODS = {"j_lens_concept", COMPONENT_PAIR_METHOD}
 
 
 def parse_args() -> argparse.Namespace:
@@ -144,6 +146,8 @@ def signed_coefficient(side: str, coefficient: float) -> float:
 
 
 def applied_coefficient(method: str, side: str, coefficient: float) -> float:
+    if method == COMPONENT_PAIR_METHOD:
+        return coefficient
     return signed_coefficient(side, coefficient)
 
 
@@ -207,6 +211,22 @@ def persona_prefill_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[s
 
 
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
+    if args.method == COMPONENT_PAIR_METHOD:
+        available = walk.resolve_layers(model, None)
+        paper_workspace = tuple(range(13, 22))
+        if set(paper_workspace) <= set(available):
+            layers = paper_workspace
+        elif args.model == "wassname/qwen3-5lyr-tiny-random":
+            layers = available
+        else:
+            raise ValueError(f"{COMPONENT_PAIR_METHOD} requires layers 13-21; available={available}")
+        rows, _ = walk.read_cohort(DEV.cohort_size)
+        vectors, metadata = extract_concept(
+            model, tokenizer, layers, batch_size=args.extract_batch_size,
+            max_length=args.max_length, dev_prompts=walk.generation_inputs(tokenizer, rows),
+            lens_file=args.lens_file, separate_components=True,
+        )
+        return vectors, metadata, 0, "separate_components:" + metadata["spec_sha256"]
     if args.method == "j_lens_concept":
         layers = walk.resolve_layers(model, None)
         if args.j_lens_source in {"persona", "persona_prefill"}:
@@ -269,6 +289,15 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
 def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse: bool = False):
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
+    if args.method == COMPONENT_PAIR_METHOD:
+        if metadata.get("representation_source") != "separate_concept_components_mean100":
+            raise ValueError("separate J-lens component representation source mismatch")
+        if metadata["operator"] != COMPONENT_PAIR_VERSION or metadata["spec_sha256"] != component_spec()[1]:
+            raise ValueError("separate J-lens component specification mismatch")
+        if metadata["implementation_sha256"] != implementation_hash():
+            raise ValueError("separate J-lens component implementation mismatch")
+        if args.lens_file is not None and metadata["lens_sha256"] != hashlib.sha256(args.lens_file.read_bytes()).hexdigest():
+            raise ValueError("separate J-lens component cache lens mismatch")
     if args.method == "j_lens_concept":
         source = getattr(args, "j_lens_source", "concept")
         expected_source = {
@@ -320,6 +349,9 @@ def load_or_extract(
             args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
         )
         vectors = {side: Vector.load(str(path)) for side, path in paths.items()}
+        for side, vector in vectors.items():
+            if vector.cfg.method != args.method or tuple(vector.cfg.layers) != tuple(metadata["source_layers"]):
+                raise ValueError(f"saved extraction vector config mismatch for {side}")
         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
         if actual != metadata["vector_content_sha256"]:
             raise ValueError("saved extraction vector hash mismatch")
@@ -333,6 +365,9 @@ def load_or_extract(
         metadata = json.loads(source_path.read_text())
         validate_extraction_identity(args, metadata, allow_explicit_legacy_reuse=True)
         vectors = {side: Vector.load(str(source / metadata["vector_files"][side])) for side in paths}
+        for side, vector in vectors.items():
+            if vector.cfg.method != args.method or tuple(vector.cfg.layers) != tuple(metadata["source_layers"]):
+                raise ValueError(f"source extraction vector config mismatch for {side}")
         if {side: vector_sha256(v) for side, v in vectors.items()} != metadata["vector_content_sha256"]:
             raise ValueError("source extraction vector hash mismatch")
         paths["+C"].parent.mkdir(parents=True, exist_ok=True)
@@ -457,7 +492,7 @@ def extend_generation(
     missing_prompts = prompts[len(existing):]
     if vector is None:
         answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
-    elif args.method == "j_lens_concept":
+    elif args.method in CONCEPT_METHODS:
         answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens,
                                 prefill_vector=vector, coefficient=applied_coefficient(args.method, side, coefficient))
     else:
@@ -629,9 +664,9 @@ def completed_profile_cell_count(
     return count
 
 
-def concept_application_layers(args: argparse.Namespace, vector: Vector) -> tuple[int, ...]:
+def concept_application_layers(args: argparse.Namespace, available_layers) -> tuple[int, ...]:
     if not args.concept_layers:
-        return tuple(vector.cfg.layers)
+        return tuple(available_layers)
     return tuple(int(value) for value in args.concept_layers.split(",") if value)
 
 
@@ -644,14 +679,14 @@ def concept_grid(args):
 
 
 def gpu_stage(args: argparse.Namespace) -> None:
-    if args.method == "j_lens_concept" and not args.dev:
+    if args.method in CONCEPT_METHODS and not args.dev:
         raise ValueError("concept intervention is DEV-only")
     profile_name = "dev" if args.dev else "full"
     limit = DEV.cohort_size if args.dev else FULL.cohort_size
     root = experiment_dir(args.experiment_id)
     root.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(manifest_path(args.experiment_id).read_text()) if manifest_path(args.experiment_id).exists() else {
-        "schema": ("j_lens_concept_experiment_v1" if args.method == "j_lens_concept" else
+        "schema": ("j_lens_concept_experiment_v1" if args.method in CONCEPT_METHODS else
                    "j_lens_swap_experiment_v1" if args.method == "j_lens_swap" else "mlp_up_left_right_experiment_v1"),
         "experiment_id": args.experiment_id,
         "method": args.method,
@@ -674,10 +709,19 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if args.method == "j_lens_swap" and manifest["schema"] == "mlp_up_left_right_experiment_v1":
         manifest["schema"] = "j_lens_swap_experiment_v1"
         atomic_json(manifest_path(args.experiment_id), manifest)
-    if args.method == "j_lens_concept" and "extraction" in manifest:
-        validate_extraction_identity(args, manifest["extraction"])
+    if args.method in CONCEPT_METHODS and "extraction" in manifest:
+        validate_extraction_identity(
+            args, manifest["extraction"],
+            allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+        )
+        requested_layers = concept_application_layers(args, manifest["extraction"]["source_layers"])
+        saved_layers = tuple(manifest["extraction"].get("application_layers", manifest["extraction"]["source_layers"]))
+        if requested_layers != saved_layers:
+            raise ValueError(
+                f"concept application layers are immutable within an experiment: saved={saved_layers} requested={requested_layers}"
+            )
     if args.dev and "boundaries" in manifest:
-        if args.method == "j_lens_concept":
+        if args.method in CONCEPT_METHODS:
             expanded_grid = concept_grid(args)
         else:
             expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
@@ -699,8 +743,8 @@ def gpu_stage(args: argparse.Namespace) -> None:
         verify_extraction(args, root, model, tokenizer)
         return
     vectors, extraction = load_or_extract(args, root, model, tokenizer)
-    if args.method == "j_lens_concept":
-        layers = concept_application_layers(args, vectors["+C"])
+    if args.method in CONCEPT_METHODS:
+        layers = concept_application_layers(args, vectors["+C"].cfg.layers)
         vectors = {side: select_concept_layers(vector, layers) for side, vector in vectors.items()}
         extraction = {
             **extraction,
@@ -724,8 +768,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if "grid" not in manifest:
         if not args.dev:
             raise RuntimeError("full mode requires its automatic dev stage first")
-        if args.method == "j_lens_concept":
-            boundaries = {side: {"meaning": "signed unit concept contrast", "trace": []} for side in ("+C", "-C")}
+        if args.method in CONCEPT_METHODS:
+            meaning = (
+                "positive dose of the side-specific J-space concept component"
+                if args.method == COMPONENT_PAIR_METHOD else "signed unit concept contrast"
+            )
+            boundaries = {side: {"meaning": meaning, "trace": []} for side in ("+C", "-C")}
             grid = concept_grid(args)
         else:
             boundaries = {
@@ -746,7 +794,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
         raise ValueError("full GPU stage requires DEV-accepted candidates for both sides")
     generated_cells = 0
     encoded_prompts = None
-    if args.method == "j_lens_concept":
+    if args.method in CONCEPT_METHODS:
         encoded_prompts = tokenizer(
             prompts, return_tensors="pt", padding=True, add_special_tokens=False,
         ).to(args.device)
@@ -772,7 +820,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 "health": stats,
                 "breakdown_reasons": reasons,
             }
-            if args.method == "j_lens_concept":
+            if args.method in CONCEPT_METHODS:
                 assert encoded_prompts is not None
                 cell["realized_prefill"] = prefill_diagnostics(
                     model,
@@ -836,7 +884,7 @@ def modal_stage(
         command.extend(["--j-lens-source", args.j_lens_source])
     if args.persona_direction != "j_gp16":
         command.extend(["--persona-direction", args.persona_direction])
-    if args.method == "j_lens_concept" and dev:
+    if args.method in CONCEPT_METHODS and dev:
         coefficients = concept_grid(args)
     if coefficients is not None:
         command.extend([
@@ -856,7 +904,7 @@ def modal_stage(
 
 
 def local_pipeline(args: argparse.Namespace) -> None:
-    if args.method == "j_lens_concept" and not args.dev:
+    if args.method in CONCEPT_METHODS and not args.dev:
         raise ValueError("concept intervention is DEV-only; full confirmation is not authorized")
     if args.local:
         args.gpu_stage = True
@@ -1143,6 +1191,7 @@ def self_test() -> None:
     assert signed_coefficient("+C", 2.0) == 2.0
     assert signed_coefficient("-C", 2.0) == -2.0
     assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
+    assert applied_coefficient(COMPONENT_PAIR_METHOD, "-C", 2.0) == 2.0
     quick_rows = [
         {
             "bare": f"bare {question}",
@@ -1189,7 +1238,7 @@ def main() -> None:
     args = parse_args()
     if args.self_test:
         self_test()
-        if args.method == "j_lens_concept":
+        if args.method in CONCEPT_METHODS:
             from concept_checks import self_test as concept_self_test
             concept_self_test()
     elif args.concept_smoke:

@@ -52,6 +52,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "j_lens_swap": "J-lens coordinate swap",
+    "j_lens_concept_components": "J-lens concept components",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
@@ -459,6 +460,7 @@ def plot(
         "vjp_mlp_up_shared_eb": "#a64d79",
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
         "j_lens_swap": J_LENS_COLOR,
+        "j_lens_concept_components": J_LENS_COLOR,
     }
     displayed_endpoints = {}
     unselected_sides = {}
