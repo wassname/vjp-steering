@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 from types import SimpleNamespace
 
 import torch
@@ -135,7 +136,60 @@ def calibrate(args):
             f"text_first={records[0]['text']!r}",
             flush=True,
         )
+    write_calibration_manifest(root, args, metadata, cohort_hash, observations)
     print(f"CONCEPT_CALIBRATION_COMPLETE id={args.experiment_id} cells={sum(map(len, observations.values()))}")
+
+
+def write_calibration_manifest(root: Path, args, extraction: dict, cohort_hash: str, observations: dict) -> None:
+    import experiment
+
+    exchange = observations["exchange"]
+    nonzero = [observation for observation in exchange if observation["coefficient"] > 0]
+    cells = {
+        str(observation["coefficient"]): {
+            "coefficient": observation["coefficient"],
+            "path": observation["path"],
+            "rows": observation["health"]["answers"],
+            "health": observation["health"],
+            "breakdown_reasons": observation["breakdown_reasons"],
+            "realized_prefill": {
+                "coefficient": observation["coefficient"],
+                "final_token_kl_bare_to_steered_mean": observation["kl_bare_to_steered_mean"],
+                "final_token_logit_delta_norm_mean": observation["logit_delta_norm_mean"],
+                "layers": observation["layers"],
+            },
+        }
+        for observation in nonzero
+    }
+    experiment.atomic_json(root / "manifest.json", {
+        "schema": "j_lens_concept_exchange_diagnostic_v1",
+        "experiment_id": args.experiment_id,
+        "method": args.method,
+        "date": time.strftime("%Y%m%d"),
+        "profiles": {
+            "dev": {"status": "DEV", "cohort_size": exchange[0]["health"]["answers"], "generated": True},
+        },
+        "config": {
+            "model": args.model,
+            "dtype": args.dtype,
+            "n_pairs": args.n_pairs,
+            "batch_size": args.batch_size,
+            "extract_batch_size": args.extract_batch_size,
+            "max_length": args.max_length,
+            "max_new_tokens": args.max_new_tokens,
+            "j_lens_source": args.j_lens_source,
+            "persona_direction": args.persona_direction,
+        },
+        "grid": {"+C": [observation["coefficient"] for observation in nonzero], "-C": []},
+        "boundaries": {
+            "+C": {"meaning": "non-negative coordinate exchange", "trace": []},
+            "-C": {"meaning": "not evaluated; negative alpha is extrapolation", "trace": []},
+        },
+        "bare": {"path": next(observation["path"] for observation in exchange if observation["coefficient"] == 0)},
+        "cohort_sha256": cohort_hash,
+        "cells": {"+C": cells, "-C": {}},
+        "extraction": extraction,
+    })
 
 
 def self_test():

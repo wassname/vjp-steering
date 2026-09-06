@@ -1,0 +1,2 @@
+2026-09-06 22:33:34.422 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-behavior-components-coordinate-swap-calibration-v7b profile=dev cells=7 demo_sides=105
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-behavior-components-coordinate-swap-calibration-v7b profile=dev arms=7 scenarios=105

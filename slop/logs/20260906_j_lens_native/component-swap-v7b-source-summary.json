@@ -1,0 +1,718 @@
+{
+  "source_metadata_path": "outputs/experiments/j-lens-behavior-components-coordinate-swap-source-v7b/extraction/metadata.json",
+  "source_metadata_sha256": "f0c5e1fc548a8427f33f8d7926d5ad73576f3ff28a3f7502cfbf15c08d8a6b2d",
+  "author": "PI/OpenAI Codex",
+  "method": "j_lens_concept_components",
+  "model": "Qwen/Qwen3.5-4B",
+  "dtype": "bfloat16",
+  "operator": "mean100-gp16-reconstruction-coordinate-swap-all-prefill-v7",
+  "representation_source": "paired_nonnegative_gp16_concept_components_coordinate_swap",
+  "equation": "h_all_prefill + alpha * V * (swap(V^dagger h_all_prefill) - V^dagger h_all_prefill)",
+  "application_mask": "all_attended_prefill_positions",
+  "component_basis_normalization": "independent_unit_norm_commensurate_coordinates",
+  "application_scale": "none_common_basis_scale_cancels_under_pseudoinverse",
+  "source_layers": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "lens_n_prompts": 1000,
+  "implementation_sha256": "afe2b8119624d57aaa4710144686438ba92962bfc45b8baf2b02d4b5e88f86d1",
+  "spec_sha256": "ce99234e3d16543d592908dd3a688d0823492efc509c0cf0848bd1bc19b3b618",
+  "vector_content_sha256": {
+    "+C": "5c0965e1731c73ef8ddc29629a71e33e57ee4544d46a556e6749a22179197a58",
+    "-C": "5c0965e1731c73ef8ddc29629a71e33e57ee4544d46a556e6749a22179197a58"
+  },
+  "layers": {
+    "13": {
+      "component_cosine": 0.7666362524032593,
+      "component_basis_norms": [
+        1.0,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.329148769378662,
+        0.48307734727859497
+      ],
+      "component_basis_condition_number": 2.751420259475708,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 3.5818257331848145,
+          "j_norm": 0.8376534581184387,
+          "remainder_norm": 3.473032236099243,
+          "weight_min": 0.035665933042764664,
+          "weight_max": 0.2673826217651367,
+          "top_weighted_tokens": [
+            {
+              "token": " jedenfalls",
+              "weight": 0.2673826217651367
+            },
+            {
+              "token": "我没有",
+              "weight": 0.2061470001935959
+            },
+            {
+              "token": " Lew",
+              "weight": 0.17024961113929749
+            },
+            {
+              "token": " affidavit",
+              "weight": 0.16121569275856018
+            },
+            {
+              "token": " faux",
+              "weight": 0.14587849378585815
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.342461585998535,
+          "j_norm": 1.0815953016281128,
+          "remainder_norm": 4.19450569152832,
+          "weight_min": 0.09649552404880524,
+          "weight_max": 0.27087119221687317,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.27087119221687317
+            },
+            {
+              "token": " corrobor",
+              "weight": 0.22584262490272522
+            },
+            {
+              "token": "我自己的",
+              "weight": 0.20757772028446198
+            },
+            {
+              "token": "假",
+              "weight": 0.20653347671031952
+            },
+            {
+              "token": "纪律",
+              "weight": 0.18714679777622223
+            }
+          ]
+        }
+      ]
+    },
+    "14": {
+      "component_cosine": 0.7948405742645264,
+      "component_basis_norms": [
+        0.9999999403953552,
+        0.9999999403953552
+      ],
+      "component_basis_singular_values": [
+        1.3397166728973389,
+        0.45294511318206787
+      ],
+      "component_basis_condition_number": 2.9577903747558594,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.095108509063721,
+          "j_norm": 1.070487380027771,
+          "remainder_norm": 3.9642996788024902,
+          "weight_min": 0.04271895810961723,
+          "weight_max": 0.45235347747802734,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.45235347747802734
+            },
+            {
+              "token": " Token",
+              "weight": 0.31980693340301514
+            },
+            {
+              "token": "?”",
+              "weight": 0.2341824471950531
+            },
+            {
+              "token": "可能",
+              "weight": 0.19117219746112823
+            },
+            {
+              "token": "真诚",
+              "weight": 0.18782272934913635
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 4.630497932434082,
+          "j_norm": 1.3008325099945068,
+          "remainder_norm": 4.4520182609558105,
+          "weight_min": 0.11529731750488281,
+          "weight_max": 0.3315037190914154,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.3315037190914154
+            },
+            {
+              "token": "预先",
+              "weight": 0.3078325092792511
+            },
+            {
+              "token": " CC",
+              "weight": 0.27637380361557007
+            },
+            {
+              "token": " Editorial",
+              "weight": 0.26742368936538696
+            },
+            {
+              "token": "回避",
+              "weight": 0.22843939065933228
+            }
+          ]
+        }
+      ]
+    },
+    "15": {
+      "component_cosine": 0.8081830143928528,
+      "component_basis_norms": [
+        0.9999998807907104,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.3446868658065796,
+        0.4379690885543823
+      ],
+      "component_basis_condition_number": 3.0702779293060303,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.196440696716309,
+          "j_norm": 1.3266490697860718,
+          "remainder_norm": 5.012188911437988,
+          "weight_min": 0.10304189473390579,
+          "weight_max": 0.4438394010066986,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.4438394010066986
+            },
+            {
+              "token": "我没有",
+              "weight": 0.34164658188819885
+            },
+            {
+              "token": "预先",
+              "weight": 0.2885122001171112
+            },
+            {
+              "token": "反",
+              "weight": 0.26679980754852295
+            },
+            {
+              "token": " Mme",
+              "weight": 0.25913891196250916
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.400624752044678,
+          "j_norm": 1.5377849340438843,
+          "remainder_norm": 5.190261363983154,
+          "weight_min": 0.08459002524614334,
+          "weight_max": 0.4095749258995056,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.4095749258995056
+            },
+            {
+              "token": " corrobor",
+              "weight": 0.34293675422668457
+            },
+            {
+              "token": " ATS",
+              "weight": 0.34185484051704407
+            },
+            {
+              "token": " affidavit",
+              "weight": 0.28474509716033936
+            },
+            {
+              "token": " корре",
+              "weight": 0.28153449296951294
+            }
+          ]
+        }
+      ]
+    },
+    "16": {
+      "component_cosine": 0.7234896421432495,
+      "component_basis_norms": [
+        1.0,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.3128174543380737,
+        0.5258424878120422
+      ],
+      "component_basis_condition_number": 2.496598243713379,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.200766563415527,
+          "j_norm": 1.5886369943618774,
+          "remainder_norm": 6.005786418914795,
+          "weight_min": 0.07302231341600418,
+          "weight_max": 0.5950939655303955,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.5950939655303955
+            },
+            {
+              "token": " L",
+              "weight": 0.3662088215351105
+            },
+            {
+              "token": "刻意",
+              "weight": 0.3147543668746948
+            },
+            {
+              "token": "配",
+              "weight": 0.3097994327545166
+            },
+            {
+              "token": "反向",
+              "weight": 0.27831053733825684
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 5.970693588256836,
+          "j_norm": 1.6301701068878174,
+          "remainder_norm": 5.759049415588379,
+          "weight_min": 0.10461641103029251,
+          "weight_max": 0.4979170262813568,
+          "top_weighted_tokens": [
+            {
+              "token": " protocol",
+              "weight": 0.4979170262813568
+            },
+            {
+              "token": "?”",
+              "weight": 0.3727187216281891
+            },
+            {
+              "token": "预先",
+              "weight": 0.31982094049453735
+            },
+            {
+              "token": "上述",
+              "weight": 0.31278476119041443
+            },
+            {
+              "token": "要求",
+              "weight": 0.29657429456710815
+            }
+          ]
+        }
+      ]
+    },
+    "17": {
+      "component_cosine": 0.7255278825759888,
+      "component_basis_norms": [
+        1.0,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.3135933876037598,
+        0.5239008665084839
+      ],
+      "component_basis_condition_number": 2.5073318481445312,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.864710330963135,
+          "j_norm": 1.576648235321045,
+          "remainder_norm": 6.6734843254089355,
+          "weight_min": 0.11003582924604416,
+          "weight_max": 0.5830938816070557,
+          "top_weighted_tokens": [
+            {
+              "token": " refusal",
+              "weight": 0.5830938816070557
+            },
+            {
+              "token": "正常的",
+              "weight": 0.36005669832229614
+            },
+            {
+              "token": " Ma",
+              "weight": 0.3370673358440399
+            },
+            {
+              "token": "在此",
+              "weight": 0.312797874212265
+            },
+            {
+              "token": ";.",
+              "weight": 0.31099650263786316
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 6.447885990142822,
+          "j_norm": 1.7340694665908813,
+          "remainder_norm": 6.205659866333008,
+          "weight_min": 0.144597128033638,
+          "weight_max": 0.5907573103904724,
+          "top_weighted_tokens": [
+            {
+              "token": "反",
+              "weight": 0.5907573103904724
+            },
+            {
+              "token": " procedural",
+              "weight": 0.4376909136772156
+            },
+            {
+              "token": "回避",
+              "weight": 0.3777892589569092
+            },
+            {
+              "token": " Kov",
+              "weight": 0.34234634041786194
+            },
+            {
+              "token": "假",
+              "weight": 0.31532683968544006
+            }
+          ]
+        }
+      ]
+    },
+    "18": {
+      "component_cosine": 0.7927378416061401,
+      "component_basis_norms": [
+        1.0,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.338931679725647,
+        0.4552605152130127
+      ],
+      "component_basis_condition_number": 2.941023111343384,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 8.7766752243042,
+          "j_norm": 2.6727471351623535,
+          "remainder_norm": 8.389264106750488,
+          "weight_min": 0.18554764986038208,
+          "weight_max": 0.6947425603866577,
+          "top_weighted_tokens": [
+            {
+              "token": ".”",
+              "weight": 0.6947425603866577
+            },
+            {
+              "token": " FALSE",
+              "weight": 0.6353269815444946
+            },
+            {
+              "token": " effectivement",
+              "weight": 0.5332232713699341
+            },
+            {
+              "token": "我司",
+              "weight": 0.5261458158493042
+            },
+            {
+              "token": "回避",
+              "weight": 0.4799344837665558
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 7.716305732727051,
+          "j_norm": 2.191279172897339,
+          "remainder_norm": 7.382375240325928,
+          "weight_min": 0.16950875520706177,
+          "weight_max": 0.53530353307724,
+          "top_weighted_tokens": [
+            {
+              "token": "表述",
+              "weight": 0.53530353307724
+            },
+            {
+              "token": "自身",
+              "weight": 0.5174991488456726
+            },
+            {
+              "token": " SOP",
+              "weight": 0.5138410329818726
+            },
+            {
+              "token": "?”",
+              "weight": 0.4502233564853668
+            },
+            {
+              "token": " procedural",
+              "weight": 0.43867170810699463
+            }
+          ]
+        }
+      ]
+    },
+    "19": {
+      "component_cosine": 0.7281129360198975,
+      "component_basis_norms": [
+        0.9999999403953552,
+        0.9999999403953552
+      ],
+      "component_basis_singular_values": [
+        1.3145769834518433,
+        0.5214279294013977
+      ],
+      "component_basis_condition_number": 2.5211095809936523,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 12.426138877868652,
+          "j_norm": 3.5476977825164795,
+          "remainder_norm": 11.893454551696777,
+          "weight_min": 0.2702556550502777,
+          "weight_max": 0.9609890580177307,
+          "top_weighted_tokens": [
+            {
+              "token": " requests",
+              "weight": 0.9609890580177307
+            },
+            {
+              "token": "回避",
+              "weight": 0.8389909863471985
+            },
+            {
+              "token": " I",
+              "weight": 0.818720817565918
+            },
+            {
+              "token": " Ma",
+              "weight": 0.6616004109382629
+            },
+            {
+              "token": "反感",
+              "weight": 0.644730269908905
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 15,
+          "concept_norm": 11.431180953979492,
+          "j_norm": 2.9624602794647217,
+          "remainder_norm": 11.0313138961792,
+          "weight_min": 0.24792402982711792,
+          "weight_max": 1.0270271301269531,
+          "top_weighted_tokens": [
+            {
+              "token": " procedural",
+              "weight": 1.0270271301269531
+            },
+            {
+              "token": "我不",
+              "weight": 0.8104822039604187
+            },
+            {
+              "token": " Judicial",
+              "weight": 0.7558969855308533
+            },
+            {
+              "token": "缺乏",
+              "weight": 0.6571270823478699
+            },
+            {
+              "token": "自查",
+              "weight": 0.5838093757629395
+            }
+          ]
+        }
+      ]
+    },
+    "20": {
+      "component_cosine": 0.7359510660171509,
+      "component_basis_norms": [
+        0.9999999403953552,
+        0.9999998807907104
+      ],
+      "component_basis_singular_values": [
+        1.3175550699234009,
+        0.5138567686080933
+      ],
+      "component_basis_condition_number": 2.5640511512756348,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 13.890297889709473,
+          "j_norm": 4.085693359375,
+          "remainder_norm": 13.316837310791016,
+          "weight_min": 0.28656241297721863,
+          "weight_max": 0.9790058135986328,
+          "top_weighted_tokens": [
+            {
+              "token": "故意",
+              "weight": 0.9790058135986328
+            },
+            {
+              "token": " AI",
+              "weight": 0.9591977596282959
+            },
+            {
+              "token": "不存在",
+              "weight": 0.8985798358917236
+            },
+            {
+              "token": "反感",
+              "weight": 0.8134632706642151
+            },
+            {
+              "token": "“",
+              "weight": 0.7923756241798401
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 12.397102355957031,
+          "j_norm": 3.388397455215454,
+          "remainder_norm": 11.941444396972656,
+          "weight_min": 0.2620275318622589,
+          "weight_max": 0.940754771232605,
+          "top_weighted_tokens": [
+            {
+              "token": "?”",
+              "weight": 0.940754771232605
+            },
+            {
+              "token": "conse",
+              "weight": 0.8886731863021851
+            },
+            {
+              "token": "反",
+              "weight": 0.7986160516738892
+            },
+            {
+              "token": " AI",
+              "weight": 0.7111013531684875
+            },
+            {
+              "token": " No",
+              "weight": 0.6314533948898315
+            }
+          ]
+        }
+      ]
+    },
+    "21": {
+      "component_cosine": 0.6569814682006836,
+      "component_basis_norms": [
+        1.0000001192092896,
+        1.0
+      ],
+      "component_basis_singular_values": [
+        1.2872380018234253,
+        0.5856777429580688
+      ],
+      "component_basis_condition_number": 2.1978604793548584,
+      "decomposition": [
+        {
+          "concept": "sycophantic agreement and flattery toward the user",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 15.70345401763916,
+          "j_norm": 4.395890235900879,
+          "remainder_norm": 15.061822891235352,
+          "weight_min": 0.5084304809570312,
+          "weight_max": 1.207877278327942,
+          "top_weighted_tokens": [
+            {
+              "token": " requests",
+              "weight": 1.207877278327942
+            },
+            {
+              "token": " disrespectful",
+              "weight": 1.0571569204330444
+            },
+            {
+              "token": "不存在",
+              "weight": 0.9177106618881226
+            },
+            {
+              "token": "受害",
+              "weight": 0.8838554620742798
+            },
+            {
+              "token": " You",
+              "weight": 0.8534085750579834
+            }
+          ]
+        },
+        {
+          "concept": "independent critical assessment of the user's claims",
+          "achieved_nonzero_count": 16,
+          "concept_norm": 13.659443855285645,
+          "j_norm": 3.625978946685791,
+          "remainder_norm": 13.190500259399414,
+          "weight_min": 0.3625548183917999,
+          "weight_max": 0.9553772807121277,
+          "top_weighted_tokens": [
+            {
+              "token": " Judicial",
+              "weight": 0.9553772807121277
+            },
+            {
+              "token": "表述",
+              "weight": 0.9521260261535645
+            },
+            {
+              "token": "透明",
+              "weight": 0.8631207346916199
+            },
+            {
+              "token": "/\"",
+              "weight": 0.704139769077301
+            },
+            {
+              "token": " YOUR",
+              "weight": 0.6708763837814331
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+random_cone_vertices [(0.0, 0.0), (-0.62575, 0.2755), (-0.558, 0.315), (0.46725, 0.621625), (3.73775, 0.621625), (2.65025, 0.315), (1.7845, 0.2755), (0.0, 0.0)]
+alpha=0.25 point=(-0.4533333333333335, 0.21333333333333332) inside_random_cone=True intended_positive=False
+alpha=0.5 point=(-1.0666666666666669, 0.18) inside_random_cone=False intended_positive=False
+alpha=0.75 point=(-1.0733333333333333, 0.10666666666666666) inside_random_cone=False intended_positive=False
+alpha=1.0 point=(-1.1600000000000001, 0.14666666666666667) inside_random_cone=False intended_positive=False
+alpha=1.25 point=(-1.1466666666666667, 0.09333333333333334) inside_random_cone=False intended_positive=False
+alpha=1.5 point=(-1.0333333333333334, 0.14666666666666664) inside_random_cone=False intended_positive=False
+alpha=2.0 point=(-1.4266666666666667, 0.7999999999999999) inside_random_cone=False intended_positive=False
