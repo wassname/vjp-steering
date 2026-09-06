@@ -28,7 +28,6 @@ METHODS = (
     "mean_diff",
     "pca",
     "J_word",
-    "j_lens_swap",
     "vjp_mlp_up_shrink",
     "vjp_mlp_up_left_right_shrink",
     "random",
@@ -39,7 +38,6 @@ METHOD_SEEDS = {
     "mean_diff": {0, 1, 2},
     "pca": {0, 1, 2},
     "J_word": {0},
-    "j_lens_swap": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
 }

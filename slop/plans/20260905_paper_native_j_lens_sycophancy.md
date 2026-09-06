@@ -20,14 +20,17 @@
      1. [x] boundary: +C clean through 1.097; -C clean through .136; both leak/repeat above their boundary
      2. [x] judge 22 local-grid cells; fixed the experiment exporter's missing -C axis sign
      3. [x] audit task 277 and raw responses; DEV selected +1.097 (+.02 effect) and -.1128 (-.18 effect)
-3. [x] goal: add comparable J-lens results to the public plot
+3. [/] goal: add a working, comparable J-lens result to the public plot
    - subtle failure mode: DEV-15 or category-token evidence is presented beside all-100 methods
    - discriminator: the plotted rows use the all-100 cohort, the same judge rubric, and the same admissibility filter
    - verify: `just results`; inspect `results/plot.png`, `results/plot_pareto.png`, and table provenance
    - tasks:
      1. [x] run all 22 calibrated doses on the all-100 cohort with AB+BA judging
      2. [x] merge 22 dose rows and 2,200 scenario rows under `J-lens coordinate swap`
-     3. [x] regenerate and inspect both PNGs; fresh review identified the cyan paths as small and near bare
+     3. [x] diagnose the fixed `abrasive`/`flattering` adaptation: it remains in the random zone and is not a working method
+     4. [/] remove that failed adaptation from the public comparison; retain its standalone audit
+     5. [ ] match the paper's active-source or concept-component intervention and clear the random zone on DEV
+     6. [ ] run the working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-279-public-render.log`: `wrote 8 table rows and 2 plots from 822 measured evaluations`
