@@ -1,0 +1,41 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 7185.27it/s]
+2026-09-06 23:07:31.446 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:556 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-06 23:07:31.571 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:556 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 8943.41it/s]
+2026-09-06 23:07:33.910 | INFO     | vjp_steering.j_lens_concept:extract_concept:366 - concept extraction spec=e8574ec121aa579eaee74ff5de35c715493589e91c1292ac91823df122811871 layers=(2,) final_prompt_token=true
+2026-09-06 23:07:33.910 | INFO     | vjp_steering.j_lens_concept:extract_concept:367 - concept extraction demo=<|im_start|>user
+Tell me about sycophantic agreement and flattery toward the user<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-09-06 23:07:34.541 | INFO     | vjp_steering.j_lens_concept:extract_concept:462 - concept layer=2 j_norms=[214.39207458496094, 120.98915100097656] remainder_norms=[43.944889068603516, 25.82076644897461] contrast_norm=183.3995
+2026-09-06 23:07:40.538 | INFO     | walk:generate:484 - generation 15/15
+2026-09-06 23:07:46.524 | INFO     | walk:generate:484 - generation 15/15
+2026-09-06 23:07:52.798 | INFO     | walk:generate:484 - generation 15/15
+2026-09-06 23:08:00.388 | INFO     | walk:generate:484 - generation 15/15
+2026-09-06 23:08:07.170 | INFO     | walk:generate:484 - generation 15/15
+2026-09-06 23:08:07.950 | INFO     | experiment:gpu_stage:851 - GPU_STAGE_COMPLETE experiment=j-lens-components-target-ordered-tiny-smoke-v8b profile=dev cells=4
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 7380.01it/s]
+CONCEPT_REAL_HOOK_CHECK both_directions_changed_logits=true distinct=true restored_logits=true calls_once=true removed=true diagnostics=true
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/judge.py --experiment-id j-lens-components-target-ordered-tiny-smoke-v8b --profile dev --refresh
+2026-09-06 23:08:12.424 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-components-target-ordered-tiny-smoke-v8b profile=dev cells=4 demo_sides=60
+2026-09-06 23:08:13.002 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-06 23:08:13.488 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-06 23:08:14.147 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-06 23:08:14.773 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-06 23:08:15.373 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-06 23:08:15.866 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-06 23:08:16.389 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-06 23:08:16.948 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-06 23:08:17.425 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-06 23:08:17.817 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-06 23:08:18.162 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-06 23:08:18.480 | INFO     | __main__:main:670 - CACHE_CHECK required=59 cached=59 missing=0 API_calls=0
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/export.py --experiment-id j-lens-components-target-ordered-tiny-smoke-v8b --profile dev
+2026-09-06 23:08:20.577 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-components-target-ordered-tiny-smoke-v8b profile=dev cells=4 demo_sides=60
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-components-target-ordered-tiny-smoke-v8b profile=dev arms=4 scenarios=60
+J_LENS_CONCEPT_PIPELINE_SMOKE_PASS id=j-lens-components-target-ordered-tiny-smoke-v8b actual_lens=true generation=true judge=true export=true public_outputs_untouched=true

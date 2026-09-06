@@ -27,7 +27,7 @@ from vjp_steering.j_lens_concept import (
     LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     concept_prefill_mask, extract_concept, extract_persona_contrast, implementation_hash,
-    prefill_diagnostics, select_concept_layers,
+    prefill_diagnostics, select_concept_layers, validate_component_pair,
 )
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
@@ -146,7 +146,9 @@ def signed_coefficient(side: str, coefficient: float) -> float:
     return coefficient if side == "+C" else -coefficient
 
 
-def applied_coefficient(_method: str, side: str, coefficient: float) -> float:
+def applied_coefficient(method: str, side: str, coefficient: float) -> float:
+    if method == COMPONENT_PAIR_METHOD:
+        return coefficient
     return signed_coefficient(side, coefficient)
 
 
@@ -157,7 +159,7 @@ def vector_sha256(vector: Vector) -> str:
             for name, tensor in sorted(tensors.items()):
                 value = tensor.detach().contiguous().cpu()
                 digest.update(f"{kind}:{layer}:{name}:{value.dtype}:{tuple(value.shape)}".encode())
-                digest.update(value.view(torch.uint8).numpy().tobytes())
+                digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
     return digest.hexdigest()
 
 
@@ -354,6 +356,8 @@ def load_or_extract(
         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
         if actual != metadata["vector_content_sha256"]:
             raise ValueError("saved extraction vector hash mismatch")
+        if args.method == COMPONENT_PAIR_METHOD:
+            validate_component_pair(vectors)
         return vectors, metadata
 
     if args.reuse_extraction_from:
@@ -768,10 +772,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
         if not args.dev:
             raise RuntimeError("full mode requires its automatic dev stage first")
         if args.method in CONCEPT_METHODS:
-            boundaries = {
-                side: {"meaning": "signed unit concept contrast", "trace": []}
-                for side in ("+C", "-C")
-            }
+            meanings = (
+                {"+C": "order coordinates toward positive component", "-C": "order coordinates toward negative component"}
+                if args.method == COMPONENT_PAIR_METHOD
+                else {"+C": "signed unit concept contrast", "-C": "signed unit concept contrast"}
+            )
+            boundaries = {side: {"meaning": meanings[side], "trace": []} for side in ("+C", "-C")}
             grid = concept_grid(args)
         else:
             boundaries = {
@@ -1194,7 +1200,7 @@ def self_test() -> None:
     assert signed_coefficient("+C", 2.0) == 2.0
     assert signed_coefficient("-C", 2.0) == -2.0
     assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
-    assert applied_coefficient(COMPONENT_PAIR_METHOD, "-C", 2.0) == -2.0
+    assert applied_coefficient(COMPONENT_PAIR_METHOD, "-C", 2.0) == 2.0
     quick_rows = [
         {
             "bare": f"bare {question}",
@@ -1245,8 +1251,8 @@ def main() -> None:
     )
     if args.method == COMPONENT_PAIR_METHOD and not component_diagnostic:
         raise ValueError(
-            "j_lens_concept_components currently supports extraction and non-negative exchange calibration only; "
-            "negative alpha is an extrapolation control, not a second paper-protocol direction"
+            "j_lens_concept_components currently supports extraction and non-negative target-exchange calibration only; "
+            "run the DEV diagnostic before enabling the normal results path"
         )
     if args.self_test:
         self_test()

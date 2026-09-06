@@ -13,15 +13,15 @@ from loguru import logger
 from steering_lite import Vector
 from steering_lite.config import SteeringConfig, register_config
 
-from .vjp import _activations, _blocks, _load_j_lens, _swap_lens_coordinates
+from .vjp import _activations, _blocks, _load_j_lens
 
 
 SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-coordinate-swap-all-prefill-v7"
-COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_concept_components_coordinate_swap"
+COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-target-ordered-coordinate-exchange-all-prefill-v8"
+COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_components_target_ordered_exchange"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -159,12 +159,53 @@ def selected_span_projection(signal: torch.Tensor, dictionary: torch.Tensor,
     return atoms @ (torch.linalg.pinv(atoms) @ signal.float())
 
 
+def component_target_coordinates(coordinates: torch.Tensor, target_index: int) -> torch.Tensor:
+    high = coordinates.max(dim=-1).values
+    low = coordinates.min(dim=-1).values
+    if target_index == 0:
+        return torch.stack((high, low), dim=-1)
+    if target_index == 1:
+        return torch.stack((low, high), dim=-1)
+    raise ValueError(f"component target index must be 0 or 1, got {target_index}")
+
+
+def validate_component_pair(vectors: dict[str, Vector]) -> None:
+    plus, minus = vectors["+C"], vectors["-C"]
+    if plus.cfg.method != COMPONENT_PAIR_METHOD or minus.cfg.method != COMPONENT_PAIR_METHOD:
+        raise ValueError("invalid component-pair method")
+    if tuple(plus.cfg.layers) != tuple(minus.cfg.layers):
+        raise ValueError("component-pair layers differ")
+    for layer in plus.cfg.layers:
+        plus_state, minus_state = plus.shared[layer], minus.shared[layer]
+        if int(plus_state["target_index"].item()) != 0 or int(minus_state["target_index"].item()) != 1:
+            raise ValueError(f"component targets differ from +C=0 and -C=1 at layer {layer}")
+        basis, dual = plus_state["basis"].float(), plus_state["dual"].float()
+        if not torch.equal(plus_state["basis"], minus_state["basis"]):
+            raise ValueError(f"component bases differ between directions at layer {layer}")
+        if not torch.equal(plus_state["dual"], minus_state["dual"]):
+            raise ValueError(f"component duals differ between directions at layer {layer}")
+        singular_values = torch.linalg.svdvals(basis)
+        rank_tolerance = singular_values[0] * max(basis.shape) * torch.finfo(basis.dtype).eps
+        if singular_values.shape != (2,) or singular_values[-1] <= rank_tolerance:
+            raise ValueError(f"component basis is numerically rank deficient at layer {layer}")
+        torch.testing.assert_close(
+            basis @ dual.T,
+            torch.eye(2, device=basis.device),
+            rtol=1e-4,
+            atol=1e-5,
+        )
+
+
 def concept_patch(hidden: torch.Tensor, vector: Vector, layer: int, coefficient: float) -> torch.Tensor:
     if vector.cfg.method == COMPONENT_PAIR_METHOD:
         shared = vector.shared[layer]
         basis = shared["basis"].to(device=hidden.device)
         dual = shared["dual"].to(device=hidden.device)
-        return _swap_lens_coordinates(hidden, basis, dual, coefficient)
+        coordinates = torch.einsum("...d,kd->...k", hidden.float(), dual.float())
+        target_index = int(shared["target_index"].item())
+        target_coordinates = component_target_coordinates(coordinates, target_index)
+        delta = torch.einsum("...k,kd->...d", target_coordinates - coordinates, basis.float())
+        return hidden + (coefficient * delta).to(hidden)
     delta = vector.stacked[layer]["v"].sum(0).to(hidden)
     return hidden + coefficient * delta
 
@@ -233,7 +274,9 @@ def prefill_diagnostics(model, vector: Vector, input_ids: torch.Tensor, attentio
                 dual = vector.shared[layer]["dual"].to(original)
                 clean_coordinates = original @ dual.T
                 patched_coordinates = (original + actual) @ dual.T
-                target_coordinates = clean_coordinates + coefficient * (clean_coordinates.flip(-1) - clean_coordinates)
+                target_index = int(vector.shared[layer]["target_index"].item())
+                ordered_coordinates = component_target_coordinates(clean_coordinates, target_index)
+                target_coordinates = clean_coordinates + coefficient * (ordered_coordinates - clean_coordinates)
                 exchange_residual = patched_coordinates - target_coordinates
                 exchange_delta_norm = (target_coordinates - clean_coordinates).norm(dim=-1)
                 summary["clean_coordinate_medians"] = clean_coordinates.median(dim=0).values.tolist()
@@ -385,9 +428,12 @@ def extract_concept(
             singular_values = torch.linalg.svdvals(basis)
             if not torch.isfinite(dual).all() or singular_values[-1] <= 0:
                 raise ValueError(f"invalid concept-component coordinate basis at layer {layer}")
-            state = {"basis": basis, "dual": dual}
-            shared_states["+C"][layer] = state
-            shared_states["-C"][layer] = state
+            shared_states["+C"][layer] = {
+                "basis": basis, "dual": dual, "target_index": torch.tensor(0, dtype=torch.int64),
+            }
+            shared_states["-C"][layer] = {
+                "basis": basis, "dual": dual, "target_index": torch.tensor(1, dtype=torch.int64),
+            }
             stacked_states["+C"][layer] = {}
             stacked_states["-C"][layer] = {}
         else:
@@ -420,6 +466,8 @@ def extract_concept(
         side: Vector(cfg_type(layers=layers), shared_states[side], stacked_states[side])
         for side in ("+C", "-C")
     }
+    if separate_components:
+        validate_component_pair(vectors)
     return vectors, {
         "operator": operator,
         "representation_source": COMPONENT_PAIR_REPRESENTATION_SOURCE if separate_components else "concept_mean100",
@@ -427,15 +475,31 @@ def extract_concept(
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "h_all_prefill + alpha * V * (swap(V^dagger h_all_prefill) - V^dagger h_all_prefill)"
+            "h_all_prefill + alpha * V * (target_sort(V^dagger h_all_prefill) - V^dagger h_all_prefill)"
             if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
         "extraction_mask": "final_real_chat_prompt_token",
         "application_mask": "all_attended_prefill_positions" if separate_components else "user_turn_including_chat_delimiters",
         "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper",
-        "component_basis_normalization": "independent_unit_norm_commensurate_coordinates" if separate_components else None,
-        "application_scale": "none_common_basis_scale_cancels_under_pseudoinverse" if separate_components else "unit_contrast",
+        "component_basis_normalization": (
+            "independent_unit_norm_equal_magnitude_convention_not_fully_specified_by_paper"
+            if separate_components else None
+        ),
+        "semantic_directions": (
+            {"+C": "put larger coordinate on positive component", "-C": "put larger coordinate on negative component"}
+            if separate_components else None
+        ),
+        "paper_protocol_relation": (
+            "per-layer target ordering equals a paper coordinate swap when the requested target is smaller; "
+            "it is identity otherwise and is a behavioral adaptation"
+            if separate_components else None
+        ),
+        "application_scale": (
+            "alpha in an independently unit-normalized basis; the paper says perturbations were equal-magnitude "
+            "but does not specify its normalization procedure"
+            if separate_components else "unit_contrast"
+        ),
         "gp_steps": 16,
         "concept_prompts": prompts, "dev_prompts": dev_prompts, "token_records": token_records,
         "pair_ids": pair_ids, "pair_tokens": [tokenizer.decode([i]) for i in pair_ids],

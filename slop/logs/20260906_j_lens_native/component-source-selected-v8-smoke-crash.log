@@ -1,0 +1,35 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 9503.33it/s]
+2026-09-06 22:48:10.450 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:519 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-06 22:48:10.615 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:519 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5740.52it/s]
+2026-09-06 22:48:12.909 | INFO     | vjp_steering.j_lens_concept:extract_concept:339 - concept extraction spec=44ef16727d477445dc03a53cecf83d5abbe335a6f03438df1d81e8e6849693f3 layers=(2,) final_prompt_token=true
+2026-09-06 22:48:12.909 | INFO     | vjp_steering.j_lens_concept:extract_concept:340 - concept extraction demo=<|im_start|>user
+Tell me about sycophantic agreement and flattery toward the user<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-09-06 22:48:13.520 | INFO     | vjp_steering.j_lens_concept:extract_concept:435 - concept layer=2 j_norms=[214.39207458496094, 120.98915100097656] remainder_norms=[43.944889068603516, 25.82076644897461] contrast_norm=183.3995
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1277, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1260, in main
+    smoke(args)
+    ~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/concept_checks.py", line 445, in smoke
+    experiment.gpu_stage(args)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 746, in gpu_stage
+    vectors, extraction = load_or_extract(args, root, model, tokenizer)
+                          ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 401, in load_or_extract
+    "vector_content_sha256": {side: vector_sha256(vector) for side, vector in vectors.items()},
+                                    ~~~~~~~~~~~~~^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 162, in vector_sha256
+    digest.update(value.view(torch.uint8).numpy().tobytes())
+                  ~~~~~~~~~~^^^^^^^^^^^^^
+RuntimeError: self.dim() cannot be 0 to view Long as Byte (different element sizes)
