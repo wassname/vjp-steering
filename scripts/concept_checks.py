@@ -632,7 +632,8 @@ def smoke(args):
             torch.testing.assert_close(basis.norm(dim=1), torch.ones(2))
             assert metadata["layers"][str(layer)]["component_basis_condition_number"] >= 1
         if args.j_lens_source == "persona_components":
-            assert metadata["n_pairs"] == 200
+            assert metadata["n_pairs"] == experiment.persona_component_spec()[0]["expected_unique_sources"]
+            assert len({prompt for prompts in metadata["source_prompts"].values() for prompt in prompts}) == 3 * metadata["n_pairs"]
             assert all(
                 len(layer["target_order_eligibility"]["by_prompt"]) == experiment.DEV.cohort_size
                 for layer in metadata["layers"].values()

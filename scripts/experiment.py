@@ -224,13 +224,21 @@ def persona_component_prefill_prompts(
 ) -> tuple[dict[str, list[str]], list[str], list[int]]:
     spec, _ = persona_component_spec()
     entries = load_suffixes(thinking=False)
-    if args.n_pairs != 200 or len(entries) != 200:
-        raise ValueError(f"persona component extraction requires exactly 200 sources, got {args.n_pairs=}, {len(entries)=}")
-    sampled = random.Random(spec["source_seed"]).sample(entries, args.n_pairs)
-    source_ids = [
-        hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
-        for entry in sampled
-    ]
+    if args.n_pairs != spec["source_pool_count"] or len(entries) != spec["source_pool_count"]:
+        raise ValueError(
+            f"persona component extraction requires the complete {spec['source_pool_count']}-entry source pool, "
+            f"got {args.n_pairs=}, {len(entries)=}"
+        )
+    unique_by_message = {entry["user_msg"]: entry for entry in entries}
+    if len(unique_by_message) != spec["expected_unique_sources"]:
+        raise ValueError(
+            f"persona component source pool has {len(unique_by_message)} unique rendered messages; "
+            f"expected {spec['expected_unique_sources']}"
+        )
+    sampled = random.Random(spec["source_seed"]).sample(
+        list(unique_by_message.values()), len(unique_by_message),
+    )
+    source_ids = [hashlib.sha256(entry["user_msg"].encode()).hexdigest() for entry in sampled]
     condition_prompts = {name: [] for name in ("positive", "negative", "baseline")}
     for entry in sampled:
         for name in condition_prompts:
@@ -261,12 +269,12 @@ def persona_component_prefill_prompts(
 
 def validate_persona_component_source_identity(args, metadata: dict, model, tokenizer) -> None:
     prompts, source_ids, assistant_suffix = persona_component_prefill_prompts(args, tokenizer)
-    spec_hash = persona_component_spec()[1]
+    spec, spec_hash = persona_component_spec()
     source_hash = hashlib.sha256(
         json.dumps([spec_hash, source_ids, prompts], separators=(",", ":")).encode()
     ).hexdigest()
     expected = {
-        "n_pairs": 200,
+        "n_pairs": spec["expected_unique_sources"],
         "source_sha256": source_hash,
         "source_ids": source_ids,
         "source_prompts": prompts,

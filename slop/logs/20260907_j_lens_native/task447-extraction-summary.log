@@ -1,0 +1,24 @@
+identity {"implementation_sha256": "d563c8e29273a17fb5ef03302b321a0f9fbfd055ab1122333a269ceec4e7f8a6", "lens_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e", "model_revision": null, "n_pairs": 200, "operator": "matched-persona-prefill-gp16-target-ordered-coordinate-exchange-v13", "representation_source": "matched_persona_prefill_gp16_components", "source_fit_count": 160, "source_holdout_count": 40, "tokenizer_content_sha256": "0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4", "tokenizer_revision": null}
+| layer | split + | split - | GP/full + | GP/full - | component cos | condition | eligibility + | eligibility - | heldout + target margin | heldout - target margin |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 13 | 0.937 | 0.981 | 0.200 | 0.254 | 0.677 | 2.280 | 0.693 | 0.307 | 1.719 | 1.502 |
+| 14 | 0.994 | 0.975 | 0.197 | 0.258 | 0.648 | 2.165 | 0.524 | 0.476 | 2.015 | 0.973 |
+| 15 | 0.990 | 0.959 | 0.197 | 0.268 | 0.561 | 1.886 | 0.740 | 0.260 | 3.046 | 2.190 |
+| 16 | 0.984 | 0.989 | 0.248 | 0.312 | 0.523 | 1.788 | 0.773 | 0.227 | 4.371 | 2.736 |
+| 17 | 0.976 | 0.994 | 0.250 | 0.324 | 0.525 | 1.791 | 0.719 | 0.281 | 5.442 | 2.505 |
+| 18 | 0.991 | 0.985 | 0.259 | 0.322 | 0.594 | 1.981 | 0.852 | 0.148 | 5.710 | 3.801 |
+| 19 | 0.989 | 0.990 | 0.274 | 0.313 | 0.594 | 1.982 | 0.747 | 0.253 | 6.465 | 4.640 |
+| 20 | 0.987 | 0.972 | 0.249 | 0.312 | 0.534 | 1.814 | 0.538 | 0.462 | 6.540 | 5.170 |
+| 21 | 0.966 | 0.978 | 0.278 | 0.293 | 0.560 | 1.882 | 0.703 | 0.297 | 6.601 | 7.099 |
+ranges {"abs_component_cos_max": 0.6774283051490784, "condition_max": 2.280388593673706, "eligibility_minus_min": 0.14780835807323456, "eligibility_plus_min": 0.5239551067352295, "gp_to_full_min": 0.19664961099624634, "heldout_minus_target_margin_min": 0.9728064015507698, "heldout_plus_target_margin_min": 1.7191374003887177, "split_half_min": 0.9371187090873718}
+| layer | heldout positive ordered + | heldout negative ordered - | baseline ordered + |
+|---:|---:|---:|---:|
+| 13 | 1.000 | 1.000 | 0.750 |
+| 14 | 1.000 | 1.000 | 0.875 |
+| 15 | 1.000 | 1.000 | 0.925 |
+| 16 | 1.000 | 1.000 | 0.975 |
+| 17 | 1.000 | 1.000 | 1.000 |
+| 18 | 1.000 | 1.000 | 1.000 |
+| 19 | 1.000 | 1.000 | 0.925 |
+| 20 | 1.000 | 1.000 | 0.675 |
+| 21 | 1.000 | 1.000 | 0.475 |

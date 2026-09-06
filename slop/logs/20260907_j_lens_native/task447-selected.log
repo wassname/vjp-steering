@@ -1,0 +1,26 @@
+[pq] task 447: complete cleaned log 196061 lines; full source /home/code/.local/share/pueue/task_logs/447.log
+id=447
+label=why: test whether validated matched-persona residuals yield stable distinct GP16 components on Qwen3.5-4B; resolve: calibrate only if layerwise split-half and held-out separation are stable, condition stays below 10, absolute component cosine stays below .98, and both target orders have nontrivial DEV eligibility
+command=sh -lc set -o pipefail; uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-persona-components-source-v13 --j-lens-source persona_components 2>&1 | tee slop/logs/20260907_j_lens_native/component-persona-v13-source.log
+path=/workspace/2026/jspace/j-steer_pub
+enqueued=2026-09-07T07:17:39.658410010+08:00
+start=2026-09-07T07:17:39.957817436+08:00
+end=2026-09-07T07:18:48.925444288+08:00
+result={"Failed":1}
+--- selected verbatim lines from complete log ---
+-o: 3: eval: Syntax error: "(" unexpected
+tee: slop/logs/20260907_j_lens_native/component-persona-v13-source.log: No such file or directory
+https://modal.com/apps/wassname/main/ap-oiwfDqGjBJVwMRs0rjNMlL
+2026-09-06 23:18:39.861 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=13 gp_norms=[1.0345491170883179, 1.0835578441619873] split_gp_cosines=[0.9371187090873718, 0.981367826461792] component_cosine=0.6774 condition=2.280 eligibility_plus=0.693 eligibility_minus=0.307
+2026-09-06 23:18:40.106 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=14 gp_norms=[1.037867784500122, 1.084985375404358] split_gp_cosines=[0.9941703677177429, 0.9752782583236694] component_cosine=0.6483 condition=2.165 eligibility_plus=0.524 eligibility_minus=0.476
+2026-09-06 23:18:40.332 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=15 gp_norms=[1.3794138431549072, 1.514539361000061] split_gp_cosines=[0.9904311299324036, 0.9587778449058533] component_cosine=0.5612 condition=1.886 eligibility_plus=0.740 eligibility_minus=0.260
+2026-09-06 23:18:40.569 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=16 gp_norms=[2.035834312438965, 2.0344886779785156] split_gp_cosines=[0.9841666221618652, 0.9886265993118286] component_cosine=0.5233 condition=1.788 eligibility_plus=0.773 eligibility_minus=0.227
+2026-09-06 23:18:40.803 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=17 gp_norms=[2.243682384490967, 2.3269779682159424] split_gp_cosines=[0.9756801128387451, 0.9936342239379883] component_cosine=0.5247 condition=1.791 eligibility_plus=0.719 eligibility_minus=0.281
+2026-09-06 23:18:41.037 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=18 gp_norms=[2.5049242973327637, 2.769282341003418] split_gp_cosines=[0.9911829829216003, 0.9849123954772949] component_cosine=0.5938 condition=1.981 eligibility_plus=0.852 eligibility_minus=0.148
+2026-09-06 23:18:41.272 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=19 gp_norms=[3.0242631435394287, 3.1862075328826904] split_gp_cosines=[0.9885467290878296, 0.9904699325561523] component_cosine=0.5943 condition=1.982 eligibility_plus=0.747 eligibility_minus=0.253
+2026-09-06 23:18:41.501 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=20 gp_norms=[3.077247142791748, 3.5273139476776123] split_gp_cosines=[0.987157940864563, 0.9723118543624878] component_cosine=0.5339 condition=1.814 eligibility_plus=0.538 eligibility_minus=0.462
+2026-09-06 23:18:41.736 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=21 gp_norms=[3.9525859355926514, 4.004335403442383] split_gp_cosines=[0.9657561779022217, 0.9782266616821289] component_cosine=0.5598 condition=1.882 eligibility_plus=0.703 eligibility_minus=0.297
+EXTRACTION_COMPLETE id=j-lens-persona-components-source-v13 hash_plus=a3f76d9ec56933393b889c3346bb7fa3c7b607293dee3a65ca3925821eb7fd96
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-oiwfDqGjBJVwMRs0rjNMlL

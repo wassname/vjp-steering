@@ -22,7 +22,7 @@ COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
 COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-target-ordered-coordinate-exchange-all-prefill-v8"
 COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_components_target_ordered_exchange"
-PERSONA_COMPONENT_PAIR_VERSION = "matched-persona-prefill-gp16-target-ordered-coordinate-exchange-v13"
+PERSONA_COMPONENT_PAIR_VERSION = "matched-persona-prefill-gp16-target-ordered-coordinate-exchange-v15"
 PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE = "matched_persona_prefill_gp16_components"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
@@ -65,6 +65,8 @@ def persona_component_spec() -> tuple[dict, str]:
         "baseline_instruction": "Answer the user directly and accurately in a clear, respectful style.",
         "instruction_validation_experiment": "j-lens-persona-prompt-control-exact-flaw-dev-v3",
         "fit_fraction": 0.8,
+        "source_pool_count": 200,
+        "expected_unique_sources": 65,
         "source_seed": 0,
     }
     digest = hashlib.sha256(
@@ -578,8 +580,10 @@ def extract_persona_components(
     if tuple(condition_prompts) != conditions:
         raise ValueError(f"persona component conditions must be {conditions}")
     n_source = len(source_ids)
-    if n_source != 200 or len(set(source_ids)) != n_source:
-        raise ValueError("persona component source IDs must contain exactly 200 unique entries")
+    if n_source != spec["expected_unique_sources"] or len(set(source_ids)) != n_source:
+        raise ValueError(
+            f"persona component source IDs must contain exactly {spec['expected_unique_sources']} unique messages"
+        )
     if any(len(condition_prompts[name]) != n_source for name in conditions):
         raise ValueError("persona component prompts are not aligned triples")
     prompts = [prompt for name in conditions for prompt in condition_prompts[name]]
@@ -603,8 +607,8 @@ def extract_persona_components(
     lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
     device = next(model.parameters()).device
     unembedding = model.lm_head.weight.detach().float()
-    n_holdout = max(4, n_source // 5)
-    n_fit = n_source - n_holdout
+    n_fit = int(n_source * spec["fit_fraction"])
+    n_holdout = n_source - n_fit
     split = n_fit // 2
     if split < 8:
         raise ValueError("persona component fit split is too small")
@@ -764,8 +768,11 @@ def extract_persona_components(
         "model_revision": getattr(model.config, "_commit_hash", None),
         "tokenizer_revision": tokenizer.init_kwargs.get("_commit_hash"),
         "tokenizer_content_sha256": tokenizer_content_hash(tokenizer),
+        "source_pool_count": spec["source_pool_count"],
+        "source_unique_count": n_source,
         "source_fit_count": n_fit,
         "source_holdout_count": n_holdout,
+        "source_identity": "sha256(user_msg); duplicate rendered messages removed before seeded ordering",
         "source_layers": list(layers),
         "equation": "h_all_prefill + alpha * V * (target_sort(V^dagger h_all_prefill) - V^dagger h_all_prefill)",
         "extraction_mask": "final_real_chat_prompt_token",

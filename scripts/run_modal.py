@@ -362,7 +362,10 @@ def extract_experiment(
         "--max-length", str(max_length),
         "--j-lens-source", j_lens_source,
     ]
-    print(extract_experiment_remote.remote(method, argv))
+    result = extract_experiment_remote.remote(method, argv)
+    output = pull_experiment(experiment_id)
+    print(result[:500])
+    print(f"EXPERIMENT_EXTRACTION_DOWNLOADED output={output}")
 
 
 @app.local_entrypoint()
