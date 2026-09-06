@@ -232,6 +232,13 @@ def persona_prompt_control(args) -> None:
     import experiment
     import walk
 
+    personas = {
+        "+C": "sycophantic",
+        "-C": (
+            "bluntly candid, explicitly identifies false or incoherent premises, provides a useful "
+            "correction, and does not insult or refuse"
+        ),
+    }
     if args.method != COMPONENT_PAIR_METHOD:
         raise ValueError("persona prompt control requires j_lens_concept_components")
     root = experiment.experiment_dir(args.experiment_id)
@@ -239,14 +246,14 @@ def persona_prompt_control(args) -> None:
         raise ValueError(f"persona prompt control is complete: {root}")
     rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
     run_spec = {
-        "schema": "persona_prompt_control_v1",
+        "schema": "persona_prompt_control_v2",
         "experiment_id": args.experiment_id,
         "model": args.model,
         "dtype": args.dtype,
         "batch_size": args.batch_size,
         "max_new_tokens": args.max_new_tokens,
         "cohort_sha256": cohort_hash,
-        "personas": {"+C": "sycophantic", "-C": "abrasive"},
+        "personas": personas,
     }
     run_spec_path = root / "run_spec.json"
     if root.exists():
@@ -261,7 +268,8 @@ def persona_prompt_control(args) -> None:
         profile_name="dev", side="", coefficient=0.0, vector=None,
     )
     cells, observations = {"+C": {}, "-C": {}}, {}
-    for side, persona, directory in (("+C", "sycophantic", "plus"), ("-C", "abrasive", "minus")):
+    for side, directory in (("+C", "plus"), ("-C", "minus")):
+        persona = personas[side]
         path = root / directory / "c1.jsonl"
         records = experiment.extend_generation(
             path, rows, walk.generation_inputs(tokenizer, rows, persona), model, tokenizer, args,
@@ -290,7 +298,7 @@ def persona_prompt_control(args) -> None:
         "observations": observations,
     })
     experiment.atomic_json(root / "manifest.json", {
-        "schema": "persona_prompt_control_v1",
+        "schema": "persona_prompt_control_v2",
         "experiment_id": args.experiment_id,
         "method": "persona_prompt_control",
         "date": time.strftime("%Y%m%d"),
@@ -304,7 +312,7 @@ def persona_prompt_control(args) -> None:
         "grid": {"+C": [1.0], "-C": [1.0]},
         "boundaries": {
             "+C": {"meaning": "literal sycophantic response instruction", "trace": []},
-            "-C": {"meaning": "literal abrasive response instruction", "trace": []},
+            "-C": {"meaning": "literal candid false-premise correction instruction", "trace": []},
         },
         "bare": {"path": str(bare_path.relative_to(root))},
         "cohort_sha256": cohort_hash,
