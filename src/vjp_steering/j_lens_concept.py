@@ -1,5 +1,6 @@
 """Sparse concept decomposition and signed prompt-only addition. — PI/OpenAI Codex"""
 
+from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
@@ -19,7 +20,7 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-v2"
+COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-user-turn-v3"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -82,6 +83,27 @@ def final_positions(mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b"]:
     last = positions.masked_fill(~mask.bool(), -1).max(dim=1).values
     assert (last >= 0).all(), "empty prompt"
     return last
+
+
+def user_turn_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
+                   attention_mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b s"]:
+    message = [{"role": "user", "content": ""}]
+    user_turn = tokenizer.apply_chat_template(message, tokenize=True, add_generation_prompt=False)
+    full_prompt = tokenizer.apply_chat_template(
+        message, tokenize=True, add_generation_prompt=True, enable_thinking=False,
+    )
+    user_turn = user_turn["input_ids"] if isinstance(user_turn, Mapping) else user_turn
+    full_prompt = full_prompt["input_ids"] if isinstance(full_prompt, Mapping) else full_prompt
+    if full_prompt[:len(user_turn)] != user_turn or len(full_prompt) == len(user_turn):
+        raise ValueError("chat template does not have a fixed assistant-generation suffix")
+    assistant_suffix_length = len(full_prompt) - len(user_turn)
+    final = final_positions(attention_mask)
+    end = final + 1 - assistant_suffix_length
+    positions = torch.arange(input_ids.shape[1], device=input_ids.device).expand_as(input_ids)
+    mask = attention_mask.bool() & (positions < end[:, None])
+    if not mask.any(dim=1).all():
+        raise ValueError("empty user turn")
+    return mask
 
 
 # PI/OpenAI Codex: follows TransformerLens' paper-matching gradient-pursuit update.
@@ -155,11 +177,11 @@ def concept_prefill(model, vector: Vector, mask: torch.Tensor, coefficient: floa
 
 @torch.inference_mode()
 def prefill_diagnostics(model, vector: Vector, input_ids: torch.Tensor, attention_mask: torch.Tensor,
-                        coefficient: float) -> dict:
+                        coefficient: float, patch_mask: torch.Tensor | None = None) -> dict:
     """Measure the actual prompt patch and final-token distribution change for one cell."""
-    mask = attention_mask.bool()
+    mask = attention_mask.bool() if patch_mask is None else patch_mask.bool()
     batch = torch.arange(mask.shape[0], device=mask.device)
-    final = final_positions(mask)
+    final = final_positions(attention_mask)
     bare_logits = model(input_ids=input_ids, attention_mask=attention_mask, use_cache=False).logits[batch, final].float()
     before, summaries, handles = {}, {}, []
 
@@ -340,10 +362,10 @@ def extract_concept(
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "+C: h_valid_prompt + C * unit(j_sycophancy); -C: h_valid_prompt + C * unit(j_abrasiveness)"
-            if separate_components else "h_valid_prompt + C * unit(j_positive - j_negative)"
+            "+C: h_user_turn + C * unit(j_sycophancy); -C: h_user_turn + C * unit(j_abrasiveness)"
+            if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
-        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
+        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",
         "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
         "concept_prompts": prompts, "dev_prompts": dev_prompts, "token_records": token_records,
@@ -405,9 +427,9 @@ def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, nega
         "operator": PERSONA_VERSION if direction == "j_gp16" else PERSONA_FULL_RESIDUAL_VERSION,
         "representation_source": representation_source,
         "projection": direction, "implementation_sha256": implementation_hash(), "source_layers": list(layers),
-        "equation": "h_valid_prompt + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))"
-                    if direction == "j_gp16" else "h_valid_prompt + C * unit(mean(h_sycophantic) - mean(h_abrasive))",
-        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
+        "equation": "h_user_turn + C * unit(project_J(mean(h_sycophantic) - mean(h_abrasive)))"
+                    if direction == "j_gp16" else "h_user_turn + C * unit(mean(h_sycophantic) - mean(h_abrasive))",
+        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
         "n_pairs": n_pairs, "prompt_sha256": prompt_hash,
         "positive_prompts": positive_prompts, "negative_prompts": negative_prompts,

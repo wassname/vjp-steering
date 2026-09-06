@@ -26,7 +26,7 @@ from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, COMPONENT_PAIR_VERSION, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     extract_concept, extract_persona_contrast, implementation_hash, prefill_diagnostics,
-    select_concept_layers,
+    select_concept_layers, user_turn_mask,
 )
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
@@ -794,10 +794,14 @@ def gpu_stage(args: argparse.Namespace) -> None:
         raise ValueError("full GPU stage requires DEV-accepted candidates for both sides")
     generated_cells = 0
     encoded_prompts = None
+    encoded_prompt_patch_mask = None
     if args.method in CONCEPT_METHODS:
         encoded_prompts = tokenizer(
             prompts, return_tensors="pt", padding=True, add_special_tokens=False,
         ).to(args.device)
+        encoded_prompt_patch_mask = user_turn_mask(
+            tokenizer, encoded_prompts.input_ids, encoded_prompts.attention_mask,
+        )
     for side in ("+C", "-C"):
         for coefficient in coefficients[side]:
             records = extend_generation(
@@ -821,13 +825,14 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 "breakdown_reasons": reasons,
             }
             if args.method in CONCEPT_METHODS:
-                assert encoded_prompts is not None
+                assert encoded_prompts is not None and encoded_prompt_patch_mask is not None
                 cell["realized_prefill"] = prefill_diagnostics(
                     model,
                     vectors[side],
                     encoded_prompts.input_ids,
                     encoded_prompts.attention_mask,
                     applied_coefficient(args.method, side, coefficient),
+                    patch_mask=encoded_prompt_patch_mask,
                 )
             manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = cell
             atomic_json(manifest_path(args.experiment_id), manifest)

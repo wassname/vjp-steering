@@ -15,7 +15,7 @@ from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     JLensConceptC, JLensConceptComponentsC, component_spec, concept_prefill, concept_spec,
     extract_persona_contrast, final_positions, gradient_pursuit, implementation_hash,
-    prefill_diagnostics, select_concept_layers,
+    prefill_diagnostics, select_concept_layers, user_turn_mask,
 )
 from vjp_steering.vjp import _activations
 
@@ -33,7 +33,7 @@ def calibrate(args):
     rows, cohort_hash = walk.read_cohort(1)
     prompts = walk.generation_inputs(tokenizer, rows)
     encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
-    mask = encoded.attention_mask.bool()
+    mask = user_turn_mask(tokenizer, encoded.input_ids, encoded.attention_mask)
     observations = []
     with torch.inference_mode():
         bare_logits = model(**encoded).logits[:, -1].float()
@@ -135,6 +135,21 @@ def self_test():
         raise AssertionError("nonfinite pursuit did not fail")
     torch.testing.assert_close(final_positions(torch.tensor([[0, 1, 1], [1, 1, 0], [0, 0, 1]])),
                                torch.tensor([2, 1, 2]))
+
+    class ChatTokenizer:
+        def apply_chat_template(self, _message, *, tokenize, add_generation_prompt, **_kwargs):
+            assert tokenize
+            return [1, 2, 3, 4, 5] if add_generation_prompt else [1, 2, 3]
+
+    patch_mask = user_turn_mask(
+        ChatTokenizer(),
+        torch.tensor([[0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 0]]),
+        torch.tensor([[0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 0]]),
+    )
+    torch.testing.assert_close(
+        patch_mask,
+        torch.tensor([[False, True, True, True, False, False], [True, True, True, False, False, False]]),
+    )
 
     class Toy(torch.nn.Module):
         def __init__(self):

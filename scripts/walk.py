@@ -21,7 +21,7 @@ from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from vjp_steering import j_lens_swap, j_word, vjp_delta, vjp_mlp_up_shrink
-from vjp_steering.j_lens_concept import concept_prefill
+from vjp_steering.j_lens_concept import concept_prefill, user_turn_mask
 from vjp_steering.vjp import (
     J_LENS_SWAP_SOURCE,
     J_LENS_SWAP_TARGET,
@@ -459,7 +459,8 @@ def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_toke
             next(model.parameters()).device
         )
         context = nullcontext() if prefill_vector is None else concept_prefill(
-            model, prefill_vector, batch.attention_mask, coefficient)
+            model, prefill_vector, user_turn_mask(tokenizer, batch.input_ids, batch.attention_mask), coefficient,
+        )
         with context as calls:
             output = model.generate(
                 **batch,
