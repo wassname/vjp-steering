@@ -1,4 +1,4 @@
-"""Sparse concept decomposition and signed prompt-only addition. — PI/OpenAI Codex"""
+"""Sparse J-space concept decomposition and prefill interventions. — PI/OpenAI Codex"""
 
 from collections.abc import Mapping
 from contextlib import contextmanager
@@ -13,15 +13,15 @@ from loguru import logger
 from steering_lite import Vector
 from steering_lite.config import SteeringConfig, register_config
 
-from .vjp import _activations, _blocks, _load_j_lens
+from .vjp import _activations, _blocks, _load_j_lens, _swap_lens_coordinates
 
 
 SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-projection-neutral-norm-scaled-behavior-components-user-turn-v6"
-COMPONENT_PAIR_REPRESENTATION_SOURCE = "separate_concept_components_mean100_projection_neutral_norm_scaled"
+COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-coordinate-swap-all-prefill-v7"
+COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_concept_components_coordinate_swap"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -101,6 +101,13 @@ def user_turn_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
     return mask
 
 
+def concept_prefill_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
+                         attention_mask: Int[torch.Tensor, "b s"], vector: Vector) -> Int[torch.Tensor, "b s"]:
+    if vector.cfg.method == COMPONENT_PAIR_METHOD:
+        return attention_mask.bool()
+    return user_turn_mask(tokenizer, input_ids, attention_mask)
+
+
 # PI/OpenAI Codex: follows TransformerLens' paper-matching gradient-pursuit update.
 @torch.no_grad()
 def gradient_pursuit(
@@ -152,6 +159,16 @@ def selected_span_projection(signal: torch.Tensor, dictionary: torch.Tensor,
     return atoms @ (torch.linalg.pinv(atoms) @ signal.float())
 
 
+def concept_patch(hidden: torch.Tensor, vector: Vector, layer: int, coefficient: float) -> torch.Tensor:
+    if vector.cfg.method == COMPONENT_PAIR_METHOD:
+        shared = vector.shared[layer]
+        basis = shared["basis"].to(device=hidden.device)
+        dual = shared["dual"].to(device=hidden.device)
+        return _swap_lens_coordinates(hidden, basis, dual, coefficient)
+    delta = vector.stacked[layer]["v"].sum(0).to(hidden)
+    return hidden + coefficient * delta
+
+
 @contextmanager
 def concept_prefill(model, vector: Vector, mask: torch.Tensor, coefficient: float):
     handles = []
@@ -161,8 +178,8 @@ def concept_prefill(model, vector: Vector, mask: torch.Tensor, coefficient: floa
         def apply(_module, _inputs, output):
             calls[layer] += 1
             hidden = output[0] if isinstance(output, tuple) else output
-            delta = vector.stacked[layer]["v"].sum(0).to(hidden)
-            edited = hidden + coefficient * mask.to(hidden).unsqueeze(-1) * delta
+            patched = concept_patch(hidden, vector, layer, coefficient)
+            edited = torch.where(mask.to(device=hidden.device).bool().unsqueeze(-1), patched, hidden)
             handles_by_layer[layer].remove()
             return (edited, *output[1:]) if isinstance(output, tuple) else edited
         return apply
@@ -200,17 +217,32 @@ def prefill_diagnostics(model, vector: Vector, input_ids: torch.Tensor, attentio
             hidden = output[0] if isinstance(output, tuple) else output
             original = before.pop(layer)[mask].float()
             actual = hidden[mask].float() - original
-            direction = vector.stacked[layer]["v"].sum(0).to(original)
+            intended = concept_patch(original, vector, layer, coefficient) - original
             ratio = actual.norm(dim=-1) / original.norm(dim=-1)
-            coordinate = (actual @ direction) / direction.square().sum()
-            summaries[str(layer)] = {
+            summary = {
                 "patch_residual_ratio_median": ratio.median().item(),
                 "patch_residual_ratio_p90": ratio.quantile(.9).item(),
                 "actual_patch_norm_median": actual.norm(dim=-1).median().item(),
-                "actual_direction_coordinate_median": coordinate.median().item(),
-                "changed_coordinate_fraction": (actual != 0).float().mean().item(),
+                "relative_patch_error_median": (
+                    (actual - intended).norm(dim=-1) / intended.norm(dim=-1).clamp_min(1e-30)
+                ).median().item(),
+                "changed_hidden_fraction": (actual != 0).float().mean().item(),
                 "dtype": str(hidden.dtype),
             }
+            if vector.cfg.method == COMPONENT_PAIR_METHOD:
+                dual = vector.shared[layer]["dual"].to(original)
+                clean_coordinates = original @ dual.T
+                patched_coordinates = (original + actual) @ dual.T
+                target_coordinates = clean_coordinates + coefficient * (clean_coordinates.flip(-1) - clean_coordinates)
+                exchange_residual = patched_coordinates - target_coordinates
+                exchange_delta_norm = (target_coordinates - clean_coordinates).norm(dim=-1)
+                summary["clean_coordinate_medians"] = clean_coordinates.median(dim=0).values.tolist()
+                summary["patched_coordinate_medians"] = patched_coordinates.median(dim=0).values.tolist()
+                summary["coordinate_exchange_residual_norm_median"] = exchange_residual.norm(dim=-1).median().item()
+                summary["coordinate_exchange_relative_error_median"] = (
+                    exchange_residual.norm(dim=-1) / exchange_delta_norm.clamp_min(1e-30)
+                ).median().item()
+            summaries[str(layer)] = summary
         return hook
 
     try:
@@ -302,7 +334,8 @@ def extract_concept(
         pair_ids.append(ids[0])
     null_ids = torch.randperm(unembedding.shape[0], generator=torch.Generator().manual_seed(0))
     null_ids = [i for i in null_ids.tolist() if i not in pair_ids][:128]
-    states = {"+C": {}, "-C": {}}
+    shared_states = {"+C": {}, "-C": {}}
+    stacked_states = {"+C": {}, "-C": {}}
     layer_meta = {}
     for layer in layers:
         raw = unembedding @ checkpoint["J"][layer].float().to(device)
@@ -318,7 +351,7 @@ def extract_concept(
             concept = hs[index] - baseline
             weights, reconstruction, selected_support, errors = gradient_pursuit(concept, dictionary, 16)
             projection = selected_span_projection(concept, dictionary, selected_support)
-            component = projection if separate_components else reconstruction
+            component = reconstruction
             active = weights.nonzero().flatten()
             remainder = concept - component
             components.append(component)
@@ -347,21 +380,32 @@ def extract_concept(
         if separate_components:
             if any(not torch.isfinite(component).all() or component.norm() <= 1e-6 * hs[0].norm() for component in components):
                 raise ValueError(f"zero, nonfinite, or numerically unresolved J component at layer {layer}")
-            states["+C"][layer] = {
-                "v": (neutral_residual_norm * components[0] / components[0].norm()).cpu().unsqueeze(0),
-            }
-            states["-C"][layer] = {
-                "v": (neutral_residual_norm * components[1] / components[1].norm()).cpu().unsqueeze(0),
-            }
+            basis = torch.stack([component / component.norm() for component in components]).float().cpu()
+            dual = torch.linalg.pinv(basis).T.contiguous()
+            singular_values = torch.linalg.svdvals(basis)
+            if not torch.isfinite(dual).all() or singular_values[-1] <= 0:
+                raise ValueError(f"invalid concept-component coordinate basis at layer {layer}")
+            state = {"basis": basis, "dual": dual}
+            shared_states["+C"][layer] = state
+            shared_states["-C"][layer] = state
+            stacked_states["+C"][layer] = {}
+            stacked_states["-C"][layer] = {}
         else:
             if not torch.isfinite(contrast).all() or contrast.norm() <= 1e-6 * max(c.norm() for c in components):
                 raise ValueError(f"zero, nonfinite, or numerically unresolved concept contrast at layer {layer}")
             direction = (contrast / contrast.norm()).cpu().unsqueeze(0)
-            states["+C"][layer] = {"v": direction}
-            states["-C"][layer] = {"v": direction}
+            shared_states["+C"][layer] = {}
+            shared_states["-C"][layer] = {}
+            stacked_states["+C"][layer] = {"v": direction}
+            stacked_states["-C"][layer] = {"v": direction}
         layer_meta[str(layer)] = {
             "decomposition": decomposition, "contrast_norm": contrast.norm().item(),
             "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
+            "component_basis_norms": basis.norm(dim=1).tolist() if separate_components else None,
+            "component_basis_singular_values": singular_values.tolist() if separate_components else None,
+            "component_basis_condition_number": (
+                (singular_values[0] / singular_values[-1]).item() if separate_components else None
+            ),
             "baseline_mean": baseline.tolist(), "baseline_mean_sha256": tensor_hash(baseline),
             "neutral_final_token_residual_norm_mean": neutral_residual_norm.item(),
             "pair_unit_cosine": (dictionary[pair_ids[0]] @ dictionary[pair_ids[1]]).item(),
@@ -373,8 +417,8 @@ def extract_concept(
                     [d["j_norm"] for d in decomposition], [d["remainder_norm"] for d in decomposition], contrast.norm())
     cfg_type = JLensConceptComponentsC if separate_components else JLensConceptC
     vectors = {
-        side: Vector(cfg_type(layers=layers), {layer: {} for layer in layers}, state)
-        for side, state in states.items()
+        side: Vector(cfg_type(layers=layers), shared_states[side], stacked_states[side])
+        for side in ("+C", "-C")
     }
     return vectors, {
         "operator": operator,
@@ -383,14 +427,16 @@ def extract_concept(
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "+C: h_user_turn + C * mean_neutral_residual_norm * unit(project_span(j_positive_behavior)); "
-            "-C: h_user_turn + C * mean_neutral_residual_norm * unit(project_span(j_negative_behavior))"
+            "h_all_prefill + alpha * V * (swap(V^dagger h_all_prefill) - V^dagger h_all_prefill)"
             if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
-        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",
+        "extraction_mask": "final_real_chat_prompt_token",
+        "application_mask": "all_attended_prefill_positions" if separate_components else "user_turn_including_chat_delimiters",
         "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper",
-        "application_scale": "mean_residual_norm_over_100_neutral_concept_final_tokens", "gp_steps": 16,
+        "component_basis_normalization": "independent_unit_norm_commensurate_coordinates" if separate_components else None,
+        "application_scale": "none_common_basis_scale_cancels_under_pseudoinverse" if separate_components else "unit_contrast",
+        "gp_steps": 16,
         "concept_prompts": prompts, "dev_prompts": dev_prompts, "token_records": token_records,
         "pair_ids": pair_ids, "pair_tokens": [tokenizer.decode([i]) for i in pair_ids],
         "null_token_ids": null_ids, "null_seed": 0,

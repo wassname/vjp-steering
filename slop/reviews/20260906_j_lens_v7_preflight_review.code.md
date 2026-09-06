@@ -1,0 +1,19 @@
+## Review
+
+- Correct: Non-negative gradient pursuit clamps coefficients at `src/vjp_steering/j_lens_concept.py:142`, and extraction correctly uses the constrained reconstruction rather than the unconstrained span projection at `src/vjp_steering/j_lens_concept.py:342-345`.
+- Correct: The two reconstructed components form a two-row basis with a persisted pseudoinverse at `src/vjp_steering/j_lens_concept.py:374-380`.
+- Correct: Component exchange selects every attended prefill position at `src/vjp_steering/j_lens_concept.py:104-107`, and generation constructs that mask per padded batch at `scripts/walk.py:461-465`.
+- Correct: Reloaded vectors are checked for method, layers, and content hash at `scripts/experiment.py:350-356`. The existing float32 tiny-pipeline smoke log also records successful reload, generation, judging, and export.
+
+- Finding: **P1 — Production BF16 execution destroys the saved pseudoinverse relationship before applying the exchange.** `concept_patch()` converts `basis` and `dual` independently with `.to(hidden)` at `src/vjp_steering/j_lens_concept.py:163-165`. With the default BF16 model configuration (`scripts/experiment.py:86`), both tensors are rounded separately before `_swap_lens_coordinates` converts them back to float32. The rounded dual is generally no longer the pseudoinverse of the rounded basis, so alpha=1 is not an exact coordinate exchange. The current self-test uses float32 and an axis-aligned basis, so it cannot expose this. Preserve state precision using `.to(hidden.device)` and cast only the final delta to the hidden dtype; add a non-axis-aligned BF16 regression test.
+
+- Finding: **P1 — The normal experiment path presents negative-alpha extrapolation as the second paper-protocol direction.** Both sides contain the same symmetric basis (`src/vjp_steering/j_lens_concept.py:379-383`), but `applied_coefficient()` maps `-C` to negative alpha (`scripts/experiment.py:145-150`). The manifest nevertheless calls both sides a “positive dose of the side-specific” component (`scripts/experiment.py:770-775`), while the renderer accepts negative behavioral effect as a valid `-C` arm and includes it in the bidirectional score (`src/vjp_steering/results.py:123-130`, `src/vjp_steering/results.py:749-752`). Negative alpha moves away from a symmetric exchange; it is not its reverse or a second paper-native semantic direction. Restrict the paper-protocol result to a non-negative exchange arm, or explicitly label/exclude negative alpha as an extrapolation control.
+
+- Finding: **P1 — The calibration command’s default source is guaranteed to be the wrong method.** Calibration requires `j_lens_concept_components` (`scripts/concept_checks.py:24-35`), but `--source-experiment` defaults to `j-lens-concept-dev-v1` (`scripts/experiment.py:79`). `load_or_extract()` then validates the source metadata against the component method and rejects the method mismatch (`scripts/experiment.py:286-290`). Make the source argument required or default it to a fresh v7 component-extraction experiment.
+
+- Finding: **P2 — The reported “changed coordinate fraction” is not a coordinate diagnostic.** Both diagnostic implementations compute `(actual != 0).mean()` over hidden-state elements (`src/vjp_steering/j_lens_concept.py:224-227`, `scripts/concept_checks.py:67-73`), and the smoke only asserts this value is positive (`scripts/concept_checks.py:336-339`). A dense two-vector patch will make this nearly one regardless of whether the two pseudoinverse coordinates were exchanged correctly. Rename it as a hidden-element liveness metric and add the actual exchange residual
+  `c_post - (c_pre + alpha * (flip(c_pre) - c_pre))`, especially for production BF16 execution.
+
+- Tests: Not executed in this review-only environment. The supervisor should rerun the concept self-test and add/run the BF16 coordinate-exchange regression described above.
+
+- Merge verdict: **BLOCK**.

@@ -111,8 +111,8 @@ def run_experiment(method: str, argv: list[str]) -> str:
 @app.local_entrypoint()
 def calibrate_concept(
     method: str,
+    source_experiment: str,
     experiment_id: str = "j-lens-concept-calibration-v1",
-    source_experiment: str = "j-lens-concept-dev-v1",
 ):
     print(run_experiment.remote(method, [
         "--concept-calibrate", "--dev", "--experiment-id", experiment_id,

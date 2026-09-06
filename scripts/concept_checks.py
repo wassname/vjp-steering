@@ -1,4 +1,4 @@
-"""Focused checks and real tiny-pipeline smoke for concept addition. — PI/OpenAI Codex"""
+"""Focused checks and real tiny-pipeline smoke for J-space concept interventions. — PI/OpenAI Codex"""
 
 import hashlib
 import json
@@ -13,112 +13,128 @@ from steering_lite import Vector
 
 from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
-    JLensConceptC, JLensConceptComponentsC, component_spec, concept_prefill, concept_spec,
-    extract_persona_contrast, final_positions, gradient_pursuit, implementation_hash,
-    prefill_diagnostics, select_concept_layers, selected_span_projection, user_turn_mask,
+    JLensConceptC, JLensConceptComponentsC, component_spec, concept_patch, concept_prefill,
+    concept_prefill_mask, concept_spec, extract_persona_contrast, final_positions,
+    gradient_pursuit, implementation_hash, prefill_diagnostics, select_concept_layers,
+    selected_span_projection, user_turn_mask,
 )
-from vjp_steering.vjp import _activations
+from vjp_steering.vjp import _activations, _swap_lens_coordinates
 
 
 def calibrate(args):
     import experiment
     import walk
 
+    if args.method != COMPONENT_PAIR_METHOD:
+        raise ValueError("paper-protocol component calibration requires j_lens_concept_components")
     root = experiment.experiment_dir(args.experiment_id)
     if root.exists():
         raise ValueError(f"calibration output exists: {root}")
+    if not args.source_experiment:
+        raise ValueError("--source-experiment is required for component calibration")
     source = experiment.experiment_dir(args.source_experiment)
     model, tokenizer = experiment.load_model(args)
     vectors, metadata = experiment.load_or_extract(args, source, model, tokenizer)
-    rows, cohort_hash = walk.read_cohort(1)
+    rows, cohort_hash = walk.read_cohort(experiment.DEV.cohort_size)
     prompts = walk.generation_inputs(tokenizer, rows)
     encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
-    mask = user_turn_mask(tokenizer, encoded.input_ids, encoded.attention_mask)
-    observations = {"+C": [], "-C": []}
+    vector = vectors["+C"]
+    mask = concept_prefill_mask(tokenizer, encoded.input_ids, encoded.attention_mask, vector)
+    final = final_positions(encoded.attention_mask)
+    batch = torch.arange(len(rows), device=encoded.input_ids.device)
+    observations = {"exchange": []}
     with torch.inference_mode():
-        bare_logits = model(**encoded).logits[:, -1].float()
-    coefficients = (0., 4., 2., 1., .5, .25, .125, .0625, .03125, .015625, .0078125)
-    for side in ("+C", "-C"):
-        vector = vectors[side]
-        for coefficient in coefficients:
-            before, diagnostics, handles = {}, {}, []
+        bare_logits = model(**encoded).logits[batch, final].float()
+    coefficients = (0., .25, .5, .75, 1., 1.25, 1.5, 2.)
+    for coefficient in coefficients:
+        before, diagnostics, handles = {}, {}, []
 
-            def before_hook(layer):
-                def capture(_module, _inputs, output):
-                    hidden = output[0] if isinstance(output, tuple) else output
-                    before[layer] = hidden.detach().clone()
-                return capture
+        def before_hook(layer):
+            def capture(_module, _inputs, output):
+                hidden = output[0] if isinstance(output, tuple) else output
+                before[layer] = hidden.detach().clone()
+            return capture
 
-            def after_hook(layer):
-                def capture(_module, _inputs, output):
-                    hidden = output[0] if isinstance(output, tuple) else output
-                    h = before[layer][mask].float()
-                    actual = hidden[mask].float() - h
-                    direction = vector.stacked[layer]["v"][0].to(h)
-                    intended = coefficient * direction
-                    raw_norm = h.norm(dim=-1)
-                    diagnostics[str(layer)] = {
-                        "hidden_norms": raw_norm.tolist(), "actual_patch_norms": actual.norm(dim=-1).tolist(),
-                        "patch_residual_ratios": (actual.norm(dim=-1) / raw_norm).tolist(),
-                        "actual_direction_coordinates": ((actual @ direction) / direction.square().sum()).tolist(),
-                        "intended_patch_norm": intended.norm().item(),
-                        "changed_coordinate_fraction": (actual != 0).float().mean().item(),
-                        "relative_quantization_error": (
-                            (actual - intended).norm(dim=-1) / max(intended.norm().item(), 1e-30)
-                        ).tolist(),
-                        "dtype": str(hidden.dtype),
-                    }
-                return capture
+        def after_hook(layer):
+            def capture(_module, _inputs, output):
+                hidden = output[0] if isinstance(output, tuple) else output
+                h = before[layer][mask].float()
+                actual = hidden[mask].float() - h
+                intended = concept_patch(h, vector, layer, coefficient) - h
+                dual = vector.shared[layer]["dual"].to(h)
+                clean_coordinates = h @ dual.T
+                patched_coordinates = (h + actual) @ dual.T
+                target_coordinates = clean_coordinates + coefficient * (clean_coordinates.flip(-1) - clean_coordinates)
+                exchange_residual = patched_coordinates - target_coordinates
+                exchange_delta_norm = (target_coordinates - clean_coordinates).norm(dim=-1)
+                raw_norm = h.norm(dim=-1)
+                diagnostics[str(layer)] = {
+                    "hidden_norms": raw_norm.tolist(),
+                    "actual_patch_norms": actual.norm(dim=-1).tolist(),
+                    "patch_residual_ratios": (actual.norm(dim=-1) / raw_norm).tolist(),
+                    "clean_coordinates": clean_coordinates.tolist(),
+                    "patched_coordinates": patched_coordinates.tolist(),
+                    "coordinate_exchange_residual_norms": exchange_residual.norm(dim=-1).tolist(),
+                    "coordinate_exchange_relative_errors": (
+                        exchange_residual.norm(dim=-1) / exchange_delta_norm.clamp_min(1e-30)
+                    ).tolist(),
+                    "changed_hidden_fraction": (actual != 0).float().mean().item(),
+                    "relative_patch_error": (
+                        (actual - intended).norm(dim=-1) / intended.norm(dim=-1).clamp_min(1e-30)
+                    ).tolist(),
+                    "dtype": str(hidden.dtype),
+                }
+            return capture
 
-            try:
+        try:
+            for layer in vector.cfg.layers:
+                handles.append(model.model.layers[layer].register_forward_hook(before_hook(layer)))
+            with concept_prefill(model, vector, mask, coefficient) as calls:
                 for layer in vector.cfg.layers:
-                    handles.append(model.model.layers[layer].register_forward_hook(before_hook(layer)))
-                with concept_prefill(model, vector, mask, coefficient) as calls:
-                    for layer in vector.cfg.layers:
-                        handles.append(model.model.layers[layer].register_forward_hook(after_hook(layer)))
-                    with torch.inference_mode():
-                        logits = model(**encoded).logits[:, -1].float()
-            finally:
-                for handle in handles:
-                    handle.remove()
-            assert all(count == 1 for count in calls.values())
-            if coefficient == 0:
-                torch.testing.assert_close(logits, bare_logits, rtol=0, atol=0)
-            log_probs, bare_log_probs = logits.log_softmax(-1), bare_logits.log_softmax(-1)
-            top = logits[0].topk(10)
-            side_slug = "plus" if side == "+C" else "minus"
-            path = root / side_slug / f"c{experiment.coefficient_slug(coefficient)}.jsonl"
-            path.parent.mkdir(parents=True, exist_ok=True)
-            records = experiment.extend_generation(
-                path, rows, prompts, model, tokenizer, args, profile_name="dev", side=side,
-                coefficient=coefficient, vector=vector,
-            )
-            health, reasons = walk.health(tokenizer, [record["text"] for record in records])
-            observation = {
-                "coefficient": coefficient, "path": str(path.relative_to(root)),
-                "health": health, "breakdown_reasons": reasons, "layers": diagnostics, "hook_calls": calls,
-                "logit_delta_norm": (logits - bare_logits).norm().item(),
-                "kl_bare_to_steered": (bare_log_probs.exp() * (bare_log_probs - log_probs)).sum().item(),
-                "top_token_ids": top.indices.tolist(), "top_tokens": [tokenizer.decode([i]) for i in top.indices.tolist()],
-                "top_logits": top.values.tolist(), "text": records[0]["text"],
-            }
-            observations[side].append(observation)
-            experiment.atomic_json(root / "calibration.json", {
-                "source_experiment": args.source_experiment,
-                "source_metadata_sha256": hashlib.sha256((source / "extraction/metadata.json").read_bytes()).hexdigest(),
-                "vector_content_sha256": metadata["vector_content_sha256"], "cohort_sha256": cohort_hash,
-                "scenario": rows[0]["scenario"], "prompt": prompts[0], "input_ids": encoded.input_ids.tolist(),
-                "attention_mask": encoded.attention_mask.tolist(), "batch_size": 1,
-                "original_dev_batch_size": 15,
-                "note": "single-prompt rerun; BF16 batch-shape effects may prevent byte-exact original output",
-                "observations": observations,
-            })
-            print(
-                f"CONCEPT_CALIBRATION side={side} C={coefficient} "
-                f"logit_delta={observation['logit_delta_norm']:.5g} "
-                f"KL={observation['kl_bare_to_steered']:.5g} health={reasons} text={records[0]['text']!r}",
-                flush=True,
-            )
+                    handles.append(model.model.layers[layer].register_forward_hook(after_hook(layer)))
+                with torch.inference_mode():
+                    logits = model(**encoded).logits[batch, final].float()
+        finally:
+            for handle in handles:
+                handle.remove()
+        assert all(count == 1 for count in calls.values())
+        if coefficient == 0:
+            torch.testing.assert_close(logits, bare_logits, rtol=0, atol=0)
+        log_probs, bare_log_probs = logits.log_softmax(-1), bare_logits.log_softmax(-1)
+        top = logits[0].topk(10)
+        path = root / "exchange" / f"c{experiment.coefficient_slug(coefficient)}.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        records = experiment.extend_generation(
+            path, rows, prompts, model, tokenizer, args, profile_name="dev", side="+C",
+            coefficient=coefficient, vector=vector,
+        )
+        health, reasons = walk.health(tokenizer, [record["text"] for record in records])
+        kl = (bare_log_probs.exp() * (bare_log_probs - log_probs)).sum(-1)
+        observation = {
+            "coefficient": coefficient, "path": str(path.relative_to(root)),
+            "health": health, "breakdown_reasons": reasons, "layers": diagnostics, "hook_calls": calls,
+            "logit_delta_norm_mean": (logits - bare_logits).norm(dim=-1).mean().item(),
+            "kl_bare_to_steered_mean": kl.mean().item(),
+            "top_token_ids_first_prompt": top.indices.tolist(),
+            "top_tokens_first_prompt": [tokenizer.decode([i]) for i in top.indices.tolist()],
+            "top_logits_first_prompt": top.values.tolist(), "text_first_prompt": records[0]["text"],
+        }
+        observations["exchange"].append(observation)
+        experiment.atomic_json(root / "calibration.json", {
+            "source_experiment": args.source_experiment,
+            "source_metadata_sha256": hashlib.sha256((source / "extraction/metadata.json").read_bytes()).hexdigest(),
+            "vector_content_sha256": metadata["vector_content_sha256"], "cohort_sha256": cohort_hash,
+            "cohort_size": len(rows), "coefficients": list(coefficients),
+            "protocol": "nonnegative concept-component coordinate exchange on all attended prefill positions",
+            "observations": observations,
+        })
+        print(
+            f"CONCEPT_CALIBRATION side=exchange alpha={coefficient} "
+            f"logit_delta_mean={observation['logit_delta_norm_mean']:.5g} "
+            f"KL_mean={observation['kl_bare_to_steered_mean']:.5g} health={reasons} "
+            f"text_first={records[0]['text']!r}",
+            flush=True,
+        )
     print(f"CONCEPT_CALIBRATION_COMPLETE id={args.experiment_id} cells={sum(map(len, observations.values()))}")
 
 
@@ -181,10 +197,43 @@ def self_test():
     model = Toy()
     vector = Vector(JLensConceptC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}})
     assert select_concept_layers(vector, (0,)).cfg.layers == (0,)
+    component_basis = torch.tensor([[1., 0., 0.], [0., 1., 0.]])
     component_vector = Vector(
-        JLensConceptComponentsC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}},
+        JLensConceptComponentsC(layers=(0,)),
+        {0: {"basis": component_basis, "dual": torch.linalg.pinv(component_basis).T.contiguous()}},
+        {0: {}},
     )
     assert select_concept_layers(component_vector, (0,)).cfg.method == COMPONENT_PAIR_METHOD
+    torch.testing.assert_close(
+        concept_patch(torch.tensor([[2., 3., 4.]]), component_vector, 0, 1.),
+        torch.tensor([[3., 2., 4.]]),
+    )
+    precise_basis = torch.tensor([[.78731, .21719, .57721], [.31415, .92653, .14142]])
+    precise_dual = torch.linalg.pinv(precise_basis).T.contiguous()
+    precise_vector = Vector(
+        JLensConceptComponentsC(layers=(0,)),
+        {0: {"basis": precise_basis, "dual": precise_dual}},
+        {0: {}},
+    )
+    bf16_hidden = torch.tensor([[25.5, -13.25, 7.75]], dtype=torch.bfloat16)
+    precise_patch = concept_patch(bf16_hidden, precise_vector, 0, 1.)
+    torch.testing.assert_close(
+        precise_patch,
+        _swap_lens_coordinates(bf16_hidden, precise_basis, precise_dual, 1.),
+        rtol=0,
+        atol=0,
+    )
+    assert not torch.equal(
+        precise_patch,
+        _swap_lens_coordinates(bf16_hidden, precise_basis.to(bf16_hidden), precise_dual.to(bf16_hidden), 1.),
+    )
+    component_mask = concept_prefill_mask(
+        ChatTokenizer(),
+        torch.tensor([[0, 1, 2, 3, 4, 5]]),
+        torch.tensor([[0, 1, 1, 1, 1, 1]]),
+        component_vector,
+    )
+    torch.testing.assert_close(component_mask, torch.tensor([[False, True, True, True, True, True]]))
     assert component_spec()[0]["positive"] == "sycophantic agreement and flattery toward the user"
     assert concept_application_layers(SimpleNamespace(concept_layers="13,14"), (6, 13, 14)) == (13, 14)
     try:
@@ -208,6 +257,8 @@ def self_test():
     torch.testing.assert_close(results[2.][:, :, 0], 2 * mask.float())
     with concept_prefill(model, vector, torch.ones(1, 1), 2.):
         torch.testing.assert_close(model(torch.zeros(1, 1, 3)), torch.tensor([[[2., 0., 0.]]]))
+    with concept_prefill(model, component_vector, torch.ones(1, 1), 1.):
+        torch.testing.assert_close(model(torch.tensor([[[2., 3., 4.]]])), torch.tensor([[[3., 2., 4.]]]))
     try:
         with concept_prefill(model, vector, mask, 2.):
             raise RuntimeError("synthetic exception")
@@ -298,9 +349,9 @@ def smoke(args):
     vectors, metadata = experiment.load_or_extract(args, root, model, tokenizer)
     if args.method == COMPONENT_PAIR_METHOD:
         for layer in layers:
-            expected_norm = metadata["layers"][str(layer)]["neutral_final_token_residual_norm_mean"]
-            actual_norm = vectors["+C"].stacked[layer]["v"].norm()
-            torch.testing.assert_close(actual_norm, actual_norm.new_tensor(expected_norm))
+            basis = vectors["+C"].shared[layer]["basis"]
+            torch.testing.assert_close(basis.norm(dim=1), torch.ones(2))
+            assert metadata["layers"][str(layer)]["component_basis_condition_number"] >= 1
     encoded = tokenizer("A cat sits on a mat.", return_tensors="pt").to(args.device)
     with torch.inference_mode():
         bare = model(**encoded).logits
@@ -315,7 +366,7 @@ def smoke(args):
         model, vectors["+C"], encoded.input_ids, encoded.attention_mask, 1.,
     )
     assert diagnostic["final_token_kl_bare_to_steered_mean"] > 0
-    assert all(layer["changed_coordinate_fraction"] > 0 for layer in diagnostic["layers"].values())
+    assert all(layer["changed_hidden_fraction"] > 0 for layer in diagnostic["layers"].values())
     print("CONCEPT_REAL_HOOK_CHECK changed_logits=true restored_logits=true calls_once=true removed=true diagnostics=true")
     del model
     for command in (
@@ -325,10 +376,7 @@ def smoke(args):
         print("COMMAND:", " ".join(command), flush=True)
         subprocess.run(command, check=True)
     metadata = json.loads((root / "extraction/metadata.json").read_text())
-    if args.method == COMPONENT_PAIR_METHOD:
-        assert metadata["vector_content_sha256"]["+C"] != metadata["vector_content_sha256"]["-C"]
-    else:
-        assert metadata["vector_content_sha256"]["+C"] == metadata["vector_content_sha256"]["-C"]
+    assert metadata["vector_content_sha256"]["+C"] == metadata["vector_content_sha256"]["-C"]
     for layer in metadata["layers"].values():
         for d in layer["decomposition"]:
             assert min(d["weights_unit_dictionary"]) >= 0 and d["achieved_nonzero_count"] <= 16

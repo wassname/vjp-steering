@@ -1,0 +1,12 @@
+{
+  "experiment_id": "j-lens-components-coordinate-swap-tiny-smoke-v7b",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "status": "no_accepted_endpoint"
+    }
+  }
+}

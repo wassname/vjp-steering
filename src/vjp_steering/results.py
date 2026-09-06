@@ -52,7 +52,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "j_lens_swap": "J-lens coordinate swap",
-    "j_lens_concept_components": "J-lens concept components",
+    "j_lens_concept_components": "J-lens concept-coordinate swap",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
