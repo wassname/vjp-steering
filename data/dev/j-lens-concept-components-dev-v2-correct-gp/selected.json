@@ -1,0 +1,25 @@
+{
+  "experiment_id": "j-lens-concept-components-dev-v2-correct-gp",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 0.0625,
+      "candidates_descending": [
+        0.0625
+      ],
+      "effect": 0.006666666666666643,
+      "off_axis_perturbation": 0.039999999999999994
+    },
+    "-C": {
+      "selected_C": 0.5,
+      "candidates_descending": [
+        0.5,
+        0.25,
+        0.0625,
+        0.03125
+      ],
+      "effect": -0.9000000000000001,
+      "off_axis_perturbation": 0.29333333333333333
+    }
+  }
+}

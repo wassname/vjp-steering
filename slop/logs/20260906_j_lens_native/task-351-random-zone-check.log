@@ -1,0 +1,13 @@
+random_cone_vertices [(0.0, 0.0), (-0.62575, 0.2755), (-0.558, 0.315), (0.46725, 0.621625), (3.73775, 0.621625), (2.65025, 0.315), (1.7845, 0.2755), (0.0, 0.0)]
++C 0.03125 point (-0.046666666666666676, 0.05333333333333332) inside_random_cone True intended_sign False
++C 0.0625 point (0.006666666666666643, 0.039999999999999994) inside_random_cone True intended_sign True
++C 0.125 point (-0.5666666666666668, 0.060000000000000005) inside_random_cone False intended_sign False
++C 0.25 point (-2.026666666666667, 0.3066666666666667) inside_random_cone False intended_sign False
++C 0.5 point (-1.6466666666666667, 0.08) inside_random_cone False intended_sign False
++C 1.0 point (-0.6066666666666666, 0.16) inside_random_cone False intended_sign False
+-C 0.03125 point (-0.06666666666666672, 0.05999999999999999) inside_random_cone True intended_sign True
+-C 0.0625 point (-0.36666666666666675, 0.1733333333333333) inside_random_cone True intended_sign True
+-C 0.125 point (0.013333333333333256, 0.11333333333333334) inside_random_cone True intended_sign False
+-C 0.25 point (-0.7933333333333334, 0.2866666666666667) inside_random_cone False intended_sign True
+-C 0.5 point (-0.9000000000000001, 0.29333333333333333) inside_random_cone False intended_sign True
+-C 1.0 point (0.19333333333333327, 0.2866666666666667) inside_random_cone True intended_sign False
