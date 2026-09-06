@@ -234,7 +234,9 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         )
         return vectors, metadata, 0, "concept:" + metadata["spec_sha256"]
     if args.method == "j_lens_swap":
-        layers = walk.resolve_layers(model, None)
+        available = walk.resolve_layers(model, None)
+        paper_workspace = tuple(range(13, 22))
+        layers = paper_workspace if set(paper_workspace) <= set(available) else available
         vector, swap_metadata = j_lens_swap(
             model, tokenizer, layers,
             source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
