@@ -11,13 +11,13 @@
    - tasks:
      1. [x] use `h + alpha V(swap(V†h) - V†h)` with raw `abrasive` and `flattering` J-lens rows
      2. [x] use signed alpha: +C is coordinate exchange; -C extrapolates away from exchange
-     3. [/] run the real-model pipeline smoke
+     3. [x] run the real-model pipeline smoke: task 276 persisted all sides; +C changed 0/2 short outputs and -C repeated `abrasive`, so calibrate below alpha 1
 2. [ ] goal: measure the coherent DEV dose range on Bullshit Bench v2
    - subtle failure mode: a generation passes repetition and truncation checks but scores well only because it refuses or ignores the question
    - discriminator: raw generations remain responsive and the judge reports intended on-axis signs with low off-axis change
    - verify: complete pueue log, DEV `results.csv`, `selected.json`, and raw first samples from every cell
    - tasks:
-     1. [ ] search each signed-alpha direction for the generation-health boundary
+     1. [/] search each signed-alpha direction for the generation-health boundary
      2. [ ] judge the local ±33% dose grid
      3. [ ] audit the complete log and raw responses
 3. [ ] goal: add comparable J-lens results to the public plot
