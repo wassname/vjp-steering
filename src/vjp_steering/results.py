@@ -669,9 +669,9 @@ def plot(
             yref="paper",
             xanchor="left",
             text=(
-                "cyan J-lens DEV: solid +C · dotted -C · ○ doses through selected/final"
+                "J-lens coordinate swap: solid +C · dotted -C · ○ doses through selected/final"
                 if pareto else
-                "cyan J-lens DEV: solid +C · dotted -C · ○ all doses · ▽ high damage"
+                "J-lens coordinate swap: solid +C · dotted -C · ○ all doses · ▽ high damage"
             ),
             showarrow=False,
             font={"color": J_LENS_COLOR, "size": 12},

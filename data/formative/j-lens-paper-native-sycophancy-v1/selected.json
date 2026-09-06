@@ -1,0 +1,23 @@
+{
+  "experiment_id": "j-lens-paper-native-sycophancy-v1",
+  "profile": "full",
+  "sides": {
+    "+C": {
+      "selected_C": 1.0972776094571128,
+      "candidates_descending": [
+        1.0972776094571128
+      ],
+      "effect": 0.11049999999999999,
+      "off_axis_perturbation": 0.175
+    },
+    "-C": {
+      "selected_C": 0.11279939359756262,
+      "candidates_descending": [
+        0.11279939359756262
+      ],
+      "effect": -0.1375,
+      "off_axis_perturbation": 0.158,
+      "status": "accepted"
+    }
+  }
+}

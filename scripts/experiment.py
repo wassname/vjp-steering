@@ -886,66 +886,27 @@ def local_pipeline(args: argparse.Namespace) -> None:
     ]
     if missing_sides:
         raise ValueError(f"DEV has no accepted endpoint for {', '.join(missing_sides)}")
-    candidates = {
-        side: selected["sides"][side]["candidates_descending"]
-        for side in ("+C", "-C")
-    }
-    modal_stage(args, dev=False, coefficients=candidates)
-    failed_sides: dict[str, list[float]] = {}
-    for side in ("+C", "-C"):
-        tested_candidates: list[float] = []
-        for coefficient in selected["sides"][side]["candidates_descending"]:
-            tested_candidates.append(coefficient)
-            cell_args = [f"--side={side}", "--coefficient", str(coefficient)]
-            run_resumable(
-                [
-                    sys.executable,
-                    "scripts/judge.py",
-                    "--experiment-id",
-                    args.experiment_id,
-                    "--profile",
-                    "full",
-                    "--refresh",
-                    *cell_args,
-                ],
-                attempts=12,
-                label=f"OpenRouter full judge {side} C={coefficient}",
-            )
-            subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/export.py",
-                    "--experiment-id",
-                    args.experiment_id,
-                    "--profile",
-                    "full",
-                    *cell_args,
-                ],
-                cwd=walk.ROOT,
-                check=True,
-            )
-            confirmed_path = walk.ROOT / "data" / "formative" / args.experiment_id / "selected.json"
-            confirmed = json.loads(confirmed_path.read_text())
-            side_result = confirmed["sides"].get(side, {})
-            if "selected_C" in side_result and math.isclose(side_result["selected_C"], coefficient):
-                side_result["status"] = "accepted"
-                atomic_json(confirmed_path, confirmed)
-                break
-        else:
-            failed_sides[side] = tested_candidates
-            logger.warning(
-                "FULL_SIDE_UNCONFIRMED side={} tested_candidates={}",
-                side,
-                tested_candidates,
-            )
-    confirmed_path = walk.ROOT / "data" / "formative" / args.experiment_id / "selected.json"
-    confirmed = json.loads(confirmed_path.read_text())
-    for side, tested_candidates in failed_sides.items():
-        confirmed["sides"][side] = {
-            "status": "no_accepted_endpoint",
-            "tested_candidates": tested_candidates,
-        }
-    atomic_json(confirmed_path, confirmed)
+    dev_manifest = json.loads(manifest_path(args.experiment_id).read_text())
+    full_grid = dev_manifest["grid"]
+    modal_stage(args, dev=False, coefficients=full_grid)
+    run_resumable(
+        [
+            sys.executable, "scripts/judge.py",
+            "--experiment-id", args.experiment_id,
+            "--profile", "full", "--all-generated", "--refresh",
+        ],
+        attempts=12,
+        label="OpenRouter full grid judge",
+    )
+    subprocess.run(
+        [
+            sys.executable, "scripts/export.py",
+            "--experiment-id", args.experiment_id,
+            "--profile", "full", "--all-generated",
+        ],
+        cwd=walk.ROOT,
+        check=True,
+    )
     render_command = [
         sys.executable, "-m", "vjp_steering.results",
         "--experiment-id", args.experiment_id, "--profile", "full",
