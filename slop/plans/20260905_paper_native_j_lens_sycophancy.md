@@ -4,7 +4,7 @@
 
 — PI/OpenAI Codex
 
-1. [/] goal: replace the old directed unit-vector transfer with the paper coordinate exchange
+1. [x] goal: replace the old directed unit-vector transfer with the paper coordinate exchange
    - subtle failure mode: the code still uses normalized dot-product transfer while metadata says pseudoinverse exchange
    - discriminator: alpha 0 is identity; alpha 1 exchanges both raw J-lens coordinates; saved vectors contain `basis` and `dual`
    - verify: `PYTHONPATH=src:scripts uv run python scripts/experiment.py j_lens_swap --self-test`
@@ -20,11 +20,15 @@
      1. [x] boundary: +C clean through 1.097; -C clean through .136; both leak/repeat above their boundary
      2. [x] judge 22 local-grid cells; fixed the experiment exporter's missing -C axis sign
      3. [x] audit task 277 and raw responses; DEV selected +1.097 (+.02 effect) and -.1128 (-.18 effect)
-3. [ ] goal: add comparable J-lens results to the public plot
+3. [x] goal: add comparable J-lens results to the public plot
    - subtle failure mode: DEV-15 or category-token evidence is presented beside all-100 methods
    - discriminator: the plotted rows use the all-100 cohort, the same judge rubric, and the same admissibility filter
    - verify: `just results`; inspect `results/plot.png`, `results/plot_pareto.png`, and table provenance
    - tasks:
-     1. [ ] run all-100 confirmation for DEV-accepted candidates
-     2. [ ] merge the judged rows under `J-lens coordinate swap`
-     3. [ ] regenerate and inspect both PNGs
+     1. [x] run all 22 calibrated doses on the all-100 cohort with AB+BA judging
+     2. [x] merge 22 dose rows and 2,200 scenario rows under `J-lens coordinate swap`
+     3. [x] regenerate and inspect both PNGs; fresh review identified the cyan paths as small and near bare
+   - evidence:
+     - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
+     - > `task-279-public-render.log`: `wrote 8 table rows and 2 plots from 822 measured evaluations`
+     - > `results/index.md`: `j_lens_swap | -0.029 | 0.442 | 0.153 | 0.133 | 0.162 | 1 | 11 | 11`

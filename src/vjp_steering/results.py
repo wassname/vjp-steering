@@ -28,6 +28,7 @@ METHODS = (
     "mean_diff",
     "pca",
     "J_word",
+    "j_lens_swap",
     "vjp_mlp_up_shrink",
     "vjp_mlp_up_left_right_shrink",
     "random",
@@ -38,6 +39,7 @@ METHOD_SEEDS = {
     "mean_diff": {0, 1, 2},
     "pca": {0, 1, 2},
     "J_word": {0},
+    "j_lens_swap": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
 }
@@ -517,7 +519,12 @@ def plot(
                 figure.add_trace(go.Scatter(
                     x=curve_effect,
                     y=curve_damage,
-                    mode="lines", line={"color": colors[method], "width": 2.2 if pareto else 3},
+                    mode="lines",
+                    line={
+                        "color": colors[method],
+                        "width": 2.2 if pareto else 3,
+                        "dash": "dot" if method == "j_lens_swap" and side == "-C" else "solid",
+                    },
                     line_shape="spline" if smooth else "linear",
                     line_smoothing=1.3 if pareto else 0.6 if smooth else 0,
                     hoverinfo="skip",
@@ -607,6 +614,7 @@ def plot(
         ]
         label_methods = (
             "J_word",
+            "j_lens_swap",
             "vjp_mlp_up_shrink",
             "vjp_mlp_up_left_right_shrink",
             "vjp_mlp_up_shared_eb",
@@ -671,7 +679,7 @@ def plot(
             text=(
                 "J-lens coordinate swap: solid +C · dotted -C · ○ doses through selected/final"
                 if pareto else
-                "J-lens coordinate swap: solid +C · dotted -C · ○ all doses · ▽ high damage"
+                "J-lens coordinate swap: solid +C · dotted -C · ○ all doses · △ high damage"
             ),
             showarrow=False,
             font={"color": J_LENS_COLOR, "size": 12},
