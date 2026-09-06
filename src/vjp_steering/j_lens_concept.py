@@ -20,7 +20,7 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-separate-positive-components-user-turn-v3"
+COMPONENT_PAIR_VERSION = "mean100-gp16-separate-behavior-components-user-turn-v4"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -46,13 +46,7 @@ def concept_spec() -> tuple[dict, str]:
 
 
 def component_spec() -> tuple[dict, str]:
-    old, _ = concept_spec()
-    spec = {
-        "positive": "sycophancy",
-        "negative": "abrasiveness",
-        "baseline_provenance": old["baseline_provenance"],
-        "baseline": old["baseline"],
-    }
+    spec, _ = concept_spec()
     digest = hashlib.sha256(json.dumps([COMPONENT_PAIR_VERSION, spec], sort_keys=True).encode()).hexdigest()
     return spec, digest
 
@@ -362,7 +356,7 @@ def extract_concept(
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "+C: h_user_turn + C * unit(j_sycophancy); -C: h_user_turn + C * unit(j_abrasiveness)"
+            "+C: h_user_turn + C * unit(j_positive_behavior); -C: h_user_turn + C * unit(j_negative_behavior)"
             if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",

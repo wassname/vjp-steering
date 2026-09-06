@@ -167,7 +167,7 @@ def self_test():
         JLensConceptComponentsC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}},
     )
     assert select_concept_layers(component_vector, (0,)).cfg.method == COMPONENT_PAIR_METHOD
-    assert component_spec()[0]["positive"] == "sycophancy"
+    assert component_spec()[0]["positive"] == "sycophantic agreement and flattery toward the user"
     assert concept_application_layers(SimpleNamespace(concept_layers="13,14"), (6, 13, 14)) == (13, 14)
     try:
         select_concept_layers(vector, (1,))
