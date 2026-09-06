@@ -20,7 +20,7 @@ SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
 METHOD = "j_lens_concept"
 COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
-COMPONENT_PAIR_VERSION = "mean100-gp16-separate-behavior-components-user-turn-v4"
+COMPONENT_PAIR_VERSION = "mean100-gp16-appendix-projection-behavior-components-user-turn-v5"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -104,7 +104,7 @@ def user_turn_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
 @torch.no_grad()
 def gradient_pursuit(
     signal: Float[torch.Tensor, "d"], dictionary: Float[torch.Tensor, "v d"], k: int = 16,
-) -> tuple[torch.Tensor, torch.Tensor, list[float]]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, list[float]]:
     if not torch.isfinite(signal).all() or not torch.isfinite(dictionary).all():
         raise ValueError("nonfinite pursuit input")
     if not torch.allclose(dictionary.norm(dim=1), torch.ones(dictionary.shape[0], device=dictionary.device)):
@@ -139,7 +139,16 @@ def gradient_pursuit(
             step /= 2
         errors.append(residual.norm().item())
     weights[selected] = coordinates
-    return weights, weights @ dictionary, errors
+    selected_support = torch.tensor(selected, dtype=torch.long, device=dictionary.device)
+    return weights, weights @ dictionary, selected_support, errors
+
+
+def selected_span_projection(signal: torch.Tensor, dictionary: torch.Tensor,
+                             selected_support: torch.Tensor) -> torch.Tensor:
+    if not selected_support.numel():
+        return torch.zeros_like(signal)
+    atoms = dictionary[selected_support].float().T
+    return atoms @ (torch.linalg.pinv(atoms) @ signal.float())
 
 
 @contextmanager
@@ -305,21 +314,31 @@ def extract_concept(
         components, decomposition = [], []
         for index in (0, 1):
             concept = hs[index] - baseline
-            weights, component, errors = gradient_pursuit(concept, dictionary, 16)
-            selected = weights.nonzero().flatten()
+            weights, reconstruction, selected_support, errors = gradient_pursuit(concept, dictionary, 16)
+            projection = selected_span_projection(concept, dictionary, selected_support)
+            component = projection if separate_components else reconstruction
+            active = weights.nonzero().flatten()
             remainder = concept - component
             components.append(component)
             decomposition.append({
-                "concept": texts[index], "achieved_nonzero_count": selected.numel(), "selected_ids": selected.tolist(),
-                "selected_tokens": [tokenizer.decode([i]) for i in selected.tolist()],
-                "weights_unit_dictionary": weights[selected].tolist(), "raw_row_norms": norms[selected].tolist(),
+                "concept": texts[index], "selected_count": selected_support.numel(),
+                "selected_ids": selected_support.tolist(),
+                "selected_tokens": [tokenizer.decode([i]) for i in selected_support.tolist()],
+                "achieved_nonzero_count": active.numel(), "active_ids": active.tolist(),
+                "active_tokens": [tokenizer.decode([i]) for i in active.tolist()],
+                "weights_unit_dictionary": weights[active].tolist(), "raw_row_norms": norms[active].tolist(),
                 "concept_norm": concept.norm().item(), "j_norm": component.norm().item(),
+                "reconstruction_norm": reconstruction.norm().item(), "projection_norm": projection.norm().item(),
                 "remainder_norm": remainder.norm().item(), "error_history": errors,
                 "j_remainder_dot": (component @ remainder).item(),
+                "reconstruction_projection_cosine": torch.nn.functional.cosine_similarity(
+                    reconstruction, projection, dim=0,
+                ).item(),
                 "reconstruction_error": (concept - component - remainder).norm().item(),
-                "concept_vector": concept.tolist(), "j_vector": component.tolist(), "remainder": remainder.tolist(),
-                "concept_sha256": tensor_hash(concept), "j_sha256": tensor_hash(component),
-                "remainder_sha256": tensor_hash(remainder),
+                "concept_vector": concept.tolist(), "reconstruction_vector": reconstruction.tolist(),
+                "j_vector": component.tolist(), "remainder": remainder.tolist(),
+                "concept_sha256": tensor_hash(concept), "reconstruction_sha256": tensor_hash(reconstruction),
+                "j_sha256": tensor_hash(component), "remainder_sha256": tensor_hash(remainder),
             })
         contrast = components[0] - components[1]
         if separate_components:
@@ -351,12 +370,15 @@ def extract_concept(
     }
     return vectors, {
         "operator": operator,
-        "representation_source": "separate_concept_components_mean100" if separate_components else "concept_mean100",
+        "representation_source": (
+            "separate_concept_components_mean100_appendix_projection" if separate_components else "concept_mean100"
+        ),
         "spec_sha256": spec_hash,
         "implementation_sha256": implementation_hash(),
         "spec": spec, "source_layers": list(layers),
         "equation": (
-            "+C: h_user_turn + C * unit(j_positive_behavior); -C: h_user_turn + C * unit(j_negative_behavior)"
+            "+C: h_user_turn + C * unit(project_span(j_positive_behavior)); "
+            "-C: h_user_turn + C * unit(project_span(j_negative_behavior))"
             if separate_components else "h_user_turn + C * unit(j_positive - j_negative)"
         ),
         "extraction_mask": "final_real_chat_prompt_token", "application_mask": "user_turn_including_chat_delimiters",
@@ -395,7 +417,7 @@ def extract_persona_contrast(model, tokenizer, layers, *, positive_prompts, nega
         del raw
         hs = hidden[layer].to(device)
         difference = hs[:n_pairs].mean(0) - hs[n_pairs:].mean(0)
-        weights, j_component, errors = gradient_pursuit(difference, dictionary, 16)
+        weights, j_component, _selected_support, errors = gradient_pursuit(difference, dictionary, 16)
         if not torch.isfinite(j_component).all() or j_component.norm() <= 1e-6 * difference.norm():
             raise ValueError(f"zero, nonfinite, or numerically unresolved persona J component at layer {layer}")
         component = j_component if direction == "j_gp16" else difference

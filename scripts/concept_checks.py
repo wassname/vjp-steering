@@ -15,7 +15,7 @@ from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     JLensConceptC, JLensConceptComponentsC, component_spec, concept_prefill, concept_spec,
     extract_persona_contrast, final_positions, gradient_pursuit, implementation_hash,
-    prefill_diagnostics, select_concept_layers, user_turn_mask,
+    prefill_diagnostics, select_concept_layers, selected_span_projection, user_turn_mask,
 )
 from vjp_steering.vjp import _activations
 
@@ -113,20 +113,24 @@ def self_test():
 
     dictionary = torch.tensor([[1., 0., 0.], [.6, .8, 0.], [0., 0., 1.]])
     signal = torch.tensor([.3, 1., -.5])
-    w, component, errors = gradient_pursuit(signal, dictionary)
+    w, component, support, errors = gradient_pursuit(signal, dictionary)
     assert (w >= 0).all() and w.count_nonzero() <= 16 and errors[-1] < signal.norm()
     torch.testing.assert_close(component, w @ dictionary)
     torch.testing.assert_close(signal, component + (signal - component))
     assert w[0] == 0 and w[1] > 0 and w[2] == 0
-    two_steps, _, early = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=2)
-    refined, _, late = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=16)
+    two_steps, reconstruction, support, early = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=2)
+    refined, _, _, late = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=16)
+    projection = selected_span_projection(torch.tensor([1., 1., 0.]), dictionary, support)
     assert two_steps[0] > 0 and two_steps[1] > 0
+    torch.testing.assert_close(projection, torch.tensor([1., 1., 0.]), atol=1e-6, rtol=1e-6)
+    assert not torch.allclose(reconstruction, projection)
     assert late[-1] <= early[-1]
     assert all(after <= before for before, after in zip(late, late[1:]))
     for exact in (torch.zeros(3), torch.tensor([1., 0., 0.])):
-        weights, component, _ = gradient_pursuit(exact, torch.eye(3))
+        weights, component, support, _ = gradient_pursuit(exact, torch.eye(3))
         assert torch.isfinite(weights).all()
         torch.testing.assert_close(component, exact)
+        torch.testing.assert_close(selected_span_projection(exact, torch.eye(3), support), exact)
     try:
         gradient_pursuit(torch.full((3,), float("nan")), torch.eye(3))
     except ValueError:
