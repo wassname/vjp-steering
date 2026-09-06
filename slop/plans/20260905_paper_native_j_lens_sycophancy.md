@@ -31,8 +31,10 @@
      4. [x] remove that failed adaptation from the public comparison; retain its standalone audit
      5. [x] test the fixed pair on the reproduced layers 13–21; both DEV points remain inside the random cone
      6. [x] audit actual next-token and J-lens activity: no proposed source token enters the actual top 25 on any all-100 prompt
-     7. [/] test separate positive-dose `sycophancy` and `abrasiveness` J-space components on DEV
-     8. [ ] run the working method on all-100 and regenerate both public PNGs
+     7. [x] test the paper's fixed component-coordinate exchange; it leaves random but moves only toward critical responses
+     8. [x] implement and smoke-test target-ordered exchange as an explicit bidirectional adaptation
+     9. [/] extract fresh real-Qwen vectors and test both directions on the full DEV dose grid
+     10. [ ] run the working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`
