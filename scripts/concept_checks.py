@@ -37,7 +37,7 @@ def calibrate(args):
     observations = {"+C": [], "-C": []}
     with torch.inference_mode():
         bare_logits = model(**encoded).logits[:, -1].float()
-    coefficients = (0., 1., .5, .25, .125, .0625, .03125, .015625, .0078125)
+    coefficients = (0., 4., 2., 1., .5, .25, .125, .0625, .03125, .015625, .0078125)
     for side in ("+C", "-C"):
         vector = vectors[side]
         for coefficient in coefficients:
