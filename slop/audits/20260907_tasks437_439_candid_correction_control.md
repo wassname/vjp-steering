@@ -20,7 +20,7 @@ Task 439 ran from 01:04:06 to 01:04:35 AWST and exited successfully. Its complet
 
 > `why: measure whether the aligned candid-correction prompt gives a broad negative DEV effect with low off-axis change; resolve: extract matched J-lens behavior components only if median is negative, at least 10 of 15 scenarios are negative, and off-axis mean is below 1.5`
 
-The generation feature was committed as `7e73a93`. The artifact records model/config/cohort/instructions but not the git tree or dirty diff, so exact source-tree provenance is incomplete.
+The generation code was committed as `7e73a93`. The artifact records model/config/cohort/instructions but not the git tree or dirty diff, so exact source-tree provenance is incomplete.
 
 | stage | expected | observed | expected? | clues | missing metric | consequence |
 |---|---|---|---|---|---|---|
