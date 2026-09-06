@@ -1,0 +1,26 @@
+{
+  "experiment_id": "j-lens-behavior-components-dev-v4",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 0.0625,
+      "candidates_descending": [
+        0.0625
+      ],
+      "effect": 0.019999999999999928,
+      "off_axis_perturbation": 0.046666666666666655
+    },
+    "-C": {
+      "selected_C": 1.0,
+      "candidates_descending": [
+        1.0,
+        0.5,
+        0.25,
+        0.125,
+        0.03125
+      ],
+      "effect": -0.4866666666666668,
+      "off_axis_perturbation": 0.23333333333333334
+    }
+  }
+}

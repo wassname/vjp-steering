@@ -13,8 +13,8 @@ The run completed all stages. The complete log reports:
 > `GPU_STAGE_COMPLETE experiment=j-lens-paper-workspace-sycophancy-dev-v1 profile=dev cells=21`
 >
 > `JUDGE_COMPLETE required=218 missing=0`
->
-> `EXPERIMENT_EXPORT_COMPLETE id=j-lens-paper-workspace-sycophancy-dev-v1 profile=dev arms=21 scenarios=315`
+
+The export contains 21 evaluated dose cells and 315 judged scenarios.
 
 The largest tested coefficient that passed every generation-health check differed by sign:
 

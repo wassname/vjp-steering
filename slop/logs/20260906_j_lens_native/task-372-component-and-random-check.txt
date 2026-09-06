@@ -1,0 +1,42 @@
+VECTOR_HASHES {'+C': 'c34fe16be14bbad1c533ca9b54393c99fff18d87ce944937b0ef88f995144bc3', '-C': '9c934cbde82854f010a36bcbcf01c8c999945587f2e25e77da4d5ecede8f8590'}
+OPERATOR mean100-gp16-separate-behavior-components-user-turn-v4
+layer=13
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": ["?", " C", " negative", " Token", " Lew", " abusive", " faux", " affidavit", " Complaint", " indign", "心理", "唐", "我没有", "回避", " Werb", " jedenfalls"], "j_norm": 0.8376534581184387, "concept_norm": 3.5818257331848145, "remainder_norm": 3.473032236099243, "j_remainder_dot": 0.03292948380112648, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" C", " FBI", " WP", " refusal", " Ens", " corrobor", " Subcommittee", "反", "假", "虚假", "纪律", "回避", "预先", "没有问题", "我自己的", " interloc"], "j_norm": 1.0815953016281128, "concept_norm": 4.342461585998535, "remainder_norm": 4.19450569152832, "j_remainder_dot": 0.046623386442661285, "nonzero": 16}
+layer=14
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" L", " Token", "?”", " lesbian", " abusive", " refusal", " indign", " cuffs", "可能", "心理", "负面", "真诚", "另行", "我没有", "回避", "บัด"], "j_norm": 1.070487380027771, "concept_norm": 4.095108509063721, "remainder_norm": 3.9642996788024902, "j_remainder_dot": -0.04585021734237671, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" L", "?”", " CC", " FBI", " refusal", " Editorial", " corrobor", "反", "是否", "必要的", "回避", "预先", "我方", "坦诚", " корре", " interloc"], "j_norm": 1.3008325099945068, "concept_norm": 4.630497932434082, "remainder_norm": 4.4520182609558105, "j_remainder_dot": -0.03555777296423912, "nonzero": 16}
+layer=15
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" J", "?'", " abusive", " refusal", " Patterson", " illicit", "反", "虚假", "负面", "真诚", "我没有", "回避", "预先", " Mme", " ناش", " neće"], "j_norm": 1.3266490697860718, "concept_norm": 5.196440696716309, "remainder_norm": 5.012188911437988, "j_remainder_dot": 0.060483381152153015, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" R", "?'", " CPP", " refusal", " affidavit", " laundering", " corrobor", " ATS", "反", "通过", "要求", "虚假", "回避", "预先", "克制", " корре"], "j_norm": 1.5377849340438843, "concept_norm": 5.400624752044678, "remainder_norm": 5.190261363983154, "j_remainder_dot": -0.06842338293790817, "nonzero": 16}
+layer=16
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" L", "?”", " abusive", " refusal", " Smy", " disrespectful", "配", "虚假", "负面", "我没有", "刻意", "预先", "反向", "软弱", " Mme", " вряд"], "j_norm": 1.5886369943618774, "concept_norm": 6.200766563415527, "remainder_norm": 6.005786418914795, "j_remainder_dot": -0.07186465710401535, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" R", " protocol", "?”", " WP", " repro", " Ens", " affidavit", "要求", "直接", "上述", "虚假", "个别", "回避", "预先", "审讯", " DPP"], "j_norm": 1.6301701068878174, "concept_norm": 5.970693588256836, "remainder_norm": 5.759049415588379, "j_remainder_dot": -0.08746375888586044, "nonzero": 16}
+layer=17
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" Ma", " OFF", " abusive", " refusal", " faux", ";.", " Pett", "在此", "确实", "受害", "故意", "正常的", "预先", "反向", "我无法", "»:"], "j_norm": 1.576648235321045, "concept_norm": 6.864710330963135, "remainder_norm": 6.6734843254089355, "j_remainder_dot": 0.05151534080505371, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" T", "':", "?”", " WP", " consultation", " procedural", " Kov", "反", "要求", "假", "上述", "强化", "真诚", "回避", "当面", " Secur"], "j_norm": 1.7340694665908813, "concept_norm": 6.447885990142822, "remainder_norm": 6.205659866333008, "j_remainder_dot": 0.029011841863393784, "nonzero": 16}
+layer=18
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [":", ".”", " requests", " FALSE", " Ma", " intentionally", " refusal", "反", "在此", "芭", "我没有", "恶意", "回避", "我司", " effectivement", " якобы"], "j_norm": 2.6727471351623535, "concept_norm": 8.7766752243042, "remainder_norm": 8.389264106750488, "j_remainder_dot": -0.24664807319641113, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [":", " E", "。", "?”", " refusal", " procedural", " SOP", " Kov", "反", "假", "自身", "确实", "表述", "预先", "我不会", " рекомендуется"], "j_norm": 2.191279172897339, "concept_norm": 7.716305732727051, "remainder_norm": 7.382375240325928, "j_remainder_dot": 0.12010276317596436, "nonzero": 16}
+layer=19
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" I", "“", " requests", " Ma", " XXX", " accusing", " faux", "反", "自身", "真诚", "故意", "回避", "不会再", "反感", " подобных", " отсутствуют"], "j_norm": 3.5476977825164795, "concept_norm": 12.426138877868652, "remainder_norm": 11.893454551696777, "j_remainder_dot": 0.1842605471611023, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [" O", "?”", " SAL", " procedural", " Judicial", " Kov", "反", "建议", "透明", "自查", "缺乏", "所谓的", "我不会", "并非是", " rech"], "j_norm": 2.9624602794647217, "concept_norm": 11.431180953979492, "remainder_norm": 11.0313138961792, "j_remainder_dot": 0.10293026268482208, "nonzero": 15}
+layer=20
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [");", "“", " requests", " Ma", " AI", " Avoid", " accusing", "故意", "不存在", "此类", "我不能", "真诚的", "反感", " Oui", " weder", " чрезмер"], "j_norm": 4.085693359375, "concept_norm": 13.890297889709473, "remainder_norm": 13.316837310791016, "j_remainder_dot": -0.5453340411186218, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [":", " No", " Mc", "?”", " AI", " Dans", " Judicial", " critiques", "反", "主动", "透明", "缺乏", "所谓的", "我不会", "conse", " Sicherheits"], "j_norm": 3.388397455215454, "concept_norm": 12.397102355957031, "remainder_norm": 11.941444396972656, "j_remainder_dot": -0.19560271501541138, "nonzero": 16}
+layer=21
+{"concept": "sycophantic agreement and flattery toward the user", "selected_tokens": [" I", " You", " requests", " STOP", " disrespectful", "反", "讨论", "受害", "真诚", "不存在", "此类", "刻意", "»:", " Oui", " weder", "</tool_call>"], "j_norm": 4.395890235900879, "concept_norm": 15.70345401763916, "remainder_norm": 15.061822891235352, "j_remainder_dot": 0.2080538272857666, "nonzero": 16}
+{"concept": "independent critical assessment of the user's claims", "selected_tokens": [":", " R", "/\"", " clar", " YOUR", " deleting", " Judicial", " MacDonald", " critiques", "打", "透明", "缺乏", "所谓的", "我没有", "表述", " refor"], "j_norm": 3.625978946685791, "concept_norm": 13.659443855285645, "remainder_norm": 13.190500259399414, "j_remainder_dot": -0.278295636177063, "nonzero": 16}
+RANDOM_REGION
++C 0.03125 effect=-0.006667 damage=0.040000 inside=True
++C 0.0625 effect=+0.020000 damage=0.046667 inside=True
++C 0.125 effect=-0.100000 damage=0.033333 inside=False
++C 0.25 effect=-1.006667 damage=0.066667 inside=False
++C 0.5 effect=-1.460000 damage=0.106667 inside=False
++C 1.0 effect=-2.073333 damage=0.153333 inside=False
+-C 0.03125 effect=-0.020000 damage=0.026667 inside=True
+-C 0.0625 effect=+0.040000 damage=0.080000 inside=True
+-C 0.125 effect=-0.033333 damage=0.073333 inside=True
+-C 0.25 effect=-0.453333 damage=0.186667 inside=False
+-C 0.5 effect=-1.120000 damage=0.246667 inside=False
+-C 1.0 effect=-0.486667 damage=0.233333 inside=True
