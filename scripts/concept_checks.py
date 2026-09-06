@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -64,11 +65,16 @@ def calibrate(args):
         bare_logits = model(**encoded).logits[batch, final].float()
     default_coefficients = (0., .25, .5, .75, 1., 1.25, 1.5, 2.)
     requested = {"+C": args.coefficients_plus, "-C": args.coefficients_minus}
-    coefficient_grid = {
-        side: (0., *(float(value) for value in requested[side].split(",") if value))
-        if requested[side] else default_coefficients
-        for side in ("+C", "-C")
-    }
+    coefficient_grid = {}
+    for side in ("+C", "-C"):
+        values = (
+            [float(value) for value in requested[side].split(",") if value]
+            if requested[side] else list(default_coefficients)
+        )
+        values = list(dict.fromkeys([0., *values]))
+        if any(not math.isfinite(value) or value < 0 for value in values):
+            raise ValueError("component calibration requires finite nonnegative alpha")
+        coefficient_grid[side] = tuple(values)
     for side in ("+C", "-C"):
         vector = vectors[side]
         mask = concept_prefill_mask(tokenizer, encoded.input_ids, encoded.attention_mask, vector)
@@ -546,9 +552,10 @@ def self_test():
         assert restored_component.cfg.method == COMPONENT_PAIR_METHOD
         assert tuple(restored_component.cfg.layers) == (0,)
         assert int(restored_component.shared[0]["target_index"].item()) == 0
-    args = SimpleNamespace(method="j_lens_concept", model="tiny", dtype="float32", lens_file=None)
+    args = SimpleNamespace(method="j_lens_concept", model="tiny", dtype="float32", lens_file=Path(__file__))
     metadata = {"method": args.method, "model": args.model, "dtype": args.dtype, "spec_sha256": concept_spec()[1],
-                "implementation_sha256": implementation_hash()}
+                "implementation_sha256": implementation_hash(),
+                "lens_sha256": hashlib.sha256(args.lens_file.read_bytes()).hexdigest()}
     validate_extraction_identity(args, metadata)
     for bad in ({**metadata, "method": "j_lens_swap"}, {**metadata, "spec_sha256": "old"},
                 {**metadata, "model": "other"}, {**metadata, "dtype": "bfloat16"},
@@ -624,6 +631,26 @@ def smoke(args):
             basis = vectors["+C"].shared[layer]["basis"]
             torch.testing.assert_close(basis.norm(dim=1), torch.ones(2))
             assert metadata["layers"][str(layer)]["component_basis_condition_number"] >= 1
+        if args.j_lens_source == "persona_components":
+            assert metadata["n_pairs"] == 200
+            assert all(
+                len(layer["target_order_eligibility"]["by_prompt"]) == experiment.DEV.cohort_size
+                for layer in metadata["layers"].values()
+            )
+            stale = {**metadata, "source_sha256": "stale"}
+            try:
+                experiment.validate_persona_component_source_identity(args, stale, model, tokenizer)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("stale persona component source accepted")
+            stale_lens = {**metadata, "lens_sha256": "stale"}
+            try:
+                experiment.validate_extraction_identity(args, stale_lens)
+            except ValueError as error:
+                assert "lens mismatch" in str(error)
+            else:
+                raise AssertionError("stale J-lens content accepted")
     encoded = tokenizer("A cat sits on a mat.", return_tensors="pt").to(args.device)
     with torch.inference_mode():
         bare = model(**encoded).logits
@@ -664,7 +691,10 @@ def smoke(args):
     assert all(int(vectors["+C"].shared[layer]["target_index"].item()) == 0 for layer in layers)
     assert all(int(vectors["-C"].shared[layer]["target_index"].item()) == 1 for layer in layers)
     for layer in metadata["layers"].values():
-        for d in layer["decomposition"]:
-            assert min(d["weights_unit_dictionary"]) >= 0 and d["achieved_nonzero_count"] <= 16
-            assert d["reconstruction_error"] == 0
+        decompositions = layer["decomposition"]
+        decompositions = decompositions.values() if isinstance(decompositions, dict) else decompositions
+        for decomposition in decompositions:
+            assert min(decomposition["weights_unit_dictionary"]) >= 0
+            assert decomposition["achieved_nonzero_count"] <= 16
+            assert decomposition["reconstruction_error"] == 0
     print(f"J_LENS_CONCEPT_PIPELINE_SMOKE_PASS id={args.experiment_id} actual_lens=true generation=true judge=true export=true public_outputs_untouched=true")

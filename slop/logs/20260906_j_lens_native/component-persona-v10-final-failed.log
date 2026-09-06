@@ -1,0 +1,31 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 4824.93it/s]
+2026-09-07 06:57:35.484 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:811 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-07 06:57:35.638 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:811 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 7637.70it/s]
+2026-09-07 06:57:37.981 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-07 06:57:39.641 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:720 - persona components layer=2 gp_norms=[172.7941436767578, 286.9996643066406] split_gp_cosines=[0.9788253307342529, 0.9850583076477051] component_cosine=0.6932 condition=2.349 eligibility_plus=0.482 eligibility_minus=0.518
+2026-09-07 06:57:46.732 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 06:57:52.459 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 06:57:59.355 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 06:58:06.404 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 06:58:13.694 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 06:58:14.491 | INFO     | experiment:gpu_stage:947 - GPU_STAGE_COMPLETE experiment=j-lens-persona-components-tiny-smoke-v10-final profile=dev cells=4
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5450.87it/s]
+2026-09-07 06:58:17.125 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1383, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1363, in main
+    smoke(args)
+    ~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/concept_checks.py", line 627, in smoke
+    vectors, metadata = experiment.load_or_extract(args, root, model, tokenizer)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 446, in load_or_extract
+    validate_persona_component_source_identity(args, metadata, model, tokenizer)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 280, in validate_persona_component_source_identity
+    raise ValueError(f"persona component source identity mismatch: {differing}")
+ValueError: persona component source identity mismatch: ['tokenizer_content_sha256']

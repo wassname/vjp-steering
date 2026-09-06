@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Mapping
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
@@ -25,10 +26,13 @@ import walk
 from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION,
     LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
+    PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_COMPONENT_PAIR_VERSION,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
-    concept_prefill_mask, extract_concept, extract_persona_contrast, implementation_hash,
-    prefill_diagnostics, select_concept_layers, validate_component_pair,
+    concept_prefill_mask, extract_concept, extract_persona_components, extract_persona_contrast,
+    implementation_hash, persona_component_spec, prefill_diagnostics, select_concept_layers,
+    tokenizer_content_hash, validate_component_pair,
 )
+from vjp_steering.vjp import _resolve_j_lens_file
 from vjp_steering.experiment import (
     DEFAULT_EXPERIMENT_IDS,
     DEV,
@@ -93,7 +97,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
-    parser.add_argument("--j-lens-source", choices=("concept", "persona", "persona_prefill"), default="concept")
+    parser.add_argument(
+        "--j-lens-source", choices=("concept", "persona", "persona_prefill", "persona_components"),
+        default="concept",
+    )
     parser.add_argument("--persona-direction", choices=("j_gp16", "full_residual"), default="j_gp16")
     parser.add_argument("--verify-extraction", action="store_true")
     parser.add_argument("--extract-only", action="store_true")
@@ -212,6 +219,68 @@ def persona_prefill_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[s
     return positive, negative
 
 
+def persona_component_prefill_prompts(
+    args: argparse.Namespace, tokenizer,
+) -> tuple[dict[str, list[str]], list[str], list[int]]:
+    spec, _ = persona_component_spec()
+    entries = load_suffixes(thinking=False)
+    if args.n_pairs != 200 or len(entries) != 200:
+        raise ValueError(f"persona component extraction requires exactly 200 sources, got {args.n_pairs=}, {len(entries)=}")
+    sampled = random.Random(spec["source_seed"]).sample(entries, args.n_pairs)
+    source_ids = [
+        hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+        for entry in sampled
+    ]
+    condition_prompts = {name: [] for name in ("positive", "negative", "baseline")}
+    for entry in sampled:
+        for name in condition_prompts:
+            content = spec[f"{name}_instruction"] + "\n\n" + entry["user_msg"]
+            condition_prompts[name].append(tokenizer.apply_chat_template(
+                [{"role": "user", "content": content}], tokenize=False,
+                add_generation_prompt=True, enable_thinking=False,
+            ))
+    lengths = tokenizer(
+        [prompt for prompts in condition_prompts.values() for prompt in prompts],
+        add_special_tokens=False,
+    )["input_ids"]
+    if max(map(len, lengths)) > args.max_length:
+        raise ValueError("persona component prefill prompt truncation")
+    if len(set(source_ids)) != len(source_ids):
+        raise ValueError("persona component source IDs are not unique")
+    empty_message = [{"role": "user", "content": ""}]
+    user_only = tokenizer.apply_chat_template(empty_message, tokenize=True, add_generation_prompt=False)
+    full_prompt = tokenizer.apply_chat_template(
+        empty_message, tokenize=True, add_generation_prompt=True, enable_thinking=False,
+    )
+    user_only = user_only["input_ids"] if isinstance(user_only, Mapping) else user_only
+    full_prompt = full_prompt["input_ids"] if isinstance(full_prompt, Mapping) else full_prompt
+    if full_prompt[:len(user_only)] != user_only or len(full_prompt) == len(user_only):
+        raise ValueError("chat template does not have a fixed assistant-generation suffix")
+    return condition_prompts, source_ids, full_prompt[len(user_only):]
+
+
+def validate_persona_component_source_identity(args, metadata: dict, model, tokenizer) -> None:
+    prompts, source_ids, assistant_suffix = persona_component_prefill_prompts(args, tokenizer)
+    spec_hash = persona_component_spec()[1]
+    source_hash = hashlib.sha256(
+        json.dumps([spec_hash, source_ids, prompts], separators=(",", ":")).encode()
+    ).hexdigest()
+    expected = {
+        "n_pairs": 200,
+        "source_sha256": source_hash,
+        "source_ids": source_ids,
+        "source_prompts": prompts,
+        "assistant_suffix_token_ids": assistant_suffix,
+        "model_revision": getattr(model.config, "_commit_hash", None),
+        "tokenizer_revision": tokenizer.init_kwargs.get("_commit_hash"),
+        "tokenizer_content_sha256": tokenizer_content_hash(tokenizer),
+    }
+    actual = {key: metadata.get(key) for key in expected}
+    if actual != expected:
+        differing = [key for key in expected if actual[key] != expected[key]]
+        raise ValueError(f"persona component source identity mismatch: {differing}")
+
+
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
     if args.method == COMPONENT_PAIR_METHOD:
         available = walk.resolve_layers(model, None)
@@ -223,9 +292,21 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         else:
             raise ValueError(f"{COMPONENT_PAIR_METHOD} requires layers 13-21; available={available}")
         rows, _ = walk.read_cohort(DEV.cohort_size)
+        dev_prompts = walk.generation_inputs(tokenizer, rows)
+        if args.j_lens_source == "persona_components":
+            condition_prompts, source_ids, assistant_suffix = persona_component_prefill_prompts(args, tokenizer)
+            vectors, metadata = extract_persona_components(
+                model, tokenizer, layers, condition_prompts=condition_prompts,
+                source_ids=source_ids, assistant_suffix_token_ids=assistant_suffix,
+                batch_size=args.extract_batch_size,
+                max_length=args.max_length, dev_prompts=dev_prompts, lens_file=args.lens_file,
+            )
+            return vectors, metadata, len(source_ids), "persona_components:" + metadata["source_sha256"]
+        if args.j_lens_source != "concept":
+            raise ValueError(f"unsupported component source {args.j_lens_source}")
         vectors, metadata = extract_concept(
             model, tokenizer, layers, batch_size=args.extract_batch_size,
-            max_length=args.max_length, dev_prompts=walk.generation_inputs(tokenizer, rows),
+            max_length=args.max_length, dev_prompts=dev_prompts,
             lens_file=args.lens_file, separate_components=True,
         )
         return vectors, metadata, 0, "separate_components:" + metadata["spec_sha256"]
@@ -291,15 +372,30 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
 def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse: bool = False):
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
+    if args.method in CONCEPT_METHODS:
+        lens_file = _resolve_j_lens_file(args.lens_file)
+        lens_sha256 = hashlib.sha256(lens_file.read_bytes()).hexdigest()
+        if metadata["lens_sha256"] != lens_sha256:
+            raise ValueError("J-lens extraction cache lens mismatch")
     if args.method == COMPONENT_PAIR_METHOD:
-        if metadata.get("representation_source") != COMPONENT_PAIR_REPRESENTATION_SOURCE:
+        component_sources = {
+            "concept": (
+                COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION, component_spec()[1],
+            ),
+            "persona_components": (
+                PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_COMPONENT_PAIR_VERSION,
+                persona_component_spec()[1],
+            ),
+        }
+        if args.j_lens_source not in component_sources:
+            raise ValueError(f"unsupported component source {args.j_lens_source}")
+        expected_source, expected_operator, expected_spec = component_sources[args.j_lens_source]
+        if metadata.get("representation_source") != expected_source:
             raise ValueError("separate J-lens component representation source mismatch")
-        if metadata["operator"] != COMPONENT_PAIR_VERSION or metadata["spec_sha256"] != component_spec()[1]:
+        if metadata["operator"] != expected_operator or metadata["spec_sha256"] != expected_spec:
             raise ValueError("separate J-lens component specification mismatch")
         if metadata["implementation_sha256"] != implementation_hash():
             raise ValueError("separate J-lens component implementation mismatch")
-        if args.lens_file is not None and metadata["lens_sha256"] != hashlib.sha256(args.lens_file.read_bytes()).hexdigest():
-            raise ValueError("separate J-lens component cache lens mismatch")
     if args.method == "j_lens_concept":
         source = getattr(args, "j_lens_source", "concept")
         expected_source = {
@@ -333,8 +429,6 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
                 "EXPLICIT_LEGACY_EXTRACTION_REUSE source_implementation={} current_implementation={}",
                 metadata["implementation_sha256"], implementation_hash(),
             )
-        if args.lens_file is not None and metadata["lens_sha256"] != hashlib.sha256(args.lens_file.read_bytes()).hexdigest():
-            raise ValueError("concept extraction cache lens mismatch")
 
 
 def load_or_extract(
@@ -350,6 +444,8 @@ def load_or_extract(
         validate_extraction_identity(
             args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
         )
+        if args.method == COMPONENT_PAIR_METHOD and args.j_lens_source == "persona_components":
+            validate_persona_component_source_identity(args, metadata, model, tokenizer)
         vectors = {side: Vector.load(str(path)) for side, path in paths.items()}
         for side, vector in vectors.items():
             if vector.cfg.method != args.method or tuple(vector.cfg.layers) != tuple(metadata["source_layers"]):

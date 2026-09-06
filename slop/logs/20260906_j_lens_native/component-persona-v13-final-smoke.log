@@ -1,0 +1,35 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 3693.94it/s]
+2026-09-07 07:10:50.509 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:829 - persona layer=2 direction=j_gp16 applied_norm=309.6401 j_norm=309.6401 remainder_norm=47.0276 selected=16
+2026-09-07 07:10:50.651 | INFO     | vjp_steering.j_lens_concept:extract_persona_contrast:829 - persona layer=2 direction=full_residual applied_norm=312.8292 j_norm=309.6401 remainder_norm=47.0276 selected=16
+TINY_LENS_FIT actual_autograd=true persona_projection=true full_residual_control=true n_prompts=1 layers=(2,)
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 7399.19it/s]
+2026-09-07 07:10:52.985 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-07 07:10:54.398 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:738 - persona components layer=2 gp_norms=[172.7941436767578, 286.9996643066406] split_gp_cosines=[0.9788253307342529, 0.9850583076477051] component_cosine=0.6932 condition=2.349 eligibility_plus=0.482 eligibility_minus=0.518
+2026-09-07 07:11:01.317 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 07:11:07.313 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 07:11:13.577 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 07:11:19.925 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 07:11:25.801 | INFO     | walk:generate:497 - generation 15/15
+2026-09-07 07:11:26.605 | INFO     | experiment:gpu_stage:949 - GPU_STAGE_COMPLETE experiment=j-lens-persona-components-tiny-smoke-v13 profile=dev cells=4
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 5040.91it/s]
+2026-09-07 07:11:29.166 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-07 07:11:29.562 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+CONCEPT_REAL_HOOK_CHECK both_directions_changed_logits=true distinct=true restored_logits=true calls_once=true removed=true diagnostics=true
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/judge.py --experiment-id j-lens-persona-components-tiny-smoke-v13 --profile dev --refresh
+2026-09-07 07:11:31.655 | INFO     | __main__:experiment_rows:302 - experiment manifest id=j-lens-persona-components-tiny-smoke-v13 profile=dev cells=4 demo_sides=60
+2026-09-07 07:11:32.135 | INFO     | __main__:cached_keys:335 - cache scan records=20000 valid_keys=0
+2026-09-07 07:11:32.662 | INFO     | __main__:cached_keys:335 - cache scan records=40000 valid_keys=0
+2026-09-07 07:11:33.189 | INFO     | __main__:cached_keys:335 - cache scan records=60000 valid_keys=0
+2026-09-07 07:11:33.711 | INFO     | __main__:cached_keys:335 - cache scan records=80000 valid_keys=11699
+2026-09-07 07:11:34.219 | INFO     | __main__:cached_keys:335 - cache scan records=100000 valid_keys=31699
+2026-09-07 07:11:34.735 | INFO     | __main__:cached_keys:335 - cache scan records=120000 valid_keys=51368
+2026-09-07 07:11:35.229 | INFO     | __main__:cached_keys:335 - cache scan records=140000 valid_keys=71368
+2026-09-07 07:11:35.684 | INFO     | __main__:cached_keys:335 - cache scan records=160000 valid_keys=91368
+2026-09-07 07:11:36.075 | INFO     | __main__:cached_keys:335 - cache scan records=180000 valid_keys=111368
+2026-09-07 07:11:36.443 | INFO     | __main__:cached_keys:335 - cache scan records=200000 valid_keys=130444
+2026-09-07 07:11:36.825 | INFO     | __main__:cached_keys:335 - cache scan records=220000 valid_keys=150271
+2026-09-07 07:11:37.195 | INFO     | __main__:main:675 - CACHE_CHECK required=60 cached=60 missing=0 API_calls=0
+COMMAND: /workspace/2026/jspace/j-steer_pub/.venv/bin/python3 scripts/export.py --experiment-id j-lens-persona-components-tiny-smoke-v13 --profile dev
+2026-09-07 07:11:39.283 | INFO     | judge:experiment_rows:302 - experiment manifest id=j-lens-persona-components-tiny-smoke-v13 profile=dev cells=4 demo_sides=60
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-persona-components-tiny-smoke-v13 profile=dev arms=4 scenarios=60
+J_LENS_CONCEPT_PIPELINE_SMOKE_PASS id=j-lens-persona-components-tiny-smoke-v13 actual_lens=true generation=true judge=true export=true public_outputs_untouched=true

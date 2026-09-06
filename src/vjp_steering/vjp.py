@@ -413,17 +413,20 @@ def _class_prompt_vjp_scale(
     return prompt_gradients, activation_scale
 
 
-def _load_j_lens(model, layers: tuple[int, ...], lens_file: Path | None):
-    if lens_file is None:
-        from huggingface_hub import hf_hub_download
+def _resolve_j_lens_file(lens_file: Path | None) -> Path:
+    if lens_file is not None:
+        return Path(lens_file)
+    from huggingface_hub import hf_hub_download
 
-        lens_file = Path(
-            hf_hub_download(
-                repo_id=J_WORD_LENS_REPO,
-                revision=J_WORD_LENS_REVISION,
-                filename=J_WORD_LENS_FILE,
-            )
-        )
+    return Path(hf_hub_download(
+        repo_id=J_WORD_LENS_REPO,
+        revision=J_WORD_LENS_REVISION,
+        filename=J_WORD_LENS_FILE,
+    ))
+
+
+def _load_j_lens(model, layers: tuple[int, ...], lens_file: Path | None):
+    lens_file = _resolve_j_lens_file(lens_file)
     checkpoint = torch.load(lens_file, map_location="cpu", weights_only=True, mmap=True)
     assert set(checkpoint) == {"J", "n_prompts", "source_layers", "d_model"}
     assert checkpoint["d_model"] == model.config.hidden_size

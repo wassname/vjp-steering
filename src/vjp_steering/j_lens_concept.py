@@ -22,6 +22,8 @@ COMPONENT_PAIR_METHOD = "j_lens_concept_components"
 VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
 COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-target-ordered-coordinate-exchange-all-prefill-v8"
 COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_components_target_ordered_exchange"
+PERSONA_COMPONENT_PAIR_VERSION = "matched-persona-prefill-gp16-target-ordered-coordinate-exchange-v13"
+PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE = "matched_persona_prefill_gp16_components"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -52,12 +54,49 @@ def component_spec() -> tuple[dict, str]:
     return spec, digest
 
 
+def persona_component_spec() -> tuple[dict, str]:
+    spec = {
+        "positive_instruction": "Answer as someone who is sycophantic.",
+        "negative_instruction": (
+            "Answer as someone who is bluntly candid; states plainly when the named method, framework, "
+            "factor, or threshold does not exist; does not invent properties, limits, or valid uses for "
+            "fabricated methods; provides a useful correction; and does not insult or refuse."
+        ),
+        "baseline_instruction": "Answer the user directly and accurately in a clear, respectful style.",
+        "instruction_validation_experiment": "j-lens-persona-prompt-control-exact-flaw-dev-v3",
+        "fit_fraction": 0.8,
+        "source_seed": 0,
+    }
+    digest = hashlib.sha256(
+        json.dumps([PERSONA_COMPONENT_PAIR_VERSION, spec], sort_keys=True).encode()
+    ).hexdigest()
+    return spec, digest
+
+
 def implementation_hash() -> str:
-    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    digest = hashlib.sha256()
+    for path in (Path(__file__), Path(__file__).with_name("vjp.py")):
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
 
 
 def tensor_hash(tensor: torch.Tensor) -> str:
     return hashlib.sha256(tensor.detach().float().contiguous().cpu().numpy().tobytes()).hexdigest()
+
+
+def tokenizer_content_hash(tokenizer) -> str:
+    backend = json.loads(tokenizer.backend_tokenizer.to_str())
+    backend.pop("padding", None)
+    backend.pop("truncation", None)
+    payload = {
+        "backend": backend,
+        "special_tokens_map": {key: str(value) for key, value in tokenizer.special_tokens_map.items()},
+        "chat_template": tokenizer.chat_template,
+        "padding_side": tokenizer.padding_side,
+        "truncation_side": tokenizer.truncation_side,
+    }
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
 def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
@@ -335,6 +374,26 @@ def residuals(model, tokenizer, prompts, layers, batch_size, max_length):
     return {layer: torch.cat(values) for layer, values in found_rows.items()}, tokens
 
 
+@torch.inference_mode()
+def attended_residuals(model, tokenizer, prompts, layers, batch_size, max_length):
+    found_rows = {layer: [] for layer in layers}
+    for start in range(0, len(prompts), batch_size):
+        encoded = tokenizer(
+            prompts[start:start + batch_size], return_tensors="pt", padding=True, add_special_tokens=False,
+        ).to(next(model.parameters()).device)
+        if encoded.input_ids.shape[1] > max_length:
+            raise ValueError("attended-residual prompt truncation")
+        with _activations(model, layers) as found:
+            model.model(**encoded, use_cache=False)
+        mask = encoded.attention_mask.bool()
+        for layer in layers:
+            found_rows[layer].extend(
+                found[layer][index, row_mask].float().cpu()
+                for index, row_mask in enumerate(mask)
+            )
+    return found_rows
+
+
 def _activity(hidden, dictionary, pair_ids, null_ids, raw_norms):
     scores = hidden @ dictionary.T
     pair_scores = scores[:, pair_ids]
@@ -506,6 +565,220 @@ def extract_concept(
         "null_token_ids": null_ids, "null_seed": 0,
         "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
         "lens_file": str(lens_file), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_meta,
+    }
+
+
+@torch.inference_mode()
+def extract_persona_components(
+    model, tokenizer, layers, *, condition_prompts, source_ids, assistant_suffix_token_ids,
+    batch_size, max_length, dev_prompts, lens_file=None,
+):
+    spec, spec_hash = persona_component_spec()
+    conditions = ("positive", "negative", "baseline")
+    if tuple(condition_prompts) != conditions:
+        raise ValueError(f"persona component conditions must be {conditions}")
+    n_source = len(source_ids)
+    if n_source != 200 or len(set(source_ids)) != n_source:
+        raise ValueError("persona component source IDs must contain exactly 200 unique entries")
+    if any(len(condition_prompts[name]) != n_source for name in conditions):
+        raise ValueError("persona component prompts are not aligned triples")
+    prompts = [prompt for name in conditions for prompt in condition_prompts[name]]
+    if not assistant_suffix_token_ids:
+        raise ValueError("persona component assistant suffix is empty")
+    for prompt in prompts:
+        ids = tokenizer(prompt, add_special_tokens=False).input_ids
+        if ids[-len(assistant_suffix_token_ids):] != assistant_suffix_token_ids:
+            raise ValueError("persona component assistant-generation suffix mismatch")
+    source_hash = hashlib.sha256(
+        json.dumps([spec_hash, source_ids, condition_prompts], separators=(",", ":")).encode()
+    ).hexdigest()
+    hidden, token_records = residuals(
+        model, tokenizer, prompts + dev_prompts, layers, batch_size, max_length,
+    )
+    for index in range(n_source):
+        triple = [token_records[offset * n_source + index] for offset in range(3)]
+        if len({record["final_token_id"] for record in triple}) != 1:
+            raise ValueError(f"persona component final prompt tokens differ at source index {index}")
+    dev_all = attended_residuals(model, tokenizer, dev_prompts, layers, batch_size, max_length)
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+    device = next(model.parameters()).device
+    unembedding = model.lm_head.weight.detach().float()
+    n_holdout = max(4, n_source // 5)
+    n_fit = n_source - n_holdout
+    split = n_fit // 2
+    if split < 8:
+        raise ValueError("persona component fit split is too small")
+    fit = slice(0, n_fit)
+    holdout = slice(n_fit, n_source)
+    shared_states = {"+C": {}, "-C": {}}
+    stacked_states = {"+C": {}, "-C": {}}
+    layer_meta = {}
+    for layer in layers:
+        raw = unembedding @ checkpoint["J"][layer].float().to(device)
+        norms = raw.norm(dim=-1)
+        if not (norms > 0).all():
+            raise ValueError(f"zero J-lens row at layer {layer}")
+        dictionary = raw / norms[:, None]
+        del raw
+        hs = hidden[layer].to(device)
+        states = {
+            name: hs[offset * n_source:(offset + 1) * n_source]
+            for offset, name in enumerate(conditions)
+        }
+        signals = {
+            name: (states[name][fit] - states["baseline"][fit]).mean(0)
+            for name in ("positive", "negative")
+        }
+        components, supports, decompositions = [], [], {}
+        for name in ("positive", "negative"):
+            signal = signals[name]
+            weights, component, support, errors = gradient_pursuit(signal, dictionary, 16)
+            if not torch.isfinite(component).all() or component.norm() <= 1e-6 * signal.norm():
+                raise ValueError(f"zero, nonfinite, or unresolved persona component {name} at layer {layer}")
+            half_signals = [
+                (states[name][start:stop] - states["baseline"][start:stop]).mean(0)
+                for start, stop in ((0, split), (split, n_fit))
+            ]
+            half_components = [gradient_pursuit(value, dictionary, 16)[1] for value in half_signals]
+            if any(value.norm() == 0 for value in half_components):
+                raise ValueError(f"zero split-half persona component {name} at layer {layer}")
+            active = weights.nonzero().flatten()
+            remainder = signal - component
+            components.append(component)
+            supports.append(set(active.tolist()))
+            decompositions[name] = {
+                "instruction": spec[f"{name}_instruction"],
+                "full_signal_norm": signal.norm().item(),
+                "gp_norm": component.norm().item(),
+                "gp_to_full_norm_ratio": (component.norm() / signal.norm()).item(),
+                "full_to_gp_cosine": torch.nn.functional.cosine_similarity(signal, component, dim=0).item(),
+                "remainder_norm": remainder.norm().item(),
+                "j_remainder_dot": (component @ remainder).item(),
+                "reconstruction_error": (signal - component - remainder).norm().item(),
+                "error_history": errors,
+                "achieved_nonzero_count": active.numel(),
+                "selected_ids": active.tolist(),
+                "selected_tokens": [tokenizer.decode([i]) for i in active.tolist()],
+                "weights_unit_dictionary": weights[active].tolist(),
+                "raw_row_norms": norms[active].tolist(),
+                "split_half_full_cosine": torch.nn.functional.cosine_similarity(
+                    half_signals[0], half_signals[1], dim=0,
+                ).item(),
+                "split_half_gp_cosine": torch.nn.functional.cosine_similarity(
+                    half_components[0], half_components[1], dim=0,
+                ).item(),
+                "full_signal_sha256": tensor_hash(signal),
+                "gp_sha256": tensor_hash(component),
+                "full_signal": signal.tolist(),
+                "gp_component": component.tolist(),
+            }
+        basis = torch.stack([component / component.norm() for component in components]).float()
+        dual = torch.linalg.pinv(basis).T.contiguous()
+        singular_values = torch.linalg.svdvals(basis)
+        if singular_values[-1] <= 0 or not torch.isfinite(dual).all():
+            raise ValueError(f"invalid persona component basis at layer {layer}")
+        shared_states["+C"][layer] = {
+            "basis": basis.cpu(), "dual": dual.cpu(), "target_index": torch.tensor(0, dtype=torch.int64),
+        }
+        shared_states["-C"][layer] = {
+            "basis": basis.cpu(), "dual": dual.cpu(), "target_index": torch.tensor(1, dtype=torch.int64),
+        }
+        for side in ("+C", "-C"):
+            stacked_states[side][layer] = {}
+        source_coordinates = {
+            name: states[name][holdout].float() @ dual.T
+            for name in conditions
+        }
+        dev_coordinates = hidden[layer][3 * n_source:].to(device).float() @ dual.T
+        dev_position_coordinates = [values.to(device) @ dual.T for values in dev_all[layer]]
+        all_coordinates = torch.cat(dev_position_coordinates)
+        eligible_plus = all_coordinates[:, 0] < all_coordinates[:, 1]
+        eligible_minus = all_coordinates[:, 1] < all_coordinates[:, 0]
+        by_prompt_eligibility = []
+        for prompt_index, coordinates in enumerate(dev_position_coordinates):
+            plus = coordinates[:, 0] < coordinates[:, 1]
+            minus = coordinates[:, 1] < coordinates[:, 0]
+            by_prompt_eligibility.append({
+                "prompt_index": prompt_index,
+                "positions": coordinates.shape[0],
+                "+C": {
+                    "eligible_positions": plus.nonzero().flatten().tolist(),
+                    "fraction": plus.float().mean().item(),
+                    "final_position_eligible": bool(plus[-1]),
+                },
+                "-C": {
+                    "eligible_positions": minus.nonzero().flatten().tolist(),
+                    "fraction": minus.float().mean().item(),
+                    "final_position_eligible": bool(minus[-1]),
+                },
+            })
+        layer_meta[str(layer)] = {
+            "decomposition": decompositions,
+            "fit_count": n_fit,
+            "holdout_count": n_holdout,
+            "support_overlap_count": len(supports[0] & supports[1]),
+            "support_overlap_ids": sorted(supports[0] & supports[1]),
+            "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
+            "component_basis_singular_values": singular_values.tolist(),
+            "component_basis_condition_number": (singular_values[0] / singular_values[-1]).item(),
+            "heldout_source_coordinates": {name: value.tolist() for name, value in source_coordinates.items()},
+            "heldout_source_coordinate_means": {
+                name: value.mean(0).tolist() for name, value in source_coordinates.items()
+            },
+            "dev_final_coordinates": dev_coordinates.tolist(),
+            "dev_final_coordinate_mean": dev_coordinates.mean(0).tolist(),
+            "target_order_eligibility": {
+                "+C": {"eligible": eligible_plus.sum().item(), "total": eligible_plus.numel(),
+                       "fraction": eligible_plus.float().mean().item()},
+                "-C": {"eligible": eligible_minus.sum().item(), "total": eligible_minus.numel(),
+                       "fraction": eligible_minus.float().mean().item()},
+                "by_prompt": by_prompt_eligibility,
+            },
+        }
+        logger.info(
+            "persona components layer={} gp_norms={} split_gp_cosines={} component_cosine={:.4f} "
+            "condition={:.3f} eligibility_plus={:.3f} eligibility_minus={:.3f}",
+            layer,
+            [decompositions[name]["gp_norm"] for name in ("positive", "negative")],
+            [decompositions[name]["split_half_gp_cosine"] for name in ("positive", "negative")],
+            layer_meta[str(layer)]["component_cosine"],
+            layer_meta[str(layer)]["component_basis_condition_number"],
+            layer_meta[str(layer)]["target_order_eligibility"]["+C"]["fraction"],
+            layer_meta[str(layer)]["target_order_eligibility"]["-C"]["fraction"],
+        )
+    vectors = {
+        side: Vector(JLensConceptComponentsC(layers=layers), shared_states[side], stacked_states[side])
+        for side in ("+C", "-C")
+    }
+    validate_component_pair(vectors)
+    return vectors, {
+        "operator": PERSONA_COMPONENT_PAIR_VERSION,
+        "representation_source": PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE,
+        "spec_sha256": spec_hash,
+        "implementation_sha256": implementation_hash(),
+        "spec": spec,
+        "source_sha256": source_hash,
+        "source_ids": source_ids,
+        "source_prompts": condition_prompts,
+        "assistant_suffix_token_ids": assistant_suffix_token_ids,
+        "model_revision": getattr(model.config, "_commit_hash", None),
+        "tokenizer_revision": tokenizer.init_kwargs.get("_commit_hash"),
+        "tokenizer_content_sha256": tokenizer_content_hash(tokenizer),
+        "source_fit_count": n_fit,
+        "source_holdout_count": n_holdout,
+        "source_layers": list(layers),
+        "equation": "h_all_prefill + alpha * V * (target_sort(V^dagger h_all_prefill) - V^dagger h_all_prefill)",
+        "extraction_mask": "final_real_chat_prompt_token",
+        "application_mask": "all_attended_prefill_positions",
+        "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper",
+        "component_basis_normalization": "independent_unit_norm_equal_magnitude_convention_not_fully_specified_by_paper",
+        "semantic_directions": {"+C": "put larger coordinate on positive component", "-C": "put larger coordinate on negative component"},
+        "paper_protocol_relation": "behavior-conditioned source adaptation using the paper GP16 reconstruction and target-order coordinate exchange",
+        "token_records": token_records,
+        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+        "lens_file": str(lens_file),
+        "lens_n_prompts": checkpoint["n_prompts"],
+        "layers": layer_meta,
     }
 
 
