@@ -200,9 +200,42 @@ def run(args):
     print("GAP_CLAMP_COMPLETE", json.dumps({"responses": len(payload["records"]), "runtime": payload["runtime"]}), flush=True)
 
 
+async def judge_results(args):
+    import os
+    import judge
+    from openai import AsyncOpenAI
+    assert not args.output.exists(), args.output
+    data = json.loads(args.judge.read_text())
+    client = AsyncOpenAI(api_key=os.environ["OPENROUTER_API_KEY"], base_url="https://openrouter.ai/api/v1", timeout=60., max_retries=0)
+    semaphore = asyncio.Semaphore(3)
+    records = []
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    async def one(record):
+        bare = next(r for r in data["records"] if r["scenario"] == record["scenario"] and r["condition"] == "bare")
+        row = {"bare": bare["text"], "steered": record["text"], "prompt": record["prompt"],
+               "vignette": record["scenario"], "side": "+C" if record["condition"].endswith("plus") else "-C",
+               "run": "v16-gap-clamp-diagnostic", "method": "full_residual_gap_control", "source": str(args.judge)}
+        async with semaphore:
+            result = await asyncio.wait_for(judge.judge_one(client, row, "AB", 0), timeout=240)
+        result["condition"] = record["condition"]
+        score = result["judgment"]
+        result["exported_effect"] = (score["on_axis_B"] - score["on_axis_A"]) * (1 if row["side"] == "+C" else -1)
+        records.append(result)
+        with args.output.open("a") as file:
+            file.write(json.dumps(result, ensure_ascii=False) + "\n")
+        print("GAP_JUDGMENT", json.dumps(result, ensure_ascii=False), flush=True)
+    try:
+        await asyncio.gather(*(one(record) for record in data["records"] if record["condition"] != "bare"))
+    finally:
+        await client.close()
+    print("GAP_JUDGE_COMPLETE", json.dumps({"records": len(records), "model": judge.MODEL, "rubric": judge.RUBRIC,
+                                           "reported_cost_usd": sum(r["cost_usd"] for r in records)}), flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--judge", type=Path)
     parser.add_argument("--source-root", type=Path, default=Path("outputs/experiments"))
     parser.add_argument("--output", type=Path)
     parser.add_argument("--source-revision")
@@ -210,6 +243,8 @@ def main():
     torch.set_num_threads(1)
     if args.self_test:
         self_test(args.source_root)
+    elif args.judge:
+        asyncio.run(judge_results(args))
     else:
         assert args.output and args.source_revision
         run(args)
