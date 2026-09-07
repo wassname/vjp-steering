@@ -1,0 +1,1005 @@
+COMMAND: uv run --no-sync modal billing report --start 2026-09-07 --end 2026-09-08 --resolution h --show-resources --json
+[
+  {
+    "object_id": "ap-0vAcpE6Fjx0jGq1nE9qum9",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "Memory",
+    "cost": "0.00004557"
+  },
+  {
+    "object_id": "ap-0vAcpE6Fjx0jGq1nE9qum9",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "CPU",
+    "cost": "0.00030687"
+  },
+  {
+    "object_id": "ap-0vAcpE6Fjx0jGq1nE9qum9",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "H100",
+    "cost": "0.02989297"
+  },
+  {
+    "object_id": "ap-1Arwmij0hs19R8fo5PCFy8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T22:00:00",
+    "resource": "Memory",
+    "cost": "0.00025168"
+  },
+  {
+    "object_id": "ap-1Arwmij0hs19R8fo5PCFy8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T22:00:00",
+    "resource": "CPU",
+    "cost": "0.00092572"
+  },
+  {
+    "object_id": "ap-1Arwmij0hs19R8fo5PCFy8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T22:00:00",
+    "resource": "H100",
+    "cost": "0.07461190"
+  },
+  {
+    "object_id": "ap-1OZZSehnkWsCEssJIT6cpa",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T14:00:00",
+    "resource": "Memory",
+    "cost": "0.00002351"
+  },
+  {
+    "object_id": "ap-1OZZSehnkWsCEssJIT6cpa",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T14:00:00",
+    "resource": "CPU",
+    "cost": "0.00017557"
+  },
+  {
+    "object_id": "ap-1OZZSehnkWsCEssJIT6cpa",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T14:00:00",
+    "resource": "H100",
+    "cost": "0.02194457"
+  },
+  {
+    "object_id": "ap-2p7dpTxONvjvrsyl4Ofxk0",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "Memory",
+    "cost": "0.00011911"
+  },
+  {
+    "object_id": "ap-2p7dpTxONvjvrsyl4Ofxk0",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "CPU",
+    "cost": "0.00052142"
+  },
+  {
+    "object_id": "ap-2p7dpTxONvjvrsyl4Ofxk0",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "H100",
+    "cost": "0.05031535"
+  },
+  {
+    "object_id": "ap-3MCDju5IC9Yha0o3AeBok8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "Memory",
+    "cost": "0.00040305"
+  },
+  {
+    "object_id": "ap-3MCDju5IC9Yha0o3AeBok8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "CPU",
+    "cost": "0.00133658"
+  },
+  {
+    "object_id": "ap-3MCDju5IC9Yha0o3AeBok8",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "H100",
+    "cost": "0.10752711"
+  },
+  {
+    "object_id": "ap-49QJqvkch6JhN6V9wmw4mE",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "Memory",
+    "cost": "0.00001989"
+  },
+  {
+    "object_id": "ap-49QJqvkch6JhN6V9wmw4mE",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "CPU",
+    "cost": "0.00011787"
+  },
+  {
+    "object_id": "ap-49QJqvkch6JhN6V9wmw4mE",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "H100",
+    "cost": "0.04827829"
+  },
+  {
+    "object_id": "ap-4CQzkTNBfQqFL62c5TkVtl",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "Memory",
+    "cost": "0.00012796"
+  },
+  {
+    "object_id": "ap-4CQzkTNBfQqFL62c5TkVtl",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "CPU",
+    "cost": "0.00057666"
+  },
+  {
+    "object_id": "ap-4CQzkTNBfQqFL62c5TkVtl",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "H100",
+    "cost": "0.05047246"
+  },
+  {
+    "object_id": "ap-4enxAlfRRsVPe0POK4gNVL",
+    "description": "jsteer-dictionary-control",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "Memory",
+    "cost": "0.00049451"
+  },
+  {
+    "object_id": "ap-4enxAlfRRsVPe0POK4gNVL",
+    "description": "jsteer-dictionary-control",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "CPU",
+    "cost": "0.00152007"
+  },
+  {
+    "object_id": "ap-4enxAlfRRsVPe0POK4gNVL",
+    "description": "jsteer-dictionary-control",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "H100",
+    "cost": "0.13386085"
+  },
+  {
+    "object_id": "ap-54zIh7b4qqRWr9XuRZ8baY",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "Memory",
+    "cost": "0.00013696"
+  },
+  {
+    "object_id": "ap-54zIh7b4qqRWr9XuRZ8baY",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "CPU",
+    "cost": "0.00056759"
+  },
+  {
+    "object_id": "ap-54zIh7b4qqRWr9XuRZ8baY",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "H100",
+    "cost": "0.05047264"
+  },
+  {
+    "object_id": "ap-64BatRc66BT1WR6MDGrDx5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "Memory",
+    "cost": "0.00005480"
+  },
+  {
+    "object_id": "ap-64BatRc66BT1WR6MDGrDx5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "CPU",
+    "cost": "0.00034158"
+  },
+  {
+    "object_id": "ap-64BatRc66BT1WR6MDGrDx5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "H100",
+    "cost": "0.03072285"
+  },
+  {
+    "object_id": "ap-6xbtx0Suln17tnVTrc2QiU",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "Memory",
+    "cost": "0.00007433"
+  },
+  {
+    "object_id": "ap-6xbtx0Suln17tnVTrc2QiU",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "CPU",
+    "cost": "0.00039183"
+  },
+  {
+    "object_id": "ap-6xbtx0Suln17tnVTrc2QiU",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "H100",
+    "cost": "0.04608386"
+  },
+  {
+    "object_id": "ap-8NzEHrEIsm2Y5ttXapcXOL",
+    "description": "jsteer-norm-matched-gp",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "Memory",
+    "cost": "0.00036533"
+  },
+  {
+    "object_id": "ap-8NzEHrEIsm2Y5ttXapcXOL",
+    "description": "jsteer-norm-matched-gp",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "CPU",
+    "cost": "0.00122913"
+  },
+  {
+    "object_id": "ap-8NzEHrEIsm2Y5ttXapcXOL",
+    "description": "jsteer-norm-matched-gp",
+    "environment": "main",
+    "interval_start": "2026-09-07T17:00:00",
+    "resource": "H100",
+    "cost": "0.11850012"
+  },
+  {
+    "object_id": "ap-909DggP5DighPby8TdvSdP",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T21:00:00",
+    "resource": "Memory",
+    "cost": "0.00040803"
+  },
+  {
+    "object_id": "ap-909DggP5DighPby8TdvSdP",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T21:00:00",
+    "resource": "CPU",
+    "cost": "0.00142989"
+  },
+  {
+    "object_id": "ap-909DggP5DighPby8TdvSdP",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T21:00:00",
+    "resource": "H100",
+    "cost": "0.11925994"
+  },
+  {
+    "object_id": "ap-Jn7Nu6PXsg2X6L0N2rE02k",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00034918"
+  },
+  {
+    "object_id": "ap-Jn7Nu6PXsg2X6L0N2rE02k",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00123104"
+  },
+  {
+    "object_id": "ap-Jn7Nu6PXsg2X6L0N2rE02k",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "H100",
+    "cost": "0.10094371"
+  },
+  {
+    "object_id": "ap-LAoesKRfv4QYSI3VUygYRT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T00:00:00",
+    "resource": "Memory",
+    "cost": "0.00006510"
+  },
+  {
+    "object_id": "ap-LAoesKRfv4QYSI3VUygYRT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T00:00:00",
+    "resource": "CPU",
+    "cost": "0.00040932"
+  },
+  {
+    "object_id": "ap-LAoesKRfv4QYSI3VUygYRT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T00:00:00",
+    "resource": "H100",
+    "cost": "0.04608308"
+  },
+  {
+    "object_id": "ap-O08RiijBqSwG9fzxcu5vXM",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "Memory",
+    "cost": "0.00098206"
+  },
+  {
+    "object_id": "ap-O08RiijBqSwG9fzxcu5vXM",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "CPU",
+    "cost": "0.00310668"
+  },
+  {
+    "object_id": "ap-O08RiijBqSwG9fzxcu5vXM",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "H100",
+    "cost": "0.25894412"
+  },
+  {
+    "object_id": "ap-ObSngByWYKv6DPAvt9VGzG",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "Memory",
+    "cost": "0.00002273"
+  },
+  {
+    "object_id": "ap-ObSngByWYKv6DPAvt9VGzG",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "CPU",
+    "cost": "0.00022906"
+  },
+  {
+    "object_id": "ap-ObSngByWYKv6DPAvt9VGzG",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "H100",
+    "cost": "0.02259350"
+  },
+  {
+    "object_id": "ap-RU2y4tu1NIPmrVaCSYOJJF",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "Memory",
+    "cost": "0.00004595"
+  },
+  {
+    "object_id": "ap-RU2y4tu1NIPmrVaCSYOJJF",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "CPU",
+    "cost": "0.00030587"
+  },
+  {
+    "object_id": "ap-RU2y4tu1NIPmrVaCSYOJJF",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "H100",
+    "cost": "0.02851662"
+  },
+  {
+    "object_id": "ap-SYbF4t2DYn4rCnPRZGUeqd",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "Memory",
+    "cost": "0.00004683"
+  },
+  {
+    "object_id": "ap-SYbF4t2DYn4rCnPRZGUeqd",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "CPU",
+    "cost": "0.00030572"
+  },
+  {
+    "object_id": "ap-SYbF4t2DYn4rCnPRZGUeqd",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "H100",
+    "cost": "0.03291722"
+  },
+  {
+    "object_id": "ap-UHivbbhC9pDR4lLnKXQOS5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "Memory",
+    "cost": "0.00008044"
+  },
+  {
+    "object_id": "ap-UHivbbhC9pDR4lLnKXQOS5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "CPU",
+    "cost": "0.00048506"
+  },
+  {
+    "object_id": "ap-UHivbbhC9pDR4lLnKXQOS5",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "H100",
+    "cost": "0.04169518"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00099924"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00292879"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "H100",
+    "cost": "0.24138904"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "Memory",
+    "cost": "0.00000241"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "CPU",
+    "cost": "0.00001678"
+  },
+  {
+    "object_id": "ap-V2Ie6GPM565xz0H7ohsxbS",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "H100",
+    "cost": "0.00303563"
+  },
+  {
+    "object_id": "ap-YVqsE9fUixswqzzPBQrMUs",
+    "description": "jsteer-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "Memory",
+    "cost": "0.00055585"
+  },
+  {
+    "object_id": "ap-YVqsE9fUixswqzzPBQrMUs",
+    "description": "jsteer-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "CPU",
+    "cost": "0.00173658"
+  },
+  {
+    "object_id": "ap-YVqsE9fUixswqzzPBQrMUs",
+    "description": "jsteer-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T18:00:00",
+    "resource": "H100",
+    "cost": "0.15141740"
+  },
+  {
+    "object_id": "ap-YnD3TdOT6OO5Frxqo07g4d",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "Memory",
+    "cost": "0.00020831"
+  },
+  {
+    "object_id": "ap-YnD3TdOT6OO5Frxqo07g4d",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "CPU",
+    "cost": "0.00099092"
+  },
+  {
+    "object_id": "ap-YnD3TdOT6OO5Frxqo07g4d",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "H100",
+    "cost": "0.08559733"
+  },
+  {
+    "object_id": "ap-aYL1ssqbkydA4TFhLYF7pR",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00042354"
+  },
+  {
+    "object_id": "ap-aYL1ssqbkydA4TFhLYF7pR",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00148850"
+  },
+  {
+    "object_id": "ap-aYL1ssqbkydA4TFhLYF7pR",
+    "description": "jsteer-additive-named-concepts",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "H100",
+    "cost": "0.12288862"
+  },
+  {
+    "object_id": "ap-bCPr0KrKBwsaTUFLD0W0Rp",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "Memory",
+    "cost": "0.00137605"
+  },
+  {
+    "object_id": "ap-bCPr0KrKBwsaTUFLD0W0Rp",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "CPU",
+    "cost": "0.00367511"
+  },
+  {
+    "object_id": "ap-bCPr0KrKBwsaTUFLD0W0Rp",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "H100",
+    "cost": "0.45713410"
+  },
+  {
+    "object_id": "ap-cp7YFJacErU81Iisidzlu6",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "Memory",
+    "cost": "0.00003740"
+  },
+  {
+    "object_id": "ap-cp7YFJacErU81Iisidzlu6",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "CPU",
+    "cost": "0.00031731"
+  },
+  {
+    "object_id": "ap-cp7YFJacErU81Iisidzlu6",
+    "description": "jsteer-dev15-representation",
+    "environment": "main",
+    "interval_start": "2026-09-07T16:00:00",
+    "resource": "H100",
+    "cost": "0.02557613"
+  },
+  {
+    "object_id": "ap-f8aD8yg7WT3xhqMTkix9y7",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00002344"
+  },
+  {
+    "object_id": "ap-f8aD8yg7WT3xhqMTkix9y7",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00021327"
+  },
+  {
+    "object_id": "ap-f8aD8yg7WT3xhqMTkix9y7",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "H100",
+    "cost": "0.01755536"
+  },
+  {
+    "object_id": "ap-fcjKqPxnjyPZpprgf5pfhA",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "Memory",
+    "cost": "0.00007167"
+  },
+  {
+    "object_id": "ap-fcjKqPxnjyPZpprgf5pfhA",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "CPU",
+    "cost": "0.00039756"
+  },
+  {
+    "object_id": "ap-fcjKqPxnjyPZpprgf5pfhA",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "H100",
+    "cost": "0.04712359"
+  },
+  {
+    "object_id": "ap-jJtDYTZNkN2odUQu50qKFu",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "Memory",
+    "cost": "0.00015178"
+  },
+  {
+    "object_id": "ap-jJtDYTZNkN2odUQu50qKFu",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "CPU",
+    "cost": "0.00050577"
+  },
+  {
+    "object_id": "ap-jJtDYTZNkN2odUQu50qKFu",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "H100",
+    "cost": "0.04594341"
+  },
+  {
+    "object_id": "ap-jvib2fjFxBph4RjRAYBGEN",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00001111"
+  },
+  {
+    "object_id": "ap-jvib2fjFxBph4RjRAYBGEN",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00016489"
+  },
+  {
+    "object_id": "ap-kVubyKHzlSQWkVF9RMUcsm",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T03:00:00",
+    "resource": "Memory",
+    "cost": "0.00033619"
+  },
+  {
+    "object_id": "ap-kVubyKHzlSQWkVF9RMUcsm",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T03:00:00",
+    "resource": "CPU",
+    "cost": "0.00136956"
+  },
+  {
+    "object_id": "ap-kVubyKHzlSQWkVF9RMUcsm",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T03:00:00",
+    "resource": "H100",
+    "cost": "0.13386147"
+  },
+  {
+    "object_id": "ap-nB9ifGeyQMrdANLN3LpPAJ",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "Memory",
+    "cost": "0.00112530"
+  },
+  {
+    "object_id": "ap-nB9ifGeyQMrdANLN3LpPAJ",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "CPU",
+    "cost": "0.00356340"
+  },
+  {
+    "object_id": "ap-nB9ifGeyQMrdANLN3LpPAJ",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "H100",
+    "cost": "0.29844404"
+  },
+  {
+    "object_id": "ap-nNL76grpAUVnBOnNgaR0uR",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "Memory",
+    "cost": "0.00113542"
+  },
+  {
+    "object_id": "ap-nNL76grpAUVnBOnNgaR0uR",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "CPU",
+    "cost": "0.00359595"
+  },
+  {
+    "object_id": "ap-nNL76grpAUVnBOnNgaR0uR",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "H100",
+    "cost": "0.30145626"
+  },
+  {
+    "object_id": "ap-rPPanmEfP0YxYLXW78A4Mq",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "Memory",
+    "cost": "0.00101214"
+  },
+  {
+    "object_id": "ap-rPPanmEfP0YxYLXW78A4Mq",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "CPU",
+    "cost": "0.00300316"
+  },
+  {
+    "object_id": "ap-rPPanmEfP0YxYLXW78A4Mq",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T20:00:00",
+    "resource": "H100",
+    "cost": "0.24864809"
+  },
+  {
+    "object_id": "ap-tOgfe9cW2JXfeONvR38Vpv",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "Memory",
+    "cost": "0.00029836"
+  },
+  {
+    "object_id": "ap-tOgfe9cW2JXfeONvR38Vpv",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "CPU",
+    "cost": "0.00114850"
+  },
+  {
+    "object_id": "ap-tOgfe9cW2JXfeONvR38Vpv",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T04:00:00",
+    "resource": "H100",
+    "cost": "0.12774033"
+  },
+  {
+    "object_id": "ap-ugr6ztuDu8cmcoAB5mLA0N",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "Memory",
+    "cost": "0.00024587"
+  },
+  {
+    "object_id": "ap-ugr6ztuDu8cmcoAB5mLA0N",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "CPU",
+    "cost": "0.00084520"
+  },
+  {
+    "object_id": "ap-ugr6ztuDu8cmcoAB5mLA0N",
+    "description": "jsteer-transfer-probe",
+    "environment": "main",
+    "interval_start": "2026-09-07T15:00:00",
+    "resource": "H100",
+    "cost": "0.07241662"
+  },
+  {
+    "object_id": "ap-vQu0fOVnQjjXIqIXhbZNw4",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "Memory",
+    "cost": "0.00025228"
+  },
+  {
+    "object_id": "ap-vQu0fOVnQjjXIqIXhbZNw4",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "CPU",
+    "cost": "0.00065615"
+  },
+  {
+    "object_id": "ap-vQu0fOVnQjjXIqIXhbZNw4",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T11:00:00",
+    "resource": "H100",
+    "cost": "0.05924781"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "Memory",
+    "cost": "0.00034819"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "CPU",
+    "cost": "0.00209302"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T05:00:00",
+    "resource": "H100",
+    "cost": "1.20255568"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "Memory",
+    "cost": "0.00066278"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "CPU",
+    "cost": "0.00391867"
+  },
+  {
+    "object_id": "ap-x2QTeS70jmeXLOYr5LDjmT",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T06:00:00",
+    "resource": "H100",
+    "cost": "2.61797302"
+  },
+  {
+    "object_id": "ap-yAp3S2NnwKMznFBd0AxnbN",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "Memory",
+    "cost": "0.00014479"
+  },
+  {
+    "object_id": "ap-yAp3S2NnwKMznFBd0AxnbN",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "CPU",
+    "cost": "0.00073283"
+  },
+  {
+    "object_id": "ap-yAp3S2NnwKMznFBd0AxnbN",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-07T12:00:00",
+    "resource": "H100",
+    "cost": "0.07250160"
+  },
+  {
+    "object_id": "ap-yh5THLF10Dl4TQlTFdJunH",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "Memory",
+    "cost": "0.00001215"
+  },
+  {
+    "object_id": "ap-yh5THLF10Dl4TQlTFdJunH",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "CPU",
+    "cost": "0.00004270"
+  },
+  {
+    "object_id": "ap-yh5THLF10Dl4TQlTFdJunH",
+    "description": "jsteer-matched-random-additive",
+    "environment": "main",
+    "interval_start": "2026-09-07T19:00:00",
+    "resource": "H100",
+    "cost": "0.02852903"
+  }
+]
+
+EXIT_CODE=0

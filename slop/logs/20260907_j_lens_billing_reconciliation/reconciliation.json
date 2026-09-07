@@ -1,0 +1,25 @@
+{
+  "identified_failures": [
+    {
+      "app": "ap-49QJqvkch6JhN6V9wmw4mE",
+      "old_reserve": "5",
+      "metered_cost": "0.04841605"
+    },
+    {
+      "app": "ap-yh5THLF10Dl4TQlTFdJunH",
+      "old_reserve": "1",
+      "metered_cost": "0.02858388"
+    },
+    {
+      "app": "ap-f8aD8yg7WT3xhqMTkix9y7",
+      "old_reserve": ".75",
+      "metered_cost": "0.01779207"
+    }
+  ],
+  "released_before_late_allowance": "6.65520800",
+  "new_late_adjustment_reserve": "0.25",
+  "available": "8.42509672744",
+  "after_proposed_1_20": "7.22509672744",
+  "all_other_reserves": "unchanged",
+  "billing_status": "metered snapshot, not final invoice"
+}

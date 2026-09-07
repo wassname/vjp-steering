@@ -1,0 +1,18 @@
+COMMAND: uv run --no-sync modal billing summary --for 2026-09 --json
+{
+  "metered_cost": "16.36970056",
+  "billed_cost": "0E-8",
+  "adjustments": {
+    "plan_cost": "0E-8",
+    "reservation_adjustment": "-0E-8",
+    "credits": "-15.36000000",
+    "free_storage": "-1.00970056"
+  },
+  "metered_cost_breakdown": {
+    "llm_tokens": "0E-8",
+    "volumes": "1.00970056",
+    "ephemeral_apps": "15.35607800"
+  }
+}
+
+EXIT_CODE=0
