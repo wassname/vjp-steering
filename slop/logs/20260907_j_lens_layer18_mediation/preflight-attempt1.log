@@ -1,0 +1,86 @@
+COMMAND: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync python slop/logs/20260907_j_lens_layer18_mediation/preflight.py
+LAYER18_API_SOURCE_PASS {"paths": {"modeling": "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", "cache": "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/cache_utils.py"}, "sha256": {"modeling": "0e2cd8dc50885b2701d26b116c585eedcdc62a24080ec34345af55b963126ded", "cache": "ee7902fbd031ed332b5e26d07756a33f09b5c90a435b8363b9330876dc33ce0e"}}
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_layer18_mediation/preflight.py", line 85, in <module>
+    record = run.generate(model, encoded[context], None if arm.endswith('native') else x, endpoint, max_tokens=4, layer=0)
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_layer18_mediation.py", line 224, in generate
+    output = model.generate(**encoded, do_sample=False, temperature=None, top_p=None, top_k=None,
+        pad_token_id=model.config.eos_token_id, max_new_tokens=max_tokens, use_cache=True,
+        return_dict_in_generate=True, output_logits=True)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 2681, in generate
+    result = decoding_method(
+        self,
+    ...<5 lines>...
+        **model_kwargs,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 2881, in _sample
+    outputs = self._prefill(
+        input_ids,
+    ...<2 lines>...
+        is_first_iteration=not generation_config.is_assistant,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 3961, in _prefill
+    return self(**model_inputs, return_dict=True)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/generic.py", line 911, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1654, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ~~~~~~~~~~^
+        input_ids=input_ids,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/generic.py", line 1040, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/output_capturing.py", line 262, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1212, in forward
+    hidden_states = decoder_layer(
+        hidden_states,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/modeling_layers.py", line 110, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1884, in _call_impl
+    return inner()
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1832, in inner
+    result = forward_call(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 788, in forward
+    hidden_states = self.linear_attn(
+        hidden_states=hidden_states,
+    ...<2 lines>...
+        **kwargs,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1884, in _call_impl
+    return inner()
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1843, in inner
+    hook_result = hook(self, args, kwargs, result)
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_layer18_mediation.py", line 144, in mixer_output
+    assert all(cache_layer.is_conv_states_initialized) and all(cache_layer.is_recurrent_states_initialized)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1

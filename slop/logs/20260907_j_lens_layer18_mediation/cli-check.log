@@ -1,0 +1,11 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync python scripts/scratch/j_lens_layer18_mediation.py --help
+usage: j_lens_layer18_mediation.py [-h] [--output OUTPUT]
+                                   [--source-revision SOURCE_REVISION]
+                                   [--judge]
+
+options:
+  -h, --help            show this help message and exit
+  --output OUTPUT
+  --source-revision SOURCE_REVISION
+  --judge
+EXIT_CODE=0
