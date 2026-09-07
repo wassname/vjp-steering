@@ -25,8 +25,8 @@ SOURCE_SHA = '9b47dcb594efc67f9b3491013273106346a0afb8c32fea3a6111e6121ca34a53'
 
 
 def dose_root(alpha):
-    assert alpha in (1, 2), 'Only the individually authorized doses are supported'
-    return ROOT if alpha == 1 else ROOT.with_name(ROOT.name+'_alpha2')
+    assert alpha in (1, 2, 4), 'Only the individually authorized doses are supported'
+    return ROOT if alpha == 1 else ROOT.with_name(ROOT.name+f'_alpha{alpha}')
 
 
 def source_contrast():
@@ -261,7 +261,12 @@ def generation_report(folder):
     data=json.loads((folder/'generation.json').read_text())
     earlier=json.loads((ROOT/'generation.json').read_text())
     reference=json.loads(norm.REFERENCE.read_text())
-    assert data['fixed_alpha']==2 and earlier['fixed_alpha']==1
+    assert data['fixed_alpha'] in (2,4) and earlier['fixed_alpha']==1
+    previous=json.loads((dose_root(2)/'generation.json').read_text()) if data['fixed_alpha']==4 else None
+    if previous:
+        for key in ('named_source_sha256','reference_sha256','model_revision','settings','contrast'):
+            assert previous[key]==data[key]
+        assert previous['fixed_alpha']==2
     assert gap.sha(SOURCE)==SOURCE_SHA==data['named_source_sha256']==earlier['named_source_sha256']
     assert gap.sha(norm.REFERENCE)==norm.REFERENCE_SHA==data['reference_sha256']==earlier['reference_sha256']
     assert data['reused_records']==earlier['reused_records']==reference['records']
@@ -274,8 +279,8 @@ def generation_report(folder):
         assert gap.sha(SCRIPTS/'scratch'/name)==expected
     assert len(data['records'])==30 and len(data['identity_controls'])==2
     assert len({(r['scenario'],r['side']) for r in data['records']})==30
-    wanted=2*float(torch.tensor(data['contrast'],dtype=torch.float32).norm())
-    steps=[];pairs=[];lines=['# Complete baseline / alpha1 / alpha2 response comparison',
+    wanted=data['fixed_alpha']*float(torch.tensor(data['contrast'],dtype=torch.float32).norm())
+    steps=[];pairs=[];lines=['# Complete baseline / alpha1 / '+('alpha2 / ' if previous else '')+f"alpha{data['fixed_alpha']} response comparison",
         'Generation-only: no judge calls or scores. Exact prompts, IDs and all per-step records: generation.json.']
     for r in data['records']+data['identity_controls']:
         bare=next(b for b in reference['records'] if b['scenario']==r['scenario'] and b['condition']=='bare')
@@ -294,7 +299,7 @@ def generation_report(folder):
             if identity:
                 assert m['actual_norm']==0 and m['signed_alpha']==0 and m['desired_norm']==0
             else:
-                assert m['signed_alpha']==(2 if r['side']=='+C' else -2)
+                assert m['signed_alpha']==data['fixed_alpha']*(1 if r['side']=='+C' else -1)
                 assert abs(m['desired_norm']-wanted)<1e-6 and m['actual_norm']>0 and m['direction_cosine']>.99
                 assert abs(m['norm_error']-abs(m['actual_norm']-wanted))<1e-6
             steps.append({'scenario':r['scenario'],'side':r['side'],'identity':identity,**m})
@@ -304,19 +309,27 @@ def generation_report(folder):
         pair={'scenario':r['scenario'],'side':r['side'],'baseline_text_equal':r['text']==bare['text'],
             'baseline_ids_equal':r['generated_ids']==bare['generated_ids'],'alpha1_text_equal':r['text']==one['text'],
             'alpha1_ids_equal':r['generated_ids']==one['generated_ids'],'tokens':len(r['generated_ids']),**r['health'][0]}
+        variants=[('Baseline',bare),('Alpha1',one)]
+        if previous:
+            two=next(b for b in previous['records'] if (b['scenario'],b['side'])==(r['scenario'],r['side']))
+            assert all(two[k]==r[k] for k in ('input_ids','rendered','prompt'))
+            pair.update(alpha2_text_equal=r['text']==two['text'],alpha2_ids_equal=r['generated_ids']==two['generated_ids'])
+            variants.append(('Alpha2',two))
+        variants.append((f"Alpha{data['fixed_alpha']}",r))
         pairs.append(pair)
         lines+=['## '+r['scenario']+' / '+r['side'],'```text\n'+r['rendered']+'\n```']
-        for label,record in (('Baseline',bare),('Alpha1',one),('Alpha2',r)):
+        for label,record in variants:
             lines+=['### '+label,record['text'],'Health: '+json.dumps(record['health'])]
         lines.append('Equality and length: '+json.dumps(pair))
     for name,rows in (('steps.csv',steps),('comparisons.csv',pairs)):
         with (folder/name).open('w') as f:
             writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
     (folder/'responses-comparison.md').write_text('\n\n'.join(lines)+'\n')
-    summary={'runtime':data['runtime'],'source_revision':data['source_revision'],'fixed_alpha':2,'requested_norm':wanted,
+    summary={'runtime':data['runtime'],'source_revision':data['source_revision'],'fixed_alpha':data['fixed_alpha'],'requested_norm':wanted,
         'generation_sha256':gap.sha(folder/'generation.json'),'alpha1_sha256':gap.sha(ROOT/'generation.json'),
         'identity_calls':sum(m['identity'] for m in steps),'treatment_calls':sum(not m['identity'] for m in steps),
         'API_calls':0,'groups':{}}
+    if previous:summary['alpha2_sha256']=gap.sha(dose_root(2)/'generation.json')
     for side in ('+C','-C'):
         ms=[m for m in steps if m['side']==side and not m['identity']];ps=[p for p in pairs if p['side']==side]
         summary['groups'][side]={'calls':len(ms),'nonzero_calls':sum(m['actual_norm']>0 for m in ms),
@@ -326,6 +339,7 @@ def generation_report(folder):
             'health':{k:sum(p[k] for p in ps) for k in ('unfinished','role_leaks','repeated')},
             'max_tokens':max(p['tokens'] for p in ps),'mean_words':statistics.mean(p['mean_words'] for p in ps),
             'baseline_text_equal':sum(p['baseline_text_equal'] for p in ps),'alpha1_text_equal':sum(p['alpha1_text_equal'] for p in ps)}
+        if previous:summary['groups'][side]['alpha2_text_equal']=sum(p['alpha2_text_equal'] for p in ps)
     norm.save(folder/'summary.json',summary)
     print('ADDITIVE_GENERATION_REPORT_PASS',json.dumps(summary),flush=True)
 
@@ -334,7 +348,7 @@ if __name__!='__main__':
     import modal
     from run_modal import image,cache,source_revision
     image=image.add_local_file(str(norm.REFERENCE),'/repo/'+str(norm.REFERENCE)).add_local_file(str(SOURCE),'/repo/'+str(SOURCE))
-    for alpha in (1,2):
+    for alpha in (1,2,4):
         check=dose_root(alpha)/'offline-bf16.json'
         if check.exists():image=image.add_local_file(str(check),'/repo/'+str(check))
     app=modal.App('jsteer-additive-named-concepts',image=image)
@@ -353,7 +367,7 @@ if __name__!='__main__':
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--self-test',action='store_true');p.add_argument('--judge',type=Path);p.add_argument('--report',type=Path)
     p.add_argument('--generation-report',type=Path)
-    p.add_argument('--alpha',type=int,choices=(1,2),default=1)
+    p.add_argument('--alpha',type=int,choices=(1,2,4),default=1)
     p.add_argument('--output',type=Path);p.add_argument('--source-revision',default='unknown');args=p.parse_args()
     args.output=args.output or dose_root(args.alpha)/'generation.json'
     if args.self_test:self_test(args.alpha)

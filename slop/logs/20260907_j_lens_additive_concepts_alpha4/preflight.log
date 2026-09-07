@@ -1,0 +1,3 @@
+COMMAND: PYTHONPATH=src uv run --no-sync python inline Modal import / immutable prior-dose checks
+MODAL_IMPORT_ALPHA4_DISTINCT_PATHS_PRIOR_ARTIFACTS_UNCHANGED_PASS
+EXIT_CODE=0
