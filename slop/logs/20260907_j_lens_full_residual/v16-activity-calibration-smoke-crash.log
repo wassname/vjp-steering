@@ -1,0 +1,21 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 8636.80it/s]
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1403, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 1386, in main
+    calibrate(args)
+    ~~~~~~~~~^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/concept_checks.py", line 41, in calibrate
+    vectors, metadata = experiment.load_or_extract(args, source, model, tokenizer)
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 462, in load_or_extract
+    validate_extraction_identity(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 392, in validate_extraction_identity
+    raise ValueError("J-lens extraction cache lens mismatch")
+ValueError: J-lens extraction cache lens mismatch

@@ -1,0 +1,1 @@
+TASK460_VECTOR_CHECK_PASS layers=13-21 common_basis=true dual_identity=true targets=0,1 normalized_full_residual=true differs_from_gp16=true

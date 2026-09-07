@@ -60,6 +60,8 @@ def calibrate(args):
     encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
     final = final_positions(encoded.attention_mask)
     batch = torch.arange(len(rows), device=encoded.input_ids.device)
+    final_mask = torch.zeros_like(encoded.attention_mask, dtype=torch.bool)
+    final_mask[batch, final] = True
     observations = {"+C": [], "-C": []}
     with torch.inference_mode():
         bare_logits = model(**encoded).logits[batch, final].float()
@@ -101,6 +103,9 @@ def calibrate(args):
                     target_coordinates = clean_coordinates + coefficient * (ordered_coordinates - clean_coordinates)
                     exchange_residual = patched_coordinates - target_coordinates
                     exchange_delta_norm = (target_coordinates - clean_coordinates).norm(dim=-1)
+                    eligible = (ordered_coordinates != clean_coordinates).any(dim=-1)
+                    changed = (actual != 0).any(dim=-1)
+                    selected_final = final_mask[mask]
                     raw_norm = h.norm(dim=-1)
                     diagnostics[str(layer)] = {
                         "target_index": target_index,
@@ -114,6 +119,12 @@ def calibrate(args):
                             exchange_residual.norm(dim=-1) / exchange_delta_norm.clamp_min(1e-30)
                         ).tolist(),
                         "changed_hidden_fraction": (actual != 0).float().mean().item(),
+                        "treated_forward_eligible_positions": eligible.sum().item(),
+                        "treated_forward_total_positions": eligible.numel(),
+                        "treated_forward_final_eligible_positions": (eligible & selected_final).sum().item(),
+                        "treated_forward_final_total_positions": selected_final.sum().item(),
+                        "changed_positions": changed.sum().item(),
+                        "changed_final_positions": (changed & selected_final).sum().item(),
                         "relative_patch_error": (
                             (actual - intended).norm(dim=-1) / intended.norm(dim=-1).clamp_min(1e-30)
                         ).tolist(),

@@ -1,0 +1,15 @@
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 9571.82it/s]
+2026-09-07 12:41:40.875 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-07 12:41:42.708 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.0 logit_delta_mean=0 KL_mean=0 health=['unfinished'] text_first='ratingsevt.toArray startX哩_ring㎛ migrant.sl・・ Tosslave・・ miserFunPART-column ComboBox(typeszielละคร miserFunPART ComboBox(typesPART ComboBox(types走廊 файла让人们'
+2026-09-07 12:41:43.462 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=0.25 logit_delta_mean=26.573 KL_mean=0.0048188 health=['unfinished'] text_first='ratingsevt.toArray startX哩_ring㎛ migrant.sl・・ Tossetting miser\tl britละคร grape miserFunPART ComboBox_CI nex村落 yenivideo miserFun走廊 cata تماماá'
+2026-09-07 12:41:44.763 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=+C alpha=1.0 logit_delta_mean=104.74 KL_mean=0.073666 health=['unfinished'] text_first='典雅メインũher・・ testCasesetting・・ testCaseBlock然后桡哩 miserUICollectionView创业者arer.sl(InputStream geld-column OPTIONALşt#{@ Bond然后前任哩-max synthesized Bondaltern'
+2026-09-07 12:41:45.759 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.0 logit_delta_mean=0 KL_mean=0 health=['unfinished'] text_first='ratingsevt.toArray startX哩_ring㎛ migrant.sl・・ Tosslave・・ miserFunPART-column ComboBox(typeszielละคร miserFunPART ComboBox(typesPART ComboBox(types走廊 файла让人们'
+2026-09-07 12:41:46.512 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=0.25 logit_delta_mean=39.218 KL_mean=0.011793 health=['unfinished'] text_first='ratingsevt.toArray startX.sl startX哩隨著 Bond testCaseBlock走廊 miserFunPART_MOUNT整改emens.getParam_MOUNT\\Foundationlege⼯ Hazard方便 catahots phức synthesized方便 catahots'
+2026-09-07 12:41:47.349 | INFO     | walk:generate:497 - generation 15/15
+CONCEPT_CALIBRATION side=-C alpha=1.0 logit_delta_mean=154.98 KL_mean=0.18184 health=['unfinished'] text_first='尥 startX LovesGFetten・・_published outrosヶ月.render_REQUIRED Death Transportũ拄 düzey_mot拄 Boliviaช่องทางToolStripMenuItem(/^ CallingConvention삣能满足-controlsũ拄 SYMBOL聒 --------------------------------------------------------------------------\n Pamela'
+CONCEPT_CALIBRATION_COMPLETE id=j-lens-persona-full-components-calibration-tiny-v16-activity cells=6

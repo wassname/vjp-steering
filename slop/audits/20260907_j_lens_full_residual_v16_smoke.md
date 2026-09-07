@@ -52,6 +52,18 @@ Source: [`v16-basis-check.log`](../logs/20260907_j_lens_full_residual/v16-basis-
 | cheapest discriminator | real-Qwen extraction then the same DEV grid. Intended-sign medians on both sides support GP16 information loss; another null or wrong-sign result moves the failure to the source or target-order operator |
 | runtime | 100 seconds total on CPU, dominated by generation and 46 judge calls; the real extraction remains the expensive stage |
 
+## Activity-diagnostic smoke retry
+
+The first calibration-only smoke stopped before generation:
+
+> `ValueError: J-lens extraction cache lens mismatch`
+
+Source: [`v16-activity-calibration-smoke-crash.log`](../logs/20260907_j_lens_full_residual/v16-activity-calibration-smoke-crash.log), complete 21-line log and traceback.
+
+Cause: the tiny source intentionally stores its generated Jacobian lens, while the calibration command omitted `--lens-file` and therefore resolved the repository default. Cache validation rejected the mismatch as intended. No calibration output directory or partial file remained. The retry supplied the source’s exact `tiny_actual_jacobian.pt`; this does not change production defaults.
+
+The retry completed six cells and recorded treated-forward eligibility plus realized changed-position counts. At alpha .25 and 1, `+C` changed all 537 eligible positions, including 9/15 final positions; `-C` changed all 445 eligible positions, including 6/15 final positions. Alpha zero changed none. Sources: [`v16-activity-calibration-smoke.log`](../logs/20260907_j_lens_full_residual/v16-activity-calibration-smoke.log) and [`v16-activity-diagnostics.tsv`](../logs/20260907_j_lens_full_residual/v16-activity-diagnostics.tsv).
+
 ## Decision
 
 - Resolve condition: met for the tiny integration test. The full residual, rather than GP16, is the saved basis and the complete pipeline executed.

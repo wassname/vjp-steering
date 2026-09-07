@@ -45,6 +45,8 @@
         - drop condition: both fixed directions remain wrong-sign or have zero median despite coherent, nonzero interventions
         - success condition: each direction has the intended mean and median sign on at least 10/15 scenarios, with mean steered off-axis score below 1.5
         - controls: same source messages, instructions, layers, target-order operator, DEV cohort, dose grid, and judge; only `full_residual` replaces `j_gp16`
+        - task 460 extraction passed signal, stability, rank, conditioning, and held-out checks; bare eligibility is asymmetric (`+C 75.4%`, `-C 24.6%`, and `-C` 0/135 final positions)
+        - decision: keep all nine layers for causal attribution; record treated-forward eligibility and activity, then extend only the `-C` dose if its exposure remains below v15
      12. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
