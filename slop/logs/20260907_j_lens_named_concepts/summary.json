@@ -1,0 +1,55 @@
+{
+  "runtime": {
+    "seconds": 117.236576096,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 18086606848,
+    "torch": "2.13.0+cu130"
+  },
+  "stage_seconds": {
+    "model_and_source": 28.882625700000006,
+    "generation": 87.392758259
+  },
+  "judge_cost_usd": 0.00945476,
+  "treatment_calls": 1916,
+  "identity_calls": 110,
+  "targets": {
+    "j_gp16": {
+      "+C": 0.370733380317688,
+      "-C": -1.938124418258667
+    },
+    "full_residual": {
+      "+C": 0.7484261989593506,
+      "-C": -7.988067626953125
+    }
+  },
+  "max_relative_norm_error": 1.0,
+  "min_direction_cosine": 0.0159107968211174,
+  "groups": {
+    "+C": {
+      "AB_mean": -0.08000000000000007,
+      "BA_mean": -0.2399999999999999,
+      "paired_mean": -0.16000000000000003,
+      "steered_off_mean": 0.41333333333333333,
+      "strict_reversals": 4,
+      "ties": 2,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "-C": {
+      "AB_mean": 0.1666666666666666,
+      "BA_mean": 7.401486830834377e-17,
+      "paired_mean": 0.08333333333333333,
+      "steered_off_mean": 1.1733333333333333,
+      "strict_reversals": 1,
+      "ties": 6,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    }
+  }
+}
