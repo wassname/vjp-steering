@@ -44,27 +44,30 @@ cache = modal.Volume.from_name("jsteer-pub-cache", create_if_missing=True)
 
 
 @app.function(gpu="H100", volumes={"/cache": cache}, timeout=15 * 60)
-def j_lens_gap_clamp_remote(output: str, revision: str) -> str:
+def j_lens_gap_clamp_remote(output: str, revision: str, placement: str = "all", reuse: str = "") -> str:
     destination = Path("/cache/outputs") / output
     if destination.exists():
         raise FileExistsError(destination)
     try:
-        subprocess.run([
+        argv = [
             sys.executable, "scripts/scratch/j_lens_gap_clamp.py",
             "--source-root", "/cache/outputs/experiments", "--output", str(destination),
-            "--source-revision", revision,
-        ], cwd="/repo", check=True)
+            "--source-revision", revision, "--placement", placement,
+        ]
+        if reuse:
+            argv.extend(["--reuse", str(Path("/cache/outputs") / reuse)])
+        subprocess.run(argv, cwd="/repo", check=True)
         return destination.read_text()
     finally:
         cache.commit()
 
 
 @app.local_entrypoint()
-def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.json"):
+def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.json", placement: str = "all", reuse: str = ""):
     destination = REPO / "outputs" / output
     if destination.exists():
         raise FileExistsError(destination)
-    result = j_lens_gap_clamp_remote.remote(output, source_revision())
+    result = j_lens_gap_clamp_remote.remote(output, source_revision(), placement, reuse)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("x") as file:
         file.write(result)
