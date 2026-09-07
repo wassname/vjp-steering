@@ -1,0 +1,4 @@
+COMMAND: OMP_NUM_THREADS=1 uv run --no-sync python (independent saved-artifact verification; script in verification.md)
+DICTIONARY_INDEPENDENT_PASS coverage30 identities2 log32 judgment_keys60 reconstructed_components2 source_coordinate_rows39 hashes_exact=true
+generation_sha256 21b845cd60399fa1587dffd9a6966408d41caacd1a8060f526ccfea2e3183f6b
+EXIT_CODE=0

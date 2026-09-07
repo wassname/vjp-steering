@@ -1,0 +1,7 @@
+# Dictionary control spending ledger
+
+PI/OpenAI Codex. Actual provider-reported60judge usage $0.00950068. API subtotalbeforethisrun $0.80169945256;afterjudging **$0.81120013256**. No additional review spend yet.
+
+Modal app ap-4enxAlfRRsVPe0POK4gNVL completed once,EXIT0,no retry. Measuredsource/model26.690122034s,generation77.464769999s,total105.057963711s H10080GB,peak18,085,428,224bytes. Workloadestimate105.057963711/3600*$3.95=$0.115271932405125. KnownAPI+workestimate=$0.124772612405125,notbill. Startup/idle/volume/platformlifetimebilling unknown. Onecontainer360sconfiguration gives$.395singleH100functiontimeallocation,notfullinvoicebound. Retainentire$1.50testallocation pendingbilling;failedpriorstartup$5reserve remains intact,notzero.
+
+Originalwholeblockcap$40. Afterdictionary$1.50allocation,unreserved$16.28873536744. Parent midrun authorizedseparatepaper-groundedscientificupdate maximum$.50;afterthatallocationunreserved **$15.78873536744**. The$.00950068actualjudge spend is covered bytestallocation,not subtractedagain. No newGPUauthorized. Updateprovideractuals hereafter2reviewcalls;do notreleasehistoricalunknownbillingreservewithoutinvoice.
