@@ -1,0 +1,30 @@
+{
+  "j_gp16": {
+    "positive": {
+      "signal_norm": 9.02282314730032,
+      "component_norm": 2.328039857621693,
+      "reconstruction_fraction": 0.06349231109833431,
+      "component_squared_norm_fraction": 0.06657266348824939
+    },
+    "negative": {
+      "signal_norm": 7.29373579504438,
+      "component_norm": 2.3069392460232248,
+      "reconstruction_fraction": 0.09463872703597953,
+      "component_squared_norm_fraction": 0.10003967211113018
+    }
+  },
+  "direct_dictionary_gp": {
+    "positive": {
+      "signal_norm": 9.02282314730032,
+      "component_norm": 2.822113428327734,
+      "reconstruction_fraction": 0.09381436128939147,
+      "component_squared_norm_fraction": 0.09782819496983379
+    },
+    "negative": {
+      "signal_norm": 7.29373579504438,
+      "component_norm": 2.1707731656362195,
+      "reconstruction_fraction": 0.09188136715467787,
+      "component_squared_norm_fraction": 0.08857860440938209
+    }
+  }
+}

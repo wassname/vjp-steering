@@ -1,0 +1,84 @@
+---
+requested_model: z-ai/glm-5.3-flash
+max_tokens: 3500
+final_tokens: 2200
+reasoning_effort: low
+input_bytes: 373749
+trace: slop/logs/20260907_j_lens_dictionary_control/science-update/glm.trace.jsonl
+generated: 2026-09-07T18:07:36.534633+00:00
+---
+
+# bounded completion
+
+## First call answer
+
+# Independent reconstruction and critique
+
+## 1. What the method actually is (reconstruction)
+
+Directly from the supplied material:
+
+- **Model/layer**: pinned Qwen3.5-4B BF16, layer 17, final-prefill residual read (pseudocode).
+- **Persona signals**: three persona instructions (sycophantic / bluntly candid / baseline) applied to the original seeded 52 fit + 13 calibration prompts; signal = mean over fit prompts of (persona − neutral) residual (pseudocode; fit/calibration contents in raw-evidence.md).
+- **Dictionary**: paper's recipe — J-lens vectors are the unit-normalized rows of W_U·J_ℓ, where J_ℓ is the average ∂h_final/∂h_ℓ Jacobian (paper lines 116–128; README "lens_l(h) = unembed(J_l @ h)"; fitting.py estimator: cotangents summed over all target positions p′≥p, then averaged over source positions, skipping the first 16).
+- **Decomposition**: nonnegative gradient pursuit onto k=16 dictionary rows → J-space component (paper line 213 uses exactly "top k=16 J-lens vectors found by gradient pursuit").
+- **Steering basis**: two-row basis B (positive/negative components), pseudoinverse readout D, target coordinates from calibration prompts; replay injects delta = unit(direction)·‖realized_full‖, norm-matched to the full-residual intervention.
+
+**Key distinction (inference, but well supported):** the paper demonstrates that a concept vector's **J-space component (k=16 GP)**, at **the paper's workspace layers**, drives verbal-report and reasoning swaps better than the non-J-space remainder (lines 213–221, 283–287). The local adaptation here asks a *different* question: whether the J-GP16 *persona-disposition direction* — a diffuse, averaged sycophancy signal, not a discrete named concept — carries the causal effect on a fixed 15-question DEV set. That is an **adaptation, not a replication**: the paper's privileged-J-space results concern concept vectors from "Tell me about {concept}" mean activations (line 213) and probe vectors for discrete intermediates (line 283). A persona-dispositional mean-difference direction is neither. Nothing in the supplied excerpts establishes that disposition-like, low-variance, averaged signals decompose the same way.
+
+## 2. What the new DEV control shows (direct observation)
+
+From the control summary (raw-evidence.md):
+
+- **Direction cosines**: full_residual 0.290, j_gp16 0.132 between the GP components of the two sides. Direct observation: the J-GP16 dictionary yields far less *side-separable* sparse components than the raw residual.
+- **Replay effects** (paired means, judged A/B): full_residual +C 0.617, −C −0.697; j_gp16 +C 0.023, −C −0.257; direct_dictionary_gp +C 0.353, −C −0.747; norm_matched_gp (a third-party arm not defined in the supplied pseudocode — missing evidence about its provenance) +C 2.87, −C −0.85.
+- Norms are matched by construction (delta = unit·‖realized_full‖), so **j_gp16's near-zero effect is not a magnitude artifact** — it is a direction/content effect.
+
+**Inference:** under norm matching, the J-GP16 sparse component of the persona signal carries little of the causal effect, while the full residual does. The direct-dictionary control (unit rows of lm_head, no J transport) sits between. Note the pseudocode's own caveat: "Current control uses no J transport and is not labeled as J-lens success."
+
+**Preserve separately**: the benchmark ratings (0.617, 0.023, etc.) are continuous rubric scores with a "known flaw" rubric; the stronger interpretation ("J-GP16 component does not causally carry this persona behavior in this model/layer") is a factual-correction reading that needs more than one 15-item DEV set with known judge biases (BA ordering asymmetry is visible in nearly every AB/BA pair — e.g. full_residual+C 0.467 AB vs 0.767 BA).
+
+## 3. Distinctions and confounds
+
+1. **Layer/recipe mismatch.** Paper's workspace layers are model-specific (e.g., L38–79 on Sonnet, "layer 71" for Opus; layer 17 of a 4B model is untested). Paper line 142: first third of the model is "noisy and largely uninterpretable." Whether layer 17 is in Qwen3.5-4B's "workspace range" is **unverified**. If it isn't, the negative result is uninformative about J-lens, not evidence against it.
+2. **J transport is applied only at dictionary construction.** Paper writes at the layer where the lens was fitted, i.e., J_ℓ h is read/written *at layer ℓ*. Here, A_j = unit_rows(lm_head @ J) produces rows in the final-layer-basis-linearized space but the replay perturbs h at layer 17 directly (delta added to h, next-block input asserted). That is the paper's "steering along a J-lens vector" (line 174), which is legitimate — but the J-GP16 component here is a decomposition of a *persona signal*, not of an on-policy activation. The paper decomposes *the model's own activations/probes* (lines 213, 283). Decomposing an off-policy averaged mean-difference is the crucial departure.
+3. **k=16 fixed** across representations; paper varies k and uses 25 for probes (line 283). k is "somewhat arbitrary" (line 148). A failure at k=16 is not a failure of the J-space at the right k. (No parameter sweep is authorized; this remains a stated limitation.)
+4. **Norm matching changes the hypothesis.** The earlier alpha1 runs used delta_gp directly; norm matching makes the comparison "same magnitude, different direction." That is the right control, but it also means j_gp16's low effect could reflect the *unit direction* of the sparse component being uninformative even though the sparse coefficients carried some signal. Alternative: report cos(δ_gp, δ_full) per call — the direction_cosines summary (0.132 for j_gp16) already suggests severe dilution.
+5. **Direct-dictionary control is a strong confound remover but weakly grounded.** Paper line 160: logit lens (J=I) "agrees closely in the model's last several layers and diverges earlier." Layer 17 is plausibly mid-network for a 4B model; if J_17 ≈ (rescaled) I there, direct_dictionary ≈ j_gp16 trivially, and both are equally uninformative. The observed difference (0.023 vs 0.353) argues they are *not* trivially equal — inference: either J_17 differs meaningfully from I, or GP solution paths differ due to row conditioning.
+6. **Judged outcomes ≠ token-level causal endpoints.** Paper's successes are top-1 logit flips (Figures 15, 19). Here the endpoint is a rubric-scored 2-sentence response via a known-flawed LLM judge. A J-GP16 direction could shift logit-rank behavior without moving judged disposition. No logit-level readout is supplied. **Missing evidence.**
+7. **DEV reuse.** 15 questions "reused across prior repairs" — explicitly diagnostics, not unbiased validation (raw-evidence header). Any positive/negative conclusion is on fixed items; overfitting-by-selection across prior repairs is unquantifiable from the supplied material.
+8. **The norm_matched_gp arm.** It appears in results but not in the pseudocode's representation list ([full, j_gp16, direct_gp16]). Either it is a legacy arm or the pseudocode is stale. Its outsized +C effect (2.87, with steered_off 1.49 — the highest off-axis of any group) suggests it is pushing into off-axis damage, i.e., large on-axis gains partly bought with degraded responses. Cannot be resolved from supplied bytes.
+
+## 4. Failure modes of the current implementation (hypotheses, in the same space)
+
+- **F1 — wrong layer**: layer 17 is outside the effective workspace; J-GP16 there decomposes noise.
+- **F2 — signal not sparse-representable**: the persona mean-difference direction has ~93%-outside-J-space variance (paper line 213 for concepts; plausibly worse for dispositions). Then its GP16 component is a tiny, possibly directionally arbitrary subset; norm-matching to full's magnitude on that subset is a strong distortion.
+- **F3 — estimator details**: pseudocode says "previously fitted average future-output Jacobian"; fitting.py's canonical estimator sums over p′≥p ("current-and-future", README line 19–22). If the fitted J used future-only or self-only, results shift (paper lines 1002–1015 show recipe sensitivity, though "fairly consistent").
+- **F4 — batch1 vs historical batch8 replay**: numeric replay identity checks pass (max relative norm error 6.2e-4, min cosine 0.99997), so mechanics are fine; but identity checks are "mechanics, not semantic efficacy" (pseudocode comment) — correctly stated.
+- **F5 — stop_arm semantics**: `if norm(delta_gp)==0 and norm(realized_full)>0: stop_arm` — a degenerate GP solution (zero component) silently aborts; zero_reference_count is 0, so this never triggered in this run. But zero_reference_count covers the *reference*; whether any per-call δ_gp was zero is not reported.
+
+## 5. Minimal discriminating next tests (no new variants/sweeps/paid experiments)
+
+**T1 (readout-only, cheapest):** On the 15 DEV questions, compute the J-lens top-k readout at layer 17 for bare and steered passes and check whether the paper's predicted signature exists at all in this model: do side-separating tokens (e.g., blunt-correction vocabulary vs validation vocabulary) rank differently in lens(h)? If the lens at layer 17 shows the "motor regime" flip immediately (paper line 138: flips to next-token prediction in final layers) with no workspace band, F1 is supported and the negative result should be reattributed to layer choice, not to J-space. Discriminating between F1 and F2 without any new dictionary.
+
+**T2 (variance fraction):** Report the fraction of ‖signal_side‖² explained by the GP16 component for both dictionaries (paper lines 150, 213 report 6–15%). If j_gp16's explained fraction is ≪ the paper's range, F2 is directly evidenced. This uses only recorded quantities already implied by the pipeline.
+
+**T3 (null contrast):** Compare cos(signal_gp_j, signal_gp_direct) and their per-item effects. If the J-transported and identity-transported dictionaries produce near-identical sparse components at layer 17 (as paper line 160 predicts for late layers), then the current "J-lens" arm was effectively a logit-lens test, and any conclusion about the *Jacobian* lens is unsupported.
+
+Observation that would change my mind: a per-item analysis showing the j_gp16 arm's direction cosine to full ≈ 0.29 (comparable to full's own cross-side cosine) with a normal explained-variance fraction, yet near-zero judged effect — that would implicate downstream readout (B/D machinery or judge), not the J-space decomposition.
+
+## 6. Summary of epistemic status
+
+- **Directly shown**: control numbers, cosines, replay identities, health metrics; the paper's J-lens recipe, its privileged-component results on *concept/probe* vectors at *workspace layers* on Claude models.
+- **Inferred**: J-GP16 persona component carries little causal effect here, plausibly because layer 17 is wrong or the persona signal is mostly outside J-space.
+- **Not shown, and not claimable**: that J-lens fails as a method (the paper's positive results are on different signals, layers, models, endpoints); nor that it succeeds for this use (nothing here supports a "J-lens success" label, and the pseudocode explicitly withholds it).
+- **Missing**: J_17 vs I comparison, explained-variance fractions, per-call δ statistics, provenance of norm_matched_gp, judge BA-order bias correction, any logit-level endpoint.
+
+## Completion
+
+- outcome: `complete`
+- trace: `slop/logs/20260907_j_lens_dictionary_control/science-update/glm.trace.jsonl`
+slop/logs/20260907_j_lens_dictionary_control/science-update/glm.md
+slop/logs/20260907_j_lens_dictionary_control/science-update/glm.trace.jsonl
+
+EXIT_CODE=0
