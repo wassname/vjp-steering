@@ -22,7 +22,7 @@ Delivery:933plus and1005minus nonzero treatment calls;110identity calls exactlyz
 
 ## Full evidence, not selected winners
 
-responses-and-scores.md contains all15 baseline responses and all30 new treatments with both mapped scores. complete-comparisons.md includes all15/bothsigns with complete baseline, oldalpha4, every one of five randomalpha4 responses and new response plus raw orders. comparisons.json is the per-scenario numeric table. All60 new request keys and supplied-answer orderings reconstructed exactly. Every prior generation/judgment hash and primary CSV remain unchanged. No HTTP wire/provider request ID capture is claimed.
+responses-and-scores.md contains all15 baseline responses and all30 new treatments with both mapped scores. complete-comparisons.md includes all15/bothsigns with complete baseline, oldalpha4, every one of five randomalpha4 responses and new response plus raw orders. comparisons.json is the per-scenario numeric table. All60 new request keys and supplied-answer orderings reconstructed exactly. Every prior generation/judgment hash and primary CSV remain unchanged. No HTTP wire/provider request ID capture is claimed. The reused judge helper retains the historical `run: norm-matched-gp16-dev15` metadata label; actual `method: single_sycophancy_gp`, `condition: single_concept_plus/minus` and exact source path identify this variant. This legacy label does not enter the rubric or order mapping.
 
 ### DNL minus, complete new response
 
