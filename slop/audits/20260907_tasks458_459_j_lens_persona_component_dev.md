@@ -18,7 +18,7 @@ Task 458 used Qwen3.5-4B in BF16 on DEV-15, layers 13–21, with alpha `0,.25,.5
 | intended `+C` behavior | broad increase in false-premise accommodation | six doses have negative means; alpha 2 mean is `+0.333`, median `-0.1`, and 10/15 effects are negative | no | `task459-judge-summary.tsv:2-8` | AB/BA replication | the only positive aggregate is one-scenario dominated |
 | intended `-C` behavior | broad increase in candid correction, exported as a negative effect | every mean is wrong-sign positive (`+0.060` to `+0.073`); every median is zero | no | `task459-judge-summary.tsv:9-15` | AB/BA replication | there is no accepted negative-direction endpoint |
 | random-direction comparison | both directions exceed ordinary random-direction behavior | not reached; one direction is wrong-sign and the other has an outlier-only mean | no | `selected.json:5-15` | same-cohort DEV random distribution | stop before all-100; do not add this result to the public plot |
-| persistence | complete generation, diagnostic, judge, and export artifacts | manifest, calibration, vectors, 16 JSONLs, 210 scenario rows, result table, and selection saved | yes | task 458 lines 75–89; task 459 lines 1–26 | recorded git tree | result is auditable |
+| saved files | complete generation files, diagnostics, judgments, and exports | manifest, calibration, vectors, 16 JSONLs, 210 scenario rows, result table, and selection saved | yes | task 458 lines 75–89; task 459 lines 1–26 | recorded git tree | result is auditable |
 
 ## Provenance
 

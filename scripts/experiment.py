@@ -27,6 +27,7 @@ from vjp_steering.j_lens_concept import (
     COMPONENT_PAIR_METHOD, COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION,
     LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_COMPONENT_PAIR_VERSION,
+    PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_FULL_COMPONENT_PAIR_VERSION,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     concept_prefill_mask, extract_concept, extract_persona_components, extract_persona_contrast,
     implementation_hash, persona_component_spec, prefill_diagnostics, select_concept_layers,
@@ -222,7 +223,7 @@ def persona_prefill_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[s
 def persona_component_prefill_prompts(
     args: argparse.Namespace, tokenizer,
 ) -> tuple[dict[str, list[str]], list[str], list[int]]:
-    spec, _ = persona_component_spec()
+    spec, _ = persona_component_spec(args.persona_direction)
     entries = load_suffixes(thinking=False)
     if args.n_pairs != spec["source_pool_count"] or len(entries) != spec["source_pool_count"]:
         raise ValueError(
@@ -269,7 +270,7 @@ def persona_component_prefill_prompts(
 
 def validate_persona_component_source_identity(args, metadata: dict, model, tokenizer) -> None:
     prompts, source_ids, assistant_suffix = persona_component_prefill_prompts(args, tokenizer)
-    spec, spec_hash = persona_component_spec()
+    spec, spec_hash = persona_component_spec(args.persona_direction)
     source_hash = hashlib.sha256(
         json.dumps([spec_hash, source_ids, prompts], separators=(",", ":")).encode()
     ).hexdigest()
@@ -307,9 +308,13 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
                 model, tokenizer, layers, condition_prompts=condition_prompts,
                 source_ids=source_ids, assistant_suffix_token_ids=assistant_suffix,
                 batch_size=args.extract_batch_size,
-                max_length=args.max_length, dev_prompts=dev_prompts, lens_file=args.lens_file,
+                max_length=args.max_length, dev_prompts=dev_prompts,
+                projection=args.persona_direction, lens_file=args.lens_file,
             )
-            return vectors, metadata, len(source_ids), "persona_components:" + metadata["source_sha256"]
+            return (
+                vectors, metadata, len(source_ids),
+                f"persona_components-{args.persona_direction}:" + metadata["source_sha256"],
+            )
         if args.j_lens_source != "concept":
             raise ValueError(f"unsupported component source {args.j_lens_source}")
         vectors, metadata = extract_concept(
@@ -387,17 +392,22 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
             raise ValueError("J-lens extraction cache lens mismatch")
     if args.method == COMPONENT_PAIR_METHOD:
         component_sources = {
-            "concept": (
+            ("concept", "j_gp16"): (
                 COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION, component_spec()[1],
             ),
-            "persona_components": (
+            ("persona_components", "j_gp16"): (
                 PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_COMPONENT_PAIR_VERSION,
-                persona_component_spec()[1],
+                persona_component_spec("j_gp16")[1],
+            ),
+            ("persona_components", "full_residual"): (
+                PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_FULL_COMPONENT_PAIR_VERSION,
+                persona_component_spec("full_residual")[1],
             ),
         }
-        if args.j_lens_source not in component_sources:
-            raise ValueError(f"unsupported component source {args.j_lens_source}")
-        expected_source, expected_operator, expected_spec = component_sources[args.j_lens_source]
+        source_key = (args.j_lens_source, args.persona_direction)
+        if source_key not in component_sources:
+            raise ValueError(f"unsupported component source/projection {source_key}")
+        expected_source, expected_operator, expected_spec = component_sources[source_key]
         if metadata.get("representation_source") != expected_source:
             raise ValueError("separate J-lens component representation source mismatch")
         if metadata["operator"] != expected_operator or metadata["spec_sha256"] != expected_spec:

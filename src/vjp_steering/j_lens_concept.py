@@ -24,6 +24,8 @@ COMPONENT_PAIR_VERSION = "mean100-gp16-reconstruction-target-ordered-coordinate-
 COMPONENT_PAIR_REPRESENTATION_SOURCE = "paired_nonnegative_gp16_components_target_ordered_exchange"
 PERSONA_COMPONENT_PAIR_VERSION = "matched-persona-prefill-gp16-target-ordered-coordinate-exchange-v15"
 PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE = "matched_persona_prefill_gp16_components"
+PERSONA_FULL_COMPONENT_PAIR_VERSION = "matched-persona-prefill-full-residual-target-ordered-coordinate-exchange-control-v16"
+PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE = "matched_persona_prefill_full_residual_components"
 PERSONA_VERSION = "paired-persona-gp16-unit-dictionary-signed-add-v1"
 PERSONA_FULL_RESIDUAL_VERSION = "paired-persona-full-residual-signed-add-control-v1"
 LEGACY_EXTRACTION_IMPLEMENTATION_SHA256 = "fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31"
@@ -54,7 +56,13 @@ def component_spec() -> tuple[dict, str]:
     return spec, digest
 
 
-def persona_component_spec() -> tuple[dict, str]:
+def persona_component_spec(projection: str = "j_gp16") -> tuple[dict, str]:
+    versions = {
+        "j_gp16": PERSONA_COMPONENT_PAIR_VERSION,
+        "full_residual": PERSONA_FULL_COMPONENT_PAIR_VERSION,
+    }
+    if projection not in versions:
+        raise ValueError(f"unknown persona component projection {projection}")
     spec = {
         "positive_instruction": "Answer as someone who is sycophantic.",
         "negative_instruction": (
@@ -70,7 +78,7 @@ def persona_component_spec() -> tuple[dict, str]:
         "source_seed": 0,
     }
     digest = hashlib.sha256(
-        json.dumps([PERSONA_COMPONENT_PAIR_VERSION, spec], sort_keys=True).encode()
+        json.dumps([versions[projection], spec], sort_keys=True).encode()
     ).hexdigest()
     return spec, digest
 
@@ -573,9 +581,9 @@ def extract_concept(
 @torch.inference_mode()
 def extract_persona_components(
     model, tokenizer, layers, *, condition_prompts, source_ids, assistant_suffix_token_ids,
-    batch_size, max_length, dev_prompts, lens_file=None,
+    batch_size, max_length, dev_prompts, projection="j_gp16", lens_file=None,
 ):
-    spec, spec_hash = persona_component_spec()
+    spec, spec_hash = persona_component_spec(projection)
     conditions = ("positive", "negative", "baseline")
     if tuple(condition_prompts) != conditions:
         raise ValueError(f"persona component conditions must be {conditions}")
@@ -633,7 +641,7 @@ def extract_persona_components(
             name: (states[name][fit] - states["baseline"][fit]).mean(0)
             for name in ("positive", "negative")
         }
-        components, supports, decompositions = [], [], {}
+        basis_components, supports, decompositions = [], [], {}
         for name in ("positive", "negative"):
             signal = signals[name]
             weights, component, support, errors = gradient_pursuit(signal, dictionary, 16)
@@ -648,7 +656,7 @@ def extract_persona_components(
                 raise ValueError(f"zero split-half persona component {name} at layer {layer}")
             active = weights.nonzero().flatten()
             remainder = signal - component
-            components.append(component)
+            basis_components.append(component if projection == "j_gp16" else signal)
             supports.append(set(active.tolist()))
             decompositions[name] = {
                 "instruction": spec[f"{name}_instruction"],
@@ -676,7 +684,7 @@ def extract_persona_components(
                 "full_signal": signal.tolist(),
                 "gp_component": component.tolist(),
             }
-        basis = torch.stack([component / component.norm() for component in components]).float()
+        basis = torch.stack([component / component.norm() for component in basis_components]).float()
         dual = torch.linalg.pinv(basis).T.contiguous()
         singular_values = torch.linalg.svdvals(basis)
         if singular_values[-1] <= 0 or not torch.isfinite(dual).all():
@@ -722,7 +730,10 @@ def extract_persona_components(
             "holdout_count": n_holdout,
             "support_overlap_count": len(supports[0] & supports[1]),
             "support_overlap_ids": sorted(supports[0] & supports[1]),
-            "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
+            "component_cosine": torch.nn.functional.cosine_similarity(
+                basis_components[0], basis_components[1], dim=0,
+            ).item(),
+            "basis_projection": projection,
             "component_basis_singular_values": singular_values.tolist(),
             "component_basis_condition_number": (singular_values[0] / singular_values[-1]).item(),
             "heldout_source_coordinates": {name: value.tolist() for name, value in source_coordinates.items()},
@@ -740,11 +751,20 @@ def extract_persona_components(
             },
         }
         logger.info(
-            "persona components layer={} gp_norms={} split_gp_cosines={} component_cosine={:.4f} "
-            "condition={:.3f} eligibility_plus={:.3f} eligibility_minus={:.3f}",
+            "persona components layer={} projection={} basis_norms={} split_basis_cosines={} "
+            "component_cosine={:.4f} condition={:.3f} eligibility_plus={:.3f} eligibility_minus={:.3f}",
             layer,
-            [decompositions[name]["gp_norm"] for name in ("positive", "negative")],
-            [decompositions[name]["split_half_gp_cosine"] for name in ("positive", "negative")],
+            projection,
+            [
+                decompositions[name]["gp_norm" if projection == "j_gp16" else "full_signal_norm"]
+                for name in ("positive", "negative")
+            ],
+            [
+                decompositions[name][
+                    "split_half_gp_cosine" if projection == "j_gp16" else "split_half_full_cosine"
+                ]
+                for name in ("positive", "negative")
+            ],
             layer_meta[str(layer)]["component_cosine"],
             layer_meta[str(layer)]["component_basis_condition_number"],
             layer_meta[str(layer)]["target_order_eligibility"]["+C"]["fraction"],
@@ -755,9 +775,18 @@ def extract_persona_components(
         for side in ("+C", "-C")
     }
     validate_component_pair(vectors)
+    operator = (
+        PERSONA_COMPONENT_PAIR_VERSION
+        if projection == "j_gp16" else PERSONA_FULL_COMPONENT_PAIR_VERSION
+    )
+    representation_source = (
+        PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE
+        if projection == "j_gp16" else PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE
+    )
     return vectors, {
-        "operator": PERSONA_COMPONENT_PAIR_VERSION,
-        "representation_source": PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE,
+        "operator": operator,
+        "representation_source": representation_source,
+        "projection": projection,
         "spec_sha256": spec_hash,
         "implementation_sha256": implementation_hash(),
         "spec": spec,
@@ -780,7 +809,11 @@ def extract_persona_components(
         "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper",
         "component_basis_normalization": "independent_unit_norm_equal_magnitude_convention_not_fully_specified_by_paper",
         "semantic_directions": {"+C": "put larger coordinate on positive component", "-C": "put larger coordinate on negative component"},
-        "paper_protocol_relation": "behavior-conditioned source adaptation using the paper GP16 reconstruction and target-order coordinate exchange",
+        "paper_protocol_relation": (
+            "behavior-conditioned source adaptation using the paper GP16 reconstruction and target-order coordinate exchange"
+            if projection == "j_gp16"
+            else "non-J full-residual control for the behavior-conditioned source and target-order coordinate exchange"
+        ),
         "token_records": token_records,
         "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
         "lens_file": str(lens_file),

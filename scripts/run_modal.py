@@ -115,11 +115,12 @@ def calibrate_concept(
     source_experiment: str,
     experiment_id: str = "j-lens-concept-calibration-v1",
     j_lens_source: str = "concept",
+    persona_direction: str = "j_gp16",
 ):
     result = run_experiment.remote(method, [
         "--concept-calibrate", "--dev", "--experiment-id", experiment_id,
         "--source-experiment", source_experiment, "--model", MODEL,
-        "--j-lens-source", j_lens_source,
+        "--j-lens-source", j_lens_source, "--persona-direction", persona_direction,
     ])
     output = pull_experiment(experiment_id)
     print(result[:500])
@@ -355,6 +356,7 @@ def extract_experiment(
     extract_batch_size: int = 8,
     max_length: int = 384,
     j_lens_source: str = "concept",
+    persona_direction: str = "j_gp16",
 ):
     argv = [
         "--experiment-id", experiment_id,
@@ -364,6 +366,7 @@ def extract_experiment(
         "--extract-batch-size", str(extract_batch_size),
         "--max-length", str(max_length),
         "--j-lens-source", j_lens_source,
+        "--persona-direction", persona_direction,
     ]
     result = extract_experiment_remote.remote(method, argv)
     output = pull_experiment(experiment_id)

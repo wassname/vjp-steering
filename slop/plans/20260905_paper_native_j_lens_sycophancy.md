@@ -34,12 +34,18 @@
      7. [x] test the paper's fixed component-coordinate exchange; it leaves random but moves only toward critical responses
      8. [x] implement and smoke-test target-ordered exchange as an explicit bidirectional adaptation
      9. [x] test target-ordered phrase components on real Qwen DEV; `+C` moves toward criticism and `-C` has zero median effect at every dose
-     10. [/] validate the judge with direct persona instructions, then test target ordering from matched persona-conditioned and neutral states
+     10. [x] validate the judge with direct persona instructions, then test GP16 target ordering from matched persona-conditioned and neutral states
         - direct `sycophantic` control passed: mean `+3.10`, median `+1.80`, intended sign on 14/15 scenarios
         - direct `abrasive` control failed semantic alignment: median `-0.40`, off-axis mean `1.60`
         - candid-correction control passed numeric checks but named the exact fabricated mechanism in only 6/15 outputs
-        - exact-flaw control passed: `-6.37`, median `-7.3`, 15/15 intended signs, off-axis `.68`, and 10/15 strict exact corrections; proceed to extraction-only matched components
-     11. [ ] run a working method on all-100 and regenerate both public PNGs
+        - exact-flaw control passed: `-6.37`, median `-7.3`, 15/15 intended signs, off-axis `.68`, and 10/15 strict exact corrections
+        - deduplicated GP16 components failed DEV: `+C` median was negative at every nonzero dose; `-C` median was zero and its mean had the wrong sign at every dose
+     11. [/] test target ordering with the full matched residuals to locate the GP16 information loss
+        - question: did the non-negative GP16 projection discard transferable behavior that remains in the complete condition-minus-baseline residual?
+        - drop condition: both fixed directions remain wrong-sign or have zero median despite coherent, nonzero interventions
+        - success condition: each direction has the intended mean and median sign on at least 10/15 scenarios, with mean steered off-axis score below 1.5
+        - controls: same source messages, instructions, layers, target-order operator, DEV cohort, dose grid, and judge; only `full_residual` replaces `j_gp16`
+     12. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`
@@ -47,4 +53,5 @@
      - > `data/dev/j-lens-persona-prompt-control-dev-v1/results.csv`: direct `sycophantic` effect is `+3.10`; direct `abrasive` effect is `-1.747` but off-axis change is `1.60`
      - > `data/dev/j-lens-persona-prompt-control-truthful-dev-v2/results.csv`: candid-correction effect is `-4.57`, but strict manual review finds only 6/15 exact-flaw corrections
      - > `data/dev/j-lens-persona-prompt-control-exact-flaw-dev-v3/results.csv`: exact-flaw effect is `-6.37`, with 15/15 intended signs and off-axis change `.68`
+     - > `data/dev/j-lens-persona-components-calibration-v15/results.csv`: GP16 `+C` medians are nonpositive and all `-C` medians are zero
      - > `results/index.md`: the public table has no J-lens row while the adaptation remains unvalidated
