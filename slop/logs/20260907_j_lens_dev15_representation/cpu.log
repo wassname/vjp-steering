@@ -1,0 +1,13 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync scripts/scratch/j_lens_dev15_representation.py --self-test
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_dev15_representation.py", line 289, in <module>
+    if args.self_test:self_test()
+                      ~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_dev15_representation.py", line 87, in self_test
+    vectors, _, targets, provenance = sources(Path('outputs/experiments'))
+                                      ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_dev15_representation.py", line 67, in sources
+    assert [hashlib.sha256(p.encode()).hexdigest() for p in contents] == fm['source_ids']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1
