@@ -40,13 +40,15 @@
         - candid-correction control passed numeric checks but named the exact fabricated mechanism in only 6/15 outputs
         - exact-flaw control passed: `-6.37`, median `-7.3`, 15/15 intended signs, off-axis `.68`, and 10/15 strict exact corrections
         - deduplicated GP16 components failed DEV: `+C` median was negative at every nonzero dose; `-C` median was zero and its mean had the wrong sign at every dose
-     11. [/] test target ordering with the full matched residuals to locate the GP16 information loss
+     11. [x] test target ordering with the full matched residuals to locate the GP16 information loss
         - question: did the non-negative GP16 projection discard transferable behavior that remains in the complete condition-minus-baseline residual?
         - drop condition: both fixed directions remain wrong-sign or have zero median despite coherent, nonzero interventions
         - success condition: each direction has the intended mean and median sign on at least 10/15 scenarios, with mean steered off-axis score below 1.5
         - controls: same source messages, instructions, layers, target-order operator, DEV cohort, dose grid, and judge; only `full_residual` replaces `j_gp16`
         - task 460 extraction passed signal, stability, rank, conditioning, and held-out checks; bare eligibility is asymmetric (`+C 75.4%`, `-C 24.6%`, and `-C` 0/135 final positions)
-        - decision: keep all nine layers for causal attribution; record treated-forward eligibility and activity, then extend only the `-C` dose if its exposure remains below v15
+        - task 461 produced coherent, nonzero interventions above v15 exposure in both fixed directions, so no dose extension was needed
+        - task 462 failed the behavioral criterion: selected `+C` was 9/15 intended signs and two-scenario dominated; selected `-C` had zero median and was entirely one-scenario driven
+        - decision: stop the matched final-prefill source plus target-order design; full-residual exposure rules out GP16 loss as the complete explanation
      12. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
@@ -56,4 +58,5 @@
      - > `data/dev/j-lens-persona-prompt-control-truthful-dev-v2/results.csv`: candid-correction effect is `-4.57`, but strict manual review finds only 6/15 exact-flaw corrections
      - > `data/dev/j-lens-persona-prompt-control-exact-flaw-dev-v3/results.csv`: exact-flaw effect is `-6.37`, with 15/15 intended signs and off-axis change `.68`
      - > `data/dev/j-lens-persona-components-calibration-v15/results.csv`: GP16 `+C` medians are nonpositive and all `-C` medians are zero
+     - > `data/dev/j-lens-persona-full-components-calibration-v16/results.csv`: full residual selected `+C=+1.227` and `-C=-.52`, but the former is two-scenario dominated and the latter becomes `-.007` when its largest scenario is removed
      - > `results/index.md`: the public table has no J-lens row while the adaptation remains unvalidated

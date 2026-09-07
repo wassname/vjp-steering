@@ -1,0 +1,30 @@
+{
+  "experiment_id": "j-lens-persona-full-components-calibration-v16",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 2.0,
+      "candidates_descending": [
+        2.0,
+        1.5,
+        1.25,
+        1.0,
+        0.75,
+        0.5
+      ],
+      "effect": 1.2266666666666666,
+      "off_axis_perturbation": 0.15333333333333335
+    },
+    "-C": {
+      "selected_C": 2.0,
+      "candidates_descending": [
+        2.0,
+        1.0,
+        0.75,
+        0.25
+      ],
+      "effect": -0.5200000000000001,
+      "off_axis_perturbation": 0.22666666666666663
+    }
+  }
+}
