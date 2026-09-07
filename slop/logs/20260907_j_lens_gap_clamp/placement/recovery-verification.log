@@ -1,0 +1,13 @@
+PI/OpenAI Codex. Recovery verification only; no model/judge calls repeated.
+Read saved generation.json, both judgments JSONL, paired.csv and complete log exit suffixes with uv run --no-sync python.
+Assertions: 27 total records,6 fresh,21 reused;54 actual final hook observations all changed with hook_calls=1 and all earlier position patch norms exactly0;12 unique scenario/condition/order judgments; custom mapping equals recomputed AB/BA bare/steered identity and side sign;6 fresh paired rows,3 strict sign reversals.
+modal.log EXIT_CODE=0
+judge.log EXIT_CODE=0
+judge-ba.log EXIT_CODE=0
+cpu.log EXIT_CODE=0
+report.log contains GAP_REPORT_PASS but has no explicit EXIT_CODE suffix; saved report/CSV invariants independently checked.
+PLACEMENT_EVIDENCE_PASS fresh=6 reused=21 final_changes=54/54 judgments=12 reversals=3
+reported_judge_cost_usd=0.00191408
+runtime_seconds=26.144461617
+peak_memory_bytes=8635538432
+Validation command exit=0.
