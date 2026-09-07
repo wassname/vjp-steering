@@ -1,0 +1,30 @@
+{
+  "source_sha256": "9b47dcb594efc67f9b3491013273106346a0afb8c32fea3a6111e6121ca34a53",
+  "fixed_alpha": 1,
+  "raw_contrast_norm": 0.7216137051582336,
+  "scope": "102 saved actual named source states only, not DEV state parity",
+  "sides": {
+    "+C": {
+      "source_states": 102,
+      "nonzero_updates": 102,
+      "zero_updates": 0,
+      "requested_norm": 0.7216137051582336,
+      "realized_min": 0.720984935760498,
+      "realized_median": 0.722218245267868,
+      "realized_max": 0.723170816898346,
+      "absolute_error_max": 0.0015571117401123047,
+      "relative_error_max": 0.002157818991690874
+    },
+    "-C": {
+      "source_states": 102,
+      "nonzero_updates": 102,
+      "zero_updates": 0,
+      "requested_norm": 0.7216137051582336,
+      "realized_min": 0.7211475372314453,
+      "realized_median": 0.7223401963710785,
+      "realized_max": 0.7232368588447571,
+      "absolute_error_max": 0.0016231536865234375,
+      "relative_error_max": 0.0022493386641144753
+    }
+  }
+}
