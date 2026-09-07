@@ -19,11 +19,22 @@ def source_revision() -> str:
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
 
 
-image = (
+base_image = (
     modal.Image.debian_slim(python_version="3.13")
     .apt_install("git")
     .uv_sync()
     .env({"PYTHONUNBUFFERED": "1", "HF_HOME": "/cache/hf", "PYTHONPATH": "/repo/src"})
+)
+image = (
+    base_image.add_local_dir(REPO / "src", "/repo/src")
+    .add_local_dir(REPO / "scripts", "/repo/scripts")
+    .add_local_dir(REPO / "data", "/repo/data")
+)
+j_lens_diagnostic_image = (
+    base_image.pip_install(
+        "git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e",
+        extra_options="--no-deps",
+    )
     .add_local_dir(REPO / "src", "/repo/src")
     .add_local_dir(REPO / "scripts", "/repo/scripts")
     .add_local_dir(REPO / "data", "/repo/data")
@@ -314,17 +325,26 @@ def j_lens_activity_audit(
     gpu=os.environ.get("JSTEER_GPU", "H100"),
     volumes={"/cache": cache},
     timeout=60 * 60,
+    image=j_lens_diagnostic_image,
 )
 def j_lens_prompt_span_activity_remote(
-    model: str, dtype: str, output: str, revision: str, limit: int, smoke: bool,
+    model: str,
+    dtype: str,
+    output: str,
+    revision: str,
+    limit: int,
+    smoke: bool,
+    readout_bridge: bool,
 ) -> str:
     from huggingface_hub import snapshot_download
 
     Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
-    model_snapshot = Path(snapshot_download(model))
-    model_revision = model_snapshot.name
-    if len(model_revision) != 40:
-        raise ValueError(f"Hugging Face snapshot path lacks immutable revision: {model_snapshot}")
+    if model != MODEL:
+        raise ValueError("prompt-span diagnostic is fixed to Qwen/Qwen3.5-4B")
+    model_revision = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    model_snapshot = Path(snapshot_download(model, revision=model_revision))
+    if model_snapshot.name != model_revision:
+        raise ValueError(f"Hugging Face snapshot path differs from pinned revision: {model_snapshot}")
     remote_output = Path("/cache/outputs") / output
     argv = [
         sys.executable, "scripts/j_lens_prompt_span_activity.py",
@@ -337,8 +357,13 @@ def j_lens_prompt_span_activity_remote(
     ]
     if smoke:
         argv.append("--smoke")
-    subprocess.run(argv, cwd="/repo", check=True)
-    return remote_output.read_text()
+    if readout_bridge:
+        argv.append("--readout-bridge")
+    try:
+        subprocess.run(argv, cwd="/repo", check=True)
+        return remote_output.read_text()
+    finally:
+        cache.commit()
 
 
 @app.local_entrypoint()
@@ -350,7 +375,7 @@ def j_lens_prompt_span_activity(
 ):
     limit = 1 if smoke else 15
     result = j_lens_prompt_span_activity_remote.remote(
-        model, dtype, output, source_revision(), limit, smoke,
+        model, dtype, output, source_revision(), limit, smoke, False,
     )
     local_output = REPO / "outputs" / output
     local_output.parent.mkdir(parents=True, exist_ok=True)
@@ -361,6 +386,30 @@ def j_lens_prompt_span_activity(
         "summary": parsed["summary"],
         "output": str(local_output),
     }, sort_keys=True))
+
+
+@app.local_entrypoint()
+def j_lens_readout_bridge(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "audits/20260907_j_lens_prompt_span_activity/readout-bridge-v1.json",
+    smoke: bool = False,
+):
+    limit = 1 if smoke else 15
+    result = j_lens_prompt_span_activity_remote.remote(
+        model, dtype, output, source_revision(), limit, smoke, True,
+    )
+    local_output = REPO / "outputs" / output
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    parsed = json.loads(result)
+    print("J_LENS_READOUT_BRIDGE_DOWNLOADED", json.dumps({
+        "status": parsed["status"],
+        "summary": parsed["summary"],
+        "output": str(local_output),
+    }, sort_keys=True))
+    if parsed["summary"]["decision"] in ("MECHANICAL_MISMATCH", "ANSWER_SEAM_MISMATCH"):
+        raise RuntimeError(f"readout bridge failed; inspect {local_output}")
 
 
 @app.function(
