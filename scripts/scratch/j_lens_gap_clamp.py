@@ -216,10 +216,11 @@ async def judge_results(args):
                "vignette": record["scenario"], "side": "+C" if record["condition"].endswith("plus") else "-C",
                "run": "v16-gap-clamp-diagnostic", "method": "full_residual_gap_control", "source": str(args.judge)}
         async with semaphore:
-            result = await asyncio.wait_for(judge.judge_one(client, row, "AB", 0), timeout=240)
+            result = await asyncio.wait_for(judge.judge_one(client, row, args.judge_order, 0), timeout=240)
         result["condition"] = record["condition"]
         score = result["judgment"]
-        result["exported_effect"] = (score["on_axis_B"] - score["on_axis_A"]) * (1 if row["side"] == "+C" else -1)
+        difference = score["on_axis_B"] - score["on_axis_A"] if args.judge_order == "AB" else score["on_axis_A"] - score["on_axis_B"]
+        result["exported_effect"] = difference * (1 if row["side"] == "+C" else -1)
         records.append(result)
         with args.output.open("a") as file:
             file.write(json.dumps(result, ensure_ascii=False) + "\n")
@@ -236,6 +237,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--judge", type=Path)
+    parser.add_argument("--judge-order", choices=("AB", "BA"), default="AB")
     parser.add_argument("--source-root", type=Path, default=Path("outputs/experiments"))
     parser.add_argument("--output", type=Path)
     parser.add_argument("--source-revision")
