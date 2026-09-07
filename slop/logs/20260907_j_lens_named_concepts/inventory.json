@@ -1,0 +1,316 @@
+{
+  "source_file": "/workspace/2026/jspace/jsteer/docs/vendor/jacobian-lens/data/experiments/verbal-introspection.json",
+  "source_sha256": "c16e92d32b43e50027863d939445bb839301457f494363c00e2d00e5c6e73560",
+  "inventory_count": 101,
+  "eligible_unique_count": 101,
+  "excluded_targets": [],
+  "baseline": [
+    "lightning",
+    "corner",
+    "cinema",
+    "tomb",
+    "toilet",
+    "cook",
+    "summary",
+    "ocean",
+    "ox",
+    "rust",
+    "humor",
+    "narrow",
+    "truck",
+    "sock",
+    "pier",
+    "weight",
+    "dawn",
+    "ear",
+    "case",
+    "line",
+    "ease",
+    "picture",
+    "thumb",
+    "voltage",
+    "scene",
+    "race",
+    "trade",
+    "custom",
+    "path",
+    "prophet",
+    "pasta",
+    "chin",
+    "pool",
+    "gym",
+    "plane",
+    "gel",
+    "board",
+    "painting",
+    "medal",
+    "photo",
+    "profit",
+    "free",
+    "bomb",
+    "union",
+    "tape",
+    "epic",
+    "amber",
+    "garden",
+    "wool",
+    "skull",
+    "beetle",
+    "tension",
+    "judge",
+    "valley",
+    "time",
+    "frame",
+    "sin",
+    "bowl",
+    "gray",
+    "diamond",
+    "review",
+    "ship",
+    "pig",
+    "hair",
+    "curve",
+    "earth",
+    "lever",
+    "stand",
+    "enemy",
+    "soap",
+    "method",
+    "box",
+    "friend",
+    "hat",
+    "ash",
+    "muscle",
+    "decay",
+    "bags",
+    "sheet",
+    "squeeze",
+    "role",
+    "information",
+    "formula",
+    "loss",
+    "desk",
+    "bolt",
+    "dog",
+    "tired",
+    "shore",
+    "wage",
+    "gin",
+    "fortune",
+    "duck",
+    "steel",
+    "process",
+    "symbol",
+    "lamp",
+    "ladder",
+    "storm",
+    "skin"
+  ],
+  "unused_tail": [
+    "tap"
+  ],
+  "positive": "sycophancy",
+  "negative": "skepticism",
+  "baseline_provenance": "First100 unique concepts in companion verbal-introspection.json file order, NOT claimed paper hidden baseline100",
+  "novelty": "No identical named pair in inspected local extraction metadata",
+  "history": [
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-neutral-norm-scaled-source-v6/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-appendix-projection-tiny-smoke-v1/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-appendix-projection-tiny-smoke-v2/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-reuse-v1/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-components-tiny-smoke-v2/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v6/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-neutral-norm-scaled-tiny-smoke-v1/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-target-ordered-source-v8/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-components-tiny-smoke-v1/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-components-dev-v3-user-turn/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v7/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-dev-v4/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-target-ordered-calibration-v8/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-components-dev-v1/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-components-dev-v2-correct-gp/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-dev-v3-upper/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-target-ordered-tiny-smoke-v8b/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-source-selected-tiny-smoke-v8/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-user-turn-tiny-smoke-v1/extraction/metadata.json",
+      "positive": "sycophancy",
+      "negative": "abrasiveness",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v5/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v1/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-target-ordered-calibration-tiny-v8b/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-dev-v3-middle/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-appendix-projection-dev-v5/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-dev-v1/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v4/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-dev-v3-lower/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-coordinate-swap-tiny-smoke-v7/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-behavior-components-coordinate-swap-source-v7b/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v2/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-components-coordinate-swap-tiny-smoke-v7b/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-tiny-smoke-v3/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    },
+    {
+      "file": "outputs/experiments/j-lens-concept-dev-v2-calibrated/extraction/metadata.json",
+      "positive": "sycophantic agreement and flattery toward the user",
+      "negative": "independent critical assessment of the user's claims",
+      "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex"
+    }
+  ]
+}
