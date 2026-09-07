@@ -58,7 +58,8 @@ def add_points(figure, points):
                 name=f'{method} {side} — uncalibrated DEV', showlegend=False,
                 text=[f"alpha={p['alpha']:g}, seed={p['seed']}, AB={p['AB']:.3f}, BA={p['BA']:.3f}" for p in ps],
                 hovertemplate='%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra>DEV eligibility unknown</extra>'))
-    random_note = ('gray □/◇: matched random' if any(p['method']=='matched random' for p in points)
+    seed_count = len({p['seed'] for p in points if p['method']=='matched random'})
+    random_note = (f'gray □/◇: matched random ({seed_count}/10 seeds)' if seed_count
                    else 'matched random pending (0/10 seeds)')
     figure.add_annotation(x=0, y=-0.27, xref='paper', yref='paper', showarrow=False, xanchor='left',
         text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.',
@@ -72,7 +73,8 @@ def section(manifest, points):
             f"Matched random seeds judged: {len(seeds)}/10 ({seeds}). Coherence eligibility unknown; no accepted frontier. "
             "New layer17/current-position controls are not the historical random cone. "
             "Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; "
-            "BA scored 0. Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. "
+            "BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. "
+            "Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. "
             "This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.")
     headers = ['Evidence', 'Method', 'Seed', 'Alpha', 'Side', 'Effect →±', 'AB →±', 'BA →±', 'Damage ↓']
     values = [[str(i+1), p['method'], '—' if p['seed'] is None else str(p['seed']), f"{p['alpha']:g}", p['side'],

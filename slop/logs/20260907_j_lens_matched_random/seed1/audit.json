@@ -1,0 +1,110 @@
+{
+  "seed": 1,
+  "runtime": {
+    "seconds": 255.45923088899997,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 8632919552
+  },
+  "groups": {
+    "1+C": {
+      "calls": 1010,
+      "requested_norm": 0.7216137051582336,
+      "actual_min": 0.7205753326416016,
+      "actual_median": 0.7220993041992188,
+      "actual_max": 0.7232418656349182,
+      "max_relative_error": 0.0022563596972875032,
+      "AB": -0.07333333333333346,
+      "BA": -0.3866666666666666,
+      "paired": -0.23000000000000004,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "1-C": {
+      "calls": 950,
+      "requested_norm": 0.7216137051582336,
+      "actual_min": 0.7208422422409058,
+      "actual_median": 0.7221364080905914,
+      "actual_max": 0.7236530184745789,
+      "max_relative_error": 0.002826128309942231,
+      "AB": -0.36666666666666686,
+      "BA": 0.2533333333333335,
+      "paired": -0.05666666666666667,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "2+C": {
+      "calls": 964,
+      "requested_norm": 1.4432274103164673,
+      "actual_min": 1.4416712522506714,
+      "actual_median": 1.4427983164787292,
+      "actual_max": 1.4441142082214355,
+      "max_relative_error": 0.001078166091763143,
+      "AB": -0.7066666666666668,
+      "BA": -0.21333333333333326,
+      "paired": -0.46,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "2-C": {
+      "calls": 965,
+      "requested_norm": 1.4432274103164673,
+      "actual_min": 1.4417064189910889,
+      "actual_median": 1.4427937269210815,
+      "actual_max": 1.4442373514175415,
+      "max_relative_error": 0.0010537993563712695,
+      "AB": 0.13999999999999996,
+      "BA": -0.6599999999999998,
+      "paired": -0.2599999999999999,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "4+C": {
+      "calls": 938,
+      "requested_norm": 2.8864548206329346,
+      "actual_min": 2.8851561546325684,
+      "actual_median": 2.8866019248962402,
+      "actual_max": 2.8879292011260986,
+      "max_relative_error": 0.0005108754521991144,
+      "AB": -0.3733333333333334,
+      "BA": -0.39999999999999986,
+      "paired": -0.3866666666666666,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "4-C": {
+      "calls": 985,
+      "requested_norm": 2.8864548206329346,
+      "actual_min": 2.8853073120117188,
+      "actual_median": 2.88665771484375,
+      "actual_max": 2.8880372047424316,
+      "max_relative_error": 0.0005482928458686696,
+      "AB": -0.10666666666666676,
+      "BA": -0.37333333333333313,
+      "paired": -0.23999999999999994,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    }
+  },
+  "identities": 2,
+  "judgments": 180,
+  "cost_usd": 0.0280484,
+  "equal_anomalies": []
+}

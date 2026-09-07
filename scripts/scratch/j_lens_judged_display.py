@@ -17,6 +17,9 @@ def build():
         folder = Path('slop/logs/20260907_j_lens_additive_concepts'+('' if alpha==1 else f'_alpha{alpha}'))
         items.append(dict(method='named-GP additive', seed=None, generation=str(folder/'generation.json'), judgments=str(folder/'judgments.jsonl')))
     for seed in range(10):
+        expected = [RANDOM/f'seed{seed}'/f'alpha{alpha}'/'judgments.jsonl' for alpha in (1,2,4)]
+        if not all(path.exists() and len(path.read_text().splitlines())==60 for path in expected):
+            continue  # A seed counts as judged only when every predeclared dose has both orders.
         for alpha in (1,2,4):
             folder = RANDOM/f'seed{seed}'/f'alpha{alpha}'
             if (folder/'judgments.jsonl').exists():

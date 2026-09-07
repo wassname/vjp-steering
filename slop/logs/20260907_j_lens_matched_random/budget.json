@@ -11,9 +11,6 @@
   "seed0_judging_reserve_usd": 0.05,
   "remaining_within_allocation_usd": 0.13115336,
   "remaining_seeds_authorized": [
-    1,
-    2,
-    3,
     4
   ],
   "notes": "Failure reserve is conservative allocation, not proven provider invoice or historical container count. Saved stop confirmation: stopped/tasks0. Same actual image CPU-only mounted import passed. Supervisor authorized one seed0 retry after these gates; no remaining seeds until reconciliation. Timed GPU ceiling of retry 360*.001097=.39492; .35508 extra reserved for startup CPU/memory/storage. No historical $5 reserve released. Supervisor additionally approved one second retry after shared-loader raw/postpad hash, all15 input/mask parity and realhybrid hook tests passed; no additional seeds. Additional4seeds reserved.80each; no seedstarted before parentread gate. .10 judging reservations retained; actual.0280616 fits and is NOT charged again. PhaseAPIactual.04690824 includes .01884664 sourceactual already charged separately and randomactual within .10 reserve. Oldglobal5startup reserve outsidephase untouched; new1+.75 failedreserves not released.",
@@ -22,11 +19,50 @@
   "seed0_second_retry_generation_reserve_usd": 0.75,
   "seed0_second_retry_judging_reserve_usd": 0.05,
   "additional_seed_reserve_usd": 3.2,
-  "phase_API_actual_usd": 0.04690824,
+  "phase_API_actual_usd": 0.13078936,
   "seed0_judging_actual_usd": 0.0280616,
   "seed0_success_app": "ap-V2Ie6GPM565xz0H7ohsxbS",
   "seed0_success_runtime_seconds": 206.855177768,
   "seed0_success_wall_seconds": 236,
   "seed0_success_compute_estimate_usd": 0.22692013001149602,
-  "prior_global_failed_startup_reserve_usd": 5
+  "prior_global_failed_startup_reserve_usd": 5,
+  "seed1_measured": {
+    "runtime_seconds": 255.45923088899997,
+    "wall_seconds": 304.0,
+    "compute_estimate_usd": 0.28023877628523297,
+    "API_actual_usd": 0.0280484,
+    "invoice": null
+  },
+  "seed2_measured": {
+    "runtime_seconds": 209.20078191,
+    "wall_seconds": 240.0,
+    "compute_estimate_usd": 0.22949325775527002,
+    "API_actual_usd": 0.027621400000000004,
+    "invoice": null
+  },
+  "global_API_reported_subtotal_usd": 1.04371369412,
+  "seed2_timeout_provider_charge_usd": null,
+  "completed_seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "seed4_reservation_usd": 0.8,
+  "active_commands": [],
+  "seed0_measured": {
+    "runtime_seconds": 206.855177768,
+    "wall_seconds": 236.0,
+    "compute_estimate_usd": 0.22692013001149602,
+    "API_actual_usd": 0.0280616,
+    "invoice": null
+  },
+  "seed3_measured": {
+    "runtime_seconds": 253.05939332199998,
+    "wall_seconds": 288.0,
+    "compute_estimate_usd": 0.277606154474234,
+    "API_actual_usd": 0.028211319999999998,
+    "invoice": null
+  },
+  "all_success_compute_estimate_usd": 1.014258318526233
 }
