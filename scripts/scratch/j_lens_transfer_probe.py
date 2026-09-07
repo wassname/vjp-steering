@@ -8,8 +8,10 @@ import subprocess
 import sys
 import time
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Modal imports this entrypoint from /root; dependencies are mounted under /repo.
+SCRIPT_ROOT = Path("/repo/scripts") if Path("/repo/scripts").is_dir() else Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPT_ROOT))
+sys.path.insert(0, str(SCRIPT_ROOT / "scratch"))
 import torch
 import j_lens_gap_clamp as gap
 
