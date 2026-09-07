@@ -256,6 +256,80 @@ def report(folder):
     norm.save(folder/'summary.json',summary);print('ADDITIVE_REPORT_PASS',json.dumps(summary),flush=True)
 
 
+def generation_report(folder):
+    """Offline, generation-only comparison; never calls a judge or invents scores."""
+    data=json.loads((folder/'generation.json').read_text())
+    earlier=json.loads((ROOT/'generation.json').read_text())
+    reference=json.loads(norm.REFERENCE.read_text())
+    assert data['fixed_alpha']==2 and earlier['fixed_alpha']==1
+    assert gap.sha(SOURCE)==SOURCE_SHA==data['named_source_sha256']==earlier['named_source_sha256']
+    assert gap.sha(norm.REFERENCE)==norm.REFERENCE_SHA==data['reference_sha256']==earlier['reference_sha256']
+    assert data['reused_records']==earlier['reused_records']==reference['records']
+    for key in ('model_revision','model_config_sha256','model_index_sha256','settings','contrast','contrast_norm'):
+        assert data[key]==earlier[key], key
+    executed=subprocess.check_output(['git','show',data['source_revision']+':scripts/scratch/j_lens_additive_concepts.py'])
+    assert hashlib.sha256(executed).hexdigest()==data['implementation_sha256']
+    assert gap.sha(folder/'offline-bf16.json')==data['offline_check_sha256']
+    for name,expected in data['dependencies_sha256'].items():
+        assert gap.sha(SCRIPTS/'scratch'/name)==expected
+    assert len(data['records'])==30 and len(data['identity_controls'])==2
+    assert len({(r['scenario'],r['side']) for r in data['records']})==30
+    wanted=2*float(torch.tensor(data['contrast'],dtype=torch.float32).norm())
+    steps=[];pairs=[];lines=['# Complete baseline / alpha1 / alpha2 response comparison',
+        'Generation-only: no judge calls or scores. Exact prompts, IDs and all per-step records: generation.json.']
+    for r in data['records']+data['identity_controls']:
+        bare=next(b for b in reference['records'] if b['scenario']==r['scenario'] and b['condition']=='bare')
+        one=next(b for b in earlier['records'] if (b['scenario'],b['side'])==(r['scenario'],r['side']))
+        for key in ('input_ids','rendered','prompt'):
+            assert r[key]==bare[key]==one[key]
+        assert all(r['attention_mask'])
+        identity=r.get('identity_exact',False)
+        ms=r['measurements']
+        assert len(ms)==len(r['generated_ids'])
+        assert [m['sequence_length'] for m in ms]==[len(r['input_ids'])]+[1]*(len(ms)-1)
+        for m in ms:
+            assert m['nonfinal_exact'] and m['next_block_exact']
+            assert m['position']==m['sequence_length']-1
+            assert m['rounding_error_norm']<=m['rounding_bound']
+            if identity:
+                assert m['actual_norm']==0 and m['signed_alpha']==0 and m['desired_norm']==0
+            else:
+                assert m['signed_alpha']==(2 if r['side']=='+C' else -2)
+                assert abs(m['desired_norm']-wanted)<1e-6 and m['actual_norm']>0 and m['direction_cosine']>.99
+                assert abs(m['norm_error']-abs(m['actual_norm']-wanted))<1e-6
+            steps.append({'scenario':r['scenario'],'side':r['side'],'identity':identity,**m})
+        if identity:
+            assert r['generated_ids']==bare['generated_ids'] and r['text']==bare['text']
+            continue
+        pair={'scenario':r['scenario'],'side':r['side'],'baseline_text_equal':r['text']==bare['text'],
+            'baseline_ids_equal':r['generated_ids']==bare['generated_ids'],'alpha1_text_equal':r['text']==one['text'],
+            'alpha1_ids_equal':r['generated_ids']==one['generated_ids'],'tokens':len(r['generated_ids']),**r['health'][0]}
+        pairs.append(pair)
+        lines+=['## '+r['scenario']+' / '+r['side'],'```text\n'+r['rendered']+'\n```']
+        for label,record in (('Baseline',bare),('Alpha1',one),('Alpha2',r)):
+            lines+=['### '+label,record['text'],'Health: '+json.dumps(record['health'])]
+        lines.append('Equality and length: '+json.dumps(pair))
+    for name,rows in (('steps.csv',steps),('comparisons.csv',pairs)):
+        with (folder/name).open('w') as f:
+            writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
+    (folder/'responses-comparison.md').write_text('\n\n'.join(lines)+'\n')
+    summary={'runtime':data['runtime'],'source_revision':data['source_revision'],'fixed_alpha':2,'requested_norm':wanted,
+        'generation_sha256':gap.sha(folder/'generation.json'),'alpha1_sha256':gap.sha(ROOT/'generation.json'),
+        'identity_calls':sum(m['identity'] for m in steps),'treatment_calls':sum(not m['identity'] for m in steps),
+        'API_calls':0,'groups':{}}
+    for side in ('+C','-C'):
+        ms=[m for m in steps if m['side']==side and not m['identity']];ps=[p for p in pairs if p['side']==side]
+        summary['groups'][side]={'calls':len(ms),'nonzero_calls':sum(m['actual_norm']>0 for m in ms),
+            'norm_min':min(m['actual_norm'] for m in ms),'norm_median':statistics.median(m['actual_norm'] for m in ms),
+            'norm_max':max(m['actual_norm'] for m in ms),'max_absolute_norm_error':max(m['norm_error'] for m in ms),
+            'max_relative_norm_error':max(m['norm_error']/wanted for m in ms),'min_direction_cosine':min(m['direction_cosine'] for m in ms),
+            'health':{k:sum(p[k] for p in ps) for k in ('unfinished','role_leaks','repeated')},
+            'max_tokens':max(p['tokens'] for p in ps),'mean_words':statistics.mean(p['mean_words'] for p in ps),
+            'baseline_text_equal':sum(p['baseline_text_equal'] for p in ps),'alpha1_text_equal':sum(p['alpha1_text_equal'] for p in ps)}
+    norm.save(folder/'summary.json',summary)
+    print('ADDITIVE_GENERATION_REPORT_PASS',json.dumps(summary),flush=True)
+
+
 if __name__!='__main__':
     import modal
     from run_modal import image,cache,source_revision
@@ -278,10 +352,12 @@ if __name__!='__main__':
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--self-test',action='store_true');p.add_argument('--judge',type=Path);p.add_argument('--report',type=Path)
+    p.add_argument('--generation-report',type=Path)
     p.add_argument('--alpha',type=int,choices=(1,2),default=1)
     p.add_argument('--output',type=Path);p.add_argument('--source-revision',default='unknown');args=p.parse_args()
     args.output=args.output or dose_root(args.alpha)/'generation.json'
     if args.self_test:self_test(args.alpha)
     elif args.judge:asyncio.run(norm.judge_run(args))
     elif args.report:report(args.report)
+    elif args.generation_report:generation_report(args.generation_report)
     else:run(args)

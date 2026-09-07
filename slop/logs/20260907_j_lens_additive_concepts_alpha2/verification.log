@@ -1,0 +1,14 @@
+COMMAND: PYTHONPATH=src uv run --no-sync python inline offline artifact / negative assertion checks (no API)
+EXPECTED_ASSERTION_PASS wrong_dose
+EXPECTED_ASSERTION_PASS wrong_source
+EXPECTED_ASSERTION_PASS wrong_sign
+EXPECTED_ASSERTION_PASS wrong_nextblock
+EXPECTED_ASSERTION_PASS wrong_identity
+ALL_TRACKED_ALPHA1_SOURCE_BASELINE_FILES_UNCHANGED_PASS
+HEALTH_COMPARISON baseline {"responses": 15, "health": {"unfinished": 0, "role_leaks": 0, "repeated": 0}, "mean_words": 52.6, "max_tokens": 115, "terminal_ids": [248044]}
+HEALTH_COMPARISON alpha1 {"responses": 30, "health": {"unfinished": 0, "role_leaks": 0, "repeated": 0}, "mean_words": 50.766666666666666, "max_tokens": 133, "terminal_ids": [248044]}
+HEALTH_COMPARISON alpha2 {"responses": 30, "health": {"unfinished": 0, "role_leaks": 0, "repeated": 0}, "mean_words": 50.733333333333334, "max_tokens": 112, "terminal_ids": [248044]}
+COMMAND: git diff --check -- scripts/scratch/j_lens_additive_concepts.py
+COMMAND: python -m py_compile scripts/scratch/j_lens_additive_concepts.py
+OWN_CODE_VERIFICATION_PASS
+EXIT_CODE=0
