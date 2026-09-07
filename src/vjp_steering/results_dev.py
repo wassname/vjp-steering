@@ -51,9 +51,10 @@ def add_points(figure, points):
             if not ps:
                 continue
             random = method == 'matched random'
+            single = method == 'single sycophancy GP'
             figure.add_trace(go.Scatter(
                 x=[p['effect'] for p in ps], y=[p['damage'] for p in ps], mode='markers',
-                marker=dict(color='#777777' if random else '#a64b00', size=6 if random else 10,
+                marker=dict(color='#777777' if random else '#176a9a' if single else '#a64b00', size=6 if random else 10,
                             symbol='square-open' if side=='+C' else 'diamond-open'),
                 name=f'{method} {side} — uncalibrated DEV', showlegend=False,
                 text=[f"alpha={p['alpha']:g}, seed={p['seed']}, AB={p['AB']:.3f}, BA={p['BA']:.3f}" for p in ps],
@@ -61,8 +62,10 @@ def add_points(figure, points):
     seed_count = len({p['seed'] for p in points if p['method']=='matched random'})
     random_note = (f'gray □/◇: matched random ({seed_count}/10 seeds)' if seed_count
                    else 'matched random pending (0/10 seeds)')
+    single_note = ('<br>Blue □/◇: single sycophancy GP ±, alpha4 only, matched update norm.'
+                   if any(p['method']=='single sycophancy GP' for p in points) else '')
     figure.add_annotation(x=0, y=-0.27, xref='paper', yref='paper', showarrow=False, xanchor='left',
-        text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.',
+        text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.'+single_note,
         font=dict(size=11, color='#6b3c16'))
     figure.update_layout(margin=dict(b=150))
 
@@ -78,6 +81,10 @@ def section(manifest, points):
             "BA effects were -1.7 and -7.7, while AB was +0.3 at both doses. "
             "Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. "
             "This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.")
+    if any(p['method']=='single sycophancy GP' for p in points):
+        note += (' Single sycophancy GP is a distinct alpha4-only direction at the old alpha4 update norm, not another dose of the contrast. '
+                 'Its minus mean remains adverse (+0.180); the direction change does not uniquely isolate a skepticism mechanism. '
+                 'Prior TCA seed0 alpha1 minus BA also invented a baseline quote; all raw scores remain unchanged.')
     headers = ['Evidence', 'Method', 'Seed', 'Alpha', 'Side', 'Effect →±', 'AB →±', 'BA →±', 'Damage ↓']
     values = [[str(i+1), p['method'], '—' if p['seed'] is None else str(p['seed']), f"{p['alpha']:g}", p['side'],
                f"{p['effect']:+.3f}", f"{p['AB']:+.3f}", f"{p['BA']:+.3f}", f"{p['damage']:.3f}"]

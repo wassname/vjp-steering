@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_single_concept/display_check.py", line 17, in <module>
+    single=[t for t in f.to_plotly_json()['data'] if t['name'].startswith('single sycophancy GP')]
+                                                     ~^^^^^^^^
+KeyError: 'name'
