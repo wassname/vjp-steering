@@ -58,8 +58,10 @@ def add_points(figure, points):
                 name=f'{method} {side} — uncalibrated DEV', showlegend=False,
                 text=[f"alpha={p['alpha']:g}, seed={p['seed']}, AB={p['AB']:.3f}, BA={p['BA']:.3f}" for p in ps],
                 hovertemplate='%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra>DEV eligibility unknown</extra>'))
+    random_note = ('gray □/◇: matched random' if any(p['method']=='matched random' for p in points)
+                   else 'matched random pending (0/10 seeds)')
     figure.add_annotation(x=0, y=-0.27, xref='paper', yref='paper', showarrow=False, xanchor='left',
-        text='Brown □/◇: named-GP additive ± DEV; gray □/◇: matched random. Uncalibrated; not a frontier.',
+        text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.',
         font=dict(size=11, color='#6b3c16'))
     figure.update_layout(margin=dict(b=150))
 

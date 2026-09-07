@@ -1,0 +1,386 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-yh5THLF10Dl4TQlTFdJunH
+✓ Created objects.
+├── 🔨 Created mount 
+│   /workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_matched_random.py
+├── 🔨 Created mount slop/logs/20260907_j_lens_matched_random/cpu.json
+├── 🔨 Created mount slop/logs/20260907_j_lens_matched_random/sampler.json
+├── 🔨 Created mount slop/logs/20260907_j_lens_named_concepts/generation.json
+├── 🔨 Created mount 
+│   slop/logs/20260907_j_lens_dev15_representation/generation.json
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+└── 🔨 Created function remote.
+Traceback (most recent call last):
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/task_lifecycle_manager.py", line 84, in handle_task_lifecycle_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 360, in hydrate_function
+    service = get_function_service(function_def, _client)
+  File "/pkg/modal/_container_entrypoint.py", line 338, in get_function_service
+    service = import_single_function_service(
+        function_def,
+        ser_fun,
+    )
+  File "/pkg/modal/_runtime/user_code_imports.py", line 509, in import_single_function_service
+    module = importlib.import_module(function_def.module_name)
+  File "/usr/local/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/root/j_lens_matched_random.py", line 13, in <module>
+    import j_lens_additive_concepts as additive
+ModuleNotFoundError: No module named 'j_lens_additive_concepts'
+Function j_lens_matched_random.remote is crash-looping: containers are repeatedly failing to start.
+Runner failed with exception: ModuleNotFoundError("No module named 'j_lens_additive_concepts'")
+Stopping app - user stopped from CLI.
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_matched_random.py: │
+│ 142 in launch                                                                │
+│                                                                              │
+│   141 │   def launch(seed:int):                                              │
+│ ❱ 142 │   │   print('RANDOM_REMOTE_PATH',remote.remote(seed,source_revision( │
+│   143                                                                        │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _object.py:46 in wrapped                                                     │
+│                                                                              │
+│    45 │   │   await self.hydrate()                                           │
+│ ❱  46 │   │   return await method(self, *args, **kwargs)                     │
+│    47                                                                        │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1841 in remote                                                 │
+│                                                                              │
+│   1840 │   │                                                                 │
+│ ❱ 1841 │   │   return await self._call_function(args, kwargs)                │
+│   1842                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1778 in _call_function                                         │
+│                                                                              │
+│   1777 │   │                                                                 │
+│ ❱ 1778 │   │   return await invocation.run_function()                        │
+│   1779                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:483 in run_function                                            │
+│                                                                              │
+│    482 │   │   │   if await_response.output.result.status in TERMINAL_STATUS │
+│ ❱  483 │   │   │   │   return await _process_result(                         │
+│    484 │   │   │   │   │   await_response.output.result, await_response.outp │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _utils/function_utils.py:574 in _process_result                              │
+│                                                                              │
+│   573 │   │                                                                  │
+│ ❱ 574 │   │   raise RemoteError(result.exception)                            │
+│   575                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+RemoteError
+EXIT_CODE=1

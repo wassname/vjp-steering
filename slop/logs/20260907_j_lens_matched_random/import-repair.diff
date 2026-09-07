@@ -1,0 +1,32 @@
+diff --git a/scripts/scratch/j_lens_matched_random.py b/scripts/scratch/j_lens_matched_random.py
+index 6663d2c..6f05864 100644
+--- a/scripts/scratch/j_lens_matched_random.py
++++ b/scripts/scratch/j_lens_matched_random.py
+@@ -8,7 +8,9 @@ import subprocess
+ import sys
+ import time
+ 
+-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
++# Modal hydrates this entrypoint under /root; dependencies are mounted in /repo.
++SCRIPT_ROOT = Path('/repo/scripts') if Path('/repo/scripts').is_dir() else Path(__file__).resolve().parents[1]
++sys.path[:0] = [str(SCRIPT_ROOT), str(SCRIPT_ROOT/'scratch')]
+ import torch
+ import j_lens_additive_concepts as additive
+ 
+@@ -137,6 +139,16 @@ if __name__!='__main__':
+         finally:
+             print('RANDOM_VOLUME_COMMIT_START',flush=True);cache.commit();print('RANDOM_VOLUME_COMMIT_END',flush=True)
+         return destination
++    @app.function(timeout=60, max_containers=1, retries=0)
++    def import_check():
++        assert str(Path(__file__)).startswith('/root/')
++        assert str(Path(additive.__file__)).startswith('/repo/scripts/scratch/')
++        assert str(Path(norm.__file__)).startswith('/repo/scripts/scratch/')
++        assert str(Path(gap.__file__)).startswith('/repo/scripts/scratch/')
++        return dict(entrypoint=__file__, additive=additive.__file__, norm=norm.__file__, gap=gap.__file__, cuda=torch.cuda.is_available())
++    @app.local_entrypoint()
++    def check_imports():
++        print('MOUNTED_IMPORT_PASS',json.dumps(import_check.remote()),flush=True)
+     @app.local_entrypoint()
+     def launch(seed:int):
+         print('RANDOM_REMOTE_PATH',remote.remote(seed,source_revision()),flush=True)

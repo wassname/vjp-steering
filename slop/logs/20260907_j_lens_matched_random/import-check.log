@@ -1,0 +1,20 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-jvib2fjFxBph4RjRAYBGEN
+✓ Created objects.
+├── 🔨 Created mount 
+│   /workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_matched_random.py
+├── 🔨 Created mount slop/logs/20260907_j_lens_matched_random/cpu.json
+├── 🔨 Created mount slop/logs/20260907_j_lens_matched_random/sampler.json
+├── 🔨 Created mount slop/logs/20260907_j_lens_named_concepts/generation.json
+├── 🔨 Created mount 
+│   slop/logs/20260907_j_lens_dev15_representation/generation.json
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function remote.
+└── 🔨 Created function import_check.
+MOUNTED_IMPORT_PASS {"entrypoint": "/root/j_lens_matched_random.py", "additive": "/repo/scripts/scratch/j_lens_additive_concepts.py", "norm": "/repo/scripts/scratch/j_lens_norm_matched_gp.py", "gap": "/repo/scripts/scratch/j_lens_gap_clamp.py", "cuda": false}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-jvib2fjFxBph4RjRAYBGEN
+EXIT_CODE=0
