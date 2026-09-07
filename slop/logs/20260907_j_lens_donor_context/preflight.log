@@ -1,0 +1,1 @@
+COMMAND: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync python slop/logs/20260907_j_lens_donor_context/preflight.py

@@ -1,0 +1,51 @@
+{
+  "implementation_sha256": "a8186923978efa1004b6cdd11c8384548753ba105b784c5085ff90c5b1a72118",
+  "transfer_sha256": "7b74062eac8583b68ee8c5b2f688e7bedf5e77dfaeaa7a9f1f75e5bafd6a50e5",
+  "protected_hashes": {
+    "slop/logs/20260907_j_lens_transfer_probe/generation.json": "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9",
+    "slop/logs/20260907_j_lens_projection_removal/generation.json": "03aaaae93f1aaad0436c0f92e12469a04b8a7ad27e58acf2f6d3bd890ffca431",
+    "results/plot.png": "2f775fe3598a7d902d329551cbe3ba9ad5698866425343c4aad0f3914e374f49",
+    "results/plot_pareto.png": "50d2bd48c1eb1c1d75b0d94a6a985c310cf47c52e2706bab8484fc123432ab7d",
+    "results/index.md": "6df314db07417047a1d21bc2d07d708fa28594982a0521ca2cab33218161a2ba",
+    "results/index.html": "7b2234f44351febbb362416ba9687c3a04df1f2ad55ea2614e0afe3553c3ad18",
+    "data/results.csv": "2802acd96b16a67b05c284133d711257068f8dec937b1c949dbf59c8ca0a6c20",
+    "scripts/judge.py": "e4da183dc38ccf65034ebfe7411968fd53c7ca17d398d9a8a81cc1c547545ba6"
+  },
+  "geometry": [
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "arm": "parallel",
+      "rounding_error": 0.012612473892445204
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "arm": "complement",
+      "rounding_error": 0.012617660236233735
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "arm": "parallel",
+      "rounding_error": 0.016888970593960762
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "arm": "complement",
+      "rounding_error": 0.016312935821407085
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "arm": "parallel",
+      "rounding_error": 0.01604715376736093
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "arm": "complement",
+      "rounding_error": 0.015108027596760066
+    }
+  ],
+  "tokenizer_parity": true,
+  "real_tiny_hybrid": true,
+  "judgments_expected": 18,
+  "request_parity": true,
+  "no_retry_guard": true
+}

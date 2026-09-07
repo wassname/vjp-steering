@@ -1,0 +1,80 @@
+BEGIN
+Timeout (0:00:30)!
+Thread 0x000070380fef8740 (most recent call first):
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/pathlib/_abc.py", line 633 in read_text
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/pathlib/_local.py", line 546 in read_text
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 915 in read_text
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 545 in _read_files_distinfo
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 535 in files
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 1088 in _top_level_inferred
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 1045 in packages_distributions
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/import_utils.py", line 47 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/generic.py", line 38 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/auto_docstring.py", line 33 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/__init__.py", line 22 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1310 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/dependency_versions_check.py", line 16 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1415 in _handle_fromlist
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/__init__.py", line 30 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/scripts/walk.py", line 21 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_gap_clamp.py", line 14 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_transfer_probe.py", line 16 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_donor_context.py", line 16 in <module>
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 1023 in exec_module
+  File "<frozen importlib._bootstrap>", line 935 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1331 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1360 in _find_and_load
+  File "slop/logs/20260907_j_lens_donor_context/preflight.py", line 11 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 98 in _run_module_code
+  File "<frozen runpy>", line 287 in run_path
+  File "<string>", line 1 in <module>
