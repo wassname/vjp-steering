@@ -1,0 +1,79 @@
+ 
+ 
+   
+  
+     
+     
+     
+
+     
+     
+     
+
+      tags may load before app.css
+         in dev mode, inverting the cascade (components  
+     
+      @layer properties, base, components, utilities;
+     
+
+                         
+    body {
+      background-color: var(--color-black) !important;
+      font-weight: 500;
+      letter-spacing: -0.36px;
+      color: var(--color-light-green) !important;
+    }
+  
+   Plan Pricing | Modal 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+   
+   
+                                   Runtime, the conference for engineers running AI in production. Oct. 1 in SF     Register now                                                         Product        Solutions          Resources           Customers        Pricing        Docs           Log In       Sign Up                                                              Pricing as  magical  as our product            With Modal, you always pay for what you use and nothing more. You never
+        pay for idle resources — just actual compute time, by the CPU cycle.            Get Started                  Contact Us                                                 Resource costs      Per hour   Per second    Per hour   Per second        GPU Tasks      Nvidia B300    $0.001972  / sec      Nvidia B200    $0.001736  / sec      Nvidia H200 SXM    $0.001261  / sec      Nvidia H100 SXM5    $0.001097  / sec      Nvidia RTX PRO 6000    $0.000842  / sec      Nvidia A100, 80 GB    $0.000694  / sec      Nvidia A100, 40 GB    $0.000583  / sec      Nvidia L40S    $0.000542  / sec      Nvidia A10    $0.000306  / sec      Nvidia L4    $0.000222  / sec      Nvidia T4    $0.000164  / sec          CPU    Physical core   (2 vCPU  equivalent )     $0.0000131  / core / sec     *minimum of 0.125 cores per container        Memory    $0.00000222  / GiB / sec         Volumes    $0.09  / GiB / mo    *includes 1 TiB / mo free           PRICING PLANS      Starter    $0    +   compute / month     Built for small teams and independent developers looking to level up.       Get started with $30 / month free credit   Get Started                           $30 / month free credits            3 workspace seats included            100 containers + 10 GPU concurrency            Scheduled and Web Functions (limited)            Real-time metrics and logs            Region selection       Team    $250    +   compute / month     Built for startups and larger organizations looking to scale quickly.       Sign in to upgrade   Sign in to upgrade                           $100 / month free credits            Unlimited seats            5000 containers + 50 GPU concurrency            Unlimited Scheduled Functions            Custom domains            Static IP proxy            Deployment rollbacks            Environment-level budgets       Enterprise    Custom       For organizations prioritizing security, support, and everlasting confidence.       Get in touch   Get in touch                           Volume-based discounts            Unlimited seats            Higher GPU concurrency            Embedded ML engineering services            Environment-level budgets            Support via private Slack            Audit logs, Okta SSO, and HIPAA                                    Credit grants for  startups    Early-stage startups can get free compute credits on Modal.       Apply Now                 Credit grants for  academics    Graduate students, labs, and researchers can get up to $10k free
+          compute credits on Modal       Apply now                 Use  committed spend  on Modal   Transact through the AWS and GCP marketplace to use committed spend on
+          Modal.       Get In Touch                       Modal Sandbox + Notebooks Pricing   Only pay for what you use.   Burst up    to what
+      you need without over-allocating CPU or memory in advance.     Compute costs      Per hour   Per second    Per hour   Per second        CPU    Physical core   (2 vCPU  equivalent )     $0.00003942  / core / sec       *minimum of 0.125 cores per container      Memory    $0.00000667  / GiB / sec         GPU   See   standard pricing                     Why serverless?   Serverless pricing vs. traditional cloud pricing   Modal is serverless, which means that we instantly autoscale up and down for
+    you based on request volume. For spiky or unpredictable workloads, we are
+    more cost-effective than fixed on-demand/reserved compute.            Traditional cloud: $5,400   75 GPUs * 24 hrs * $3 / GPU-hr           Modal serverless cloud: $4,740   Avg 50 GPUs * 24 hrs * $3.95 / GPU-hr          Compare features        Starter    $0   +   compute / month          Team    $250   +   compute / month          Enterprise    Custom compute         Workspace   Number of seats   Up to 3   Unlimited   Unlimited   Credits and variable costs   Included compute   $30 / month   $100 / month   Custom   Features   Containers   100   5000   Custom   GPU concurrency   10   50   Custom   Deployed apps   200   1000   1000   Log retention   1 day   30 days   Custom   Custom domains                                 Real-time metrics                                 Sharing and collaboration                                 Secrets   Unlimited   Unlimited   Unlimited   Custom images   Unlimited   Unlimited   Unlimited   Instant deploys   Unlimited   Unlimited   Unlimited   Cron jobs   5 deployed crons   Unlimited   Unlimited   Deployment rollbacks             3 versions   Custom     Environment-level budgets                                    Distributed queue   Unlimited   Unlimited   Unlimited   Distributed dict   Unlimited   Unlimited   Unlimited     Region selection       1.15 - 1.75x base prices     1.15 - 1.75x base prices     1.15 - 1.75x base prices      Non-preemptible execution       3x base prices     3x base prices     3x base prices    Cloud Marketplaces                       Use committed spend on AWS and GCP   Support   Access to Modal Community Slack   Access to Modal Community Slack    + Support via private Slack   + Embedded ML engineering services    Security   SOC 2 compliance                                 HIPAA compatibility                                 Audit logs                                 Static IP proxy                                 RBAC                                 SSO                                                          Frequently asked questions                                     How does serverless pricing differ from traditional on-demand pricing?                                                                 What counts as billable time?                                                                 How are CPU and memory usage metered?                                                                 What's an example of real-world CPU billing?                                                                 What's an example of real-world GPU billing?                                                                 Do I need to purchase credits?                                                                 Can I add more than three team members on the starter plan?                                                                 What kinds of applications can I deploy using Modal?                                                                 Can I use my AWS, GCP, or Azure credits on Modal?                                                                        Ship your first app in minutes.         Get Started               $30 / month free compute                       AI infrastructure  that  developers love                                                                © Modal 2026          Products    Inference  Sandboxes  Training  Notebooks  Batch  Core Platform     Resources    Documentation  Pricing  Slack Community  Articles  GPU Glossary  LLM Engine Advisor  Model Library     Company    About  Blog  Careers  Events  Privacy Policy  Security &amp; Privacy  Terms     Popular Examples    Serve your own LLM API  Create custom art of your pet  Deploy OpenCode agents in a cloud Sandbox                       
+			
+			 
+				{
+					__sveltekit_7w4zln = {
+						base: ""
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/_app/immutable/entry/start.xYWKvpQm.js"),
+						import("/_app/immutable/entry/app.C8px9Eo0.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 4, 82],
+							data: [{type:"data",data:{},uses:{}},{type:"data",data:{flags:{},announcementBanner:{_createdAt:"2026-08-14T13:22:40Z",_id:"61a08d89-bc9c-49f8-8949-76e0a1f757fe",_rev:"TErHDjtxYHg9BdY3OuaAqg",_system:{base:{id:"61a08d89-bc9c-49f8-8949-76e0a1f757fe",rev:"TErHDjtxYHg9BdY3OpKswc"}},_type:"announcementBanner",_updatedAt:"2026-08-26T22:39:33Z",endDate:"2026-09-25T16:07:00.000Z",linkText:"Register now",linkUrl:"/runtime?utm_source=announcement_bar",message:"Runtime, the conference for engineers running AI in production. Oct. 1 in SF",showInDashboard:true,startDate:"2026-08-14T16:08:00.000Z"}},uses:{dependencies:["app:announcement-banner"]}},null],
+							form: null,
+							error: null
+						});
+					});
+				}
+			 
+		 
+   
+ 

@@ -919,6 +919,7 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--dev-artifacts", type=Path, help="Explicit immutable DEV manifest; never merged into primary rows")
     parser.add_argument("--experiment-id")
     parser.add_argument("--profile", choices=("dev", "full"))
     return parser.parse_args()
@@ -1020,6 +1021,13 @@ def main() -> None:
         title="Pareto-smoothed VJP steering on Bullshit Bench v2",
         pareto=True,
     )
+    dev_section = None
+    if args.dev_artifacts:
+        from vjp_steering.results_dev import load_points, add_points, section
+        manifest, points = load_points(args.dev_artifacts)
+        add_points(figure, points)
+        add_points(pareto_figure, points)
+        dev_section = section(manifest, points)
     figure_html = (
         "<h2>Measured dose paths</h2>"
         + figure.to_html(
@@ -1045,6 +1053,9 @@ def main() -> None:
         "The random cone shows ten vectors until fewer than half have two coherent directions. "
         "The table reports rejected evaluations. " + PLOT_NOTE,
     )
+    if dev_section:
+        markdown_text += dev_section[0]
+        html_text += dev_section[1]
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)
     output = ROOT / "results"

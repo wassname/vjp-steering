@@ -1,0 +1,29 @@
+{
+  "status": "incomplete, uncalibrated DEV; eligibility unknown",
+  "artifacts": [
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts/judgments.jsonl",
+      "generation_sha256": "5857fc05a9a428022ee90e139e78719ccbb8000ccc7690b390bb58b49de7c840",
+      "judgments_sha256": "161c730bb7476ce51bcb27ea703596107efea82b3a792c16a4bd907b6ba00182"
+    },
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts_alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts_alpha2/judgments.jsonl",
+      "generation_sha256": "53121bc5bd5a9be42c67296dba59a7fc9f186275d2c81d7e8bf1358d1567e31d",
+      "judgments_sha256": "3ceaf0ae8199e35888994e6ff969b06ca4f46841f4af6bb9d0eeb4e1ca9b783b"
+    },
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts_alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts_alpha4/judgments.jsonl",
+      "generation_sha256": "197e99cf5ca0af3d299895092fe54230790752e5e42561d8c30b1b268e268f2e",
+      "judgments_sha256": "af7a827951d0d0ebc4d492be827fce18a75a9ef825d51541a8dce6f6938acb0d"
+    }
+  ]
+}
