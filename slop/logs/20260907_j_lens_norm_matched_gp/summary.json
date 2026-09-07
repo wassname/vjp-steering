@@ -1,0 +1,98 @@
+{
+  "new_responses": 32,
+  "reused_responses": 75,
+  "new_judgments": 60,
+  "judge_cost_usd": 0.00946768,
+  "runtime": {
+    "seconds": 81.255107442,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 8632991232,
+    "torch": "2.13.0+cu130"
+  },
+  "treatment_calls": 2062,
+  "identity_calls": 110,
+  "max_relative_norm_error": 0.0009603311654885872,
+  "max_absolute_norm_error": 0.004874706268310547,
+  "min_direction_cosine": 0.9999699592590332,
+  "zero_reference_count": 0,
+  "groups": {
+    "full_residual+C": {
+      "AB_mean": 0.46666666666666656,
+      "BA_mean": 0.7666666666666668,
+      "paired_mean": 0.6166666666666667,
+      "steered_off_mean": 0.39333333333333337,
+      "strict_reversals": 6,
+      "ties": 0,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "full_residual-C": {
+      "AB_mean": -0.6733333333333335,
+      "BA_mean": -0.72,
+      "paired_mean": -0.6966666666666667,
+      "steered_off_mean": 0.9933333333333334,
+      "strict_reversals": 6,
+      "ties": 3,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "j_gp16+C": {
+      "AB_mean": 0.026666666666666512,
+      "BA_mean": 0.020000000000000077,
+      "paired_mean": 0.023333333333333296,
+      "steered_off_mean": 0.38666666666666666,
+      "strict_reversals": 8,
+      "ties": 2,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "j_gp16-C": {
+      "AB_mean": -0.053333333333333455,
+      "BA_mean": -0.45999999999999985,
+      "paired_mean": -0.25666666666666665,
+      "steered_off_mean": 0.9566666666666667,
+      "strict_reversals": 3,
+      "ties": 3,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "norm_matched_gp+C": {
+      "AB_mean": 1.853333333333333,
+      "BA_mean": 3.886666666666667,
+      "paired_mean": 2.87,
+      "steered_off_mean": 1.49,
+      "strict_reversals": 1,
+      "ties": 0,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    },
+    "norm_matched_gp-C": {
+      "AB_mean": -0.1400000000000001,
+      "BA_mean": -1.5599999999999998,
+      "paired_mean": -0.85,
+      "steered_off_mean": 1.2233333333333334,
+      "strict_reversals": 6,
+      "ties": 0,
+      "health": {
+        "unfinished": 0,
+        "role_leaks": 0,
+        "repeated": 0
+      }
+    }
+  }
+}

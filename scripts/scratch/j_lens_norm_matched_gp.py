@@ -213,6 +213,67 @@ async def judge_run(args):
     finally:await client.close()
 
 
+def report(folder):
+    import export
+    import hashlib
+    data=json.loads((folder/'generation.json').read_text())
+    reference=json.loads(REFERENCE.read_text())
+    assert gap.sha(REFERENCE)==data['reference_sha256'] and data['reused_records']==reference['records']
+    executed=subprocess.check_output(['git','show',data['source_revision']+':scripts/scratch/j_lens_norm_matched_gp.py'])
+    assert hashlib.sha256(executed).hexdigest()==data['implementation_sha256']
+    new=[json.loads(l) for l in (folder/'judgments.jsonl').read_text().splitlines()]
+    old=[json.loads(l) for l in (REFERENCE.parent/'judgments.jsonl').read_text().splitlines()]
+    assert len(new)==60 and len(old)==120 and len(data['records'])==30
+    assert len({(r['scenario'],r['side']) for r in data['records']})==30
+    assert len(data['identity_controls'])==2 and all(r['identity_exact'] for r in data['identity_controls'])
+    judgments=old+new;steps=[];scores=[];pairs=[]
+    lines=['# Full norm-matched DEV15 responses and scores','PI/OpenAI Codex. All prior75controls reused,30newtreatments; no frontier claim.']
+    for r in data['reused_records']+data['records']:
+        lines += ['## '+r['scenario']+' / '+r['condition'],'```text',r['rendered'],'```','> '+r['text'],'Health: '+json.dumps(r['health'])]
+        js={j['order']:j for j in judgments if j['vignette']==r['scenario'] and j['condition']==r['condition']}
+        assert len(js)==(0 if r['condition']=='bare' else 2)
+        for order,j in sorted(js.items()):
+            s=j['judgment'];b,t=('A','B') if order=='AB' else ('B','A')
+            assert abs(j['exported_effect']-export.signed_axis_effect(j['side'],[export.score_cell(j)]))<1e-9
+            score={'scenario':r['scenario'],'method':r['method'],'side':r['side'],'condition':r['condition'],'order':order,
+                'bare_on_axis':s['on_axis_'+b],'steered_on_axis':s['on_axis_'+t],'bare_off_axis':s['off_axis_'+b],
+                'steered_off_axis':s['off_axis_'+t],'effect':j['exported_effect'],'evidence':s['evidence']}
+            scores.append(score);lines.append(json.dumps(score,ensure_ascii=False))
+        if js:
+            a,b=(js[o]['exported_effect'] for o in ('AB','BA'))
+            pairs.append({'scenario':r['scenario'],'method':r['method'],'side':r['side'],'AB':a,'BA':b,'mean':(a+b)/2,
+                'strict_reversal':a*b<0,'tie_disagreement':(a==0)!=(b==0)})
+    for r in data['records']+data['identity_controls']:
+        ms=r['measurements'];assert len(ms)==len(r['generated_ids'])
+        assert [m['sequence_length'] for m in ms]==[len(r['input_ids'])]+[1]*(len(ms)-1)
+        for m in ms:
+            assert m['nonfinal_exact'] and m['next_block_exact'] and m['rounding_error_norm']<=m['rounding_bound']
+            assert all(torch.isfinite(torch.tensor(m[k])) for k in ('actual_norm','reference_realized_norm','gp_nominal_norm'))
+            steps.append({'scenario':r['scenario'],'side':r['side'],'identity':r.get('identity_exact',False),**m})
+    for name,rows in (('scores.csv',scores),('paired.csv',pairs),('steps.csv',steps)):
+        with (folder/name).open('w') as f:
+            writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
+    (folder/'responses-and-scores.md').write_text('\n\n'.join(lines)+'\n')
+    treatment=[m for m in steps if not m['identity']]
+    summary={'new_responses':32,'reused_responses':75,'new_judgments':60,'judge_cost_usd':sum(j['cost_usd'] for j in new),
+        'runtime':data['runtime'],'treatment_calls':len(treatment),'identity_calls':len(steps)-len(treatment),
+        'max_relative_norm_error':max(m['norm_error']/m['desired_norm'] for m in treatment if m['desired_norm']),
+        'max_absolute_norm_error':max(m['norm_error'] for m in treatment),
+        'min_direction_cosine':min(m['direction_cosine'] for m in treatment if m['direction_cosine'] is not None),
+        'zero_reference_count':sum(m['zero_reference'] for m in treatment),'groups':{}}
+    for method in ('full_residual','j_gp16','norm_matched_gp'):
+        for side in ('+C','-C'):
+            ps=[p for p in pairs if p['method']==method and p['side']==side]
+            ss=[s for s in scores if s['method']==method and s['side']==side]
+            rs=[r for r in data['reused_records']+data['records'] if r['method']==method and r['side']==side]
+            summary['groups'][method+side]={'AB_mean':sum(p['AB'] for p in ps)/15,'BA_mean':sum(p['BA'] for p in ps)/15,
+                'paired_mean':sum(p['mean'] for p in ps)/15,'steered_off_mean':sum(s['steered_off_axis'] for s in ss)/30,
+                'strict_reversals':sum(p['strict_reversal'] for p in ps),'ties':sum(p['tie_disagreement'] for p in ps),
+                'health':{k:sum(r['health'][0][k] for r in rs) for k in ('unfinished','role_leaks','repeated')}}
+    (folder/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print('NORM_REPORT_PASS',json.dumps(summary),flush=True)
+
+
 if __name__!='__main__':
     import modal
     from run_modal import image,cache,source_revision
@@ -230,9 +291,10 @@ if __name__!='__main__':
         print('Download separately with modal volume get; no large remote return.',flush=True)
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--self-test',action='store_true');parser.add_argument('--judge',type=Path)
+    parser=argparse.ArgumentParser();parser.add_argument('--self-test',action='store_true');parser.add_argument('--judge',type=Path);parser.add_argument('--report',type=Path)
     parser.add_argument('--source-root',type=Path,default=Path('outputs/experiments'));parser.add_argument('--output',type=Path,default=ROOT/'generation.json')
     parser.add_argument('--source-revision',default='unknown');args=parser.parse_args()
     if args.self_test:self_test()
+    elif args.report:report(args.report)
     elif args.judge:asyncio.run(judge_run(args))
     else:run(args)
