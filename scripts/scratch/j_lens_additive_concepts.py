@@ -1,4 +1,4 @@
-"""Fixed alpha-one raw named-GP contrast; exploratory DEV, not a frontier. PI/OpenAI Codex."""
+"""Fixed-dose raw named-GP contrast; exploratory DEV, not a frontier. PI/OpenAI Codex."""
 import argparse
 import asyncio
 from contextlib import contextmanager
@@ -20,11 +20,17 @@ import j_lens_gap_clamp as gap
 ROOT = Path('slop/logs/20260907_j_lens_additive_concepts')
 SOURCE = Path('slop/logs/20260907_j_lens_named_concepts/generation.json')
 STATES = Path('slop/logs/20260907_j_lens_transfer_probe/generation.json')
-REMOTE = 'outputs/audits/20260907_j_lens_additive_concepts/generation.json'
 LAYER = 17
+SOURCE_SHA = '9b47dcb594efc67f9b3491013273106346a0afb8c32fea3a6111e6121ca34a53'
+
+
+def dose_root(alpha):
+    assert alpha in (1, 2), 'Only the individually authorized doses are supported'
+    return ROOT if alpha == 1 else ROOT.with_name(ROOT.name+'_alpha2')
 
 
 def source_contrast():
+    assert gap.sha(SOURCE) == SOURCE_SHA
     data = json.loads(SOURCE.read_text())
     assert data['model_revision'] == gap.REVISION
     c = data['construction']
@@ -89,8 +95,9 @@ def intervention(model, contrast, signed_alpha, measurements, layer=LAYER):
         handle.remove(); following.remove()
 
 
-def self_test():
+def self_test(alpha=1):
     from transformers import Qwen3_5TextConfig, Qwen3_5ForCausalLM
+    root = dose_root(alpha)
     data, contrast = source_contrast()
     # Exact named source states plus prior pinned-model DEV prefill states, NOT named decode states.
     earlier = json.loads(STATES.read_text())
@@ -100,8 +107,10 @@ def self_test():
     rows = []
     for group,h in states:
         for sign in (-1.,1.):
-            after,m = additive_patch(h[None], contrast, sign)
-            independent = (h.double()+(sign*contrast).to(h).double()).to(h)
+            after,m = additive_patch(h[None], contrast, sign*alpha)
+            independent = (h.double()+(sign*alpha*contrast).to(h).double()).to(h)
+            assert m['signed_alpha'] == sign*alpha
+            assert abs(m['desired_norm']-alpha*float(contrast.norm())) < 1e-6
             assert torch.equal(after[0],independent) and m['actual_norm'] > 0 and m['direction_cosine'] > .99
             assert torch.equal(additive_patch(h[None],contrast,0.)[0],h[None])
             rows.append({'group':group,**m})
@@ -116,22 +125,23 @@ def self_test():
     with torch.inference_mode():
         bare=generate()
         for sign in (-1.,1.):
-            for alpha in (0.,1.):
+            for dose in (0.,alpha):
                 ms=[]
-                with intervention(model,v,sign*alpha,ms,layer=1):out=generate()
+                with intervention(model,v,sign*dose,ms,layer=1):out=generate()
                 assert len(ms)==out.shape[1]-4
                 assert [m['sequence_length'] for m in ms]==[4]+[1]*(len(ms)-1)
                 assert all(m['next_block_exact'] and m['nonfinal_exact'] for m in ms)
-                if not alpha:assert torch.equal(out,bare) and all(m['actual_norm']==0 for m in ms)
+                assert all(m['signed_alpha']==sign*dose for m in ms)
+                if not dose:assert torch.equal(out,bare) and all(m['actual_norm']==0 for m in ms)
         assert torch.equal(generate(),bare)
-    result={'source_sha256':gap.sha(SOURCE),'earlier_states_sha256':gap.sha(STATES),'fixed_alpha':1,
-        'raw_contrast_norm':float(contrast.norm()),'state_count':len(states),'cases':len(rows),'zero_updates':0,
+    result={'source_sha256':gap.sha(SOURCE),'earlier_states_sha256':gap.sha(STATES),'fixed_alpha':alpha,
+        'requested_norm':alpha*float(contrast.norm()), 'raw_contrast_norm':float(contrast.norm()),'state_count':len(states),'cases':len(rows),'zero_updates':0,
         'realized_norm_min':min(r['actual_norm'] for r in rows),'realized_norm_median':statistics.median(r['actual_norm'] for r in rows),
         'realized_norm_max':max(r['actual_norm'] for r in rows),'min_direction_cosine':min(r['direction_cosine'] for r in rows),
         'max_absolute_norm_error':max(r['norm_error'] for r in rows),'both_signs':True,'cached_identity_next_block_cleanup':True,
         'limit':'102 actual named source states +21 earlier transfer final-prefill states; no named-source decode hidden states persisted', 'rows':rows}
-    ROOT.mkdir(parents=True,exist_ok=True)
-    norm.save(ROOT/'offline-bf16.json',result)
+    root.mkdir(parents=True,exist_ok=True)
+    norm.save(root/'offline-bf16.json',result)
     print('ADDITIVE_CPU_PASS',json.dumps({k:v for k,v in result.items() if k!='rows'}),flush=True)
 
 
@@ -140,8 +150,10 @@ def run(args):
     from transformers import AutoTokenizer,AutoModelForCausalLM
     assert not args.output.exists()
     source,contrast=source_contrast()
-    offline=json.loads((ROOT/'offline-bf16.json').read_text())
+    offline_path=dose_root(args.alpha)/'offline-bf16.json'
+    offline=json.loads(offline_path.read_text())
     assert offline['source_sha256']==gap.sha(SOURCE) and offline['zero_updates']==0
+    assert offline['fixed_alpha']==args.alpha
     reference=json.loads(norm.REFERENCE.read_text());assert gap.sha(norm.REFERENCE)==norm.REFERENCE_SHA
     started=time.monotonic()
     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION));assert snapshot.name==gap.REVISION
@@ -156,9 +168,10 @@ def run(args):
         'dependencies_sha256':{p:gap.sha(SCRIPTS/'scratch'/p) for p in ('j_lens_norm_matched_gp.py','j_lens_gap_clamp.py')},
         'model_revision':gap.REVISION,'snapshot':str(snapshot),'reference_sha256':norm.REFERENCE_SHA,'named_source_sha256':gap.sha(SOURCE),
         'model_config_sha256':gap.sha(snapshot/'config.json'),'model_index_sha256':gap.sha(snapshot/'model.safetensors.index.json'),
-        'contrast':contrast.tolist(),'contrast_norm':float(contrast.norm()),'fixed_alpha':1.,'settings':reference['settings'],
+        'contrast':contrast.tolist(),'contrast_norm':float(contrast.norm()),'fixed_alpha':args.alpha,'settings':reference['settings'],
+        'argv':sys.argv,'offline_check_sha256':gap.sha(offline_path),
         'records':[],'identity_controls':[],'reused_records':reference['records'],
-        'scope':'Raw named-GP difference, persistent layer17, alpha1; no source inference; exploratory reused DEV15, not frontier'}
+        'scope':f'Raw named-GP difference, persistent layer17, alpha{args.alpha}; no source inference; exploratory reused DEV15, not frontier'}
     norm.save(args.output,data)
     print('ADDITIVE_MODEL',json.dumps({k:data[k] for k in ('model_revision','snapshot','named_source_sha256','contrast_norm','fixed_alpha')}),flush=True)
     print('SHOULD:30treatments+2exactidentity;nonzero actual signed-additive delivery each cached call;no source fitting/norm matching;fixed rubric.',flush=True)
@@ -169,7 +182,7 @@ def run(args):
         encoded=tokenizer(rendered,return_tensors='pt',add_special_tokens=False).to(model.device)
         assert rendered==bare['rendered'] and encoded.input_ids[0].tolist()==bare['input_ids'] and encoded.attention_mask.all()
         for side,sign in (('+C',1.),('-C',-1.)):
-            for alpha in ((0.,1.) if ri==0 else (1.,)):
+            for alpha in ((0.,args.alpha) if ri==0 else (args.alpha,)):
                 ms=[]
                 try:
                     with torch.inference_mode(),intervention(model,contrast,sign*alpha,ms):
@@ -226,13 +239,13 @@ def report(folder):
         for m in ms:
             assert m['nonfinal_exact'] and m['next_block_exact'] and m['rounding_error_norm']<=m['rounding_bound']
             if identity:assert m['actual_norm']==0
-            else:assert m['actual_norm']>0 and m['direction_cosine']>.99 and m['signed_alpha']==(1 if r['side']=='+C' else -1)
+            else:assert m['actual_norm']>0 and m['direction_cosine']>.99 and m['signed_alpha']==data['fixed_alpha']*(1 if r['side']=='+C' else -1)
             steps.append({'scenario':r['scenario'],'side':r['side'],'identity':identity,**m})
     for name,rows in (('scores.csv',scores),('paired.csv',pairs),('steps.csv',steps)):
         with (folder/name).open('w') as f:
             w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');w.writeheader();w.writerows(rows)
     (folder/'responses-and-scores.md').write_text('\n\n'.join(lines)+'\n')
-    summary={'runtime':data['runtime'],'judge_cost_usd':sum(j['cost_usd'] for j in js),'fixed_alpha':1.,'contrast_norm':data['contrast_norm'],'groups':{}}
+    summary={'runtime':data['runtime'],'judge_cost_usd':sum(j['cost_usd'] for j in js),'fixed_alpha':data['fixed_alpha'],'contrast_norm':data['contrast_norm'],'groups':{}}
     for side in ('+C','-C'):
         ss=[s for s in scores if s['side']==side];ps=[p for p in pairs if p['side']==side];ms=[m for m in steps if m['side']==side and not m['identity']]
         summary['groups'][side]={o+'_mean':statistics.mean(s['effect'] for s in ss if s['order']==o) for o in ('AB','BA')}
@@ -246,21 +259,29 @@ def report(folder):
 if __name__!='__main__':
     import modal
     from run_modal import image,cache,source_revision
-    app=modal.App('jsteer-additive-named-concepts',image=image.add_local_file(str(norm.REFERENCE),'/repo/'+str(norm.REFERENCE))
-        .add_local_file(str(SOURCE),'/repo/'+str(SOURCE)).add_local_file(str(ROOT/'offline-bf16.json'),'/repo/'+str(ROOT/'offline-bf16.json')))
+    image=image.add_local_file(str(norm.REFERENCE),'/repo/'+str(norm.REFERENCE)).add_local_file(str(SOURCE),'/repo/'+str(SOURCE))
+    for alpha in (1,2):
+        check=dose_root(alpha)/'offline-bf16.json'
+        if check.exists():image=image.add_local_file(str(check),'/repo/'+str(check))
+    app=modal.App('jsteer-additive-named-concepts',image=image)
     @app.function(gpu='H100',volumes={'/cache':cache},timeout=360,max_containers=1,retries=0)
-    def remote(revision:str):
-        try:subprocess.run([sys.executable,'scripts/scratch/j_lens_additive_concepts.py','--output','/cache/'+REMOTE,'--source-revision',revision],cwd='/repo',check=True)
+    def remote(revision:str,alpha:int=1):
+        destination='outputs/audits/'+dose_root(alpha).name+'/generation.json'
+        try:subprocess.run([sys.executable,'scripts/scratch/j_lens_additive_concepts.py','--alpha',str(alpha),'--output','/cache/'+destination,'--source-revision',revision],cwd='/repo',check=True)
         finally:
             print('ADDITIVE_VOLUME_COMMIT_START',flush=True);cache.commit();print('ADDITIVE_VOLUME_COMMIT_END',flush=True)
-        return REMOTE
+        return destination
     @app.local_entrypoint()
-    def launch():print('ADDITIVE_REMOTE_PATH',remote.remote(source_revision()),flush=True)
+    def launch(alpha:int=1):
+        assert (dose_root(alpha)/'offline-bf16.json').exists()
+        print('ADDITIVE_REMOTE_PATH',remote.remote(source_revision(),alpha),flush=True)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--self-test',action='store_true');p.add_argument('--judge',type=Path);p.add_argument('--report',type=Path)
-    p.add_argument('--output',type=Path,default=ROOT/'generation.json');p.add_argument('--source-revision',default='unknown');args=p.parse_args()
-    if args.self_test:self_test()
+    p.add_argument('--alpha',type=int,choices=(1,2),default=1)
+    p.add_argument('--output',type=Path);p.add_argument('--source-revision',default='unknown');args=p.parse_args()
+    args.output=args.output or dose_root(args.alpha)/'generation.json'
+    if args.self_test:self_test(args.alpha)
     elif args.judge:asyncio.run(norm.judge_run(args))
     elif args.report:report(args.report)
     else:run(args)

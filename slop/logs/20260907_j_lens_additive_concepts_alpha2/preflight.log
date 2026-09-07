@@ -1,0 +1,3 @@
+COMMAND: PYTHONPATH=src uv run --no-sync python import/Modal specification preflight
+MODAL_IMPORT_AND_DISTINCT_PATHS_PASS slop/logs/20260907_j_lens_additive_concepts_alpha2
+EXIT_CODE=0
