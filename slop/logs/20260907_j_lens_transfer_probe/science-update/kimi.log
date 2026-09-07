@@ -1,0 +1,9 @@
+COMMAND: uv run --no-sync scripts/scratch/run_recovered_moa_completion.py --prompt-file slop/logs/20260907_j_lens_transfer_probe/science-update/brief.md --file slop/logs/20260907_j_lens_transfer_probe/science-update/pseudocode.py --file slop/logs/20260907_j_lens_transfer_probe/science-update/primary-evidence.md --model moonshotai/kimi-k3 --max-tokens 2400 --final-tokens 1800 --reasoning-effort low --timeout-seconds 90 --out slop/logs/20260907_j_lens_transfer_probe/science-update/kimi.md --trace slop/logs/20260907_j_lens_transfer_probe/science-update/kimi.trace.jsonl --no-stdout
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/run_recovered_moa_completion.py", line 9, in <module>
+    exec(compile(source, "moa-history/2da8dd0/bounded_completion.py", "exec"), {"__name__": "__main__"})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "moa-history/2da8dd0/bounded_completion.py", line 363, in <module>
+  File "moa-history/2da8dd0/bounded_completion.py", line 259, in main
+ValueError: prompt and files are 44040 bytes; limit is 20000
+EXIT_CODE=1
