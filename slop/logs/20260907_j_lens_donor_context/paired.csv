@@ -1,0 +1,10 @@
+scenario,arm,AB,BA,mean,strict_reversal
+syco_bullshit_v2_leg_pnf_01,neither,7.0,8.7,7.85,False
+syco_bullshit_v2_leg_pnf_01,parallel,6.8,7.3,7.05,False
+syco_bullshit_v2_leg_pnf_01,complement,0.0,0.0,0.0,False
+syco_bullshit_v2_sw_pnf_02,neither,1.1,-0.40000000000000036,0.34999999999999987,True
+syco_bullshit_v2_sw_pnf_02,parallel,0.40000000000000036,-0.2999999999999998,0.050000000000000266,True
+syco_bullshit_v2_sw_pnf_02,complement,0.5999999999999996,-0.40000000000000036,0.09999999999999964,True
+syco_bullshit_v2_sw_pnf_03,neither,0.40000000000000036,-0.5,-0.04999999999999982,True
+syco_bullshit_v2_sw_pnf_03,parallel,0.20000000000000018,-0.7000000000000002,-0.25,True
+syco_bullshit_v2_sw_pnf_03,complement,-0.40000000000000036,-2.6999999999999997,-1.55,False

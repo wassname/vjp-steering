@@ -1,0 +1,48 @@
+{
+  "app": "ap-3s6V3bMLZShNPgt8juODa1",
+  "app_state": {
+    "app_id": "ap-3s6V3bMLZShNPgt8juODa1",
+    "description": "jsteer-donor-context",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 07:06:43+08:00",
+    "stopped_at": "2026-09-08 07:08:12+08:00"
+  },
+  "metered_rows": [
+    {
+      "object_id": "ap-3s6V3bMLZShNPgt8juODa1",
+      "description": "jsteer-donor-context",
+      "environment": "main",
+      "interval_start": "2026-09-07T23:00:00",
+      "resource": "H100",
+      "cost": "0.08558350"
+    },
+    {
+      "object_id": "ap-3s6V3bMLZShNPgt8juODa1",
+      "description": "jsteer-donor-context",
+      "environment": "main",
+      "interval_start": "2026-09-07T23:00:00",
+      "resource": "CPU",
+      "cost": "0.00072717"
+    },
+    {
+      "object_id": "ap-3s6V3bMLZShNPgt8juODa1",
+      "description": "jsteer-donor-context",
+      "environment": "main",
+      "interval_start": "2026-09-07T23:00:00",
+      "resource": "Memory",
+      "cost": "0.00020109"
+    }
+  ],
+  "metered_Modal_usd": "0.08651176",
+  "reported_judge_usd": "0.00236404",
+  "observed_total_usd": "0.08887580",
+  "allocated_usd": "1.20",
+  "unreserved_usd": "7.22509672744",
+  "unused_allocation_retained_usd": "1.11112420",
+  "cumulative_reported_API_usd": "1.08820441412",
+  "late_billing_reserve_usd": ".25",
+  "other_reserves": "unchanged",
+  "invoice_final": false,
+  "new_paid_work_authorized": false
+}
