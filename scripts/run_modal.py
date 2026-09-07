@@ -354,6 +354,7 @@ def j_lens_prompt_span_activity_remote(
         "--source-revision", revision,
         "--model-revision", model_revision,
         "--limit", str(limit),
+        "--batch-size", "2" if padded_parity else "1",
         "--output", str(remote_output),
     ]
     if smoke:

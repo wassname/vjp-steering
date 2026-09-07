@@ -1,0 +1,11 @@
+# DEV15 single-prompt execution: before run
+
+Supervisor approved production batch_size=1 after controlled evidence in primary-padded-parity-controls-v2.json. The padded diagnostic failed; it is not being relabeled as passing. The single-primary path passed all 1,242 request cells and all 17,388 frozen candidate ranks, with zero full-vocabulary score difference against official apply. Single mask present/absent and repeated batches were identical, distinguishing deterministic batch-shape effects from mask presence or nondeterminism. Responsible kernel not localized; no kernel/dtype/tolerance change is needed for exact official single-prompt execution.
+
+Question: after correcting final normalization and making execution match official single prompts, does unchanged DEV15 satisfy its frozen activity criteria? Changes from task465: corrected normalized readout and batch_size=1 only. Frozen cohort/token pairs/leading spaces/layers/rank-1 threshold/10-of-15 eligibility/seed0 random sets remain unchanged; AST regression confirms selection, summarization, masks, pair geometry and greedy-control functions unchanged. Source and runtime will persist in new primary v3 artifact. Full explicit-only bridge also authorized to finish the existing answer-seam diagnostic. No steering or OpenRouter.
+
+Options: (1) unchanged DEV15 single path, selected; (2) loosen candidate ranks or tokens, prohibited; (3) batch2 kernel debugging, no further run authorized/needed for this decision. Prediction priorities: fixed lens still fails explicit request coverage 75% given prior bridge smoke; some coverage but below threshold 20%; threshold passes 5%. These are pre-run guesses, not measured evidence. A negative result only rejects this frozen assessment-token route, not all latent assessments or J-lens steering. Bridge predicts exact parity on its first prompt (prior smoke measured all 333 cells exact); final answer agreement must hold on all15. Eligibility is assessed independently of these priors.
+
+Planning compute budget: primary and bridge each under 5 min H100, total under $0.66 at $0.066/min (not measured billing). Tiny CPU end-to-end mechanical tests and experiment regression pass. Full logs saved with pipefail; artifacts use new immutable names.
+
+— PI/OpenAI Codex

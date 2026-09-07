@@ -66,7 +66,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--batch-size", type=int, default=2)
+    parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--max-length", type=int, default=384)
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--output", type=Path)
@@ -1414,8 +1414,10 @@ def main() -> None:
             raise ValueError("smoke mode requires --limit 1")
     elif args.limit != 15:
         raise ValueError("result mode is fixed to DEV-15; use --smoke --limit 1 for smoke")
-    if args.batch_size < 1:
-        raise ValueError("batch size must be positive")
+    if not args.padded_parity and args.batch_size != 1:
+        raise ValueError("production diagnostics require batch size 1 for exact official single-prompt parity")
+    started = time.monotonic()
+    started_utc = datetime.now(timezone.utc).isoformat()
 
     rows, cohort_sha256 = walk.read_cohort(15)
     rows = rows[:args.limit]
@@ -1472,7 +1474,20 @@ def main() -> None:
 
     implementation_path = Path(__file__)
     output = {
-        "schema": "j_lens_prompt_span_activity_v2",
+        "schema": "j_lens_prompt_span_activity_v3",
+        "execution": {
+            "batch_size": args.batch_size,
+            "reason": "single-prompt execution matches official apply; BF16 batch2 changes exact ranks",
+            "control_artifact": "primary-padded-parity-controls-v2.json",
+            "padding_side": tokenizer.padding_side,
+        },
+        "runtime": {
+            "started_utc": started_utc, "elapsed_seconds": time.monotonic() - started,
+            "python": platform.python_version(), "torch": torch.__version__,
+            "transformers": __import__("transformers").__version__, "cuda": torch.version.cuda,
+            "gpu": torch.cuda.get_device_name() if torch.cuda.is_available() else None,
+            "peak_gpu_memory_bytes": torch.cuda.max_memory_allocated() if torch.cuda.is_available() else None,
+        },
         "readout": readout_definition(),
         "status": "SMOKE" if args.smoke else "RESULT",
         "source_revision": args.source_revision,

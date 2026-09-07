@@ -1,0 +1,10 @@
+J_LENS_PROMPT_SPAN_ACTIVITY_SELF_TEST_PASS
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+CORRECTED_PRIMARY_READOUT_PASS cells=90 raw_top1_different_layers=16
+PRIMARY_PADDED_PARITY_COMPARISON_SELF_TEST_PASS identity=true injected_rank_failure=true
+CORRECTED_READOUT_DTYPE_BIAS_SOFTCAP_PASS dtypes=float32,bfloat16
+CORRECTED_BRIDGE_COMPANION_CPU_PASS layers=13-21 request_and_prefill=true
+CORRECTED_COMPANION_APPLY_CPU_PASS primary=all_cells bridge=all_cells model=tiny_random_Qwen3_5 layers=13-21
+J_LENS_CORRECTED_READOUT_SELF_TEST_PASS
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
