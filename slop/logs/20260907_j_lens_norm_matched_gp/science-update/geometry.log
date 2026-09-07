@@ -1,0 +1,4 @@
+COMMAND: OMP_NUM_THREADS=1 uv run --no-sync python slop/logs/20260907_j_lens_norm_matched_gp/science-update/geometry-check.py
+2026-09-08 01:37:08.589 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+GEOMETRY_CHECK_PASS {"basis_difference_cosine": 0.41422588869982757, "gp_midpoint_vs_symmetric_max_error": 1.1102230246251565e-16, "gp_coordinate_sum_delta_max": 2.7533531010703882e-14, "calls": 2062, "sign_opposition_count": 0, "nominal_cosine_min": 0.41422588869982757, "nominal_cosine_max": 0.41422588869982757, "caveat": "Nominal GP/full direction comparison,not exact BF16fullreferencecosine;full h arrays were not saved. No downstream causal interpretation."}
+EXIT_CODE=0

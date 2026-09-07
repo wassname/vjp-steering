@@ -1,0 +1,4 @@
+COMMAND: recovered GLM independent norm-matched update; primary-evidence/pseudocode/brief, max-input240000,tokens1800+1400
+slop/logs/20260907_j_lens_norm_matched_gp/science-update/glm.md
+slop/logs/20260907_j_lens_norm_matched_gp/science-update/glm.trace.jsonl
+EXIT_CODE=1

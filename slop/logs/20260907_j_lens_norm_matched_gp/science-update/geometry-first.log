@@ -1,0 +1,1 @@
+COMMAND: uv run --no-sync python slop/logs/20260907_j_lens_norm_matched_gp/science-update/geometry-check.py

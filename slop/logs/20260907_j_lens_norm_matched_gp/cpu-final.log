@@ -1,0 +1,5 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync scripts/scratch/j_lens_norm_matched_gp.py --self-test
+2026-09-08 01:39:33.737 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+NORM_MATCH_CPU_PASS {"fp64_cases": 4, "both_signs": true, "zero_exception": true, "zero_reference": true, "alpha0_exact": true, "cached_calls": true, "next_block_exact": true, "cleanup_exact": true}
+EXIT_CODE=0
