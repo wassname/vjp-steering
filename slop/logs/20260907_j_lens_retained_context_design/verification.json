@@ -1,0 +1,156 @@
+{
+  "review_bytes_exact": true,
+  "rows": [
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "bare_tokens": 55,
+      "donor_tokens": 108,
+      "distance": {
+        "17": 0.0,
+        "18": 2.9174822181233546,
+        "31": 25.262042354825102
+      },
+      "old_record_keys": [
+        "condition",
+        "downstream",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ],
+      "new_record_keys": [
+        "condition",
+        "delivery",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ]
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "bare_tokens": 72,
+      "donor_tokens": 125,
+      "distance": {
+        "17": 0.0,
+        "18": 2.4615197167088065,
+        "31": 29.408614200980356
+      },
+      "old_record_keys": [
+        "condition",
+        "downstream",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ],
+      "new_record_keys": [
+        "condition",
+        "delivery",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ]
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "bare_tokens": 69,
+      "donor_tokens": 122,
+      "distance": {
+        "17": 0.0,
+        "18": 2.609556866218813,
+        "31": 33.82137708856531
+      },
+      "old_record_keys": [
+        "condition",
+        "downstream",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ],
+      "new_record_keys": [
+        "condition",
+        "delivery",
+        "final_states",
+        "first_token",
+        "generated_ids",
+        "health",
+        "hook_calls",
+        "input_ids",
+        "patch",
+        "prompt",
+        "rendered",
+        "scenario",
+        "text"
+      ]
+    }
+  ],
+  "proposal": {
+    "generations": 24,
+    "judgments": 18,
+    "estimated_usd": "1.500",
+    "unreserved_unchanged": "7.22509672744",
+    "remainder_if_authorized": "5.72509672744",
+    "new_reservation": "0",
+    "launched": false
+  },
+  "layer_types": {
+    "17": "linear_attention",
+    "18": "linear_attention",
+    "19": "full_attention",
+    "31": "full_attention"
+  },
+  "source_hashes": {
+    "/home/code/.pi/agent/sessions/--workspace-2026-jspace-j-steer_pub--/subagent-artifacts/outputs/5eabf553-41de-457e-9a94-d06db0970377/slop/reviews/j_lens_v10_donor_context_interpretation.md": "a63c645134e3a45b4044b7332cefe5958f640905d2fa0320009a612619f36951",
+    "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_retained_context_design/review.md": "a63c645134e3a45b4044b7332cefe5958f640905d2fa0320009a612619f36951",
+    "slop/logs/20260907_j_lens_transfer_probe/generation.json": "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9",
+    "slop/logs/20260907_j_lens_donor_context/generation.json": "15a47785bb245ef5ca1eb0388fe013d78036ed12593532875b2cdff3384a2de6",
+    "/home/code/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/config.json": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+    ".venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py": "0e2cd8dc50885b2701d26b116c585eedcdc62a24080ec34345af55b963126ded",
+    ".venv/lib/python3.13/site-packages/transformers/cache_utils.py": "ee7902fbd031ed332b5e26d07756a33f09b5c90a435b8363b9330876dc33ce0e"
+  },
+  "protected_hashes": {
+    "results/plot.png": "2f775fe3598a7d902d329551cbe3ba9ad5698866425343c4aad0f3914e374f49",
+    "results/index.md": "6df314db07417047a1d21bc2d07d708fa28594982a0521ca2cab33218161a2ba",
+    "results/index.html": "7b2234f44351febbb362416ba9687c3a04df1f2ad55ea2614e0afe3553c3ad18",
+    "data/results.csv": "2802acd96b16a67b05c284133d711257068f8dec937b1c949dbf59c8ca0a6c20"
+  },
+  "scope": "stdlib-only saved-array arithmetic and installed architecture inspection; no model execution or billing call"
+}
