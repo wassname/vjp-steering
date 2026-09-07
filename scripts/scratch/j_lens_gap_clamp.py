@@ -150,14 +150,20 @@ def run(args):
     started = time.monotonic()
     assert not args.output.exists(), args.output
     vectors, metadata, gaps, source_hash = load_source(args.source_root)
-    tokenizer = AutoTokenizer.from_pretrained(MODEL, revision=REVISION)
+    from huggingface_hub import snapshot_download
+    snapshot = Path(snapshot_download(MODEL, revision=REVISION))
+    assert snapshot.name == REVISION, snapshot
+    tokenizer = AutoTokenizer.from_pretrained(snapshot)
     tokenizer.pad_token = tokenizer.eos_token
-    model = AutoModelForCausalLM.from_pretrained(MODEL, revision=REVISION, dtype=torch.bfloat16).to("cuda").eval()
-    assert model.config._commit_hash == REVISION
+    model = AutoModelForCausalLM.from_pretrained(snapshot, dtype=torch.bfloat16).to("cuda").eval()
+    print("PINNED_MODEL", json.dumps({"snapshot": str(snapshot), "config_commit_hash": getattr(model.config, "_commit_hash", None)}), flush=True)
     rows, cohort_hash = walk.read_cohort(15)
     rows = [next(row for row in rows if row["scenario"] == scenario) for scenario in SCENARIOS]
     payload = {"schema": "v16_gap_clamp_diagnostic_v1", "source_revision": args.source_revision,
                "implementation_sha256": sha(__file__), "model": MODEL, "model_revision": REVISION,
+               "model_snapshot": str(snapshot), "model_config_sha256": sha(snapshot / "config.json"),
+               "model_index_sha256": sha(snapshot / "model.safetensors.index.json"),
+               "config_commit_hash": getattr(model.config, "_commit_hash", None),
                "source_metadata_sha256": source_hash, "source_recorded_model_revision": metadata["model_revision"], "vector_content_sha256": metadata["vector_content_sha256"],
                "cohort_sha256": cohort_hash, "source_gaps": gaps, "scenarios": SCENARIOS, "conditions": CONDITIONS,
                "settings": {"dtype": "bfloat16", "batch_size": 1, "layers": list(range(13,22)), "alpha": 1., "max_new_tokens": 512},
