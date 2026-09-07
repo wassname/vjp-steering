@@ -1,0 +1,46 @@
+[pq] task 465: last 45 of 45 clean lines -- /home/code/.local/share/pueue/task_logs/465.log
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-2p7dpTxONvjvrsyl4Ofxk0
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function j_lens_prompt_span_activity_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 971.39it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 582.70it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▎         | 15/426 [00:00<00:02, 149.63it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:00<00:02, 175.10it/s]
+[1ALoading weights:  15%|█▌        | 66/426 [00:00<00:01, 235.64it/s]
+[1ALoading weights:  21%|██        | 90/426 [00:00<00:01, 232.37it/s]
+[1ALoading weights:  27%|██▋       | 114/426 [00:00<00:01, 213.38it/s]
+[1ALoading weights:  32%|███▏      | 136/426 [00:00<00:01, 199.58it/s]
+[1ALoading weights:  37%|███▋      | 157/426 [00:00<00:01, 202.23it/s]
+[1ALoading weights:  42%|████▏     | 178/426 [00:00<00:01, 202.56it/s]
+[1ALoading weights:  47%|████▋     | 199/426 [00:00<00:01, 204.34it/s]
+[1ALoading weights:  53%|█████▎    | 224/426 [00:01<00:00, 211.27it/s]
+[1ALoading weights:  60%|█████▉    | 255/426 [00:01<00:00, 239.88it/s]
+[1ALoading weights:  66%|██████▌   | 280/426 [00:01<00:00, 213.88it/s]
+[1ALoading weights:  72%|███████▏  | 305/426 [00:01<00:00, 216.63it/s]
+[1ALoading weights:  77%|███████▋  | 328/426 [00:01<00:00, 206.81it/s]
+[1ALoading weights:  83%|████████▎ | 354/426 [00:01<00:00, 215.45it/s]
+[1ALoading weights:  88%|████████▊ | 376/426 [00:01<00:00, 215.39it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 240.06it/s]
+J_LENS_PROMPT_SPAN_ACTIVITY_COMPLETE {"checks": {"explicit_first_token_false": true, "explicit_negative_source_eligibility": false, "original_minus_eligibility": false, "original_minus_exceeds_random_max": false, "original_plus_eligibility": false, "original_plus_exceeds_random_max": false}, "checks_evaluated": true, "control_first_nonstructural_false": 14, "decision": "INVALID_DIAGNOSTIC_NO_GENERATION", "eligibility": {"explicit_validity": {"+C": 0, "-C": 0}, "original": {"+C": 0, "-C": 0}}, "pass_count": 10, "random_max": 3, "random_null": {"coverages": [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "max": 3, "median": 0, "min": 0, "p95_nearest_rank": 0, "seed": 0, "set_size": 7, "sets": 100}, "selected_pairs": {"explicit_validity": {"+C": {"false->true": 13, "incorrect->correct": 2}, "-C": {"correct->incorrect": 7, "related->unrelated": 5, "supported->unsupported": 1, "valid->invalid": 2}}, "original": {"+C": {"false->true": 9, "impossible->possible": 1, "incorrect->correct": 3, "unsupported->supported": 2}, "-C": {"correct->incorrect": 5, "possible->impossible": 1, "reasonable->nonsense": 1, "related->unrelated": 4, "supported->unsupported": 1, "valid->invalid": 3}}}}
+J_LENS_PROMPT_SPAN_ACTIVITY_DOWNLOADED {"output": "/workspace/2026/jspace/j-steer_pub/outputs/audits/20260907_j_lens_prompt_span_activity/dev15-v1.json", "status": "RESULT", "summary": {"checks": {"explicit_first_token_false": true, "explicit_negative_source_eligibility": false, "original_minus_eligibility": false, "original_minus_exceeds_random_max": false, "original_plus_eligibility": false, "original_plus_exceeds_random_max": false}, "checks_evaluated": true, "control_first_nonstructural_false": 14, "decision": "INVALID_DIAGNOSTIC_NO_GENERATION", "eligibility": {"explicit_validity": {"+C": 0, "-C": 0}, "original": {"+C": 0, "-C": 0}}, "pass_count": 10, "random_max": 3, "random_null": {"coverages": [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "max": 3, "median": 0, "min": 0, "p95_nearest_rank": 0, "seed": 0, "set_size": 7, "sets": 100}, "selected_pairs": {"explicit_validity": {"+C": {"false->true": 13, "incorrect->correct": 2}, "-C": {"correct->incorrect": 7, "related->unrelated": 5, "supported->unsupported": 1, "valid->invalid": 2}}, "original": {"+C": {"false->true": 9, "impossible->possible": 1, "incorrect->correct": 3, "unsupported->supported": 2}, "-C": {"correct->incorrect": 5, "possible->impossible": 1, "reasonable->nonsense": 1, "related->unrelated": 4, "supported->unsupported": 1, "valid->invalid": 3}}}}}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-2p7dpTxONvjvrsyl4Ofxk0
