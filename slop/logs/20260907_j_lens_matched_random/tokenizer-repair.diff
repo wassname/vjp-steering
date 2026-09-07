@@ -1,0 +1,106 @@
+diff --git a/scripts/scratch/j_lens_additive_concepts.py b/scripts/scratch/j_lens_additive_concepts.py
+index 778c943..d57b179 100644
+--- a/scripts/scratch/j_lens_additive_concepts.py
++++ b/scripts/scratch/j_lens_additive_concepts.py
+@@ -145,6 +145,19 @@ def self_test(alpha=1):
+     print('ADDITIVE_CPU_PASS',json.dumps({k:v for k,v in result.items() if k!='rows'}),flush=True)
+ 
+ 
++def generation_tokenizer(snapshot, source, reference):
++    """Verify extraction identity before the existing generation-only pad override."""
++    from transformers import AutoTokenizer
++    tokenizer = AutoTokenizer.from_pretrained(snapshot)
++    raw_hash = gap.concept.tokenizer_content_hash(tokenizer)
++    assert raw_hash == source['construction']['source_tokenizer_sha256']
++    tokenizer.pad_token = tokenizer.eos_token
++    generation_hash = gap.concept.tokenizer_content_hash(tokenizer)
++    assert generation_hash == reference['metrology']['generation_tokenizer']['sha256']
++    print('TOKENIZER_IDENTITIES_PASS', json.dumps({'raw_sha256':raw_hash, 'generation_sha256':generation_hash}), flush=True)
++    return tokenizer
++
++
+ def run(args):
+     from huggingface_hub import snapshot_download
+     from transformers import AutoTokenizer,AutoModelForCausalLM
+@@ -159,11 +172,8 @@ def run(args):
+     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION));assert snapshot.name==gap.REVISION
+     assert gap.sha(snapshot/'config.json')==source['model_config_sha256']
+     assert gap.sha(snapshot/'model.safetensors.index.json')==source['model_index_sha256']
+-    tokenizer=AutoTokenizer.from_pretrained(snapshot)
+-    assert gap.concept.tokenizer_content_hash(tokenizer)==source['construction']['source_tokenizer_sha256']
+-    tokenizer.pad_token=tokenizer.eos_token
++    tokenizer=generation_tokenizer(snapshot, source, reference)
+     model=AutoModelForCausalLM.from_pretrained(snapshot,dtype=torch.bfloat16).to('cuda').eval()
+-    assert gap.concept.tokenizer_content_hash(tokenizer)==reference['metrology']['generation_tokenizer']['sha256']
+     data={'schema':'additive_named_gp_v1','source_revision':args.source_revision,'implementation_sha256':gap.sha(__file__),
+         'dependencies_sha256':{p:gap.sha(SCRIPTS/'scratch'/p) for p in ('j_lens_norm_matched_gp.py','j_lens_gap_clamp.py')},
+         'model_revision':gap.REVISION,'snapshot':str(snapshot),'reference_sha256':norm.REFERENCE_SHA,'named_source_sha256':gap.sha(SOURCE),
+diff --git a/scripts/scratch/j_lens_matched_random.py b/scripts/scratch/j_lens_matched_random.py
+index 6f05864..b1261e8 100644
+--- a/scripts/scratch/j_lens_matched_random.py
++++ b/scripts/scratch/j_lens_matched_random.py
+@@ -58,6 +58,43 @@ def freeze():
+         'actual_min':min(r['actual_min'] for r in checks),'actual_max':max(r['actual_max'] for r in checks)}),flush=True)
+ 
+ 
++def tokenizer_and_hook_check():
++    from huggingface_hub import snapshot_download
++    from transformers import Qwen3_5TextConfig, Qwen3_5ForCausalLM
++    source,_=additive.source_contrast()
++    reference=json.loads(norm.REFERENCE.read_text())
++    snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION,allow_patterns=['*token*','*.json'],local_files_only=True))
++    tokenizer=additive.generation_tokenizer(snapshot,source,reference)
++    rows,_=gap.walk.read_cohort(15)
++    for row in rows:
++        bare=next(r for r in reference['records'] if r['scenario']==row['scenario'] and r['condition']=='bare')
++        rendered=gap.walk.generation_inputs(tokenizer,[row])[0]
++        encoded=tokenizer(rendered,return_tensors='pt',add_special_tokens=False)
++        assert rendered==bare['rendered'] and encoded.input_ids[0].tolist()==bare['input_ids']
++        expected_mask=bare.get('attention_mask',[1]*len(bare['input_ids']))
++        assert encoded.attention_mask[0].tolist()==expected_mask
++        print('DEV_INPUT_PARITY',json.dumps({'scenario':row['scenario'],'input_ids':encoded.input_ids[0].tolist(),'attention_mask':expected_mask}),flush=True)
++    config=Qwen3_5TextConfig(vocab_size=64,hidden_size=32,intermediate_size=64,num_hidden_layers=3,
++        num_attention_heads=2,num_key_value_heads=1,head_dim=16,layer_types=['linear_attention','full_attention','linear_attention'],
++        linear_num_key_heads=2,linear_num_value_heads=2,linear_key_head_dim=8,linear_value_head_dim=8,pad_token_id=0,eos_token_id=63)
++    torch.manual_seed(17);model=Qwen3_5ForCausalLM(config).eval()
++    g=torch.randn(32,generator=torch.Generator().manual_seed(0));v=g/(g.norm()+1e-8)*.7216137051582336
++    inputs={'input_ids':torch.tensor([[1,2,3,4]]),'attention_mask':torch.ones(1,4,dtype=torch.long)}
++    def generate():return model.generate(**inputs,max_new_tokens=4,do_sample=False,use_cache=True)
++    with torch.inference_mode():
++        bare=generate()
++        for sign in (-1,1):
++            for alpha in (0,1,2,4):
++                ms=[]
++                with additive.intervention(model,v,sign*alpha,ms,layer=1):out=generate()
++                assert len(ms)==out.shape[1]-4 and all(m['next_block_exact'] and m['nonfinal_exact'] for m in ms)
++                assert [m['sequence_length'] for m in ms]==[4]+[1]*(len(ms)-1)
++                if alpha:assert all(m['actual_norm']>0 and m['direction_cosine']>.99 for m in ms)
++                else:assert torch.equal(out,bare) and all(m['actual_norm']==0 for m in ms)
++        assert torch.equal(generate(),bare)
++    print('TOKENIZER_AND_REAL_HYBRID_HOOK_PASS all15 IDs/masks;alpha0/1/2/4;bothsigns;nextblock;cachedschedule;cleanup',flush=True)
++
++
+ def run(seed, output, revision):
+     from huggingface_hub import snapshot_download
+     from transformers import AutoTokenizer,AutoModelForCausalLM
+@@ -73,8 +110,7 @@ def run(seed, output, revision):
+     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION))
+     assert snapshot.name==gap.REVISION and gap.sha(snapshot/'config.json')==source['model_config_sha256']
+     assert gap.sha(snapshot/'model.safetensors.index.json')==source['model_index_sha256']
+-    tokenizer=AutoTokenizer.from_pretrained(snapshot);tokenizer.pad_token=tokenizer.eos_token
+-    assert gap.concept.tokenizer_content_hash(tokenizer)==source['construction']['source_tokenizer_sha256']
++    tokenizer=additive.generation_tokenizer(snapshot,source,reference)
+     model=AutoModelForCausalLM.from_pretrained(snapshot,dtype=torch.bfloat16).to('cuda').eval()
+     data=dict(schema='matched_random_additive_v1',seed=seed,source_revision=revision,implementation_sha256=gap.sha(__file__),
+         additive_sha256=gap.sha(additive.__file__),sampler_sha256=gap.sha(SAMPLER),model_revision=gap.REVISION,
+@@ -154,8 +190,9 @@ if __name__!='__main__':
+         print('RANDOM_REMOTE_PATH',remote.remote(seed,source_revision()),flush=True)
+ 
+ if __name__=='__main__':
+-    p=argparse.ArgumentParser();p.add_argument('--freeze',action='store_true');p.add_argument('--split',type=Path)
++    p=argparse.ArgumentParser();p.add_argument('--freeze',action='store_true');p.add_argument('--tokenizer-check',action='store_true');p.add_argument('--split',type=Path)
+     p.add_argument('--seed',type=int);p.add_argument('--output',type=Path);p.add_argument('--source-revision',default='unknown');args=p.parse_args()
+     if args.freeze:freeze()
++    elif args.tokenizer_check:tokenizer_and_hook_check()
+     elif args.split:split(args.split)
+     else:run(args.seed,args.output,args.source_revision)

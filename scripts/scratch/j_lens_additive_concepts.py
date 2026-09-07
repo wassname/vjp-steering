@@ -145,6 +145,19 @@ def self_test(alpha=1):
     print('ADDITIVE_CPU_PASS',json.dumps({k:v for k,v in result.items() if k!='rows'}),flush=True)
 
 
+def generation_tokenizer(snapshot, source, reference):
+    """Verify extraction identity before the existing generation-only pad override."""
+    from transformers import AutoTokenizer
+    tokenizer = AutoTokenizer.from_pretrained(snapshot)
+    raw_hash = gap.concept.tokenizer_content_hash(tokenizer)
+    assert raw_hash == source['construction']['source_tokenizer_sha256']
+    tokenizer.pad_token = tokenizer.eos_token
+    generation_hash = gap.concept.tokenizer_content_hash(tokenizer)
+    assert generation_hash == reference['metrology']['generation_tokenizer']['sha256']
+    print('TOKENIZER_IDENTITIES_PASS', json.dumps({'raw_sha256':raw_hash, 'generation_sha256':generation_hash}), flush=True)
+    return tokenizer
+
+
 def run(args):
     from huggingface_hub import snapshot_download
     from transformers import AutoTokenizer,AutoModelForCausalLM
@@ -159,11 +172,8 @@ def run(args):
     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION));assert snapshot.name==gap.REVISION
     assert gap.sha(snapshot/'config.json')==source['model_config_sha256']
     assert gap.sha(snapshot/'model.safetensors.index.json')==source['model_index_sha256']
-    tokenizer=AutoTokenizer.from_pretrained(snapshot)
-    assert gap.concept.tokenizer_content_hash(tokenizer)==source['construction']['source_tokenizer_sha256']
-    tokenizer.pad_token=tokenizer.eos_token
+    tokenizer=generation_tokenizer(snapshot, source, reference)
     model=AutoModelForCausalLM.from_pretrained(snapshot,dtype=torch.bfloat16).to('cuda').eval()
-    assert gap.concept.tokenizer_content_hash(tokenizer)==reference['metrology']['generation_tokenizer']['sha256']
     data={'schema':'additive_named_gp_v1','source_revision':args.source_revision,'implementation_sha256':gap.sha(__file__),
         'dependencies_sha256':{p:gap.sha(SCRIPTS/'scratch'/p) for p in ('j_lens_norm_matched_gp.py','j_lens_gap_clamp.py')},
         'model_revision':gap.REVISION,'snapshot':str(snapshot),'reference_sha256':norm.REFERENCE_SHA,'named_source_sha256':gap.sha(SOURCE),

@@ -8,9 +8,12 @@
   "failed_startup_invoice_usd": null,
   "CPU_import_check_app": "ap-jvib2fjFxBph4RjRAYBGEN",
   "CPU_import_check_reserve_usd": 0.05,
-  "seed0_retry_generation_reserve_usd": 0.75,
   "seed0_judging_reserve_usd": 0.05,
-  "remaining_within_allocation_usd": 4.13115336,
+  "remaining_within_allocation_usd": 3.33115336,
   "remaining_seeds_authorized": [],
-  "notes": "Failure reserve is conservative allocation, not proven provider invoice or historical container count. Saved stop confirmation: stopped/tasks0. Same actual image CPU-only mounted import passed. Supervisor authorized one seed0 retry after these gates; no remaining seeds until reconciliation. Timed GPU ceiling of retry 360*.001097=.39492; .35508 extra reserved for startup CPU/memory/storage. No historical $5 reserve released."
+  "notes": "Failure reserve is conservative allocation, not proven provider invoice or historical container count. Saved stop confirmation: stopped/tasks0. Same actual image CPU-only mounted import passed. Supervisor authorized one seed0 retry after these gates; no remaining seeds until reconciliation. Timed GPU ceiling of retry 360*.001097=.39492; .35508 extra reserved for startup CPU/memory/storage. No historical $5 reserve released. Supervisor additionally approved one second retry after shared-loader raw/postpad hash, all15 input/mask parity and realhybrid hook tests passed; no additional seeds.",
+  "failed_retry_app": "ap-f8aD8yg7WT3xhqMTkix9y7",
+  "failed_retry_reserve_usd": 0.75,
+  "seed0_second_retry_generation_reserve_usd": 0.75,
+  "seed0_second_retry_judging_reserve_usd": 0.05
 }
