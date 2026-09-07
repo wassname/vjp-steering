@@ -49,7 +49,12 @@
         - task 461 produced coherent, nonzero interventions above v15 exposure in both fixed directions, so no dose extension was needed
         - task 462 failed the behavioral criterion: selected `+C` was 9/15 intended signs and two-scenario dominated; selected `-C` had zero median and was entirely one-scenario driven
         - decision: stop the matched final-prefill source plus target-order design; full-residual exposure rules out GP16 loss as the complete explanation
-     12. [ ] run a working method on all-100 and regenerate both public PNGs
+     12. [/] test prompt-span latent assessment labels before another generation grid
+        - question: does the unchanged request carry active `false/true`-like J-lens labels away from the final assistant-prefill position?
+        - discriminator: an explicit true/false question validates the readout on at least 10/15 prompts, and the original prompt independently exposes eligible sources on at least 10/15 for both fixed directions
+        - stop condition: the control works but either original direction has fewer than 10/15 eligible prompts, or semantic coverage does not exceed size-matched random token sets
+        - controls: exact full-vocabulary rank 1; only original-request token spans; layers 13–21; frozen seven assessment pairs and deterministic tie-breaks
+     13. [ ] run a working method on all-100 and regenerate both public PNGs
    - evidence:
      - > `task-279-clean.log`: `JUDGE_COMPLETE required=2878 missing=0`
      - > `task-333-random-zone-check.log`: `+C ... inside_random_cone True`; `-C ... inside_random_cone True`

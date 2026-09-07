@@ -1,0 +1,97 @@
+[pq] task 463: last 96 of 96 clean lines -- /home/code/.local/share/pueue/task_logs/463.log
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-x2QTeS70jmeXLOYr5LDjmT
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function j_lens_prompt_span_activity_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 869.43it/s]
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 714.65it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▍         | 21/426 [00:00<00:02, 166.25it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:02, 148.63it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:02, 148.63it/s]
+[1ALoading weights:  14%|█▍        | 59/426 [00:00<00:02, 153.06it/s]
+[1ALoading weights:  18%|█▊        | 75/426 [00:00<00:02, 139.81it/s]
+[1ALoading weights:  22%|██▏       | 92/426 [00:00<00:02, 144.54it/s]
+[1ALoading weights:  25%|██▌       | 107/426 [00:00<00:02, 127.58it/s]
+[1ALoading weights:  28%|██▊       | 121/426 [00:00<00:02, 128.39it/s]
+[1ALoading weights:  32%|███▏      | 136/426 [00:01<00:02, 127.44it/s]
+[1ALoading weights:  35%|███▍      | 149/426 [00:01<00:02, 126.96it/s]
+[1ALoading weights:  39%|███▊      | 165/426 [00:01<00:01, 130.86it/s]
+[1ALoading weights:  42%|████▏     | 179/426 [00:01<00:02, 123.09it/s]
+[1ALoading weights:  45%|████▌     | 192/426 [00:01<00:01, 121.11it/s]
+[1ALoading weights:  48%|████▊     | 205/426 [00:01<00:01, 123.08it/s]
+[1ALoading weights:  51%|█████     | 218/426 [00:01<00:01, 118.73it/s]
+[1ALoading weights:  56%|█████▌    | 237/426 [00:01<00:01, 133.90it/s]
+[1ALoading weights:  59%|█████▉    | 251/426 [00:01<00:01, 128.74it/s]
+[1ALoading weights:  62%|██████▏   | 264/426 [00:02<00:01, 118.28it/s]
+[1ALoading weights:  67%|██████▋   | 286/426 [00:02<00:00, 143.73it/s]
+[1ALoading weights:  71%|███████   | 301/426 [00:02<00:00, 133.07it/s]
+[1ALoading weights:  75%|███████▌  | 320/426 [00:02<00:00, 141.88it/s]
+[1ALoading weights:  81%|████████  | 344/426 [00:02<00:00, 162.73it/s]
+[1ALoading weights:  85%|████████▍ | 361/426 [00:02<00:00, 156.40it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 161.59it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+J_LENS_PROMPT_SPAN_ACTIVITY_COMPLETE {"checks_evaluated": false, "control_first_nonstructural_false": 1, "decision": "SMOKE_ONLY", "eligibility": {"explicit_validity": {"+C": 0, "-C": 0}, "original": {"+C": 0, "-C": 0}}, "pass_count": 10, "random_null": {"coverages": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "max": 0, "median": 0, "min": 0, "p95_nearest_rank": 0, "seed": 0, "set_size": 7, "sets": 100}, "selected_pairs": {"explicit_validity": {"+C": {"false->true": 1}, "-C": {"related->unrelated": 1}}, "original": {"+C": {"false->true": 1}, "-C": {"reasonable->nonsense": 1}}}}
+Stopping app - uncaught exception raised locally: FunctionTimeoutError("Task's current input in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0 hit its timeout of 3600s").
+Task's current input(s) ["in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0"] cancelled because: Task's current input in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0 hit its timeout of 3600s
+[modal-client] 2026-09-07T06:41:35+0000 Received a cancellation signal while processing input ('in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0',)
+[modal-client] 2026-09-07T06:41:35+0000 Successfully canceled input ('in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0',)
+Runner terminated.
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py:353 in               │
+│ j_lens_prompt_span_activity                                                  │
+│                                                                              │
+│   352 │   limit = 1 if smoke else 15                                         │
+│ ❱ 353 │   result = j_lens_prompt_span_activity_remote.remote(                │
+│   354 │   │   model, dtype, output, source_revision(), limit, smoke,         │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _object.py:46 in wrapped                                                     │
+│                                                                              │
+│    45 │   │   await self.hydrate()                                           │
+│ ❱  46 │   │   return await method(self, *args, **kwargs)                     │
+│    47                                                                        │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1841 in remote                                                 │
+│                                                                              │
+│   1840 │   │                                                                 │
+│ ❱ 1841 │   │   return await self._call_function(args, kwargs)                │
+│   1842                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1778 in _call_function                                         │
+│                                                                              │
+│   1777 │   │                                                                 │
+│ ❱ 1778 │   │   return await invocation.run_function()                        │
+│   1779                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:502 in run_function                                            │
+│                                                                              │
+│    501 │   │   │   # No more retries left.                                   │
+│ ❱  502 │   │   │   return await _process_result(                             │
+│    503 │   │   │   │   await_response.output.result, await_response.output.d │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _utils/function_utils.py:534 in _process_result                              │
+│                                                                              │
+│   533 │   if result.status == api_pb2.GenericResult.GENERIC_STATUS_TIMEOUT:  │
+│ ❱ 534 │   │   raise FunctionTimeoutError(result.exception)                   │
+│   535 │   elif result.status == api_pb2.GenericResult.GENERIC_STATUS_INTERNA │
+╰──────────────────────────────────────────────────────────────────────────────╯
+FunctionTimeoutError: Task's current input
+in-01M1X64PRT978VPR9W66A84BRV:1788759661338-0 hit its timeout of 3600s

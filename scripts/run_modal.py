@@ -315,6 +315,59 @@ def j_lens_activity_audit(
     volumes={"/cache": cache},
     timeout=60 * 60,
 )
+def j_lens_prompt_span_activity_remote(
+    model: str, dtype: str, output: str, revision: str, limit: int, smoke: bool,
+) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    model_snapshot = Path(snapshot_download(model))
+    model_revision = model_snapshot.name
+    if len(model_revision) != 40:
+        raise ValueError(f"Hugging Face snapshot path lacks immutable revision: {model_snapshot}")
+    remote_output = Path("/cache/outputs") / output
+    argv = [
+        sys.executable, "scripts/j_lens_prompt_span_activity.py",
+        "--model", model,
+        "--dtype", dtype,
+        "--source-revision", revision,
+        "--model-revision", model_revision,
+        "--limit", str(limit),
+        "--output", str(remote_output),
+    ]
+    if smoke:
+        argv.append("--smoke")
+    subprocess.run(argv, cwd="/repo", check=True)
+    return remote_output.read_text()
+
+
+@app.local_entrypoint()
+def j_lens_prompt_span_activity(
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    output: str = "audits/20260907_j_lens_prompt_span_activity/results.json",
+    smoke: bool = False,
+):
+    limit = 1 if smoke else 15
+    result = j_lens_prompt_span_activity_remote.remote(
+        model, dtype, output, source_revision(), limit, smoke,
+    )
+    local_output = REPO / "outputs" / output
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    local_output.write_text(result)
+    parsed = json.loads(result)
+    print("J_LENS_PROMPT_SPAN_ACTIVITY_DOWNLOADED", json.dumps({
+        "status": parsed["status"],
+        "summary": parsed["summary"],
+        "output": str(local_output),
+    }, sort_keys=True))
+
+
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=60 * 60,
+)
 def diagnose_j_lens_remote(model: str, dtype: str, output: str) -> str:
     from huggingface_hub import snapshot_download
 

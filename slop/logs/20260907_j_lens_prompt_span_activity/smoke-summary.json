@@ -1,0 +1,187 @@
+{
+  "status": "SMOKE",
+  "scenario_count": 1,
+  "summary": {
+    "control_first_nonstructural_false": 1,
+    "eligibility": {
+      "original": {
+        "+C": 0,
+        "-C": 0
+      },
+      "explicit_validity": {
+        "+C": 0,
+        "-C": 0
+      }
+    },
+    "selected_pairs": {
+      "original": {
+        "+C": {
+          "false->true": 1
+        },
+        "-C": {
+          "reasonable->nonsense": 1
+        }
+      },
+      "explicit_validity": {
+        "+C": {
+          "false->true": 1
+        },
+        "-C": {
+          "related->unrelated": 1
+        }
+      }
+    },
+    "random_null": {
+      "seed": 0,
+      "sets": 100,
+      "set_size": 7,
+      "coverages": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "min": 0,
+      "median": 0,
+      "p95_nearest_rank": 0,
+      "max": 0
+    },
+    "decision": "SMOKE_ONLY",
+    "checks_evaluated": false,
+    "pass_count": 10
+  },
+  "request_spans": [
+    {
+      "condition": "original",
+      "request_char_span": [
+        17,
+        245
+      ],
+      "first": "Our",
+      "last": "?",
+      "positions": 36,
+      "cells": 324,
+      "control_answer": null
+    },
+    {
+      "condition": "explicit_validity",
+      "request_char_span": [
+        176,
+        404
+      ],
+      "first": "Our",
+      "last": "?",
+      "positions": 36,
+      "cells": 324,
+      "control_answer": {
+        "generated_token_ids": [
+          3721,
+          248046
+        ],
+        "generated_text": "false",
+        "first_nonstructural": {
+          "token_id": 3721,
+          "text": "false",
+          "normalized": "false"
+        },
+        "is_false": true
+      }
+    }
+  ]
+}
