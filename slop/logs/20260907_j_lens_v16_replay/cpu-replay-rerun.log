@@ -1,0 +1,15 @@
+COMMAND: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONUNBUFFERED=1 PYTHONPATH=src timeout 600 uv run --no-sync scripts/scratch/j_lens_v16_concept_patch_replay.py --output slop/logs/20260907_j_lens_v16_replay/cpu-replay.json
+SHOULD: saved basis rows equal normalized positive/negative full signals; targets +C=positive and -C=negative
+SHOULD: real concept_patch matches independent Gram-solve coordinate exchange; alpha0 and already-ordered inputs are identity
+SHOULD: actual concept_prefill edits only attended first-forward positions; second forward is untouched
+SHOULD: wrong-target and no-op controls disagree on deliberately eligible inputs
+V16_LAYER_REPLAY_PASS {"basis_condition_number": 1.7530858024698766, "basis_dtype": "torch.float32", "basis_row_max_errors": {"negative": 0.0, "positive": 1.4901161193847656e-08}, "dual_dtype": "torch.float32", "dual_max_error": 8.69498473360375e-08, "gram_identity_max_error": 2.384185791015625e-07, "layer": 13, "orthogonal_coordinate_max": 6.584421203393144e-17}
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_v16_concept_patch_replay.py", line 187, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_v16_concept_patch_replay.py", line 128, in main
+    assert torch.equal(actual[ordered], hidden[ordered])
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1

@@ -1,0 +1,18 @@
+REPRODUCTION: original nonzero orthogonal-residual tie fixture, deliberate unchanged exact identity assertion
+FIXTURE DIFF: corrected fixture adds hidden[-1].zero_(); --reproduce-tie-failure omits that one operation. Production code unchanged.
+COMMAND: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONUNBUFFERED=1 PYTHONPATH=src timeout 600 uv run --no-sync scripts/scratch/j_lens_v16_concept_patch_replay.py --reproduce-tie-failure --output slop/logs/20260907_j_lens_v16_replay/tie-failure.json
+SHOULD: saved basis rows equal normalized positive/negative full signals; targets +C=positive and -C=negative
+SHOULD: real concept_patch matches independent Gram-solve coordinate exchange; alpha0 and already-ordered inputs are identity
+SHOULD: actual concept_prefill edits only attended first-forward positions; second forward is untouched
+SHOULD: wrong-target and no-op controls disagree on deliberately eligible inputs
+V16_LAYER_REPLAY_PASS {"basis_condition_number": 1.7530858024698766, "basis_dtype": "torch.float32", "basis_row_max_errors": {"negative": 0.0, "positive": 1.4901161193847656e-08}, "dual_dtype": "torch.float32", "dual_max_error": 8.69498473360375e-08, "gram_identity_max_error": 2.384185791015625e-07, "layer": 13, "orthogonal_coordinate_max": 6.584421203393144e-17}
+ORDERED_IDENTITY_FAILURE {"layer": 14, "side": "-C", "dtype": "torch.float32", "alpha": 1.0, "oracle_coordinates": [[2.9999999987954147, 0.9999999998333985], [0.9999999971617578, 2.999999995532352], [-0.9999999963945392, -3.0000000026078735], [-3.0000000006002367, -1.00000000612081], [3.8928331062799716e-10, 7.226649256167439e-10]], "production_coordinates": [[3.000000238418579, 1.000000238418579], [1.0000003576278687, 2.999999523162842], [-1.000000238418579, -3.0], [-3.0000009536743164, -1.0], [7.450580596923828e-09, 2.561137080192566e-09]], "ordered_rows": [false, true, false, true, true], "row_max_hidden_change": [0.14782032370567322, 0.0, 0.14782031252980232, 0.0, 4.656612873077393e-10]}
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_v16_concept_patch_replay.py", line 201, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_v16_concept_patch_replay.py", line 139, in main
+    assert torch.equal(actual[ordered], hidden[ordered])
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1
