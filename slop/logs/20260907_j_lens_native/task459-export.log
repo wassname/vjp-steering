@@ -1,0 +1,2 @@
+2026-09-07 12:07:34.155 | INFO     | judge:experiment_rows:302 - experiment manifest id=j-lens-persona-components-calibration-v15 profile=dev cells=14 demo_sides=210
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-persona-components-calibration-v15 profile=dev arms=14 scenarios=210
