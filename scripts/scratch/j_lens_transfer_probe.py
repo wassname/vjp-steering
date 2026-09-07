@@ -18,6 +18,37 @@ import j_lens_gap_clamp as gap
 LAYER = 17
 CONDITIONS = ("bare", "direct_minus", "identity_minus", "donor_identity_minus", "full_minus", "projected_minus", "gap_minus")
 ROOT = Path("slop/logs/20260907_j_lens_transfer_probe")
+RANDOM_ROOT = Path("slop/logs/20260907_j_lens_random_persistence")
+PERSISTENCE_SHA = "c011dc9af766d3c55630243587159e6dba09692b46fe361dcccf617bfce858cf"
+RANDOM_SEEDS = (17, 23)
+
+
+def orthogonal_random(basis, seed):
+    """Diagnostic null outside the source span, not the benchmark random distribution."""
+    b = basis.detach().cpu().double()
+    r = torch.randn(b.shape[1], generator=torch.Generator().manual_seed(seed), dtype=torch.float64)
+    r -= (r @ b.T) @ torch.linalg.solve(b @ b.T, b)
+    r /= r.norm()
+    r = r.float()
+    assert abs(float(r.norm())-1) < 1e-6
+    assert (b @ r.double()).abs().max() < 1e-6
+    return r
+
+
+def random_replacement(h, basis, dual, target_gap, direction):
+    # Match the realized BF16 source patch on THIS state, not another trajectory.
+    source_delta = replacement(h, None, basis, dual, "gap_minus", target_gap).float()-h.float()
+    desired_delta = source_delta.norm(dim=-1, keepdim=True) * direction
+    after = h + desired_delta.to(h)
+    actual = after.float()-h.float()
+    # Two roundings: cast the increment, then add to the BF16 residual.
+    bound = torch.finfo(h.dtype).eps * (h.float().norm()+2*desired_delta.norm()) + 1e-6
+    assert (actual-desired_delta).norm() <= bound
+    assert (actual*direction).sum() > 0 or source_delta.norm() == 0
+    return after, {"counterfactual_source_norm": float(source_delta.norm()),
+        "random_actual_norm": float(actual.norm()), "rounding_error_norm": float((actual-desired_delta).norm()),
+        "rounding_error_bound": float(bound), "actual_span_coordinates": (actual @ dual.T).tolist(),
+        "actual_direction_cosine": float(torch.nn.functional.cosine_similarity(actual, direction.unsqueeze(0)).item())}
 
 
 def replacement(h, donor, basis, dual, mode, target_gap):
@@ -88,7 +119,7 @@ def observed_prefill(model, vector, mode, donor, target_gap, result, layer=LAYER
 
 
 @contextmanager
-def persistent_gap(model, vector, target_gap, coefficient, measurements, layer=LAYER):
+def persistent_gap(model, vector, target_gap, coefficient, measurements, layer=LAYER, random_direction=None):
     """PI/OpenAI Codex: patch current final position on every cached forward, including prefill."""
     basis, dual = (vector.shared[layer][key].to(model.device) for key in ("basis", "dual"))
     inserted = None
@@ -96,21 +127,26 @@ def persistent_gap(model, vector, target_gap, coefficient, measurements, layer=L
         nonlocal inserted
         h = output[0] if isinstance(output, tuple) else output
         before = h.detach().clone()
+        random_metrics = {}
         if coefficient:
             h = h.clone()
-            h[:, -1] = replacement(h[:, -1], None, basis, dual, "gap_minus", target_gap)
+            if random_direction is None:
+                h[:, -1] = replacement(h[:, -1], None, basis, dual, "gap_minus", target_gap)
+            else:
+                h[:, -1], random_metrics = random_replacement(h[:, -1], basis, dual, target_gap, random_direction)
         actual = h[0, -1].float() @ dual.T
         delta = h.float()-before.float()
         assert torch.equal(h[:, :-1], before[:, :-1])
         error = float(abs(actual[0]-actual[1]-target_gap))
-        if coefficient:
+        if coefficient and random_direction is None:
             assert error < .05, error
-        else:
+        elif not coefficient:
             assert torch.equal(h, before)
         measurements.append({"call": len(measurements), "sequence_length": h.shape[1],
             "position_in_forward": h.shape[1]-1, "coordinates_before": (before[0, -1].float() @ dual.T).tolist(),
             "coordinates_after": actual.tolist(), "target_gap": target_gap, "target_gap_error": error,
-            "all_position_patch_norms": delta[0].norm(dim=-1).tolist(), "next_block_input_exact": False})
+            "all_position_patch_norms": delta[0].norm(dim=-1).tolist(), "next_block_input_exact": False,
+            **random_metrics})
         inserted = h[:, -1].detach().clone()
         return (h, *output[1:]) if isinstance(output, tuple) else h
     def check(_module, inputs, kwargs):
@@ -184,6 +220,44 @@ def self_test():
         if coefficient == 0:
             assert torch.equal(ids, base_ids)
             assert all(not any(m["all_position_patch_norms"]) for m in measurements)
+    for seed in RANDOM_SEEDS:
+        direction = orthogonal_random(b, seed)
+        for coefficient in (0., 1.):
+            measures = []
+            with torch.inference_mode(), persistent_gap(model, vector, -3., coefficient, measures, layer=1, random_direction=direction):
+                ids = model.generate(**inp, max_new_tokens=3, do_sample=False, use_cache=True)
+            assert len(measures) == ids.shape[1]-4
+            assert [m["sequence_length"] for m in measures] == [4]+[1]*(len(measures)-1)
+            assert all(m["next_block_input_exact"] and not any(m["all_position_patch_norms"][:-1]) for m in measures)
+            if not coefficient:
+                assert torch.equal(ids, base_ids)
+                assert all(not any(m["all_position_patch_norms"]) for m in measures)
+            else:
+                assert all(m["random_actual_norm"] > 0 and m["actual_direction_cosine"] > .99 for m in measures)
+    # Independent float64 Gram solve on saved ACTUAL model states; no GPU call.
+    vectors, _, targets, _ = gap.load_source(Path("outputs/experiments"))
+    sb, sd = (vectors["-C"].shared[LAYER][k] for k in ("basis", "dual"))
+    saved = json.loads((ROOT/"generation.json").read_text())
+    count, max_error = 0, 0.
+    for record in saved["records"]:
+        state = torch.tensor(record["patch"]["before"], dtype=torch.bfloat16).unsqueeze(0)
+        b64 = sb.double()
+        c64 = state.double() @ torch.linalg.solve(b64 @ b64.T, b64).T
+        shift = (targets["-C"][LAYER]-(c64[:, 0]-c64[:, 1]))/2
+        expected_delta = shift.unsqueeze(-1)*(b64[0]-b64[1])
+        c32 = state.float() @ sd.T
+        observed_delta = ((targets["-C"][LAYER]-(c32[:, 0]-c32[:, 1]))/2).unsqueeze(-1)*(sb[0]-sb[1])
+        torch.testing.assert_close(observed_delta.double(), expected_delta, atol=1e-5, rtol=1e-5)
+        actual = replacement(state, None, sb, sd, "gap_minus", targets["-C"][LAYER])
+        torch.testing.assert_close(actual.float(), (state+expected_delta.to(state)).float(), atol=.03125, rtol=.008)
+        max_error = max(max_error, float((observed_delta.double()-expected_delta).abs().max()))
+        for seed in RANDOM_SEEDS:
+            direction = orthogonal_random(sb, seed)
+            _, metric = random_replacement(state, sb, sd, targets["-C"][LAYER], direction)
+            assert metric["actual_direction_cosine"] > .99
+        count += 1
+    print("RANDOM_CPU_PASS", json.dumps({"saved_actual_states": count, "fp64_gram_max_error": max_error,
+        "seeds": RANDOM_SEEDS, "alpha0_exact": True, "cached_calls": True, "nonfinal_exact": True, "next_block_exact": True}), flush=True)
     after_ids, _ = generate("bare")
     assert torch.equal(after_ids, base_ids)
     print("TRANSFER_CPU_PASS Gram_FP32_BF16=true tiny_Qwen_cached_generate=true identity_ids_exact=true next_block_exact=true one_shot=true", flush=True)
@@ -344,6 +418,73 @@ def run_persistence(args):
     print("PERSISTENCE_COMPLETE", json.dumps(data["runtime"]), flush=True)
 
 
+def run_random(args):
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from huggingface_hub import snapshot_download
+    started = time.monotonic()
+    assert not args.output.exists()
+    reference_path = Path("/cache/outputs/audits/20260907_j_lens_transfer_probe/persistence/generation.json")
+    assert gap.sha(reference_path) == PERSISTENCE_SHA
+    reference = json.loads(reference_path.read_text())
+    vectors, meta, targets, source_hash = gap.load_source(args.source_root)
+    expected_settings = {"layer": 17, "alpha": 1., "dtype": "bfloat16", "batch": 1, "max_new_tokens": 512, "use_cache": True}
+    assert reference["settings"] == expected_settings
+    assert reference["source_metadata_sha256"] == source_hash and reference["model_revision"] == gap.REVISION
+    snapshot = Path(snapshot_download(gap.MODEL, revision=gap.REVISION))
+    assert snapshot.name == gap.REVISION
+    tokenizer = AutoTokenizer.from_pretrained(snapshot)
+    tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(snapshot, dtype=torch.bfloat16).to("cuda").eval()
+    basis = vectors["-C"].shared[LAYER]["basis"]
+    directions = {seed: orthogonal_random(basis, seed).to(model.device) for seed in RANDOM_SEEDS}
+    data = {"schema": "v16_random_persistence_v1", "source_revision": args.source_revision,
+        "implementation_sha256": gap.sha(__file__), "reference_sha256": PERSISTENCE_SHA,
+        "reference_source_revision": reference["source_revision"], "model_revision": gap.REVISION,
+        "snapshot": str(snapshot), "model_config_sha256": gap.sha(snapshot/"config.json"),
+        "model_index_sha256": gap.sha(snapshot/"model.safetensors.index.json"),
+        "source_metadata_sha256": source_hash, "vector_content_sha256": meta["vector_content_sha256"],
+        "settings": expected_settings, "schedule": reference["schedule"], "source_gap": targets["-C"][LAYER],
+        "null": "two seeded unit directions orthogonal to source span; not benchmark standard random region",
+        "norm_matching": "realized BF16 counterfactual source patch on each random trajectory current state; not identical trajectories",
+        "directions": {str(s): {"vector": r.tolist(), "norm": float(r.norm()), "source_dot_products": (basis.to(r.device) @ r).tolist()} for s,r in directions.items()},
+        "argv": sys.argv, "records": []}
+    print("RANDOM_CONFIG", json.dumps(data), flush=True)
+    print("SHOULD: fresh alpha0 exact bare IDs; each cached forward measured; earlier positions exact; next block exact; random norm within measured BF16 rounding bound; six treatments plus three identities.", flush=True)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    for scenario in gap.SCENARIOS:
+        bare = next(r for r in reference["records"] if r["scenario"] == scenario and r["condition"] == "bare")
+        for seed, coefficient in ((17, 0.), (17, 1.), (23, 1.)):
+            condition = "random_identity_minus" if not coefficient else f"random_{seed}_minus"
+            encoded = tokenizer(bare["rendered"], return_tensors="pt", add_special_tokens=False).to(model.device)
+            assert encoded.input_ids[0].tolist() == bare["input_ids"]
+            measures = []
+            with torch.inference_mode(), persistent_gap(model, vectors["-C"], targets["-C"][LAYER], coefficient, measures, random_direction=directions[seed]):
+                output = model.generate(**encoded, do_sample=False, temperature=None, top_p=None, top_k=None,
+                    pad_token_id=tokenizer.eos_token_id, max_new_tokens=512, use_cache=True)
+            ids = output[0, encoded.input_ids.shape[1]:].tolist()
+            assert len(measures) == len(ids)
+            assert [m["sequence_length"] for m in measures] == [len(bare["input_ids"])]+[1]*(len(ids)-1)
+            assert all(m["next_block_input_exact"] for m in measures)
+            if not coefficient:
+                assert ids == bare["generated_ids"] and not any(n for m in measures for n in m["all_position_patch_norms"])
+            for i, m in enumerate(measures):
+                m.update({"absolute_position": len(bare["input_ids"])-1+i,
+                    "input_token_id": bare["input_ids"][-1] if not i else ids[i-1], "predicted_token_id": ids[i]})
+            text = tokenizer.decode(ids, skip_special_tokens=True).strip()
+            record = {"scenario": scenario, "condition": condition, "seed": seed, "coefficient": coefficient,
+                "prompt": bare["prompt"], "rendered": bare["rendered"], "input_ids": bare["input_ids"],
+                "generated_ids": ids, "text": text, "health": gap.walk.health(tokenizer, [text]),
+                "identity_exact": ids == bare["generated_ids"] if not coefficient else None, "measurements": measures}
+            data["records"].append(record)
+            args.output.write_text(json.dumps(data, indent=2)+"\n")
+            print("RANDOM_RESPONSE", json.dumps(record, ensure_ascii=False), flush=True)
+    data["records"] += [{**r, "reused_from": str(reference_path)} for r in reference["records"] if r["condition"] in ("bare", "persistent_minus")]
+    data["runtime"] = {"seconds": time.monotonic()-started, "gpu": torch.cuda.get_device_name(),
+        "peak_memory_bytes": torch.cuda.max_memory_allocated(), "torch": torch.__version__}
+    args.output.write_text(json.dumps(data, indent=2)+"\n")
+    print("RANDOM_COMPLETE", json.dumps(data["runtime"]), flush=True)
+
+
 async def judge_run(args):
     import os
     import judge
@@ -366,9 +507,67 @@ async def judge_run(args):
             f.write(json.dumps(result, ensure_ascii=False)+"\n")
         print("TRANSFER_JUDGMENT", json.dumps(result, ensure_ascii=False), flush=True)
     try:
-        await asyncio.gather(*(one(r,o) for r in data["records"] if not r.get("reused_from") and r["condition"] in ("direct_minus", "full_minus", "projected_minus", "gap_minus", "persistent_minus") for o in ("AB", "BA")))
+        await asyncio.gather(*(one(r,o) for r in data["records"] if not r.get("reused_from") and r["condition"] in ("direct_minus", "full_minus", "projected_minus", "gap_minus", "persistent_minus", "random_17_minus", "random_23_minus") for o in ("AB", "BA")))
     finally:
         await client.close()
+
+
+def report_random(folder, data, judgments):
+    import csv
+    import export
+    reference_path = ROOT/"persistence/generation.json"
+    assert gap.sha(reference_path) == data["reference_sha256"] == PERSISTENCE_SHA
+    prior = [json.loads(l) for l in (ROOT/"persistence/judgments.jsonl").read_text().splitlines()]
+    assert len(judgments) == 12 and len(data["records"]) == 15
+    assert len({(j["vignette"],j["condition"],j["order"]) for j in judgments}) == 12
+    scores, pairs, steps = [], [], []
+    lines = ["# Random persistence: complete response pairs and unchanged scores", "",
+        "PI/OpenAI Codex. Two seeded orthogonal diagnostic nulls, not the benchmark random region. Three selected questions;9 fresh responses including3 identities;6 reused bare/source controls.", ""]
+    for r in data["records"]:
+        lines += ["## "+r["scenario"]+" / "+r["condition"], "", "Input as consumed:", "```text", r["rendered"], "```", "", "> "+r["text"], ""]
+        if not r.get("reused_from"):
+            ms = r["measurements"]
+            assert len(ms) == len(r["generated_ids"])
+            assert [m["sequence_length"] for m in ms] == [len(r["input_ids"])]+[1]*(len(ms)-1)
+            for m in ms:
+                assert m["next_block_input_exact"] and not any(m["all_position_patch_norms"][:-1])
+                if r["coefficient"]:
+                    assert m["rounding_error_norm"] <= m["rounding_error_bound"]
+                    assert abs(m["random_actual_norm"]-m["counterfactual_source_norm"]) <= m["rounding_error_norm"]+1e-5
+                else:
+                    assert not any(m["all_position_patch_norms"]) and r["identity_exact"]
+                steps.append({"scenario": r["scenario"], "condition": r["condition"], **m})
+        js = {j["order"]:j for j in judgments+prior if j["vignette"] == r["scenario"] and j["condition"] == r["condition"]}
+        for order,j in sorted(js.items()):
+            s = j["judgment"]
+            assert abs(j["exported_effect"]-export.signed_axis_effect("-C", [export.score_cell(j)])) < 1e-9
+            b,t = ("A","B") if order=="AB" else ("B","A")
+            mapped = {"scenario":r["scenario"], "condition":r["condition"], "order":order,
+                "bare_on_axis":s["on_axis_"+b], "steered_on_axis":s["on_axis_"+t],
+                "bare_off_axis":s["off_axis_"+b], "steered_off_axis":s["off_axis_"+t], "effect":j["exported_effect"], **s}
+            scores.append(mapped)
+            lines += ["```json", json.dumps(mapped, ensure_ascii=False), "```", ""]
+        if js:
+            a,b = (js[o]["exported_effect"] for o in ("AB","BA"))
+            pairs.append({"scenario":r["scenario"], "condition":r["condition"], "AB_effect":a, "BA_effect":b,
+                "strict_reversal":a*b<0, "tie_disagreement":(a==0)!=(b==0)})
+    for name,rows in (("scores.csv",scores),("paired.csv",pairs),("steps.csv",steps)):
+        with (folder/name).open("w") as file:
+            writer=csv.DictWriter(file,fieldnames=list(dict.fromkeys(k for r in rows for k in r)))
+            writer.writeheader();writer.writerows(rows)
+    (folder/"responses-and-scores.md").write_text("\n".join(lines)+"\n")
+    treatment = [m for m in steps if "counterfactual_source_norm" in m]
+    summary = {"fresh_responses":9, "reused_responses":6, "new_judgments":12,
+        "treatment_calls":len(treatment), "treatment_prefill_calls":6, "identity_calls":len(steps)-len(treatment),
+        "max_absolute_norm_error":max(abs(m["random_actual_norm"]-m["counterfactual_source_norm"]) for m in treatment),
+        "max_relative_norm_error":max(abs(m["random_actual_norm"]-m["counterfactual_source_norm"])/max(m["counterfactual_source_norm"],1e-12) for m in treatment),
+        "min_actual_direction_cosine":min(m["actual_direction_cosine"] for m in treatment),
+        "strict_reversals_random":sum(p["strict_reversal"] for p in pairs if p["condition"].startswith("random")),
+        "tie_disagreements_random":sum(p["tie_disagreement"] for p in pairs if p["condition"].startswith("random")),
+        "judge_cost_usd":sum(j["cost_usd"] for j in judgments), "runtime":data["runtime"],
+        "generation_sha256":gap.sha(folder/"generation.json"), "reference_sha256":PERSISTENCE_SHA}
+    (folder/"summary.json").write_text(json.dumps(summary,indent=2)+"\n")
+    print("RANDOM_REPORT_PASS",json.dumps(summary),flush=True)
 
 
 def report(folder):
@@ -377,6 +576,8 @@ def report(folder):
     import judge
     data = json.loads((folder / "generation.json").read_text())
     judgments = [json.loads(line) for line in (folder / "judgments.jsonl").read_text().splitlines()]
+    if data["schema"] == "v16_random_persistence_v1":
+        return report_random(folder, data, judgments)
     if data["schema"] == "v16_decode_persistence_v1":
         return report_persistence(folder, data, judgments)
     assert len(data["records"]) == 21 and len(judgments) == 24
@@ -485,19 +686,22 @@ if __name__ != "__main__":
     from run_modal import image, cache, source_revision
     app = modal.App("jsteer-transfer-probe", image=image)
     @app.function(gpu="H100", volumes={"/cache": cache}, timeout=180, max_containers=1, retries=0)
-    def remote(revision: str, persistence: bool = False):
+    def remote(revision: str, persistence: bool = False, random_control: bool = False):
         destination = Path("/cache/outputs/audits/20260907_j_lens_transfer_probe") / ("persistence/generation.json" if persistence else "generation.json")
+        if random_control:
+            destination = Path("/cache/outputs/audits/20260907_j_lens_random_persistence/generation.json")
         try:
             subprocess.run([sys.executable, "scripts/scratch/j_lens_transfer_probe.py", "--source-root", "/cache/outputs/experiments",
-                "--output", str(destination), "--source-revision", revision] + (["--persistence"] if persistence else []), cwd="/repo", check=True)
+                "--output", str(destination), "--source-revision", revision] + (["--random-control"] if random_control else ["--persistence"] if persistence else []), cwd="/repo", check=True)
             return destination.read_text()
         finally:
             cache.commit()
     @app.local_entrypoint()
-    def launch(persistence: bool = False):
-        destination = ROOT / ("persistence/generation.json" if persistence else "generation.json")
+    def launch(persistence: bool = False, random_control: bool = False):
+        assert not (persistence and random_control)
+        destination = RANDOM_ROOT/"generation.json" if random_control else ROOT / ("persistence/generation.json" if persistence else "generation.json")
         assert not destination.exists()
-        result = remote.remote(source_revision(), persistence)
+        result = remote.remote(source_revision(), persistence, random_control)
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(result)
         print("TRANSFER_DOWNLOADED", destination, flush=True)
@@ -508,6 +712,7 @@ if __name__ == "__main__":
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--report", type=Path)
     parser.add_argument("--persistence", action="store_true")
+    parser.add_argument("--random-control", action="store_true")
     parser.add_argument("--source-root", type=Path, default=Path("outputs/experiments"))
     parser.add_argument("--output", type=Path, default=ROOT/"generation.json")
     parser.add_argument("--source-revision", default="unknown")
@@ -519,6 +724,8 @@ if __name__ == "__main__":
         report(args.report)
     elif args.judge:
         asyncio.run(judge_run(args))
+    elif args.random_control:
+        run_random(args)
     elif args.persistence:
         run_persistence(args)
     else:

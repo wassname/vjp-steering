@@ -1,0 +1,6 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync scripts/scratch/j_lens_transfer_probe.py --self-test
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+RANDOM_CPU_PASS {"saved_actual_states": 21, "fp64_gram_max_error": 1.19983585761263e-07, "seeds": [17, 23], "alpha0_exact": true, "cached_calls": true, "nonfinal_exact": true, "next_block_exact": true}
+TRANSFER_CPU_PASS Gram_FP32_BF16=true tiny_Qwen_cached_generate=true identity_ids_exact=true next_block_exact=true one_shot=true
+PERSISTENCE_CPU_PASS every_cached_forward=true alpha0_exact=true target_gap=true cleanup_exact=true
+EXIT_CODE=0
