@@ -224,7 +224,7 @@ def write_calibration_manifest(
         "config": {
             "model": args.model,
             "dtype": args.dtype,
-            "n_pairs": args.n_pairs,
+            "n_pairs": extraction["n_pairs"],
             "batch_size": args.batch_size,
             "extract_batch_size": args.extract_batch_size,
             "max_length": args.max_length,
