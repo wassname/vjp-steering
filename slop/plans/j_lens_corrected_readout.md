@@ -13,13 +13,14 @@ User: “please code it properly and run it”; “don't use claude to review”
     - CPU companion/comparison, CLI rejection, frozen-function AST and experiment regression checks pass.
   - failure mode: corrected helper passes while the actual diagnostic still uses raw scores.
   - deliverable: saved parity output and implementation hashes.
-- [ ] goal: measure the unchanged DEV-15 diagnostic correctly
-  - [ ] After parity passes, rerun fixed prompts, tokens, layers, masks, exact-rank criterion, threshold and random sets on Modal.
-  - [ ] Preserve task465; save a new artifact. Audit results and diagnose discrepancies before interpreting negatives.
+- [x] goal: measure the unchanged DEV-15 diagnostic correctly
+  - [x] bc3b6b6 single-prompt Modal DEV15: original and explicit +C/-C each0/15; false14/15; random max3. Decision INVALID_DIAGNOSTIC_NO_GENERATION.
+  - [x] Full explicit bridge: official parity passes, ordinary answer agreement15/15, emitted-answer prefill rank1=0/15. Decision FIXED_LENS_CONTROL_FAILED_STOP.
+  - [x] Preserve task465; new dev15-corrected-single-v3.json and readout-bridge-corrected-dev15-v3.json. Audit: slop/logs/20260907_j_lens_prompt_span_activity/padded-parity-and-dev15-audit.md.
   - failure mode: changed selection rules create an apparent improvement.
   - deliverable: new artifact and concise comparison with historical task465.
-- [ ] goal: evaluate steering only if diagnostic eligibility passes
-  - [ ] If eligible, use existing Modal generation and OpenRouter judging; produce the existing DEV table/plot with random comparison.
+- [x] goal: evaluate steering only if diagnostic eligibility passes
+  - [x] Not eligible; no steering, OpenRouter judging or public table/plot changes. Frozen stop branches apply; final independent acceptance review pending.
   - failure mode: changed text mistaken for broad judged effects.
   - deliverable: judged DEV results, or documented failed eligibility with no steering launched.
 

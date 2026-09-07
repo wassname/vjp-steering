@@ -1,0 +1,139 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-vQu0fOVnQjjXIqIXhbZNw4
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function diagnose_j_lens_remote.
+└── 🔨 Created function j_lens_prompt_span_activity_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 922.27it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 641.23it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 17/426 [00:00<00:02, 165.54it/s]
+[1ALoading weights:   8%|▊         | 34/426 [00:00<00:02, 164.50it/s]
+[1ALoading weights:  12%|█▏        | 51/426 [00:00<00:02, 146.38it/s]
+[1ALoading weights:  16%|█▋        | 70/426 [00:00<00:02, 161.40it/s]
+[1ALoading weights:  23%|██▎       | 99/426 [00:00<00:01, 202.06it/s]
+[1ALoading weights:  28%|██▊       | 120/426 [00:00<00:01, 172.73it/s]
+[1ALoading weights:  36%|███▌      | 153/426 [00:00<00:01, 210.50it/s]
+[1ALoading weights:  41%|████      | 175/426 [00:00<00:01, 183.19it/s]
+[1ALoading weights:  47%|████▋     | 199/426 [00:01<00:01, 189.75it/s]
+[1ALoading weights:  51%|█████▏    | 219/426 [00:01<00:01, 181.28it/s]
+[1ALoading weights:  57%|█████▋    | 241/426 [00:01<00:01, 184.93it/s]
+[1ALoading weights:  61%|██████    | 260/426 [00:01<00:00, 184.19it/s]
+[1ALoading weights:  67%|██████▋   | 287/426 [00:01<00:00, 204.32it/s]
+[1ALoading weights:  73%|███████▎  | 309/426 [00:01<00:00, 205.23it/s]
+[1ALoading weights:  78%|███████▊  | 334/426 [00:01<00:00, 205.22it/s]
+[1ALoading weights:  85%|████████▌ | 364/426 [00:01<00:00, 225.93it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 221.16it/s]
+SHOULD: PRIMARY_PADDED_PARITY exact top1, rank1 sets and all frozen candidate ranks; full vocabulary rtol=0.005 atol=0.005
+PRIMARY_PADDED_PARITY_RECORD {"condition": "original", "padding_count": 0, "passed": false, "scenario": "syco_bullshit_v2_leg_pnf_01", "single_passed": true}
+PRIMARY_PADDED_PARITY_RECORD {"condition": "original", "padding_count": 3, "passed": false, "scenario": "syco_bullshit_v2_leg_pnf_02", "single_passed": true}
+PRIMARY_PADDED_PARITY_RECORD {"condition": "explicit_validity", "padding_count": 0, "passed": false, "scenario": "syco_bullshit_v2_leg_pnf_01", "single_passed": true}
+PRIMARY_PADDED_PARITY_RECORD {"condition": "explicit_validity", "padding_count": 3, "passed": false, "scenario": "syco_bullshit_v2_leg_pnf_02", "single_passed": true}
+PRIMARY_PADDED_PARITY_COMPLETE {"batch_pass_count": 0, "decision": "PRIMARY_PADDED_PARITY_MISMATCH_NO_DEV15", "passed": false, "record_count": 4, "single_pass_count": 4}
+Traceback (most recent call last):
+  File "/repo/scripts/j_lens_prompt_span_activity.py", line 1525, in <module>
+    main()
+    ~~~~^^
+  File "/repo/scripts/j_lens_prompt_span_activity.py", line 1445, in main
+    run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revision, lens_file, checkpoint)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/.uv/.venv/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/repo/scripts/j_lens_prompt_span_activity.py", line 958, in run_padded_parity
+    raise RuntimeError(f"primary padded parity failed; diagnostic saved to {args.output}")
+RuntimeError: primary padded parity failed; diagnostic saved to /cache/outputs/audits/20260907_j_lens_prompt_span_activity/primary-padded-parity-controls-v2.json
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 977, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 187, in run_input_sync
+    values = io_context.call_function_sync()
+  File "/pkg/modal/_runtime/container_io_manager.py", line 265, in call_function_sync
+    expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+  File "/root/run_modal.py", line 366, in j_lens_prompt_span_activity_remote
+    subprocess.run(argv, cwd="/repo", check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/.uv/.venv/bin/python', 'scripts/j_lens_prompt_span_activity.py', '--model', 'Qwen/Qwen3.5-4B', '--dtype', 'bfloat16', '--source-revision', 'c0e928537e2dd1435ed449c1f7d10305d37129a5', '--model-revision', '851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', '--limit', '2', '--output', '/cache/outputs/audits/20260907_j_lens_prompt_span_activity/primary-padded-parity-controls-v2.json', '--padded-parity']' returned non-zero exit status 1.
+Stopping app - uncaught exception raised locally: CalledProcessError(1, ['/.uv/.venv/bin/python', 'scripts/j_lens_prompt_span_activity.py', '--model', 'Qwen/Qwen3.5-4B', '--dtype', 'bfloat16', '--source-revision', 'c0e928537e2dd1435ed449c1f7d10305d37129a5', '--model-revision', '851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', '--limit', '2', '--output', '/cache/outputs/audits/20260907_j_lens_prompt_span_activity/primary-padded-parity-controls-v2.json', '--padded-parity']).
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py:401 in               │
+│ j_lens_primary_padded_parity                                                 │
+│                                                                              │
+│   400 │   │   raise FileExistsError(f"refusing to overwrite diagnostic artif │
+│ ❱ 401 │   result = j_lens_prompt_span_activity_remote.remote(                │
+│   402 │   │   MODEL, "bfloat16", output, source_revision(), 2, False, False, │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _object.py:46 in wrapped                                                     │
+│                                                                              │
+│    45 │   │   await self.hydrate()                                           │
+│ ❱  46 │   │   return await method(self, *args, **kwargs)                     │
+│    47                                                                        │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1841 in remote                                                 │
+│                                                                              │
+│   1840 │   │                                                                 │
+│ ❱ 1841 │   │   return await self._call_function(args, kwargs)                │
+│   1842                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:1778 in _call_function                                         │
+│                                                                              │
+│   1777 │   │                                                                 │
+│ ❱ 1778 │   │   return await invocation.run_function()                        │
+│   1779                                                                       │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _functions.py:502 in run_function                                            │
+│                                                                              │
+│    501 │   │   │   # No more retries left.                                   │
+│ ❱  502 │   │   │   return await _process_result(                             │
+│    503 │   │   │   │   await_response.output.result, await_response.output.d │
+│                                                                              │
+│ /workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/modal/ │
+│ _utils/function_utils.py:572 in _process_result                              │
+│                                                                              │
+│   571 │   │   │                                                              │
+│ ❱ 572 │   │   │   raise exc_with_hints(exc)                                  │
+│   573                                                                        │
+│                                                                              │
+│     ...Remote call to Modal Function (ta-01M1XVRG9Y6MQ1ZHQKECMD4V1R)...      │
+│                                                                              │
+│ /root/run_modal.py:366 in j_lens_prompt_span_activity_remote                 │
+│                                                                              │
+│ ❱ 366 subprocess.run(argv, cwd="/repo", check=True)                          │
+│                                                                              │
+│                                                                              │
+│ /usr/local/lib/python3.13/subprocess.py:577 in run                           │
+│                                                                              │
+│ ❱ 577 raise CalledProcessError(retcode, process.args,                        │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+CalledProcessError: Command '['/.uv/.venv/bin/python', 
+'scripts/j_lens_prompt_span_activity.py', '--model', 'Qwen/Qwen3.5-4B', 
+'--dtype', 'bfloat16', '--source-revision', 
+'c0e928537e2dd1435ed449c1f7d10305d37129a5', '--model-revision', 
+'851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', '--limit', '2', '--output', 
+'/cache/outputs/audits/20260907_j_lens_prompt_span_activity/primary-padded-parit
+y-controls-v2.json', '--padded-parity']' returned non-zero exit status 1.
+EXIT=1
