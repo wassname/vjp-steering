@@ -1,0 +1,268 @@
+{
+  "generation_sha256": "b5ebc369ad048844e64456e1949206af0450383f40c33f891f27b9a47727c985",
+  "source_revision": "3a1b9214ad7759c8b866bb6a738580a59006e5ce",
+  "implementation_sha256": "7d78f14093354fbc698cc7b9d3ea13e0d70ff13a5ab2c3fc365efdaa028c7dc5",
+  "records": 75,
+  "response_log_matches": 75,
+  "missing_cells": [],
+  "treated_steps": 3937,
+  "mask_records": 39,
+  "identities": [
+    {
+      "method": "full_residual",
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "identity_exact": true,
+      "calls": 55
+    },
+    {
+      "method": "j_gp16",
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "identity_exact": true,
+      "calls": 55
+    }
+  ],
+  "groups": [
+    {
+      "method": "full_residual",
+      "side": "+C",
+      "saved_target": 8.476953744888306,
+      "replay_mean_target": 8.469267845153809,
+      "target_shift": -0.00768589973449707,
+      "absolute_target_shift": 0.00768589973449707,
+      "relative_target_shift": 0.0009066818064368642,
+      "max_coordinate_error_separate": 0.08186149597167969,
+      "basis_difference_half_norm": 0.6091541102620905,
+      "update_vector_difference_norm": 0.0046818974143312,
+      "calls": 946,
+      "strict_sign_changes": 0,
+      "zero_actual_updates": 0,
+      "zero_signed_shifts": 0,
+      "near_zero_defined_as_actual_update_le_target_shift_norm": 0,
+      "actual_updates_all": {
+        "count": 946,
+        "min": 4.5234375,
+        "q25": 5.497948050498962,
+        "median": 5.645744323730469,
+        "q75": 5.791424870491028,
+        "q95": 6.027328252792358,
+        "max": 6.65397310256958
+      },
+      "actual_updates_flip_subset": {
+        "count": 0
+      },
+      "relative_update_difference_nonzero": {
+        "count": 946,
+        "min": 0.0007036243372434406,
+        "q25": 0.0008084189160787618,
+        "median": 0.0008292369444803196,
+        "q75": 0.0008515717909927195,
+        "q95": 0.0008969760625120101,
+        "max": 0.0010350308618901445
+      },
+      "relative_update_difference_flip_nonzero": {
+        "count": 0
+      },
+      "absolute_magnitude_difference_all": {
+        "count": 946,
+        "min": 0.0046818974143312,
+        "q25": 0.0046818974143312,
+        "median": 0.0046818974143312,
+        "q75": 0.0046818974143312,
+        "q95": 0.0046818974143312,
+        "max": 0.0046818974143312
+      },
+      "relative_magnitude_difference_nonzero": {
+        "count": 946,
+        "min": 0.0007036243372434406,
+        "q25": 0.0008084189160787618,
+        "median": 0.0008292369444803196,
+        "q75": 0.0008515717909927195,
+        "q95": 0.0008969760625120101,
+        "max": 0.0010350308618901445
+      }
+    },
+    {
+      "method": "full_residual",
+      "side": "-C",
+      "saved_target": -7.5542134046554565,
+      "replay_mean_target": -7.5719873905181885,
+      "target_shift": -0.017773985862731934,
+      "absolute_target_shift": 0.017773985862731934,
+      "relative_target_shift": 0.0023528572613236353,
+      "max_coordinate_error_separate": 0.0752720832824707,
+      "basis_difference_half_norm": 0.6091541102620905,
+      "update_vector_difference_norm": 0.010827096544023447,
+      "calls": 987,
+      "strict_sign_changes": 0,
+      "zero_actual_updates": 0,
+      "zero_signed_shifts": 0,
+      "near_zero_defined_as_actual_update_le_target_shift_norm": 0,
+      "actual_updates_all": {
+        "count": 987,
+        "min": 3.1115715503692627,
+        "q25": 3.8115947246551514,
+        "median": 3.978192090988159,
+        "q75": 4.130455255508423,
+        "q95": 4.398746013641357,
+        "max": 5.137379169464111
+      },
+      "actual_updates_flip_subset": {
+        "count": 0
+      },
+      "relative_update_difference_nonzero": {
+        "count": 987,
+        "min": 0.0021075136147976478,
+        "q25": 0.002621284077436551,
+        "median": 0.002721612304380722,
+        "q75": 0.002840568669000682,
+        "q95": 0.003026249669262509,
+        "max": 0.0034796231964322184
+      },
+      "relative_update_difference_flip_nonzero": {
+        "count": 0
+      },
+      "absolute_magnitude_difference_all": {
+        "count": 987,
+        "min": 0.010827096544023447,
+        "q25": 0.010827096544023447,
+        "median": 0.010827096544023447,
+        "q75": 0.010827096544023447,
+        "q95": 0.010827096544023447,
+        "max": 0.010827096544023447
+      },
+      "relative_magnitude_difference_nonzero": {
+        "count": 987,
+        "min": 0.0021075136147976478,
+        "q25": 0.002621284077436551,
+        "median": 0.002721612304380722,
+        "q75": 0.002840568669000682,
+        "q95": 0.003026249669262509,
+        "max": 0.0034796231964322184
+      }
+    },
+    {
+      "method": "j_gp16",
+      "side": "+C",
+      "saved_target": 5.802844047546387,
+      "replay_mean_target": 5.800201654434204,
+      "target_shift": -0.002642393112182617,
+      "absolute_target_shift": 0.002642393112182617,
+      "relative_target_shift": 0.0004553617313392902,
+      "max_coordinate_error_separate": 0.02371358871459961,
+      "basis_difference_half_norm": 0.486512750265487,
+      "update_vector_difference_norm": 0.0012855579402905448,
+      "calls": 1055,
+      "strict_sign_changes": 0,
+      "zero_actual_updates": 0,
+      "zero_signed_shifts": 0,
+      "near_zero_defined_as_actual_update_le_target_shift_norm": 0,
+      "actual_updates_all": {
+        "count": 1055,
+        "min": 1.7151893377304077,
+        "q25": 2.5688811540603638,
+        "median": 2.7549567222595215,
+        "q75": 2.937326431274414,
+        "q95": 3.227271509170532,
+        "max": 3.7609353065490723
+      },
+      "actual_updates_flip_subset": {
+        "count": 0
+      },
+      "relative_update_difference_nonzero": {
+        "count": 1055,
+        "min": 0.0003418186795321763,
+        "q25": 0.000437662605949496,
+        "median": 0.0004666345318253036,
+        "q75": 0.0005004349616480525,
+        "q95": 0.0005673546223022416,
+        "max": 0.000749513719570829
+      },
+      "relative_update_difference_flip_nonzero": {
+        "count": 0
+      },
+      "absolute_magnitude_difference_all": {
+        "count": 1055,
+        "min": 0.0012855579402905448,
+        "q25": 0.0012855579402905448,
+        "median": 0.0012855579402905448,
+        "q75": 0.0012855579402905448,
+        "q95": 0.0012855579402905448,
+        "max": 0.0012855579402905448
+      },
+      "relative_magnitude_difference_nonzero": {
+        "count": 1055,
+        "min": 0.0003418186795321763,
+        "q25": 0.000437662605949496,
+        "median": 0.0004666345318253036,
+        "q75": 0.0005004349616480525,
+        "q95": 0.0005673546223022416,
+        "max": 0.000749513719570829
+      }
+    },
+    {
+      "method": "j_gp16",
+      "side": "-C",
+      "saved_target": -2.4792703986167908,
+      "replay_mean_target": -2.4939257502555847,
+      "target_shift": -0.014655351638793945,
+      "absolute_target_shift": 0.014655351638793945,
+      "relative_target_shift": 0.005911155010349137,
+      "max_coordinate_error_separate": 0.0257723331451416,
+      "basis_difference_half_norm": 0.486512750265487,
+      "update_vector_difference_norm": 0.007130015431897454,
+      "calls": 949,
+      "strict_sign_changes": 0,
+      "zero_actual_updates": 0,
+      "zero_signed_shifts": 0,
+      "near_zero_defined_as_actual_update_le_target_shift_norm": 0,
+      "actual_updates_all": {
+        "count": 949,
+        "min": 0.244565948843956,
+        "q25": 0.9177150726318359,
+        "median": 1.1244820356369019,
+        "q75": 1.3189533948898315,
+        "q95": 1.5562140464782714,
+        "max": 1.878414511680603
+      },
+      "actual_updates_flip_subset": {
+        "count": 0
+      },
+      "relative_update_difference_nonzero": {
+        "count": 949,
+        "min": 0.0037957625367354537,
+        "q25": 0.005405813017747306,
+        "median": 0.00634071083924346,
+        "q75": 0.007769312768776803,
+        "q95": 0.011569556019261526,
+        "max": 0.029153753683210916
+      },
+      "relative_update_difference_flip_nonzero": {
+        "count": 0
+      },
+      "absolute_magnitude_difference_all": {
+        "count": 949,
+        "min": 0.007130015431897454,
+        "q25": 0.007130015431897454,
+        "median": 0.007130015431897454,
+        "q75": 0.007130015431897454,
+        "q95": 0.007130015431897454,
+        "max": 0.007130015431897454
+      },
+      "relative_magnitude_difference_nonzero": {
+        "count": 949,
+        "min": 0.0037957625367354537,
+        "q25": 0.005405813017747306,
+        "median": 0.00634071083924346,
+        "q75": 0.007769312768776803,
+        "q95": 0.011569556019261526,
+        "max": 0.029153753683210916
+      }
+    }
+  ],
+  "runtime": {
+    "seconds": 245.513383215,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 18085427712,
+    "torch": "2.13.0+cu130"
+  }
+}

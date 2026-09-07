@@ -1,0 +1,48 @@
+{
+  "cells": 75,
+  "judgments": 120,
+  "judge_cost_usd": 0.01873164,
+  "runtime": {
+    "seconds": 245.513383215,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 18085427712,
+    "torch": "2.13.0+cu130"
+  },
+  "strict_reversals": 23,
+  "tie_disagreements": 8,
+  "groups": {
+    "full_residual+C": {
+      "AB_mean": 0.46666666666666656,
+      "BA_mean": 0.7666666666666668,
+      "paired_mean": 0.6166666666666667,
+      "steered_off_mean": 0.39333333333333337,
+      "min_paired": -0.2500000000000002,
+      "max_paired": 6.25
+    },
+    "full_residual-C": {
+      "AB_mean": -0.6733333333333335,
+      "BA_mean": -0.72,
+      "paired_mean": -0.6966666666666667,
+      "steered_off_mean": 0.9933333333333334,
+      "min_paired": -6.5,
+      "max_paired": 0.3500000000000001
+    },
+    "j_gp16+C": {
+      "AB_mean": 0.026666666666666512,
+      "BA_mean": 0.020000000000000077,
+      "paired_mean": 0.023333333333333296,
+      "steered_off_mean": 0.38666666666666666,
+      "min_paired": -0.2999999999999998,
+      "max_paired": 0.5999999999999996
+    },
+    "j_gp16-C": {
+      "AB_mean": -0.053333333333333455,
+      "BA_mean": -0.45999999999999985,
+      "paired_mean": -0.25666666666666665,
+      "steered_off_mean": 0.9566666666666667,
+      "min_paired": -2.85,
+      "max_paired": 0.20000000000000018
+    }
+  },
+  "max_target_gap_error": 0.00662994384765625
+}

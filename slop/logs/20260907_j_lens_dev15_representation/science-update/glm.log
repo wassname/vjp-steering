@@ -1,0 +1,4 @@
+COMMAND: recovered MoA GLM independent DEV15 update, packet/pseudocode/brief below, max-input160000,max-tokens1800,final1400
+slop/logs/20260907_j_lens_dev15_representation/science-update/glm.md
+slop/logs/20260907_j_lens_dev15_representation/science-update/glm.trace.jsonl
+EXIT_CODE=0

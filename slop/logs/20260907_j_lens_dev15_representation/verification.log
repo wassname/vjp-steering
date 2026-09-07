@@ -1,0 +1,10 @@
+COMMAND: independent recovered artifacts, score prompts, hashes and event validation
+FULL_LOG modal.log 126 27937 f7bcc6d57e1911adf5a08a0034f4a49624ab07a915f906c5db65df0acde5e276
+FULL_LOG modal-retry.log 174 124427 64c0dfdcdee073020a210d75e6be20d7b8fc66df0f5c756532c0161cc87b6496
+FULL_LOG judge.log 124 747662 a123f6938059a5f5dddfbf3227a2ad6866c2e687b5da4f4a01221216f1a6bfdb
+ARTIFACT_SHA256 b5ebc369ad048844e64456e1949206af0450383f40c33f891f27b9a47727c985
+SOURCE_HASH_EXACT True
+JUDGE_PROMPT_IDENTITY_PASS120; RESPONSE_HEALTH {'unfinished': 0, 'role_leaks': 0, 'repeated': 0}
+NO_ADDITIONAL_GPU; REVIEW_PROVIDER_USD0.240179775; JUDGE_PROVIDER_USD0.01873164
+COMMAND: git diff --check -- scripts/scratch/j_lens_dev15_representation.py; git diff --cached --exit-code
+EXIT_CODE=0

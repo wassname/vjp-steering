@@ -1,0 +1,61 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync slop/logs/20260907_j_lens_dev15_representation/replay-impact.py
+2026-09-08 00:58:12.186 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_dev15_representation/replay-impact.py", line 14, in <module>
+    assert data['provenance']==provenance
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1
+HISTORICAL SOURCE: slop/audits/20260907_task460_j_lens_full_residual_extraction.md lines7-9 cites e9877a2 and CLI without batch override
+def extract_experiment(
+    method: str,
+    experiment_id: str,
+    model: str = MODEL,
+    dtype: str = "bfloat16",
+    n_pairs: int = 200,
+    extract_batch_size: int = 8,
+    max_length: int = 384,
+    j_lens_source: str = "concept",
+    persona_direction: str = "j_gp16",
+):
+    argv = [
+        "--experiment-id", experiment_id,
+        "--model", model,
+        "--dtype", dtype,
+        "--n-pairs", str(n_pairs),
+        "--extract-batch-size", str(extract_batch_size),
+        "--max-length", str(max_length),
+        "--j-lens-source", j_lens_source,
+        "--persona-direction", persona_direction,
+    ]
+EXECUTED REPLAY: 3a1b921
+        result['gp'][condition] = {'support_exact': True, 'component_max_error': float((component-expected).abs().max()), 'selected_ids': saved['selected_ids']}
+    del raw,dictionary,checkpoint
+    # Replay all39 calibration records with original padded token IDs, no fitting.
+    n,fit = fm['source_unique_count'],fm['source_fit_count']
+    for ci,condition in enumerate(('positive','negative','baseline')):
+        states=[]
+        for index in range(fit,n):
+            tr = fm['token_records'][ci*n+index]
+            encoded = {k:torch.tensor([tr[k]],device=model.device) for k in ('input_ids','attention_mask')}
+            with gap.concept._activations(model,[LAYER]) as found:
+                model.model(**encoded,use_cache=False)
+            states.append(found[LAYER][0,tr['final_position']].float())
+        h=torch.stack(states)
+        for name,pair in vectors.items():
+            d=pair['+C'].shared[LAYER]['dual'].to(model.device)
+            coords=h@d.T
+            saved=torch.tensor(metadata[name]['layers']['17']['heldout_source_coordinates'][condition],device=model.device)
+            error=float((coords-saved).abs().max())
+            # BF16 kernel/batch differences are measured, never silently recalibrated.
+            result['holdout'][name+'_'+condition]={'coordinate_max_error':error,'replayed_mean':coords.mean(0).tolist(),'saved_mean':saved.mean(0).tolist()}
+            print('CALIBRATION_REPLAY',json.dumps({'representation':name,'condition':condition,**result['holdout'][name+'_'+condition]}),flush=True)
+            assert error < .1, (name,condition,error)
+    print('DEV15_METROLOGY_PASS',json.dumps(result),flush=True)
+    return result
+
+
+def run(args):
+    from huggingface_hub import snapshot_download
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    assert not args.output.exists()
