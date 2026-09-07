@@ -4,9 +4,11 @@ User: “please code it properly and run it”; “don't use claude to review”
 
 - [ ] goal: activity scores match the pinned official J-lens
   - [x] Correct transport → final normalization → unembedding in the primary diagnostic and bridge; isolate companion dependencies.
-  - [x] CPU companion parity passes; native reviewer confirms formula. Existing experiment regression rerun is running.
+  - [x] CPU companion parity and existing experiment regression pass; native reviewer confirms formula.
     - Evidence: slop/logs/20260907_j_lens_prompt_span_activity/corrected-readout-supervisor-cpu.log reports `CORRECTED_COMPANION_APPLY_CPU_PASS primary=all_cells bridge=all_cells model=tiny_random_Qwen3_5 layers=13-21` and `J_LENS_CORRECTED_READOUT_SELF_TEST_PASS`; command exited zero.
-  - [ ] Run one explicit prompt on Modal and compare full-vocabulary scores, top-1, ranks, tokenization and positions against official apply.
+  - [x] One explicit prompt on Modal: 333 cells and 1,332 bridge ranks match official apply exactly (4ac6ef8).
+  - [ ] Validate primary padded batch: first two unequal-length DEV prompts in both conditions; exact top1/rank1 sets/14 candidate ranks plus full-vocabulary tolerance; single-primary controls diagnose failures.
+    - CPU comparison and companion selftests pass; parent reviewed bounded validation diff before Modal.
   - failure mode: corrected helper passes while the actual diagnostic still uses raw scores.
   - deliverable: saved parity output and implementation hashes.
 - [ ] goal: measure the unchanged DEV-15 diagnostic correctly

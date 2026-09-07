@@ -335,6 +335,7 @@ def j_lens_prompt_span_activity_remote(
     limit: int,
     smoke: bool,
     readout_bridge: bool,
+    padded_parity: bool = False,
 ) -> str:
     from huggingface_hub import snapshot_download
 
@@ -359,6 +360,8 @@ def j_lens_prompt_span_activity_remote(
         argv.append("--smoke")
     if readout_bridge:
         argv.append("--readout-bridge")
+    if padded_parity:
+        argv.append("--padded-parity")
     try:
         subprocess.run(argv, cwd="/repo", check=True)
         return remote_output.read_text()
@@ -386,6 +389,22 @@ def j_lens_prompt_span_activity(
         "summary": parsed["summary"],
         "output": str(local_output),
     }, sort_keys=True))
+
+
+@app.local_entrypoint()
+def j_lens_primary_padded_parity(
+    output: str = "audits/20260907_j_lens_prompt_span_activity/primary-padded-parity-v1.json",
+):
+    local_output = REPO / "outputs" / output
+    if local_output.exists():
+        raise FileExistsError(f"refusing to overwrite diagnostic artifact: {local_output}")
+    result = j_lens_prompt_span_activity_remote.remote(
+        MODEL, "bfloat16", output, source_revision(), 2, False, False, True,
+    )
+    local_output.parent.mkdir(parents=True, exist_ok=True)
+    with local_output.open("x") as file:
+        file.write(result)
+    print("PRIMARY_PADDED_PARITY_DOWNLOADED", json.dumps(json.loads(result)["summary"], sort_keys=True))
 
 
 @app.local_entrypoint()

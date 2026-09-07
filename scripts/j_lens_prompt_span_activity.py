@@ -7,6 +7,9 @@ import inspect
 import json
 import random
 import string
+import time
+import platform
+from datetime import datetime, timezone
 from pathlib import Path
 
 import torch
@@ -72,6 +75,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=15)
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--readout-bridge", action="store_true")
+    parser.add_argument("--padded-parity", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--companion-self-test", action="store_true")
     return parser.parse_args()
@@ -498,7 +502,12 @@ def readout_definition() -> dict:
 
 
 @torch.inference_mode()
-def score_records(model, tokenizer, checkpoint: dict, token_ids: dict[str, int], records: list[dict]) -> dict:
+def score_records(
+    model, tokenizer, checkpoint: dict, token_ids: dict[str, int], records: list[dict],
+    *, official_logits: dict | None = None,
+) -> dict:
+    if official_logits is not None and len(records) != 1:
+        raise ValueError("parity reference must correspond to exactly one captured record")
     candidate_words = list(token_ids)
     candidate_ids = [token_ids[word] for word in candidate_words]
     unembedding = model.lm_head.weight.detach().float()
@@ -574,6 +583,10 @@ def score_records(model, tokenizer, checkpoint: dict, token_ids: dict[str, int],
                         direction["top25_hits"] += int(source_rank <= 25)
                         if source_rank == 1 and source_score > target_score:
                             direction["strict_hits"] += 1
+            if official_logits is not None:
+                record.setdefault("parity_layers", {})[str(layer)] = compare_primary_scores(
+                    scores, official_logits[layer].to(scores.device), token_ids, tokenizer,
+                )
             del scores, ranks, candidate_scores, coordinates
         del raw
         if torch.cuda.is_available():
@@ -778,6 +791,139 @@ def compare_rank_payloads(local: list[dict], official: list[dict]) -> dict:
         ),
         "cells": cells,
     }
+
+
+def compare_primary_scores(local: torch.Tensor, official: torch.Tensor, token_ids: dict, tokenizer) -> dict:
+    if local.shape != official.shape or not torch.isfinite(local).all() or not torch.isfinite(official).all():
+        raise ValueError("nonfinite or differently shaped primary parity scores")
+    comparison = compare_rank_payloads(
+        rank_payload(local, token_ids, tokenizer), rank_payload(official, token_ids, tokenizer),
+    )
+    comparison["score_allclose_rtol_5e-3_atol_5e-3"] = torch.allclose(local, official, rtol=5e-3, atol=5e-3)
+    comparison["maximum_full_vocabulary_score_absolute_difference"] = float((local - official).abs().max())
+    comparison["rank1_set_match_count"] = int((
+        (local == local.max(-1, keepdim=True).values)
+        == (official == official.max(-1, keepdim=True).values)
+    ).all(-1).sum())
+    for index, cell in enumerate(comparison["cells"]):
+        cell["maximum_full_vocabulary_score_absolute_difference"] = float((local[index] - official[index]).abs().max())
+        cell["top1_margins"] = {
+            name: float(scores[index].topk(2).values.diff().neg().item())
+            for name, scores in (("local", local), ("official", official))
+        }
+        cell["rank_mismatch_margins"] = {}
+        for word, rank in cell["candidate_ranks"].items():
+            if rank["match"]:
+                continue
+            margins = {}
+            for name, scores in (("local", local), ("official", official)):
+                delta = scores[index] - scores[index, token_ids[word]]
+                nonzero = delta[delta != 0].abs()
+                margins[name] = {
+                    "nearest_distinct_score_gap": float(nonzero.min()) if nonzero.numel() else None,
+                    "tied_token_count": int((delta == 0).sum()),
+                }
+            cell["rank_mismatch_margins"][word] = margins
+    comparison["passed"] = (
+        comparison["score_allclose_rtol_5e-3_atol_5e-3"]
+        and comparison["top1_match_count"] == comparison["cell_count"]
+        and comparison["rank1_set_match_count"] == comparison["cell_count"]
+        and comparison["candidate_rank_match_count"] == comparison["candidate_rank_comparison_count"]
+    )
+    return comparison
+
+
+@torch.inference_mode()
+def run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revision, lens_file, checkpoint) -> None:
+    started = time.monotonic()
+    started_utc = datetime.now(timezone.utc).isoformat()
+    if len(rows) != 2:
+        raise ValueError("padded parity requires the first two DEV prompts")
+    print("SHOULD: PRIMARY_PADDED_PARITY exact top1, rank1 sets and all frozen candidate ranks; full vocabulary rtol=0.005 atol=0.005", flush=True)
+    JacobianLens, from_hf, source_hashes = verified_companion()
+    lens = JacobianLens(checkpoint["J"], n_prompts=int(checkpoint["n_prompts"]),
+                        d_model=int(model.config.get_text_config().hidden_size))
+    wrapped = from_hf(model, tokenizer, force_bos=False)
+    candidates = one_token_ids(tokenizer)
+    results = []
+    for condition in ("original", "explicit_validity"):
+        batch = capture_condition(model, tokenizer, rows, condition, 2, args.max_length)
+        lengths = [sum(record["attention_mask"]) for record in batch]
+        if len(set(lengths)) != 2 or not any(0 in record["attention_mask"] for record in batch):
+            raise ValueError(f"first two {condition} DEV prompts did not exercise padding")
+        for row, record in zip(rows, batch, strict=True):
+            single = capture_condition(model, tokenizer, [row], condition, 1, args.max_length)[0]
+            valid_positions = [i for i, valid in enumerate(record["attention_mask"]) if valid]
+            unpadded_ids = [record["input_ids"][i] for i in valid_positions]
+            positions = [valid_positions.index(i) for i in record["request_token_positions"]]
+            if (unpadded_ids != single["input_ids"] or positions != single["request_token_positions"]
+                    or record["request_token_ids"] != single["request_token_ids"]
+                    or record["request_token_offsets"] != single["request_token_offsets"]):
+                raise ValueError("primary batch/single tokens or request positions differ")
+            official, _, official_ids = lens.apply(
+                wrapped, record["rendered"], layers=WORKSPACE_LAYERS, positions=positions,
+                max_seq_len=len(unpadded_ids),
+            )
+            if official_ids[0].cpu().tolist() != unpadded_ids:
+                raise ValueError("official tokens differ from unpadded primary tokens")
+            hidden_differences = {
+                str(layer): float((record["hidden"][layer] - single["hidden"][layer]).abs().max())
+                for layer in WORKSPACE_LAYERS
+            }
+            score_records(model, tokenizer, checkpoint, candidates, [record], official_logits=official)
+            score_records(model, tokenizer, checkpoint, candidates, [single], official_logits=official)
+            result = {
+                "scenario": record["scenario"], "condition": condition,
+                "rendered": record["rendered"], "request_char_span": record["request_char_span"],
+                "input_ids": record["input_ids"], "attention_mask": record["attention_mask"],
+                "request_token_positions": record["request_token_positions"],
+                "official_request_token_positions": positions, "official_input_ids": unpadded_ids,
+                "batch_lengths": lengths, "padding_count": record["attention_mask"].count(0),
+                "tokens_positions_offsets_match": True,
+                "batch_single_hidden_max_absolute_difference": hidden_differences,
+                "batch_vs_official": record["parity_layers"],
+                "single_vs_official": single["parity_layers"],
+            }
+            result["passed"] = all(layer["passed"] for layer in record["parity_layers"].values())
+            result["single_passed"] = all(layer["passed"] for layer in single["parity_layers"].values())
+            results.append(result)
+            print("PRIMARY_PADDED_PARITY_RECORD", json.dumps({
+                key: result[key] for key in ("scenario", "condition", "padding_count", "passed", "single_passed")
+            }, sort_keys=True), flush=True)
+    summary = {
+        "passed": all(record["passed"] and record["single_passed"] for record in results),
+        "record_count": len(results),
+        "batch_pass_count": sum(record["passed"] for record in results),
+        "single_pass_count": sum(record["single_passed"] for record in results),
+        "decision": "PRIMARY_PADDED_PARITY_PASS" if all(record["passed"] and record["single_passed"] for record in results)
+                    else "PRIMARY_PADDED_PARITY_MISMATCH_NO_DEV15",
+    }
+    output = {
+        "schema": "j_lens_primary_padded_parity_v1", "summary": summary,
+        "source_revision": args.source_revision, "implementation_sha256": sha256_file(Path(__file__)),
+        "model": args.model, "model_revision": resolved_revision, "dtype": args.dtype,
+        "tokenizer_sha256": tokenizer_content_hash(tokenizer), "cohort_sha256": cohort_sha256,
+        "lens_sha256": sha256_file(lens_file), "lens_n_prompts": checkpoint["n_prompts"],
+        "layers": list(WORKSPACE_LAYERS), "token_ids": candidates, "readout": readout_definition(),
+        "companion_commit": COMPANION_COMMIT, "companion_source_sha256": source_hashes,
+        "adaptations": "unmodified companion; force_bos=False; explicit unpadded positions; no truncation",
+        "runtime": {
+            "started_utc": started_utc, "elapsed_seconds": time.monotonic() - started,
+            "python": platform.python_version(), "torch": torch.__version__,
+            "transformers": __import__("transformers").__version__, "cuda": torch.version.cuda,
+            "device": str(model.device), "gpu": torch.cuda.get_device_name() if torch.cuda.is_available() else None,
+            "peak_gpu_memory_bytes": torch.cuda.max_memory_allocated() if torch.cuda.is_available() else None,
+            "batch_size": 2, "padding_side": tokenizer.padding_side,
+            "attention_implementation": model.config.get_text_config()._attn_implementation,
+        },
+        "records": results, "no_generation": True,
+    }
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("x") as file:
+        file.write(json.dumps(output, ensure_ascii=False, indent=2) + "\n")
+    print("PRIMARY_PADDED_PARITY_COMPLETE", json.dumps(summary, sort_keys=True), flush=True)
+    if not summary["passed"]:
+        raise RuntimeError(f"primary padded parity failed; diagnostic saved to {args.output}")
 
 
 def verified_companion():
@@ -1154,6 +1300,14 @@ def readout_self_test(*, companion: bool) -> None:
                     original["hidden"][layer][index] @ dual,
                 )
     print(f"CORRECTED_PRIMARY_READOUT_PASS cells={sum(len(r['cells']) for r in records)} raw_top1_different_layers={raw_difference_count}")
+    fixture_scores = expected["tiny-a", 13]
+    assert compare_primary_scores(fixture_scores, fixture_scores, candidates, tokenizer)["passed"]
+    changed_scores = fixture_scores.clone()
+    changed_scores[:, candidates["false"]] = fixture_scores.max() + 1
+    mismatch = compare_primary_scores(changed_scores, fixture_scores, candidates, tokenizer)
+    assert not mismatch["passed"]
+    assert any(cell["rank_mismatch_margins"] for cell in mismatch["cells"])
+    print("PRIMARY_PADDED_PARITY_COMPARISON_SELF_TEST_PASS identity=true injected_rank_failure=true")
 
     original_model = model
     model = copy.deepcopy(model)
@@ -1211,7 +1365,10 @@ def main() -> None:
         raise ValueError("--output and --source-revision are required")
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite diagnostic artifact: {args.output}")
-    if args.smoke:
+    if args.padded_parity:
+        if args.smoke or args.readout_bridge or args.limit != 2 or args.batch_size != 2:
+            raise ValueError("padded parity requires --limit 2 --batch-size 2 without other diagnostic modes")
+    elif args.smoke:
         if args.limit != 1:
             raise ValueError("smoke mode requires --limit 1")
     elif args.limit != 15:
@@ -1243,6 +1400,9 @@ def main() -> None:
         raise ValueError("saved Qwen lens differs from frozen task465 checkpoint")
     if set(WORKSPACE_LAYERS) - set(checkpoint["J"]):
         raise ValueError("saved J-lens lacks required layers 13-21")
+    if args.padded_parity:
+        run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revision, lens_file, checkpoint)
+        return
     if args.readout_bridge:
         run_readout_bridge(
             args,
