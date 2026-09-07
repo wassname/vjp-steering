@@ -1,0 +1,68 @@
+✓ Initialized. View run at
+https://modal.com/apps/wassname/main/ap-LAoesKRfv4QYSI3VUygYRT
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1174.55it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 674.87it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▍         | 21/426 [00:00<00:02, 171.25it/s]
+[1ALoading weights:  11%|█▏        | 48/426 [00:00<00:01, 198.18it/s]
+[1ALoading weights:  16%|█▌        | 69/426 [00:00<00:01, 183.60it/s]
+[1ALoading weights:  21%|██        | 88/426 [00:00<00:01, 175.19it/s]
+[1ALoading weights:  25%|██▌       | 107/426 [00:00<00:01, 177.34it/s]
+[1ALoading weights:  30%|██▉       | 126/426 [00:00<00:01, 174.73it/s]
+[1ALoading weights:  35%|███▍      | 149/426 [00:00<00:01, 188.28it/s]
+[1ALoading weights:  39%|███▉      | 168/426 [00:00<00:01, 179.61it/s]
+[1ALoading weights:  44%|████▍     | 188/426 [00:01<00:01, 182.62it/s]
+[1ALoading weights:  49%|████▉     | 210/426 [00:01<00:01, 190.80it/s]
+[1ALoading weights:  55%|█████▌    | 236/426 [00:01<00:00, 207.39it/s]
+[1ALoading weights:  60%|██████    | 257/426 [00:01<00:00, 200.18it/s]
+[1ALoading weights:  67%|██████▋   | 284/426 [00:01<00:00, 217.27it/s]
+[1ALoading weights:  72%|███████▏  | 308/426 [00:01<00:00, 216.64it/s]
+[1ALoading weights:  78%|███████▊  | 331/426 [00:01<00:00, 216.25it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 243.96it/s]
+2026-09-07 00:17:25.559 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-07 00:17:36.437 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=13 gp_norms=[1.0208452939987183, 1.110384225845337] split_gp_cosines=[0.9449450969696045, 0.9459013938903809] component_cosine=0.6749 condition=2.270 eligibility_plus=0.657 eligibility_minus=0.343
+2026-09-07 00:17:36.695 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=14 gp_norms=[1.134684443473816, 1.11037278175354] split_gp_cosines=[0.9474408626556396, 0.9697465300559998] component_cosine=0.6847 condition=2.312 eligibility_plus=0.588 eligibility_minus=0.412
+2026-09-07 00:17:36.928 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=15 gp_norms=[1.4810634851455688, 1.693289875984192] split_gp_cosines=[0.9723995923995972, 0.9665148258209229] component_cosine=0.5660 condition=1.899 eligibility_plus=0.737 eligibility_minus=0.263
+2026-09-07 00:17:37.165 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=16 gp_norms=[2.0766468048095703, 1.944916009902954] split_gp_cosines=[0.9520993232727051, 0.9403296709060669] component_cosine=0.4677 condition=1.661 eligibility_plus=0.749 eligibility_minus=0.251
+2026-09-07 00:17:37.400 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=17 gp_norms=[2.3280398845672607, 2.3069393634796143] split_gp_cosines=[0.9912176132202148, 0.9833100438117981] component_cosine=0.5266 condition=1.796 eligibility_plus=0.681 eligibility_minus=0.319
+2026-09-07 00:17:37.634 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=18 gp_norms=[2.5715413093566895, 2.657386064529419] split_gp_cosines=[0.9824917912483215, 0.9836812019348145] component_cosine=0.5694 condition=1.909 eligibility_plus=0.757 eligibility_minus=0.243
+2026-09-07 00:17:37.875 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=19 gp_norms=[2.8653578758239746, 3.0840721130371094] split_gp_cosines=[0.9709218144416809, 0.953586220741272] component_cosine=0.5882 condition=1.964 eligibility_plus=0.525 eligibility_minus=0.475
+2026-09-07 00:17:38.106 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=20 gp_norms=[3.1352014541625977, 3.652662992477417] split_gp_cosines=[0.9749451875686646, 0.9698941111564636] component_cosine=0.5239 condition=1.789 eligibility_plus=0.580 eligibility_minus=0.420
+2026-09-07 00:17:38.344 | INFO     | vjp_steering.j_lens_concept:extract_persona_components:742 - persona components layer=21 gp_norms=[3.722825050354004, 4.102342128753662] split_gp_cosines=[0.9737914800643921, 0.9669342041015625] component_cosine=0.5379 condition=1.824 eligibility_plus=0.622 eligibility_minus=0.378
+EXTRACTION_COMPLETE id=j-lens-persona-components-source-v15 hash_plus=bb0529b0cc08b21ec8b7ffe9109e980ce841363dc8aaafb8d41e82fe6c737191
+✓ Finished downloading files to local!
+{
+  "method": "j_lens_concept_components",
+  "model": "Qwen/Qwen3.5-4B",
+  "dtype": "bfloat16",
+  "n_pairs": 65,
+  "sample_id": "persona_components:fe7dad5c03085137dbe02f25fac009116bb74079b22e9cd15520a038426eb327",
+  "seconds": 13.945870595999999,
+  "vector_files": {
+    "+C": "extraction/plusC.safetensors",
+    "-C": "extraction/minusC.safetensors"
+  },
+  "vector_content_sha256": {
+    "+C": "bb0529b0cc08b21ec8b7ffe9109e980ce841363dc8aaafb8d41e82fe6c737191",
+    "-C": "123f56b3986e270779ca66c92
+EXPERIMENT_EXTRACTION_DOWNLOADED output=/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-persona-components-source-v15
+Stopping app - local entrypoint completed.
+✓ App completed. View run at
+https://modal.com/apps/wassname/main/ap-LAoesKRfv4QYSI3VUygYRT

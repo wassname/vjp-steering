@@ -116,11 +116,14 @@ def calibrate_concept(
     experiment_id: str = "j-lens-concept-calibration-v1",
     j_lens_source: str = "concept",
 ):
-    print(run_experiment.remote(method, [
+    result = run_experiment.remote(method, [
         "--concept-calibrate", "--dev", "--experiment-id", experiment_id,
         "--source-experiment", source_experiment, "--model", MODEL,
         "--j-lens-source", j_lens_source,
-    ])[:500])
+    ])
+    output = pull_experiment(experiment_id)
+    print(result[:500])
+    print(f"CONCEPT_CALIBRATION_DOWNLOADED output={output}")
 
 
 def pull_experiment(experiment_id: str) -> Path:
