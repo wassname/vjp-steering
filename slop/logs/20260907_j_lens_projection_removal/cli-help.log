@@ -1,0 +1,18 @@
+usage: j_lens_additive_concepts.py [-h] [--self-test] [--judge JUDGE]
+                                   [--report REPORT]
+                                   [--generation-report GENERATION_REPORT]
+                                   [--single-concept] [--projection-removal]
+                                   [--alpha {1,2,4}] [--output OUTPUT]
+                                   [--source-revision SOURCE_REVISION]
+
+options:
+  -h, --help            show this help message and exit
+  --self-test
+  --judge JUDGE
+  --report REPORT
+  --generation-report GENERATION_REPORT
+  --single-concept
+  --projection-removal
+  --alpha {1,2,4}
+  --output OUTPUT
+  --source-revision SOURCE_REVISION

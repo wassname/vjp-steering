@@ -1,0 +1,18 @@
+{
+  "offline_GPU_calls": 0,
+  "offline_API_calls": 0,
+  "offline_spend_usd": 0,
+  "unreserved_before_authorization_usd": 2.61988872744,
+  "unreserved_usd": 2.01988872744,
+  "run_allocation_usd": 0.60,
+  "run_reserved": true,
+  "run_authorized": true,
+  "authorization": "slop/handovers/j_lens_v10_projection_execution.md",
+  "maximum_generation_calls": 1,
+  "expected_treatments": 15,
+  "expected_identities": 1,
+  "expected_judgments": 30,
+  "reported_cumulative_API_before_usd": 1.08106749412,
+  "outstanding_reserves_released_usd": 0,
+  "goals_complete": false
+}

@@ -25,9 +25,13 @@ SOURCE_SHA = '9b47dcb594efc67f9b3491013273106346a0afb8c32fea3a6111e6121ca34a53'
 
 
 SINGLE_ROOT = ROOT.with_name("20260907_j_lens_single_concept")
+PROJECTION_ROOT = ROOT.with_name('20260907_j_lens_projection_removal')
 
 
-def dose_root(alpha, single_concept=False):
+def dose_root(alpha, single_concept=False, projection_removal=False):
+    if projection_removal:
+        assert alpha == 1 and not single_concept, 'Projection removal is fraction1, minus-only'
+        return PROJECTION_ROOT
     if single_concept:
         assert alpha == 4
         return SINGLE_ROOT
@@ -77,15 +81,45 @@ def additive_patch(h, contrast, signed_alpha):
         'direction_cosine':float(torch.nn.functional.cosine_similarity(actual, desired[None]).item()) if actual.norm() and desired.norm() else None}
 
 
+def projection_patch(h, direction, fraction):
+    """Remove a single coordinate, not a constant displacement; BF16 need not reach zero."""
+    assert fraction in (0., 1.)
+    assert h.ndim == 2 and h.shape[0] == 1 and direction.shape == (h.shape[-1],)
+    unit = direction.float() / direction.float().norm()
+    assert torch.isfinite(unit).all()
+    coordinate = h.float() @ unit
+    desired = -fraction * coordinate[..., None] * unit
+    after = (h.float() + desired).to(h.dtype)
+    actual = after.float() - h.float()
+    residual = after.float() @ unit
+    orthogonal_change = actual - (actual @ unit)[..., None] * unit
+    bound = torch.finfo(h.dtype).eps * (h.float().norm() + 2*desired.norm()) + 1e-6
+    assert torch.isfinite(after).all() and (actual-desired).norm() <= bound
+    assert orthogonal_change.norm() <= bound
+    assert torch.max(abs(residual - (1-fraction)*coordinate)) <= bound
+    if fraction == 0:
+        assert torch.equal(after, h)
+    return after, {'operator':'projection_removal', 'removal_fraction':fraction,
+        'coordinate_before':float(coordinate.item()), 'coordinate_after':float(residual.item()),
+        'desired_norm':float(desired.norm()), 'actual_norm':float(actual.norm()),
+        'norm_error':float(abs(actual.norm()-desired.norm())),
+        'orthogonal_change_norm':float(orthogonal_change.norm()),
+        'rounding_error_norm':float((actual-desired).norm()), 'rounding_bound':float(bound)}
+
+
+def intervention_patch(h, direction, strength, projection_removal=False):
+    return (projection_patch if projection_removal else additive_patch)(h, direction, strength)
+
+
 @contextmanager
-def intervention(model, contrast, signed_alpha, measurements, layer=LAYER):
+def intervention(model, contrast, signed_alpha, measurements, layer=LAYER, projection_removal=False):
     contrast = contrast.to(model.device)
     inserted = None
     def patch(_m, _i, output):
         nonlocal inserted
         before = output[0] if isinstance(output, tuple) else output
         h = before.clone()
-        h[:, -1], metrics = additive_patch(before[:, -1], contrast, signed_alpha)
+        h[:, -1], metrics = intervention_patch(before[:, -1], contrast, signed_alpha, projection_removal)
         assert torch.equal(h[:, :-1], before[:, :-1])
         measurements.append({'call':len(measurements),'sequence_length':h.shape[1], 'position':h.shape[1]-1,
             'nonfinal_exact':True,'next_block_exact':False,**metrics})
@@ -172,13 +206,15 @@ def run(args):
     from huggingface_hub import snapshot_download
     from transformers import AutoTokenizer,AutoModelForCausalLM
     assert not args.output.exists()
-    source,contrast=source_contrast(args.single_concept)
-    offline_path=dose_root(args.alpha,args.single_concept)/'offline-bf16.json'
+    source,contrast=source_contrast(args.single_concept or args.projection_removal)
+    offline_path=dose_root(args.alpha,args.single_concept,args.projection_removal)/'offline-bf16.json'
     offline=json.loads(offline_path.read_text())
     assert offline['source_sha256']==gap.sha(SOURCE) and offline['zero_updates']==0
     assert offline['fixed_alpha']==args.alpha
     assert offline.get('single_concept',False)==args.single_concept
-    if args.single_concept: assert offline['vector']==contrast.tolist()
+    assert offline.get('projection_removal',False)==args.projection_removal
+    if args.single_concept or args.projection_removal: assert offline['vector']==contrast.tolist()
+    if args.projection_removal: assert offline['implementation_sha256']==gap.sha(__file__)
     reference=json.loads(norm.REFERENCE.read_text());assert gap.sha(norm.REFERENCE)==norm.REFERENCE_SHA
     started=time.monotonic()
     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION));assert snapshot.name==gap.REVISION
@@ -190,24 +226,24 @@ def run(args):
         'dependencies_sha256':{p:gap.sha(SCRIPTS/'scratch'/p) for p in ('j_lens_norm_matched_gp.py','j_lens_gap_clamp.py')},
         'model_revision':gap.REVISION,'snapshot':str(snapshot),'reference_sha256':norm.REFERENCE_SHA,'named_source_sha256':gap.sha(SOURCE),
         'model_config_sha256':gap.sha(snapshot/'config.json'),'model_index_sha256':gap.sha(snapshot/'model.safetensors.index.json'),
-        'single_concept':args.single_concept, 'contrast':contrast.tolist(),'contrast_norm':float(contrast.norm()),'fixed_alpha':args.alpha,'settings':reference['settings'],
+        'projection_removal':args.projection_removal, 'single_concept':args.single_concept, 'contrast':contrast.tolist(),'contrast_norm':float(contrast.norm()),'fixed_alpha':args.alpha,'settings':reference['settings'],
         'argv':sys.argv,'offline_check_sha256':gap.sha(offline_path),
         'records':[],'identity_controls':[],'reused_records':reference['records'],
-        'scope':f'{"Norm-matched single sycophancy GP component" if args.single_concept else "Raw named-GP difference"}, persistent layer17, alpha{args.alpha}; no source inference; exploratory reused DEV15, not frontier'}
+        'scope':f'{"Single sycophancy GP projection removal (fraction1, minus-only, not norm-matched)" if args.projection_removal else "Norm-matched single sycophancy GP component" if args.single_concept else "Raw named-GP difference"}, persistent layer17, alpha{args.alpha}; no source inference; exploratory reused DEV15, not frontier'}
     norm.save(args.output,data)
     print('ADDITIVE_MODEL',json.dumps({k:data[k] for k in ('model_revision','snapshot','named_source_sha256','contrast_norm','fixed_alpha')}),flush=True)
-    print('SHOULD:30treatments+2exactidentity;nonzero actual signed-additive delivery each cached call;no source fitting;constant vector and fixed rubric.',flush=True)
+    print('SHOULD:15treatments+1exactidentity;projection residual and orthogonal preservation within rounding;fixed rubric.' if args.projection_removal else 'SHOULD:30treatments+2exactidentity;nonzero actual signed-additive delivery each cached call;no source fitting;constant vector and fixed rubric.',flush=True)
     rows,_=gap.walk.read_cohort(15)
     for ri,row in enumerate(rows):
         bare=next(r for r in reference['records'] if r['scenario']==row['scenario'] and r['condition']=='bare')
         rendered=gap.walk.generation_inputs(tokenizer,[row])[0]
         encoded=tokenizer(rendered,return_tensors='pt',add_special_tokens=False).to(model.device)
         assert rendered==bare['rendered'] and encoded.input_ids[0].tolist()==bare['input_ids'] and encoded.attention_mask.all()
-        for side,sign in (('+C',1.),('-C',-1.)):
+        for side,sign in ((('-C',1.),) if args.projection_removal else (('+C',1.),('-C',-1.))):
             for alpha in ((0.,args.alpha) if ri==0 else (args.alpha,)):
                 ms=[]
                 try:
-                    with torch.inference_mode(),intervention(model,contrast,sign*alpha,ms):
+                    with torch.inference_mode(),intervention(model,contrast,sign*alpha,ms,projection_removal=args.projection_removal):
                         output=model.generate(**encoded,do_sample=False,temperature=None,top_p=None,top_k=None,pad_token_id=tokenizer.eos_token_id,max_new_tokens=512,use_cache=True)
                 except Exception as e:
                     data['failure']={'scenario':row['scenario'],'side':side,'error':repr(e),'measurements':ms};norm.save(args.output,data);raise
@@ -215,19 +251,22 @@ def run(args):
                 assert len(ms)==len(ids) and all(m['next_block_exact'] for m in ms)
                 assert [m['sequence_length'] for m in ms]==[len(bare['input_ids'])]+[1]*(len(ids)-1)
                 text=tokenizer.decode(ids,skip_special_tokens=True).strip()
-                r={'scenario':row['scenario'],'prompt':row['prompt'],'condition':('single_concept_' if args.single_concept else 'additive_concepts_')+('plus' if side=='+C' else 'minus'),
-                    'method':'single_sycophancy_gp' if args.single_concept else 'additive_named_gp','side':side,'rendered':rendered,'input_ids':bare['input_ids'],
+                r={'scenario':row['scenario'],'prompt':row['prompt'],'condition':('projection_removal_' if args.projection_removal else 'single_concept_' if args.single_concept else 'additive_concepts_')+('plus' if side=='+C' else 'minus'),
+                    'method':'sycophancy_gp_projection_removal' if args.projection_removal else 'single_sycophancy_gp' if args.single_concept else 'additive_named_gp','side':side,'rendered':rendered,'input_ids':bare['input_ids'],
                     'attention_mask':encoded.attention_mask[0].tolist(),'generated_ids':ids,'text':text,'measurements':ms,'health':gap.walk.health(tokenizer,[text])}
                 if not alpha:
                     assert ids==bare['generated_ids'] and all(m['actual_norm']==0 for m in ms)
                     r['identity_exact']=True;data['identity_controls'].append(r)
                 else:
-                    assert all(m['actual_norm']>0 and m['direction_cosine']>.99 for m in ms)
+                    if args.projection_removal:
+                        assert all(m['operator']=='projection_removal' and m['removal_fraction']==1 for m in ms)
+                    else:
+                        assert all(m['actual_norm']>0 and m['direction_cosine']>.99 for m in ms)
                     data['records'].append(r)
                 norm.save(args.output,data)
                 print('ADDITIVE_RESPONSE',json.dumps({k:v for k,v in r.items() if k not in ('input_ids','attention_mask','generated_ids','measurements')}),flush=True)
     data['runtime']={'seconds':time.monotonic()-started,'gpu':torch.cuda.get_device_name(),'peak_memory_bytes':torch.cuda.max_memory_allocated(),'torch':torch.__version__}
-    assert len(data['records'])==30 and len(data['identity_controls'])==2
+    assert len(data['records'])==(15 if args.projection_removal else 30) and len(data['identity_controls'])==(1 if args.projection_removal else 2)
     norm.save(args.output,data);print('ADDITIVE_COMPLETE',json.dumps(data['runtime']),flush=True)
 
 
@@ -370,30 +409,33 @@ if __name__!='__main__':
     import modal
     from run_modal import image,cache,source_revision
     image=image.add_local_file(str(norm.REFERENCE),'/repo/'+str(norm.REFERENCE)).add_local_file(str(SOURCE),'/repo/'+str(SOURCE))
-    for alpha,single in ((1,False),(2,False),(4,False),(4,True)):
-        check=dose_root(alpha,single)/'offline-bf16.json'
+    for alpha,single,projection in ((1,False,False),(2,False,False),(4,False,False),(4,True,False),(1,False,True)):
+        check=dose_root(alpha,single,projection)/'offline-bf16.json'
         if check.exists():image=image.add_local_file(str(check),'/repo/'+str(check))
     app=modal.App('jsteer-additive-named-concepts',image=image)
     @app.function(gpu='H100',volumes={'/cache':cache},timeout=360,max_containers=1,retries=0)
-    def remote(revision:str,alpha:int=1,single_concept:bool=False):
-        destination='outputs/audits/'+dose_root(alpha,single_concept).name+'/generation.json'
-        try:subprocess.run([sys.executable,'scripts/scratch/j_lens_additive_concepts.py','--alpha',str(alpha),'--output','/cache/'+destination,'--source-revision',revision]+(['--single-concept'] if single_concept else []),cwd='/repo',check=True)
+    def remote(revision:str,alpha:int=1,single_concept:bool=False,projection_removal:bool=False):
+        destination='outputs/audits/'+dose_root(alpha,single_concept,projection_removal).name+'/generation.json'
+        try:subprocess.run([sys.executable,'scripts/scratch/j_lens_additive_concepts.py','--alpha',str(alpha),'--output','/cache/'+destination,'--source-revision',revision]+(['--single-concept'] if single_concept else [])+(['--projection-removal'] if projection_removal else []),cwd='/repo',check=True)
         finally:
             print('ADDITIVE_VOLUME_COMMIT_START',flush=True);cache.commit();print('ADDITIVE_VOLUME_COMMIT_END',flush=True)
         return destination
     @app.local_entrypoint()
-    def launch(alpha:int=1,single_concept:bool=False):
-        assert (dose_root(alpha,single_concept)/'offline-bf16.json').exists()
-        print('ADDITIVE_REMOTE_PATH',remote.remote(source_revision(),alpha,single_concept),flush=True)
+    def launch(alpha:int=1,single_concept:bool=False,projection_removal:bool=False):
+        assert (dose_root(alpha,single_concept,projection_removal)/'offline-bf16.json').exists()
+        print('ADDITIVE_REMOTE_PATH',remote.remote(source_revision(),alpha,single_concept,projection_removal),flush=True)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--self-test',action='store_true');p.add_argument('--judge',type=Path);p.add_argument('--report',type=Path)
     p.add_argument('--generation-report',type=Path)
     p.add_argument('--single-concept',action='store_true')
+    p.add_argument('--projection-removal',action='store_true')
     p.add_argument('--alpha',type=int,choices=(1,2,4),default=1)
     p.add_argument('--output',type=Path);p.add_argument('--source-revision',default='unknown');args=p.parse_args()
-    args.output=args.output or dose_root(args.alpha,args.single_concept)/'generation.json'
-    if args.self_test:self_test(args.alpha,args.single_concept)
+    args.output=args.output or dose_root(args.alpha,args.single_concept,args.projection_removal)/'generation.json'
+    if args.self_test:
+        assert not args.projection_removal, 'Run slop/logs/20260907_j_lens_projection_removal/precheck.py for the offline projection check'
+        self_test(args.alpha,args.single_concept)
     elif args.judge:asyncio.run(norm.judge_run(args))
     elif args.report:report(args.report)
     elif args.generation_report:generation_report(args.generation_report)
