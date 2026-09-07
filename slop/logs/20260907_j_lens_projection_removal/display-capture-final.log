@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_projection_removal/display_check.py", line 16, in <module>
+    assert len(points)==38
+           ^^^^^^^^^^^^^^^
+AssertionError

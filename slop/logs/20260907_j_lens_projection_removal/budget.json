@@ -4,7 +4,7 @@
   "offline_spend_usd": 0,
   "unreserved_before_authorization_usd": 2.61988872744,
   "unreserved_usd": 2.01988872744,
-  "run_allocation_usd": 0.60,
+  "run_allocation_usd": 0.6,
   "run_reserved": true,
   "run_authorized": true,
   "authorization": "slop/handovers/j_lens_v10_projection_execution.md",
@@ -14,5 +14,16 @@
   "expected_judgments": 30,
   "reported_cumulative_API_before_usd": 1.08106749412,
   "outstanding_reserves_released_usd": 0,
-  "goals_complete": false
+  "goals_complete": false,
+  "app_id": "ap-1Arwmij0hs19R8fo5PCFy8",
+  "generation_calls": 1,
+  "judge_calls": 30,
+  "judge_cost_usd": 0.00477288,
+  "cumulative_reported_API_usd": 1.08584037412,
+  "runtime_seconds": 52.610466014,
+  "runtime_GPU_estimate_usd": 0.057713681217358,
+  "wall_seconds": 101,
+  "actual_infrastructure_invoice_usd": null,
+  "allocation_retained_usd": 0.6,
+  "judging_cardinality_failure_API_calls": 0
 }

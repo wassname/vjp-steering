@@ -1,0 +1,165 @@
+{
+  "status": "incomplete, uncalibrated DEV; eligibility unknown",
+  "artifacts": [
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts/judgments.jsonl",
+      "generation_sha256": "5857fc05a9a428022ee90e139e78719ccbb8000ccc7690b390bb58b49de7c840",
+      "judgments_sha256": "161c730bb7476ce51bcb27ea703596107efea82b3a792c16a4bd907b6ba00182"
+    },
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts_alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts_alpha2/judgments.jsonl",
+      "generation_sha256": "53121bc5bd5a9be42c67296dba59a7fc9f186275d2c81d7e8bf1358d1567e31d",
+      "judgments_sha256": "3ceaf0ae8199e35888994e6ff969b06ca4f46841f4af6bb9d0eeb4e1ca9b783b"
+    },
+    {
+      "method": "named-GP additive",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_additive_concepts_alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_additive_concepts_alpha4/judgments.jsonl",
+      "generation_sha256": "197e99cf5ca0af3d299895092fe54230790752e5e42561d8c30b1b268e268f2e",
+      "judgments_sha256": "af7a827951d0d0ebc4d492be827fce18a75a9ef825d51541a8dce6f6938acb0d"
+    },
+    {
+      "method": "matched random",
+      "seed": 0,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed0/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed0/alpha1/judgments.jsonl",
+      "generation_sha256": "fa58230afdb0daddab482e9eccee6f8d17286b9b4f5883436b97cbd964d6d83d",
+      "judgments_sha256": "d52047ffd714aabfa6996155a02ac999565d7d71a0ef30dc62cb1bebae1b97ed"
+    },
+    {
+      "method": "matched random",
+      "seed": 0,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed0/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed0/alpha2/judgments.jsonl",
+      "generation_sha256": "9ac4cfc01f819a86b37fefe347b4b5c02413f8a1eb53b3f5e2b93399c76391c1",
+      "judgments_sha256": "998ff5069c6a4b9562adf827c2df45ed390b9c70591ab9620e93371777d7763c"
+    },
+    {
+      "method": "matched random",
+      "seed": 0,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed0/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed0/alpha4/judgments.jsonl",
+      "generation_sha256": "3894c603fe881ce715d4cdadfa1124b6145959d6ffebabbba6c562ad815cfffd",
+      "judgments_sha256": "8466179e9e9589ecbd9b2f77baae3feb6b0a9b58fe3686004a0c5d1f96f647df"
+    },
+    {
+      "method": "matched random",
+      "seed": 1,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed1/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed1/alpha1/judgments.jsonl",
+      "generation_sha256": "570da76696695cf5589402af27d3b820b894eafbcf0d5ab3277b13f1ea4adb4f",
+      "judgments_sha256": "d5813dbe332d52d91d15e1db2591b11576dde35604c088546bca3fc594ee1a8c"
+    },
+    {
+      "method": "matched random",
+      "seed": 1,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed1/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed1/alpha2/judgments.jsonl",
+      "generation_sha256": "396e7cb7bbb30fef78be0ec53a846d658554fd0595af2e39a924e8fda78377e2",
+      "judgments_sha256": "5fae203ee6fa0495cf0cf32ab78f353270fb270f0b08040748a1c1ab3a4fc51e"
+    },
+    {
+      "method": "matched random",
+      "seed": 1,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed1/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed1/alpha4/judgments.jsonl",
+      "generation_sha256": "6f871dbf8bd17d72b400cfd2de2d70dc20b73b2d955e133a4d32aff793d04c48",
+      "judgments_sha256": "4af0296843a2344bdfc34a5974ff9b7cddf2bc22f67b154bc56b073017e4080f"
+    },
+    {
+      "method": "matched random",
+      "seed": 2,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed2/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed2/alpha1/judgments.jsonl",
+      "generation_sha256": "3c013e8eae942f0bfe04009a60158d90288ac18f1d416cd01e2904147315b108",
+      "judgments_sha256": "1cc2f688d51a2643cd0e496fd2517e54d0e7e1d8e670bfb8de26eb6d4c26d495"
+    },
+    {
+      "method": "matched random",
+      "seed": 2,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed2/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed2/alpha2/judgments.jsonl",
+      "generation_sha256": "a7e3c00527a05f8ba79fefd1534bc4d90775dec49a19915db1b16f53fd7f0bd4",
+      "judgments_sha256": "63012066afd02175fd0c1b017190abe05121a302e2a6cdfa66fd3d98874ace06"
+    },
+    {
+      "method": "matched random",
+      "seed": 2,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed2/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed2/alpha4/judgments.jsonl",
+      "generation_sha256": "2da80f267b8d33e55f9dd65a90fff83eefd81fc5a3b648283d915f6fb8927bed",
+      "judgments_sha256": "3d73663671ad5609b01655a7e1556557d15f9f523f2f1aa32170a3ef7389f878"
+    },
+    {
+      "method": "matched random",
+      "seed": 3,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/judgments.jsonl",
+      "generation_sha256": "ac57ebb0338fde6d2ffabe2df20f20fea322b319fb46bc689d7617cbecce0e83",
+      "judgments_sha256": "41e0204709f9540a6396ab31f0f975d292a5f05545860057da7ee5d3753f2c94"
+    },
+    {
+      "method": "matched random",
+      "seed": 3,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/judgments.jsonl",
+      "generation_sha256": "557560adb5273c7081dcdbf276e69f0d1ec6dfd65426bac929258f56414380ab",
+      "judgments_sha256": "4df78acd250162898638e9e6c60ae344b6b9eddd1d461398a83cf1ed3ea14ded"
+    },
+    {
+      "method": "matched random",
+      "seed": 3,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl",
+      "generation_sha256": "4241d9f01f260b37a900978bf5ca702778d94cf161dca38481acd8c320cf6600",
+      "judgments_sha256": "e84c28b2762c4505bf66e81f28f62f0003f955445d945636c532a657a7165ad4"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+      "generation_sha256": "66fe3acd1622d0d0d4bd2adaf3cfae218dfb6e56923b0cb67f8c72570dc3340c",
+      "judgments_sha256": "db01510e476bc842c6eb0f1f1c097169e855e97b9a00a18f6804c7b5508bf374"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+      "generation_sha256": "c5ea69f572b426b31c29989ba1acb95c5a5db614c525ec2c3aa9e580cae94b5d",
+      "judgments_sha256": "636536e7fcc76f6acf0452af7e0838d1448f258cc9c90b92b2be7ec491f609bc"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+      "generation_sha256": "2185556cf55ed0292d1d555b8dfc25c05f56b3e622f803919ef5a3e07b0f11f3",
+      "judgments_sha256": "55911fe872e6a0ef69555e4714bd69daf08915007a8a3006aebe1b2e1badd0f9"
+    },
+    {
+      "method": "single sycophancy GP",
+      "seed": null,
+      "generation": "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_single_concept/generation.json",
+      "judgments": "/workspace/2026/jspace/j-steer_pub/slop/logs/20260907_j_lens_single_concept/judgments.jsonl",
+      "generation_sha256": "556e36f0b21019707f20a7ad25d44e3276ec0a356484aacb57f1db372bac41f6",
+      "judgments_sha256": "ece63cca95be7f8912dcbd176ddb35393317133d2eb2cde9d7d2969441a8dcf5"
+    },
+    {
+      "method": "sycophancy GP projection removal",
+      "seed": null,
+      "generation": "slop/logs/20260907_j_lens_projection_removal/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_projection_removal/judgments.jsonl",
+      "generation_sha256": "03aaaae93f1aaad0436c0f92e12469a04b8a7ad27e58acf2f6d3bd890ffca431",
+      "judgments_sha256": "9f9ebb91109e8380beab4c9d2daf248a6b94ab80b9c6779e8963c6afc937f88d"
+    }
+  ]
+}

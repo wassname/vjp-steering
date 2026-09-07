@@ -23,9 +23,15 @@ def load_points(manifest_path):
         assert sha(judgments) == item['judgments_sha256']
         data = json.loads(generation.read_text())
         js = [json.loads(line) for line in judgments.read_text().splitlines()]
-        assert len(js) == 60
-        assert len({(j['vignette'], j['side'], j['order']) for j in js}) == 60
-        for side in ('+C', '-C'):
+        projection = item['method'] == 'sycophancy GP projection removal'
+        if projection:
+            assert data.get('projection_removal') and data['fixed_alpha']==1
+            assert len(data['records'])==15 and len({r['scenario'] for r in data['records']})==15
+            assert all(r['side']=='-C' for r in data['records'])
+        expected = 30 if projection else 60
+        assert len(js) == expected
+        assert len({(j['vignette'], j['side'], j['order']) for j in js}) == expected
+        for side in (('-C',) if projection else ('+C', '-C')):
             rows = [j for j in js if j['side'] == side]
             assert len(rows) == 30
             effects, damages = [], []
@@ -52,22 +58,25 @@ def add_points(figure, points):
                 continue
             random = method == 'matched random'
             single = method == 'single sycophancy GP'
+            projection = method == 'sycophancy GP projection removal'
             figure.add_trace(go.Scatter(
                 x=[p['effect'] for p in ps], y=[p['damage'] for p in ps], mode='markers',
-                marker=dict(color='#777777' if random else '#176a9a' if single else '#a64b00', size=6 if random else 10,
-                            symbol='square-open' if side=='+C' else 'diamond-open'),
+                marker=dict(color='#b00060' if projection else '#777777' if random else '#176a9a' if single else '#a64b00', size=6 if random else 10,
+                            symbol='cross-open' if projection else 'square-open' if side=='+C' else 'diamond-open'),
                 name=f'{method} {side} — uncalibrated DEV', showlegend=False,
-                text=[f"alpha={p['alpha']:g}, seed={p['seed']}, AB={p['AB']:.3f}, BA={p['BA']:.3f}" for p in ps],
+                text=[('fraction1, state-dependent, not norm-matched' if projection else f"alpha={p['alpha']:g}")+f", seed={p['seed']}, AB={p['AB']:.3f}, BA={p['BA']:.3f}" for p in ps],
                 hovertemplate='%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra>DEV eligibility unknown</extra>'))
     seed_count = len({p['seed'] for p in points if p['method']=='matched random'})
     random_note = (f'gray □/◇: matched random ({seed_count}/10 seeds)' if seed_count
                    else 'matched random pending (0/10 seeds)')
     single_note = ('<br>Blue □/◇: single sycophancy GP ±, alpha4 only, matched update norm.'
                    if any(p['method']=='single sycophancy GP' for p in points) else '')
+    projection_note = ('<br>Magenta cross: projection removal − only, fraction1, state-dependent; NOT norm-matched to random.'
+                       if any(p['method']=='sycophancy GP projection removal' for p in points) else '')
     figure.add_annotation(x=0, y=-0.27, xref='paper', yref='paper', showarrow=False, xanchor='left',
-        text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.'+single_note,
+        text=f'Brown □/◇: named-GP additive ± DEV; {random_note}. Uncalibrated; not a frontier.'+single_note+projection_note,
         font=dict(size=11, color='#6b3c16'))
-    figure.update_layout(margin=dict(b=150))
+    figure.update_layout(margin=dict(b=170 if projection_note else 150))
 
 
 def section(manifest, points):
@@ -85,8 +94,12 @@ def section(manifest, points):
         note += (' Single sycophancy GP is a distinct alpha4-only direction at the old alpha4 update norm, not another dose of the contrast. '
                  'Its minus mean remains adverse (+0.180); the direction change does not uniquely isolate a skepticism mechanism. '
                  'Prior TCA seed0 alpha1 minus BA also invented a baseline quote; all raw scores remain unchanged.')
-    headers = ['Evidence', 'Method', 'Seed', 'Alpha', 'Side', 'Effect →±', 'AB →±', 'BA →±', 'Damage ↓']
-    values = [[str(i+1), p['method'], '—' if p['seed'] is None else str(p['seed']), f"{p['alpha']:g}", p['side'],
+    if any(p['method']=='sycophancy GP projection removal' for p in points):
+        note += (' Projection removal is minus-only, fraction1 with state-dependent update norms; no plus arm was measured. '
+                 'It is not norm-matched to the existing random controls. Its effect is +0.040 (AB +0.100, BA -0.020). '
+                 'Change from prior constant subtraction is -0.140 = unchanged-baseline rescoring -0.283333 + steered-score change +0.143333; this is not established steering success.')
+    headers = ['Evidence', 'Method', 'Seed', 'Alpha / fraction', 'Side', 'Effect →±', 'AB →±', 'BA →±', 'Damage ↓']
+    values = [[str(i+1), p['method'], '—' if p['seed'] is None else str(p['seed']), 'fraction1' if p['method']=='sycophancy GP projection removal' else f"{p['alpha']:g}", p['side'],
                f"{p['effect']:+.3f}", f"{p['AB']:+.3f}", f"{p['BA']:+.3f}", f"{p['damage']:.3f}"]
               for i,p in enumerate(points)]
     md = '\n## Named-GP additive DEV — incomplete\n\n'+note+'\n\n'+tabulate(values, headers, tablefmt='github', disable_numparse=True)+'\n\n'
