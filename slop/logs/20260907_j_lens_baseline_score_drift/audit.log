@@ -1,0 +1,4 @@
+COMMAND: uv run --no-sync python slop/logs/20260907_j_lens_baseline_score_drift/audit.py
+SYNTHETIC_MAPPING_PASS bothsigns_AB_BA baseline_only_steered_only_identity
+BASELINE_ATTRIBUTION_PASS {"cells": 60, "scenarios": 30, "baseline_text_and_tokens_equal": true, "requests_and_cache_keys_exact": 120, "immutable_files": 44, "summary": {"+C": {"baseline_contribution": -0.12999999999999995, "steered_contribution": 0.4033333333333333, "old_effect": -0.2733333333333334, "new_effect": -2.2204460492503132e-17, "total": 0.2733333333333334}, "-C": {"baseline_contribution": -0.14999999999999994, "steered_contribution": -0.03999999999999997, "old_effect": 0.36999999999999994, "new_effect": 0.18000000000000005, "total": -0.1899999999999999}}}
+EXIT_CODE=0
