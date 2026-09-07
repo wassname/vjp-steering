@@ -111,7 +111,12 @@ def self_test():
 @torch.inference_mode()
 def metrology(model, tokenizer, metadata, vectors, targets):
     fm = metadata['full_residual']
+    print('EXTRACTION_TOKENIZER',json.dumps({'actual_sha256':gap.concept.tokenizer_content_hash(tokenizer),'expected_sha256':fm['tokenizer_content_sha256'],'pad_token_id':tokenizer.pad_token_id,'eos_token_id':tokenizer.eos_token_id}),flush=True)
     assert gap.concept.tokenizer_content_hash(tokenizer) == fm['tokenizer_content_sha256']
+    for ci,condition in enumerate(('positive','negative','baseline')):
+        for index,prompt in enumerate(fm['source_prompts'][condition]):
+            record=fm['token_records'][ci*65+index]
+            assert tokenizer(prompt,add_special_tokens=False).input_ids == [tid for tid,att in zip(record['input_ids'],record['attention_mask']) if att]
     lens, checkpoint = gap.concept._load_j_lens(model, [LAYER], None)
     assert gap.sha(lens) == fm['lens_sha256']
     raw = model.lm_head.weight.detach().float()@checkpoint['J'][LAYER].float().to(model.device)
@@ -122,6 +127,7 @@ def metrology(model, tokenizer, metadata, vectors, targets):
         signal = torch.tensor(saved['full_signal'],device=model.device)
         w,component,_,_ = gap.concept.gradient_pursuit(signal,dictionary,16)
         expected = torch.tensor(saved['gp_component'],device=model.device)
+        print('GP_REPLAY',json.dumps({'condition':condition,'actual_support':w.nonzero().flatten().tolist(),'saved_support':saved['selected_ids'],'component_max_error':float((component-expected).abs().max())}),flush=True)
         assert w.nonzero().flatten().tolist() == saved['selected_ids']
         torch.testing.assert_close(component,expected,atol=1e-5,rtol=1e-4)
         selected = torch.tensor(saved['selected_ids'],device=model.device)
@@ -148,6 +154,7 @@ def metrology(model, tokenizer, metadata, vectors, targets):
             error=float((coords-saved).abs().max())
             # BF16 kernel/batch differences are measured, never silently recalibrated.
             result['holdout'][name+'_'+condition]={'coordinate_max_error':error,'replayed_mean':coords.mean(0).tolist(),'saved_mean':saved.mean(0).tolist()}
+            print('CALIBRATION_REPLAY',json.dumps({'representation':name,'condition':condition,**result['holdout'][name+'_'+condition]}),flush=True)
             assert error < .1, (name,condition,error)
     print('DEV15_METROLOGY_PASS',json.dumps(result),flush=True)
     return result
@@ -163,10 +170,16 @@ def run(args):
     assert not any(provenance['overlaps_exact_or_normalized_substring'].values()), 'source/DEV overlap; report before proceeding'
     snapshot=Path(snapshot_download(gap.MODEL,revision=gap.REVISION))
     assert snapshot.name==gap.REVISION
-    tokenizer=AutoTokenizer.from_pretrained(snapshot);tokenizer.pad_token=tokenizer.eos_token
+    tokenizer=AutoTokenizer.from_pretrained(snapshot)
+    print('PINNED_SNAPSHOT',str(snapshot),flush=True)
     model=AutoModelForCausalLM.from_pretrained(snapshot,dtype=torch.bfloat16).to('cuda').eval()
     verification=metrology(model,tokenizer,metadata,vectors,targets)
     rows,_=gap.walk.read_cohort(15)
+    original_ids=[tokenizer(p,add_special_tokens=False).input_ids for p in gap.walk.generation_inputs(tokenizer,rows)]
+    tokenizer.pad_token=tokenizer.eos_token
+    assert original_ids==[tokenizer(p,add_special_tokens=False).input_ids for p in gap.walk.generation_inputs(tokenizer,rows)]
+    verification['generation_tokenizer']={'sha256':gap.concept.tokenizer_content_hash(tokenizer),'pad_token_id':tokenizer.pad_token_id,'eos_token_id':tokenizer.eos_token_id,'batch1_ids_exact':True}
+    print('GENERATION_TOKENIZER',json.dumps(verification['generation_tokenizer']),flush=True)
     data={'schema':'dev15_representation_v1','source_revision':args.source_revision,'implementation_sha256':gap.sha(__file__),
         'hook_implementation_sha256':gap.sha(probe.__file__),'model_revision':gap.REVISION,'snapshot':str(snapshot),
         'model_config_sha256':gap.sha(snapshot/'config.json'),'model_index_sha256':gap.sha(snapshot/'model.safetensors.index.json'),

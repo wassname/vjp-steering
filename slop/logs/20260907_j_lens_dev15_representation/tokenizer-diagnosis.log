@@ -1,0 +1,6 @@
+COMMAND: CPU pinned-tokenizer default versus generation-pad hash comparison
+EXPECTED 0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4
+ORIGINAL {"sha256": "0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4", "pad_token_id": 248044, "eos_token_id": 248046, "padding_side": "right"}
+SOURCE_IDS_EXACT 195
+GENERATION {"sha256": "a9fd60aa3bc1bf9c3b1718a2dbd490a80adf0d0612719f505d86ee9dc84f85eb", "pad_token_id": 248046, "eos_token_id": 248046, "padding_side": "right"}
+EXIT_CODE=0
