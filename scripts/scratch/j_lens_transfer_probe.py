@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 
-# Modal imports this entrypoint from /root; dependencies are mounted under /repo.
+# PI/OpenAI Codex: Modal imports from /root; dependencies are mounted under /repo.
 SCRIPT_ROOT = Path("/repo/scripts") if Path("/repo/scripts").is_dir() else Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPT_ROOT))
 sys.path.insert(0, str(SCRIPT_ROOT / "scratch"))
@@ -87,9 +87,53 @@ def observed_prefill(model, vector, mode, donor, target_gap, result, layer=LAYER
             handle.remove()
 
 
+@contextmanager
+def persistent_gap(model, vector, target_gap, coefficient, measurements, layer=LAYER):
+    """PI/OpenAI Codex: patch current final position on every cached forward, including prefill."""
+    basis, dual = (vector.shared[layer][key].to(model.device) for key in ("basis", "dual"))
+    inserted = None
+    def patch(_module, _inputs, output):
+        nonlocal inserted
+        h = output[0] if isinstance(output, tuple) else output
+        before = h.detach().clone()
+        if coefficient:
+            h = h.clone()
+            h[:, -1] = replacement(h[:, -1], None, basis, dual, "gap_minus", target_gap)
+        actual = h[0, -1].float() @ dual.T
+        delta = h.float()-before.float()
+        assert torch.equal(h[:, :-1], before[:, :-1])
+        error = float(abs(actual[0]-actual[1]-target_gap))
+        if coefficient:
+            assert error < .05, error
+        else:
+            assert torch.equal(h, before)
+        measurements.append({"call": len(measurements), "sequence_length": h.shape[1],
+            "position_in_forward": h.shape[1]-1, "coordinates_before": (before[0, -1].float() @ dual.T).tolist(),
+            "coordinates_after": actual.tolist(), "target_gap": target_gap, "target_gap_error": error,
+            "all_position_patch_norms": delta[0].norm(dim=-1).tolist(), "next_block_input_exact": False})
+        inserted = h[:, -1].detach().clone()
+        return (h, *output[1:]) if isinstance(output, tuple) else h
+    def check(_module, inputs, kwargs):
+        h = kwargs.get("hidden_states", inputs[0] if inputs else None)
+        assert torch.equal(h[:, -1], inserted)
+        measurements[-1]["next_block_input_exact"] = True
+    handle = model.model.layers[layer].register_forward_hook(patch)
+    next_handle = model.model.layers[layer+1].register_forward_pre_hook(check, with_kwargs=True)
+    try:
+        yield
+    finally:
+        handle.remove()
+        next_handle.remove()
+
+
 def self_test():
     from types import SimpleNamespace
     from transformers import Qwen3_5TextConfig, Qwen3_5ForCausalLM
+    import export
+    for order, values in (("AB", (1., 3.)), ("BA", (3., 1.))):
+        score = {"on_axis_A": values[0], "on_axis_B": values[1], "off_axis_A": .2, "off_axis_B": .4}
+        result = {"order": order, "judgment": score}
+        assert export.signed_axis_effect("-C", [export.score_cell(result)]) == gap.mapped_effect(score, order, "-C") == -2.
     torch.manual_seed(7)
     b = torch.randn(2, 32)
     b = b / b.norm(dim=-1, keepdim=True)
@@ -130,7 +174,20 @@ def self_test():
         _, record = generate(mode, donor)
         assert record["patch"]["next_block_input_exact"]
         assert record["patch"]["all_position_patch_norms"][:-1] == [0.]*3
+    for coefficient in (0., 1.):
+        measurements = []
+        with torch.inference_mode(), persistent_gap(model, vector, -3., coefficient, measurements, layer=1):
+            ids = model.generate(**inp, max_new_tokens=3, do_sample=False, use_cache=True)
+        assert len(measurements) == ids.shape[1]-inp["input_ids"].shape[1]
+        assert [m["sequence_length"] for m in measurements] == [4]+[1]*(len(measurements)-1)
+        assert all(m["next_block_input_exact"] for m in measurements)
+        if coefficient == 0:
+            assert torch.equal(ids, base_ids)
+            assert all(not any(m["all_position_patch_norms"]) for m in measurements)
+    after_ids, _ = generate("bare")
+    assert torch.equal(after_ids, base_ids)
     print("TRANSFER_CPU_PASS Gram_FP32_BF16=true tiny_Qwen_cached_generate=true identity_ids_exact=true next_block_exact=true one_shot=true", flush=True)
+    print("PERSISTENCE_CPU_PASS every_cached_forward=true alpha0_exact=true target_gap=true cleanup_exact=true", flush=True)
 
 
 def run(args):
@@ -230,6 +287,63 @@ def run(args):
     print("TRANSFER_COMPLETE", json.dumps(data["runtime"]), flush=True)
 
 
+def run_persistence(args):
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from huggingface_hub import snapshot_download
+    started = time.monotonic()
+    assert not args.output.exists()
+    reference_path = args.output.parent.parent / "generation.json"
+    reference = json.loads(reference_path.read_text())
+    assert gap.sha(reference_path) == "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9"
+    vectors, meta, gaps, source_hash = gap.load_source(args.source_root)
+    assert reference["source_metadata_sha256"] == source_hash and reference["model_revision"] == gap.REVISION
+    snapshot = Path(snapshot_download(gap.MODEL, revision=gap.REVISION))
+    assert snapshot.name == gap.REVISION
+    tokenizer = AutoTokenizer.from_pretrained(snapshot)
+    tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(snapshot, dtype=torch.bfloat16).to("cuda").eval()
+    data = {"schema": "v16_decode_persistence_v1", "source_revision": args.source_revision, "implementation_sha256": gap.sha(__file__),
+        "reference_sha256": gap.sha(reference_path), "reference_source_revision": reference["source_revision"],
+        "model_revision": gap.REVISION, "source_metadata_sha256": source_hash, "settings": reference["settings"],
+        "schedule": "current final position on every cached forward,prefill and decode", "records": [], "argv": sys.argv}
+    print("PERSISTENCE_CONFIG", json.dumps(data), flush=True)
+    print("SHOULD: alpha0 exact saved bare IDs; one intervention per generated token; first call full prefill then sequence length1; target gap every alpha1 call; next-block input exact. No claim that persistence isolates cache from representation.", flush=True)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    for scenario in gap.SCENARIOS:
+        bare = next(r for r in reference["records"] if r["scenario"] == scenario and r["condition"] == "bare")
+        for condition, coefficient in (("persistent_identity_minus", 0.), ("persistent_minus", 1.)):
+            encoded = tokenizer(bare["rendered"], return_tensors="pt", add_special_tokens=False).to(model.device)
+            assert encoded.input_ids[0].tolist() == bare["input_ids"]
+            measures = []
+            with torch.inference_mode(), persistent_gap(model, vectors["-C"], gaps["-C"][LAYER], coefficient, measures):
+                output = model.generate(**encoded, do_sample=False, temperature=None, top_p=None, top_k=None,
+                    pad_token_id=tokenizer.eos_token_id, max_new_tokens=512, use_cache=True)
+            ids = output[0, encoded.input_ids.shape[1]:].tolist()
+            assert len(measures) == len(ids)
+            assert [m["sequence_length"] for m in measures] == [len(bare["input_ids"])]+[1]*(len(ids)-1)
+            assert all(m["next_block_input_exact"] for m in measures)
+            if coefficient == 0:
+                assert ids == bare["generated_ids"]
+                assert not any(n for m in measures for n in m["all_position_patch_norms"])
+            for index, measure in enumerate(measures):
+                measure["absolute_position"] = len(bare["input_ids"])-1+index
+                measure["input_token_id"] = bare["input_ids"][-1] if index == 0 else ids[index-1]
+                measure["predicted_token_id"] = ids[index]
+            text = tokenizer.decode(ids, skip_special_tokens=True).strip()
+            record = {"scenario": scenario, "condition": condition, "prompt": bare["prompt"], "rendered": bare["rendered"],
+                "input_ids": bare["input_ids"], "generated_ids": ids, "text": text, "coefficient": coefficient,
+                "identity_exact": ids == bare["generated_ids"] if coefficient == 0 else None,
+                "health": gap.walk.health(tokenizer, [text]), "measurements": measures}
+            data["records"].append(record)
+            args.output.write_text(json.dumps(data, indent=2)+"\n")
+            print("PERSISTENCE_RESPONSE", json.dumps(record, ensure_ascii=False), flush=True)
+    data["records"] += [{**r, "reused_from": str(reference_path)} for r in reference["records"]]
+    data["runtime"] = {"seconds": time.monotonic()-started, "gpu": torch.cuda.get_device_name(),
+        "peak_memory_bytes": torch.cuda.max_memory_allocated(), "torch": torch.__version__}
+    args.output.write_text(json.dumps(data, indent=2)+"\n")
+    print("PERSISTENCE_COMPLETE", json.dumps(data["runtime"]), flush=True)
+
+
 async def judge_run(args):
     import os
     import judge
@@ -252,30 +366,79 @@ async def judge_run(args):
             f.write(json.dumps(result, ensure_ascii=False)+"\n")
         print("TRANSFER_JUDGMENT", json.dumps(result, ensure_ascii=False), flush=True)
     try:
-        await asyncio.gather(*(one(r,o) for r in data["records"] if r["condition"] in ("direct_minus", "full_minus", "projected_minus", "gap_minus") for o in ("AB", "BA")))
+        await asyncio.gather(*(one(r,o) for r in data["records"] if not r.get("reused_from") and r["condition"] in ("direct_minus", "full_minus", "projected_minus", "gap_minus", "persistent_minus") for o in ("AB", "BA")))
     finally:
         await client.close()
 
 
-# Standalone entrypoint reuses the existing pinned project image without editing run_modal.py.
+def report(folder):
+    import csv
+    import export
+    import judge
+    data = json.loads((folder / "generation.json").read_text())
+    judgments = [json.loads(line) for line in (folder / "judgments.jsonl").read_text().splitlines()]
+    assert len(data["records"]) == 21 and len(judgments) == 24
+    scores, paired, downstream = [], [], []
+    lines = ["# Complete transfer responses and identity-mapped judgments", "", "PI/OpenAI Codex. Three selected questions; 21 responses,12 scientific comparisons,24 orderings. No DEV success.", ""]
+    for r in data["records"]:
+        matches = {j["order"]: j for j in judgments if (j["vignette"],j["condition"]) == (r["scenario"],r["condition"])}
+        lines += ["## " + r["scenario"] + " / " + r["condition"], "", "Input as consumed:", "```text", r["rendered"], "```", "", "Response:", "> " + r["text"], ""]
+        assert r["patch"]["next_block_input_exact"]
+        assert not any(r["patch"]["all_position_patch_norms"][:-1])
+        assert len(r["hook_calls"]) == 15 and set(r["hook_calls"].values()) == {1}
+        for layer, measurement in r["downstream"].items():
+            downstream.append({"scenario": r["scenario"], "condition": r["condition"], "layer": layer, **measurement})
+        for order, j in sorted(matches.items()):
+            score = j["judgment"]
+            assert abs(j["exported_effect"]-export.signed_axis_effect("-C", [export.score_cell(j)])) < 1e-9
+            b, s = ("A", "B") if order == "AB" else ("B", "A")
+            mapped = {"scenario": r["scenario"], "condition": r["condition"], "order": order,
+                "bare_on_axis": score["on_axis_"+b], "steered_on_axis": score["on_axis_"+s],
+                "bare_off_axis": score["off_axis_"+b], "steered_off_axis": score["off_axis_"+s],
+                "effect": j["exported_effect"], **score}
+            scores.append(mapped)
+            lines += [order+" identity-mapped scores:", "```json", json.dumps(mapped, ensure_ascii=False), "```", ""]
+        if matches:
+            a,b = (matches[o]["exported_effect"] for o in ("AB", "BA"))
+            paired.append({"scenario": r["scenario"], "condition": r["condition"], "AB_effect": a, "BA_effect": b,
+                "strict_reversal": a*b < 0, "tie_disagreement": (a == 0) != (b == 0), "both_tie": a == b == 0})
+    for name, rows in (("scores.csv", scores), ("paired.csv", paired), ("downstream.csv", downstream)):
+        with (folder/name).open("w") as file:
+            writer = csv.DictWriter(file, fieldnames=list(dict.fromkeys(k for r in rows for k in r)))
+            writer.writeheader()
+            writer.writerows(rows)
+    (folder/"responses-and-scores.md").write_text("\n".join(lines)+"\n")
+    summary = {"responses": 21, "comparisons": 12, "judgments": 24,
+        "strict_reversals": sum(r["strict_reversal"] for r in paired), "tie_disagreements": sum(r["tie_disagreement"] for r in paired),
+        "both_ties": sum(r["both_tie"] for r in paired), "reported_judge_cost_usd": sum(j["cost_usd"] for j in judgments),
+        "runtime": data["runtime"], "identity_exact": sum(r.get("identity_exact", False) for r in data["records"]),
+        "generation_sha256": gap.sha(folder/"generation.json"), "judgments_sha256": gap.sha(folder/"judgments.jsonl"),
+        "judge_code_sha256": gap.sha(judge.__file__), "export_code_sha256": gap.sha(export.__file__),
+        "max_projected_coordinate_error": max(r.get("donor_coordinate_error_max", 0) for r in data["records"]),
+        "max_target_gap_error": max(r.get("target_gap_error", 0) for r in data["records"])}
+    (folder/"summary.json").write_text(json.dumps(summary, indent=2)+"\n")
+    print("TRANSFER_REPORT_PASS", json.dumps(summary), flush=True)
+
+
+# PI/OpenAI Codex: standalone entrypoint reuses the project image without editing run_modal.py.
 if __name__ != "__main__":
     import modal
     from run_modal import image, cache, source_revision
     app = modal.App("jsteer-transfer-probe", image=image)
-    @app.function(gpu="H100", volumes={"/cache": cache}, timeout=900)
-    def remote(revision: str):
-        destination = Path("/cache/outputs/audits/20260907_j_lens_transfer_probe/generation.json")
+    @app.function(gpu="H100", volumes={"/cache": cache}, timeout=180, max_containers=1, retries=0)
+    def remote(revision: str, persistence: bool = False):
+        destination = Path("/cache/outputs/audits/20260907_j_lens_transfer_probe") / ("persistence/generation.json" if persistence else "generation.json")
         try:
             subprocess.run([sys.executable, "scripts/scratch/j_lens_transfer_probe.py", "--source-root", "/cache/outputs/experiments",
-                "--output", str(destination), "--source-revision", revision], cwd="/repo", check=True)
+                "--output", str(destination), "--source-revision", revision] + (["--persistence"] if persistence else []), cwd="/repo", check=True)
             return destination.read_text()
         finally:
             cache.commit()
     @app.local_entrypoint()
-    def launch():
-        destination = ROOT / "generation.json"
+    def launch(persistence: bool = False):
+        destination = ROOT / ("persistence/generation.json" if persistence else "generation.json")
         assert not destination.exists()
-        result = remote.remote(source_revision())
+        result = remote.remote(source_revision(), persistence)
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(result)
         print("TRANSFER_DOWNLOADED", destination, flush=True)
@@ -284,6 +447,8 @@ if __name__ != "__main__":
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--report", type=Path)
+    parser.add_argument("--persistence", action="store_true")
     parser.add_argument("--source-root", type=Path, default=Path("outputs/experiments"))
     parser.add_argument("--output", type=Path, default=ROOT/"generation.json")
     parser.add_argument("--source-revision", default="unknown")
@@ -291,7 +456,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.self_test:
         self_test()
+    elif args.report:
+        report(args.report)
     elif args.judge:
         asyncio.run(judge_run(args))
+    elif args.persistence:
+        run_persistence(args)
     else:
         run(args)
