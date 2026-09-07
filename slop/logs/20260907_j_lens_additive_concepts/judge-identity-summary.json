@@ -1,0 +1,10 @@
+{
+  "all60_prompt_reconstruction_exact": true,
+  "all60_cache_keys_exact": true,
+  "single_raw_attempt_each": true,
+  "DNL_same_text_ids_and_serialized_prompt_AB_BA": true,
+  "DNL_order_keys_differ": true,
+  "DNL_offline_client_fixture_pass": true,
+  "judge_source_sha256": "e4da183dc38ccf65034ebfe7411968fd53c7ca17d398d9a8a81cc1c547545ba6",
+  "limit": "Offline client replay, NOT captured HTTP wire/provider request IDs. Original raw content/usage and serialized prompt retained."
+}

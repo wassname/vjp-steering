@@ -1,0 +1,15 @@
+{
+  "generation_sha256": "5857fc05a9a428022ee90e139e78719ccbb8000ccc7690b390bb58b49de7c840",
+  "all32log_response_matches": true,
+  "coverage15x2": true,
+  "judgments60_pair_text_and_mapping_exact": true,
+  "DNL_minus_baseline_text_and_ids_exact": true,
+  "DNL_AB_evidence_invents_absent_quote": true,
+  "health": {
+    "unfinished": 0,
+    "role_leaks": 0,
+    "repeated": 0
+  },
+  "actual_treatment_calls": 1982,
+  "identity_calls": 110
+}
