@@ -1,6 +1,6 @@
 # Results
 
-All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.
+The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort.
 The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.
 Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible dose means in dose order. The additional figure shows measured dose means as small dots and smoothly connects bare, the intended-side Pareto-efficient means, and each selected/final endpoint.
 
@@ -24,7 +24,7 @@ Both figures retain the all-100 baselines and prior methods. The first connects 
 
 ## Named-GP additive DEV — incomplete
 
-Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched random seeds judged: 5/10 ([0, 1, 2, 3, 4]). Coherence eligibility unknown; no accepted frontier. New layer17/current-position controls are not the historical random cone. Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.
+Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched random seeds judged: 5/10 ([0, 1, 2, 3, 4]). Coherence eligibility unknown; no accepted frontier. New layer17/current-position controls are not the historical random cone. Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. Random seed4 CSN minus at alpha1 and alpha2 had identical text, token IDs and same-order judge requests; BA effects were -1.7 and -7.7, while AB was +0.3 at both doses. Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.
 
 | Evidence   | Method            | Seed   | Alpha   | Side   | Effect →±   | AB →±   | BA →±   | Damage ↓   |
 |------------|-------------------|--------|---------|--------|-------------|---------|---------|------------|
