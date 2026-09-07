@@ -402,7 +402,10 @@ def greedy_control_answer(model, tokenizer, rendered: str, max_new_tokens: int =
 
 
 @torch.inference_mode()
-def capture_condition(model, tokenizer, rows: list[dict], condition: str, batch_size: int, max_length: int) -> list[dict]:
+def capture_condition(
+    model, tokenizer, rows: list[dict], condition: str, batch_size: int, max_length: int,
+    *, omit_attention_mask: bool = False,
+) -> list[dict]:
     captured = []
     rendered_rows = [render_condition(tokenizer, row["prompt"], condition) for row in rows]
     for start in range(0, len(rows), batch_size):
@@ -427,8 +430,13 @@ def capture_condition(model, tokenizer, rows: list[dict], condition: str, batch_
                 texts[index], offsets[index], encoded.attention_mask[index].cpu(), mask, request_span, condition,
             )
             masks.append(mask)
+        model_inputs = dict(encoded)
+        if omit_attention_mask:
+            if not encoded.attention_mask.all():
+                raise ValueError("mask omission control only permits fully valid single prompts")
+            model_inputs.pop("attention_mask")
         with _activations(model, WORKSPACE_LAYERS) as found:
-            model.model(**encoded, use_cache=False)
+            model.model(**model_inputs, use_cache=False)
         for index, (row, (rendered, request_span, user_content), mask) in enumerate(
             zip(batch_rows, batch_rendered, masks, strict=True)
         ):
@@ -848,11 +856,15 @@ def run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revi
     results = []
     for condition in ("original", "explicit_validity"):
         batch = capture_condition(model, tokenizer, rows, condition, 2, args.max_length)
+        repeated_batch = capture_condition(model, tokenizer, rows, condition, 2, args.max_length)
         lengths = [sum(record["attention_mask"]) for record in batch]
         if len(set(lengths)) != 2 or not any(0 in record["attention_mask"] for record in batch):
             raise ValueError(f"first two {condition} DEV prompts did not exercise padding")
-        for row, record in zip(rows, batch, strict=True):
+        for row, record, repeated in zip(rows, batch, repeated_batch, strict=True):
             single = capture_condition(model, tokenizer, [row], condition, 1, args.max_length)[0]
+            unmasked = capture_condition(
+                model, tokenizer, [row], condition, 1, args.max_length, omit_attention_mask=True,
+            )[0]
             valid_positions = [i for i, valid in enumerate(record["attention_mask"]) if valid]
             unpadded_ids = [record["input_ids"][i] for i in valid_positions]
             positions = [valid_positions.index(i) for i in record["request_token_positions"]]
@@ -870,8 +882,18 @@ def run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revi
                 str(layer): float((record["hidden"][layer] - single["hidden"][layer]).abs().max())
                 for layer in WORKSPACE_LAYERS
             }
+            repeat_hidden_differences = {
+                str(layer): float((record["hidden"][layer] - repeated["hidden"][layer]).abs().max())
+                for layer in WORKSPACE_LAYERS
+            }
+            mask_hidden_differences = {
+                str(layer): float((single["hidden"][layer] - unmasked["hidden"][layer]).abs().max())
+                for layer in WORKSPACE_LAYERS
+            }
             score_records(model, tokenizer, checkpoint, candidates, [record], official_logits=official)
             score_records(model, tokenizer, checkpoint, candidates, [single], official_logits=official)
+            score_records(model, tokenizer, checkpoint, candidates, [repeated], official_logits=official)
+            score_records(model, tokenizer, checkpoint, candidates, [unmasked], official_logits=official)
             result = {
                 "scenario": record["scenario"], "condition": condition,
                 "rendered": record["rendered"], "request_char_span": record["request_char_span"],
@@ -883,9 +905,19 @@ def run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revi
                 "batch_single_hidden_max_absolute_difference": hidden_differences,
                 "batch_vs_official": record["parity_layers"],
                 "single_vs_official": single["parity_layers"],
+                "repeated_batch_vs_official": repeated["parity_layers"],
+                "single_without_mask_vs_official": unmasked["parity_layers"],
+                "repeat_batch_hidden_max_absolute_difference": repeat_hidden_differences,
+                "single_mask_hidden_max_absolute_difference": mask_hidden_differences,
+                "repeat_batch_cells_exact": record["cells"] == repeated["cells"],
+                "single_mask_cells_exact": single["cells"] == unmasked["cells"],
             }
-            result["passed"] = all(layer["passed"] for layer in record["parity_layers"].values())
-            result["single_passed"] = all(layer["passed"] for layer in single["parity_layers"].values())
+            result["passed"] = result["repeat_batch_cells_exact"] and all(
+                layer["passed"] for scored in (record, repeated) for layer in scored["parity_layers"].values()
+            )
+            result["single_passed"] = result["single_mask_cells_exact"] and all(
+                layer["passed"] for scored in (single, unmasked) for layer in scored["parity_layers"].values()
+            )
             results.append(result)
             print("PRIMARY_PADDED_PARITY_RECORD", json.dumps({
                 key: result[key] for key in ("scenario", "condition", "padding_count", "passed", "single_passed")
@@ -899,7 +931,7 @@ def run_padded_parity(args, model, tokenizer, rows, cohort_sha256, resolved_revi
                     else "PRIMARY_PADDED_PARITY_MISMATCH_NO_DEV15",
     }
     output = {
-        "schema": "j_lens_primary_padded_parity_v1", "summary": summary,
+        "schema": "j_lens_primary_padded_parity_v2", "summary": summary,
         "source_revision": args.source_revision, "implementation_sha256": sha256_file(Path(__file__)),
         "model": args.model, "model_revision": resolved_revision, "dtype": args.dtype,
         "tokenizer_sha256": tokenizer_content_hash(tokenizer), "cohort_sha256": cohort_sha256,
@@ -1269,6 +1301,15 @@ def readout_self_test(*, companion: bool) -> None:
             {"scenario": "tiny-b", "prompt": "token19 token20 token21"}]
     records = capture_condition(model, tokenizer, rows, "explicit_validity", 2, 384)
     assert 0 in records[0]["attention_mask"], "test must exercise right padding"
+    unmasked = capture_condition(model, tokenizer, rows[:1], "explicit_validity", 1, 384, omit_attention_mask=True)[0]
+    masked = capture_condition(model, tokenizer, rows[:1], "explicit_validity", 1, 384)[0]
+    for layer in WORKSPACE_LAYERS:
+        torch.testing.assert_close(unmasked["hidden"][layer], masked["hidden"][layer], rtol=0, atol=0)
+    try:
+        capture_condition(model, tokenizer, rows, "explicit_validity", 2, 384, omit_attention_mask=True)
+        raise AssertionError("mask omission must reject padded inputs")
+    except ValueError as error:
+        assert "fully valid single prompts" in str(error)
     reference = copy.deepcopy(records)
     expected = {}
     raw_difference_count = 0
