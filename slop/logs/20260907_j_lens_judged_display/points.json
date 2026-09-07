@@ -358,5 +358,77 @@
     "BA": -0.4466666666666665,
     "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl",
     "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 1,
+    "side": "+C",
+    "effect": -0.04666666666666662,
+    "damage": 0.049999999999999996,
+    "AB": -0.1,
+    "BA": 0.006666666666666762,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 1,
+    "side": "-C",
+    "effect": -0.15,
+    "damage": 0.21333333333333337,
+    "AB": -0.04666666666666674,
+    "BA": -0.25333333333333324,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 2,
+    "side": "+C",
+    "effect": -0.03666666666666669,
+    "damage": 0.09333333333333334,
+    "AB": -0.03333333333333351,
+    "BA": -0.039999999999999855,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 2,
+    "side": "-C",
+    "effect": -0.24000000000000005,
+    "damage": 0.12666666666666665,
+    "AB": 0.05999999999999986,
+    "BA": -0.5399999999999999,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 4,
+    "side": "+C",
+    "effect": 0.07666666666666673,
+    "damage": 0.09333333333333332,
+    "AB": -0.10000000000000009,
+    "BA": 0.2533333333333336,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json"
+  },
+  {
+    "method": "matched random",
+    "seed": 4,
+    "alpha": 4,
+    "side": "-C",
+    "effect": -0.2966666666666667,
+    "damage": 0.13666666666666666,
+    "AB": -0.4133333333333335,
+    "BA": -0.17999999999999985,
+    "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+    "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json"
   }
 ]

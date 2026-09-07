@@ -120,6 +120,30 @@
       "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl",
       "generation_sha256": "4241d9f01f260b37a900978bf5ca702778d94cf161dca38481acd8c320cf6600",
       "judgments_sha256": "e84c28b2762c4505bf66e81f28f62f0003f955445d945636c532a657a7165ad4"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+      "generation_sha256": "66fe3acd1622d0d0d4bd2adaf3cfae218dfb6e56923b0cb67f8c72570dc3340c",
+      "judgments_sha256": "db01510e476bc842c6eb0f1f1c097169e855e97b9a00a18f6804c7b5508bf374"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+      "generation_sha256": "c5ea69f572b426b31c29989ba1acb95c5a5db614c525ec2c3aa9e580cae94b5d",
+      "judgments_sha256": "636536e7fcc76f6acf0452af7e0838d1448f258cc9c90b92b2be7ec491f609bc"
+    },
+    {
+      "method": "matched random",
+      "seed": 4,
+      "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json",
+      "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+      "generation_sha256": "2185556cf55ed0292d1d555b8dfc25c05f56b3e622f803919ef5a3e07b0f11f3",
+      "judgments_sha256": "55911fe872e6a0ef69555e4714bd69daf08915007a8a3006aebe1b2e1badd0f9"
     }
   ]
 }

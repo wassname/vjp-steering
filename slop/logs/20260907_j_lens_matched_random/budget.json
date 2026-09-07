@@ -10,16 +10,14 @@
   "CPU_import_check_reserve_usd": 0.05,
   "seed0_judging_reserve_usd": 0.05,
   "remaining_within_allocation_usd": 0.13115336,
-  "remaining_seeds_authorized": [
-    4
-  ],
-  "notes": "Failure reserve is conservative allocation, not proven provider invoice or historical container count. Saved stop confirmation: stopped/tasks0. Same actual image CPU-only mounted import passed. Supervisor authorized one seed0 retry after these gates; no remaining seeds until reconciliation. Timed GPU ceiling of retry 360*.001097=.39492; .35508 extra reserved for startup CPU/memory/storage. No historical $5 reserve released. Supervisor additionally approved one second retry after shared-loader raw/postpad hash, all15 input/mask parity and realhybrid hook tests passed; no additional seeds. Additional4seeds reserved.80each; no seedstarted before parentread gate. .10 judging reservations retained; actual.0280616 fits and is NOT charged again. PhaseAPIactual.04690824 includes .01884664 sourceactual already charged separately and randomactual within .10 reserve. Oldglobal5startup reserve outsidephase untouched; new1+.75 failedreserves not released.",
+  "remaining_seeds_authorized": [],
+  "notes": "All five seeds0-4 completed with all three doses and 900 random judgments. Source120 costs counted separately; random reported API charges remain within original reservations, not double charged. No reserves released: historical failed startup5, phase failure1/retry.75/CPU.05, seed0 success.75/randomjudging.10, sourceactual.01884664, seeds1-4 total3.20. Phaseuncommitted.13115336, otherunreserved3.28873536744 unchanged. Prior seed2 timeout charge unknown. Seed4 no retry; all180 raw_attempts single. These allocations fit the inherited40cap accounting, not independent provider invoice reconciliation.",
   "failed_retry_app": "ap-f8aD8yg7WT3xhqMTkix9y7",
   "failed_retry_reserve_usd": 0.75,
   "seed0_second_retry_generation_reserve_usd": 0.75,
   "seed0_second_retry_judging_reserve_usd": 0.05,
   "additional_seed_reserve_usd": 3.2,
-  "phase_API_actual_usd": 0.13078936,
+  "phase_API_actual_usd": 0.15862204,
   "seed0_judging_actual_usd": 0.0280616,
   "seed0_success_app": "ap-V2Ie6GPM565xz0H7ohsxbS",
   "seed0_success_runtime_seconds": 206.855177768,
@@ -40,13 +38,14 @@
     "API_actual_usd": 0.027621400000000004,
     "invoice": null
   },
-  "global_API_reported_subtotal_usd": 1.04371369412,
+  "global_API_reported_subtotal_usd": 1.07154637412,
   "seed2_timeout_provider_charge_usd": null,
   "completed_seeds": [
     0,
     1,
     2,
-    3
+    3,
+    4
   ],
   "seed4_reservation_usd": 0.8,
   "active_commands": [],
@@ -64,5 +63,14 @@
     "API_actual_usd": 0.028211319999999998,
     "invoice": null
   },
-  "all_success_compute_estimate_usd": 1.014258318526233
+  "all_success_compute_estimate_usd": 1.257058675897834,
+  "seed4_measured": {
+    "app_id": "ap-O08RiijBqSwG9fzxcu5vXM",
+    "runtime_seconds": 221.331228233,
+    "wall_seconds": 255.0,
+    "compute_estimate_usd": 0.24280035737160102,
+    "API_actual_usd": 0.02783268,
+    "invoice": null
+  },
+  "seed4_reservation_status": "Executed once; .80 allocation retained, not released pending infrastructure invoice."
 }

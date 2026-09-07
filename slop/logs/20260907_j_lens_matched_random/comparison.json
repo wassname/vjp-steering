@@ -1,5 +1,5 @@
 {
-  "status": "INCOMPLETE4/10, uncalibrated DEV, no significance/frontier claim",
+  "status": "INCOMPLETE5/10, uncalibrated DEV, no significance/frontier claim",
   "groups": [
     {
       "alpha": 1,
@@ -8,10 +8,10 @@
       "source_AB": -0.013333333333333404,
       "source_BA": -0.1999999999999999,
       "source_damage": 0.12666666666666668,
-      "random_seed_count": 4,
-      "random_mean": -0.3491666666666667,
+      "random_seed_count": 5,
+      "random_mean": -0.2886666666666667,
       "random_min": -0.49999999999999994,
-      "random_max": -0.23,
+      "random_max": -0.04666666666666662,
       "per_seed": [
         {
           "method": "matched random",
@@ -60,6 +60,18 @@
           "BA": -0.6466666666666666,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 1,
+          "side": "+C",
+          "effect": -0.04666666666666662,
+          "damage": 0.049999999999999996,
+          "AB": -0.1,
+          "BA": 0.006666666666666762,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json"
         }
       ]
     },
@@ -70,8 +82,8 @@
       "source_AB": -0.17333333333333345,
       "source_BA": -0.4933333333333332,
       "source_damage": 0.21,
-      "random_seed_count": 4,
-      "random_mean": -0.21333333333333335,
+      "random_seed_count": 5,
+      "random_mean": -0.20066666666666666,
       "random_min": -0.7000000000000001,
       "random_max": 0.050000000000000044,
       "per_seed": [
@@ -122,6 +134,18 @@
           "BA": -0.39999999999999986,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha1/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 1,
+          "side": "-C",
+          "effect": -0.15,
+          "damage": 0.21333333333333337,
+          "AB": -0.04666666666666674,
+          "BA": -0.25333333333333324,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json"
         }
       ]
     },
@@ -132,8 +156,8 @@
       "source_AB": 0.04666666666666659,
       "source_BA": -0.3266666666666665,
       "source_damage": 0.11,
-      "random_seed_count": 4,
-      "random_mean": -0.29333333333333333,
+      "random_seed_count": 5,
+      "random_mean": -0.242,
       "random_min": -0.52,
       "random_max": 0.24000000000000005,
       "per_seed": [
@@ -184,6 +208,18 @@
           "BA": -0.46666666666666656,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 2,
+          "side": "+C",
+          "effect": -0.03666666666666669,
+          "damage": 0.09333333333333334,
+          "AB": -0.03333333333333351,
+          "BA": -0.039999999999999855,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json"
         }
       ]
     },
@@ -194,8 +230,8 @@
       "source_AB": 0.09999999999999988,
       "source_BA": -0.21333333333333312,
       "source_damage": 0.11000000000000003,
-      "random_seed_count": 4,
-      "random_mean": -0.21,
+      "random_seed_count": 5,
+      "random_mean": -0.216,
       "random_min": -0.28,
       "random_max": -0.02999999999999996,
       "per_seed": [
@@ -246,6 +282,18 @@
           "BA": -0.7399999999999999,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha2/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 2,
+          "side": "-C",
+          "effect": -0.24000000000000005,
+          "damage": 0.12666666666666665,
+          "AB": 0.05999999999999986,
+          "BA": -0.5399999999999999,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json"
         }
       ]
     },
@@ -256,8 +304,8 @@
       "source_AB": -0.4933333333333334,
       "source_BA": -0.05333333333333334,
       "source_damage": 0.09333333333333332,
-      "random_seed_count": 4,
-      "random_mean": -0.265,
+      "random_seed_count": 5,
+      "random_mean": -0.19666666666666668,
       "random_min": -0.89,
       "random_max": 0.15,
       "per_seed": [
@@ -308,6 +356,18 @@
           "BA": 0.04666666666666665,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 4,
+          "side": "+C",
+          "effect": 0.07666666666666673,
+          "damage": 0.09333333333333332,
+          "AB": -0.10000000000000009,
+          "BA": 0.2533333333333336,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json"
         }
       ]
     },
@@ -318,8 +378,8 @@
       "source_AB": 0.45333333333333314,
       "source_BA": 0.28666666666666674,
       "source_damage": 0.16999999999999998,
-      "random_seed_count": 4,
-      "random_mean": -0.26666666666666666,
+      "random_seed_count": 5,
+      "random_mean": -0.27266666666666667,
       "random_min": -0.3133333333333333,
       "random_max": -0.22666666666666666,
       "per_seed": [
@@ -370,6 +430,18 @@
           "BA": -0.4466666666666665,
           "judgments": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl",
           "generation": "slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json"
+        },
+        {
+          "method": "matched random",
+          "seed": 4,
+          "alpha": 4,
+          "side": "-C",
+          "effect": -0.2966666666666667,
+          "damage": 0.13666666666666666,
+          "AB": -0.4133333333333335,
+          "BA": -0.17999999999999985,
+          "judgments": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl",
+          "generation": "slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json"
         }
       ]
     }
@@ -823,6 +895,116 @@
       "identities": 2,
       "judgments": 180,
       "cost_usd": 0.028211319999999998,
+      "equal_anomalies": []
+    },
+    {
+      "seed": 4,
+      "runtime": {
+        "seconds": 221.331228233,
+        "gpu": "NVIDIA H100 80GB HBM3",
+        "peak_memory_bytes": 8632919552
+      },
+      "groups": {
+        "1+C": {
+          "calls": 1042,
+          "requested_norm": 0.7216137051582336,
+          "actual_min": 0.7208195328712463,
+          "actual_median": 0.7218549847602844,
+          "actual_max": 0.7231464385986328,
+          "max_relative_error": 0.0021240359342441758,
+          "AB": -0.1,
+          "BA": 0.006666666666666762,
+          "paired": -0.04666666666666662,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        },
+        "1-C": {
+          "calls": 992,
+          "requested_norm": 0.7216137051582336,
+          "actual_min": 0.7207534313201904,
+          "actual_median": 0.7218535542488098,
+          "actual_max": 0.7230674624443054,
+          "max_relative_error": 0.0020145921227383025,
+          "AB": -0.04666666666666674,
+          "BA": -0.25333333333333324,
+          "paired": -0.15,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        },
+        "2+C": {
+          "calls": 1001,
+          "requested_norm": 1.4432274103164673,
+          "actual_min": 1.442517638206482,
+          "actual_median": 1.4435333013534546,
+          "actual_max": 1.4446916580200195,
+          "max_relative_error": 0.0010145647824352016,
+          "AB": -0.03333333333333351,
+          "BA": -0.039999999999999855,
+          "paired": -0.03666666666666668,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        },
+        "2-C": {
+          "calls": 936,
+          "requested_norm": 1.4432274103164673,
+          "actual_min": 1.442477822303772,
+          "actual_median": 1.443544626235962,
+          "actual_max": 1.4448559284210205,
+          "max_relative_error": 0.0011283863464013099,
+          "AB": 0.05999999999999986,
+          "BA": -0.5399999999999999,
+          "paired": -0.24000000000000005,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        },
+        "4+C": {
+          "calls": 995,
+          "requested_norm": 2.8864548206329346,
+          "actual_min": 2.885204553604126,
+          "actual_median": 2.8864378929138184,
+          "actual_max": 2.8878190517425537,
+          "max_relative_error": 0.0004726320674993262,
+          "AB": -0.10000000000000009,
+          "BA": 0.2533333333333336,
+          "paired": 0.07666666666666674,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        },
+        "4-C": {
+          "calls": 948,
+          "requested_norm": 2.8864548206329346,
+          "actual_min": 2.885159730911255,
+          "actual_median": 2.8864482641220093,
+          "actual_max": 2.8880038261413574,
+          "max_relative_error": 0.0005366463723423841,
+          "AB": -0.4133333333333335,
+          "BA": -0.17999999999999985,
+          "paired": -0.2966666666666667,
+          "health": {
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0
+          }
+        }
+      },
+      "identities": 2,
+      "judgments": 180,
+      "cost_usd": 0.02783268,
       "equal_anomalies": []
     }
   ]

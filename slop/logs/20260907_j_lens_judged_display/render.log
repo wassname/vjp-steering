@@ -9,3 +9,4 @@ Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0
 
   pareto_figure.write_image(output / "plot_pareto.png", width=1064, height=590, scale=2)
 wrote 7 table rows and 2 plots from 800 measured evaluations
+EXIT_CODE=0

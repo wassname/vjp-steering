@@ -1,0 +1,1 @@
+SEED4_FINAL_VERIFY_PASS {"prior_manifest_artifacts_unchanged": 15, "new_judgments": 180, "single_raw_attempt_each": true, "runner_and_sampler_SHA_unchanged": true, "app_stopped_tasks0": true, "requested_seed_only": 4, "wall_seconds": 255.0, "API_cost": 0.02783268, "runtime_compute_estimate": 0.24280035737160102}
