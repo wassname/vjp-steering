@@ -31,7 +31,7 @@ image = (
     .add_local_dir(REPO / "data", "/repo/data")
 )
 j_lens_diagnostic_image = (
-    base_image.pip_install(
+    base_image.uv_pip_install(
         "git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e",
         extra_options="--no-deps",
     )
