@@ -1,0 +1,19 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync python scripts/scratch/j_lens_additive_concepts.py --judge slop/logs/20260907_j_lens_projection_removal/generation.json --output slop/logs/20260907_j_lens_projection_removal/judgments.jsonl
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_additive_concepts.py", line 439, in <module>
+    elif args.judge:asyncio.run(norm.judge_run(args))
+                    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/code/.local/share/uv/python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/asyncio/base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_norm_matched_gp.py", line 200, in judge_run
+    data=json.loads(args.judge.read_text());assert len(data['records'])==30 and 'runtime' in data
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+EXIT_CODE=1

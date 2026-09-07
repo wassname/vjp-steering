@@ -197,7 +197,16 @@ async def judge_run(args):
     import export
     from openai import AsyncOpenAI
     assert not args.output.exists()
-    data=json.loads(args.judge.read_text());assert len(data['records'])==30 and 'runtime' in data
+    data=json.loads(args.judge.read_text())
+    assert 'runtime' in data
+    if data.get('projection_removal', False):
+        cohort, _ = gap.walk.read_cohort(15)
+        assert len(data['records']) == 15
+        assert {r['scenario'] for r in data['records']} == {r['scenario'] for r in cohort}
+        assert all(r['side']=='-C' and r['method']=='sycophancy_gp_projection_removal' for r in data['records'])
+        assert len(data['identity_controls'])==1 and data['identity_controls'][0]['identity_exact']
+    else:
+        assert len(data['records'])==30
     client=AsyncOpenAI(api_key=os.environ['OPENROUTER_API_KEY'],base_url='https://openrouter.ai/api/v1',timeout=60.,max_retries=0)
     semaphore=asyncio.Semaphore(3)
     async def one(r,order):
