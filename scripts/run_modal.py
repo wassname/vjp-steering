@@ -43,6 +43,34 @@ app = modal.App("jsteer-pub", image=image)
 cache = modal.Volume.from_name("jsteer-pub-cache", create_if_missing=True)
 
 
+@app.function(gpu="H100", volumes={"/cache": cache}, timeout=15 * 60)
+def j_lens_gap_clamp_remote(output: str, revision: str) -> str:
+    destination = Path("/cache/outputs") / output
+    if destination.exists():
+        raise FileExistsError(destination)
+    try:
+        subprocess.run([
+            sys.executable, "scripts/scratch/j_lens_gap_clamp.py",
+            "--source-root", "/cache/outputs/experiments", "--output", str(destination),
+            "--source-revision", revision,
+        ], cwd="/repo", check=True)
+        return destination.read_text()
+    finally:
+        cache.commit()
+
+
+@app.local_entrypoint()
+def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.json"):
+    destination = REPO / "outputs" / output
+    if destination.exists():
+        raise FileExistsError(destination)
+    result = j_lens_gap_clamp_remote.remote(output, source_revision())
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("x") as file:
+        file.write(result)
+    print("GAP_CLAMP_DOWNLOADED", destination)
+
+
 @app.function(
     gpu=os.environ.get("JSTEER_GPU", "H100"),
     volumes={"/cache": cache},
