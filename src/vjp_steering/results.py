@@ -1009,7 +1009,7 @@ def main() -> None:
     markdown_text = _markdown(
         table,
         (
-            "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
+            "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort.",
             "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
             PLOT_NOTE,
         ),
@@ -1049,7 +1049,7 @@ def main() -> None:
     html_text = _html(
         table,
         figure_html,
-        "All table rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
+        "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort. "
         "The random cone shows ten vectors until fewer than half have two coherent directions. "
         "The table reports rejected evaluations. " + PLOT_NOTE,
     )

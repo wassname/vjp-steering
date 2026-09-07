@@ -74,6 +74,8 @@ def section(manifest, points):
             "New layer17/current-position controls are not the historical random cone. "
             "Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; "
             "BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. "
+            "Random seed4 CSN minus at alpha1 and alpha2 had identical text, token IDs and same-order judge requests; "
+            "BA effects were -1.7 and -7.7, while AB was +0.3 at both doses. "
             "Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. "
             "This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.")
     headers = ['Evidence', 'Method', 'Seed', 'Alpha', 'Side', 'Effect →±', 'AB →±', 'BA →±', 'Damage ↓']
