@@ -24,7 +24,7 @@ Both figures retain the all-100 baselines and prior methods. The first connects 
 
 ## Named-GP additive DEV — incomplete
 
-Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched random seeds judged: 4/10 ([0, 1, 2, 3]). Coherence eligibility unknown; no accepted frontier. New layer17/current-position controls are not the historical random cone. Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.
+Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched random seeds judged: 5/10 ([0, 1, 2, 3, 4]). Coherence eligibility unknown; no accepted frontier. New layer17/current-position controls are not the historical random cone. Alpha1 minus DNL had identical baseline/steered text and token IDs, but AB invented a quote and scored +1.6; BA scored 0. Random seed0 alpha1 minus legal-pnf03 also had identical answers but BA scored -0.3. Raw scores are retained. AB/BA disagreements are shown, not resolved by selecting an order. This reused DEV cohort is not directly comparable to the all-100 table above; both project goals remain open.
 
 | Evidence   | Method            | Seed   | Alpha   | Side   | Effect →±   | AB →±   | BA →±   | Damage ↓   |
 |------------|-------------------|--------|---------|--------|-------------|---------|---------|------------|
@@ -58,6 +58,12 @@ Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched
 | 28         | matched random    | 3      | 2       | -C     | -0.270      | +0.200  | -0.740  | 0.157      |
 | 29         | matched random    | 3      | 4       | +C     | +0.067      | +0.087  | +0.047  | 0.103      |
 | 30         | matched random    | 3      | 4       | -C     | -0.227      | -0.007  | -0.447  | 0.160      |
+| 31         | matched random    | 4      | 1       | +C     | -0.047      | -0.100  | +0.007  | 0.050      |
+| 32         | matched random    | 4      | 1       | -C     | -0.150      | -0.047  | -0.253  | 0.213      |
+| 33         | matched random    | 4      | 2       | +C     | -0.037      | -0.033  | -0.040  | 0.093      |
+| 34         | matched random    | 4      | 2       | -C     | -0.240      | +0.060  | -0.540  | 0.127      |
+| 35         | matched random    | 4      | 4       | +C     | +0.077      | -0.100  | +0.253  | 0.093      |
+| 36         | matched random    | 4      | 4       | -C     | -0.297      | -0.413  | -0.180  | 0.137      |
 
 1. [Raw judgments](../slop/logs/20260907_j_lens_additive_concepts/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_additive_concepts/generation.json)
 2. [Raw judgments](../slop/logs/20260907_j_lens_additive_concepts/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_additive_concepts/generation.json)
@@ -89,3 +95,9 @@ Incomplete, uncalibrated DEV15; all measured alpha=1,2,4 doses retained. Matched
 28. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed3/alpha2/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed3/alpha2/generation.json)
 29. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json)
 30. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed3/alpha4/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed3/alpha4/generation.json)
+31. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json)
+32. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha1/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha1/generation.json)
+33. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json)
+34. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha2/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha2/generation.json)
+35. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json)
+36. [Raw judgments](../slop/logs/20260907_j_lens_matched_random/seed4/alpha4/judgments.jsonl) · [Responses and delivery](../slop/logs/20260907_j_lens_matched_random/seed4/alpha4/generation.json)
