@@ -108,6 +108,9 @@ def measured_prefill(model, vector, mask, mode, gaps, measurements, coefficient=
 
 def self_test(root):
     vectors, meta, gaps, digest = load_source(root)
+    for side in ("+C", "-C"):
+        assert mapped_effect({"on_axis_A": 1., "on_axis_B": 4.}, "AB", side) == mapped_effect({"on_axis_A": 4., "on_axis_B": 1.}, "BA", side)
+    print("GAP_JUDGE_MAPPING_PASS AB_BA_same_contrast=true", flush=True)
     cases = 0
     for side, vector in vectors.items():
         for layer in vector.cfg.layers:
@@ -200,6 +203,11 @@ def run(args):
     print("GAP_CLAMP_COMPLETE", json.dumps({"responses": len(payload["records"]), "runtime": payload["runtime"]}), flush=True)
 
 
+def mapped_effect(score, order, side):
+    difference = score["on_axis_B"] - score["on_axis_A"] if order == "AB" else score["on_axis_A"] - score["on_axis_B"]
+    return difference * (1 if side == "+C" else -1)
+
+
 async def judge_results(args):
     import os
     import judge
@@ -219,8 +227,7 @@ async def judge_results(args):
             result = await asyncio.wait_for(judge.judge_one(client, row, args.judge_order, 0), timeout=240)
         result["condition"] = record["condition"]
         score = result["judgment"]
-        difference = score["on_axis_B"] - score["on_axis_A"] if args.judge_order == "AB" else score["on_axis_A"] - score["on_axis_B"]
-        result["exported_effect"] = difference * (1 if row["side"] == "+C" else -1)
+        result["exported_effect"] = mapped_effect(score, args.judge_order, row["side"])
         records.append(result)
         with args.output.open("a") as file:
             file.write(json.dumps(result, ensure_ascii=False) + "\n")
@@ -233,10 +240,65 @@ async def judge_results(args):
                                            "reported_cost_usd": sum(r["cost_usd"] for r in records)}), flush=True)
 
 
+def report_results(args):
+    import csv
+    import io
+    import export
+    data = json.loads(args.report.read_text())
+    folder = args.output
+    folder.mkdir(parents=True, exist_ok=True)
+    judgments = [json.loads(line) for name in ("judgments.jsonl", "judgments-ba.jsonl") for line in (folder / name).read_text().splitlines()]
+    assert len(judgments) == 36 and len({(r["vignette"], r["condition"], r["order"]) for r in judgments}) == 36
+    for result in judgments:
+        assert abs(result["exported_effect"] - mapped_effect(result["judgment"], result["order"], result["side"])) < 1e-9
+        assert abs(result["exported_effect"] - export.signed_axis_effect(result["side"], [export.score_cell(result)])) < 1e-9
+    (folder / "generation.json").write_text(json.dumps(data, indent=2) + "\n")
+    lines = ["# Gap clamp complete response and measurement record", "", "PI/OpenAI Codex. Three diagnostic cases, not representative DEV evidence. AB/BA are two orderings of each comparison, not extra scenarios.", "", "|scenario|condition|final changed /9|final gap error max|AB effect|BA effect|", "|---|---|---:|---:|---:|---:|"]
+    coordinates, scores = [], []
+    for record in data["records"]:
+        js = {r["order"]: r for r in judgments if (r["vignette"], r["condition"]) == (record["scenario"], record["condition"])}
+        measures = record["measurements"]
+        values = [record["scenario"], record["condition"], sum(m["final_changed"] for m in measures.values()), max([m["final_gap_error"] for m in measures.values()] or [0])]
+        lines.append("|" + "|".join(map(str, values + [js[o]["exported_effect"] if o in js else "n/a" for o in ("AB", "BA")])) + "|")
+        for layer, measurement in measures.items():
+            coordinates.append({"scenario": record["scenario"], "condition": record["condition"], "layer": layer, **measurement})
+        for order, result in js.items():
+            j = result["judgment"]
+            bare_key, steered_key = ("A", "B") if order == "AB" else ("B", "A")
+            scores.append({"scenario": record["scenario"], "condition": record["condition"], "order": order, "exported_effect": result["exported_effect"],
+                           "bare_on_axis": j[f"on_axis_{bare_key}"], "steered_on_axis": j[f"on_axis_{steered_key}"],
+                           "bare_off_axis": j[f"off_axis_{bare_key}"], "steered_off_axis": j[f"off_axis_{steered_key}"], **j})
+    for record in data["records"]:
+        lines += ["", f"## {record['scenario']} / {record['condition']}", "", "Input as consumed:", "", "```text", record["rendered"], "```", "", "Response:", "", "> " + record["text"], ""]
+        for result in judgments:
+            if (result["vignette"], result["condition"]) == (record["scenario"], record["condition"]):
+                lines += [f"{result['order']} effect={result['exported_effect']:.3f}; raw per-response scores:", "```json", json.dumps(result["judgment"], ensure_ascii=False), "```"]
+    paired = []
+    for record in data["records"]:
+        if record["condition"] == "bare":
+            continue
+        pair = {s["order"]: s for s in scores if (s["scenario"], s["condition"]) == (record["scenario"], record["condition"])}
+        a, b = pair["AB"]["exported_effect"], pair["BA"]["exported_effect"]
+        paired.append({"scenario": record["scenario"], "condition": record["condition"], "AB_effect": a, "BA_effect": b,
+                       "paired_mean_effect": (a+b)/2, "strict_sign_reversal": a*b < 0,
+                       "either_tie": a == 0 or b == 0, "both_tie": a == b == 0,
+                       "absolute_order_gap": abs(a-b)})
+    assert len(paired) == 18
+    for name, rows in (("coordinates.csv", coordinates), ("scores.csv", scores), ("paired.csv", paired)):
+        stream = io.StringIO()
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+        (folder / name).write_text(stream.getvalue())
+    (folder / "responses-and-scores.md").write_text("\n".join(lines) + "\n")
+    print("GAP_REPORT_PASS", json.dumps({"responses": len(data["records"]), "coordinate_rows": len(coordinates), "judge_rows": len(scores), "reported_judge_cost_usd": sum(r["cost_usd"] for r in judgments), "generation_seconds": data["runtime"]["seconds"]}))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--judge", type=Path)
+    parser.add_argument("--report", type=Path)
     parser.add_argument("--judge-order", choices=("AB", "BA"), default="AB")
     parser.add_argument("--source-root", type=Path, default=Path("outputs/experiments"))
     parser.add_argument("--output", type=Path)
@@ -247,6 +309,8 @@ def main():
         self_test(args.source_root)
     elif args.judge:
         asyncio.run(judge_results(args))
+    elif args.report:
+        report_results(args)
     else:
         assert args.output and args.source_revision
         run(args)

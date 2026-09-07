@@ -1,0 +1,5 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONUNBUFFERED=1 PYTHONPATH=src uv run --no-sync scripts/scratch/j_lens_gap_clamp.py --self-test
+GAP_JUDGE_MAPPING_PASS AB_BA_same_contrast=true
+GAP_CLAMP_CPU_PASS {"cases": 36, "hook_modes": ["old", "gap"], "metadata_sha256": "aa054e789557b9ca4c79c52c93dd3ef8880212f1793c786932a91145bfc4321d", "alpha0_exact": true, "sum_and_gap": true, "targets": {"+C": {"13": 4.556610018014908, "14": 5.414298117160797, "15": 6.172635734081268, "16": 7.123698949813843, "17": 8.476953744888306, "18": 9.429186582565308, "19": 8.398379564285278, "20": 10.019581198692322, "21": 11.533475756645203}, "-C": {"13": -4.69693386554718, "14": -3.869912028312683, "15": -6.436792850494385, "16": -7.42580771446228, "17": -7.5542134046554565, "18": -8.385780811309814, "19": -12.443769216537476, "20": -12.97796106338501, "21": -14.799622058868408}}}
+GAP_REPORT_PASS {"responses": 21, "coordinate_rows": 108, "judge_rows": 36, "reported_judge_cost_usd": 0.00549428, "generation_seconds": 64.211080087}
+EXIT_CODE=0
