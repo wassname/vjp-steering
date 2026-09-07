@@ -377,6 +377,8 @@ def report(folder):
     import judge
     data = json.loads((folder / "generation.json").read_text())
     judgments = [json.loads(line) for line in (folder / "judgments.jsonl").read_text().splitlines()]
+    if data["schema"] == "v16_decode_persistence_v1":
+        return report_persistence(folder, data, judgments)
     assert len(data["records"]) == 21 and len(judgments) == 24
     scores, paired, downstream = [], [], []
     lines = ["# Complete transfer responses and identity-mapped judgments", "", "PI/OpenAI Codex. Three selected questions; 21 responses,12 scientific comparisons,24 orderings. No DEV success.", ""]
@@ -418,6 +420,63 @@ def report(folder):
         "max_target_gap_error": max(r.get("target_gap_error", 0) for r in data["records"])}
     (folder/"summary.json").write_text(json.dumps(summary, indent=2)+"\n")
     print("TRANSFER_REPORT_PASS", json.dumps(summary), flush=True)
+
+
+def report_persistence(folder, data, judgments):
+    import csv
+    import export
+    reference = json.loads((folder.parent/"generation.json").read_text())
+    assert gap.sha(folder.parent/"generation.json") == data["reference_sha256"]
+    prior_judgments = [json.loads(l) for l in (folder.parent/"judgments.jsonl").read_text().splitlines()]
+    fresh = [r for r in data["records"] if not r.get("reused_from")]
+    assert len(data["records"]) == 27 and len(fresh) == 6 and len(judgments) == 6
+    lines = ["# Persistence: complete fresh response / reused control pairs", "", "PI/OpenAI Codex. Three diagnostic cases;6 fresh responses,21 hash-reused controls;3 new comparisons/6 orderings.", ""]
+    steps, scores, paired = [], [], []
+    for r in fresh:
+        measures = r["measurements"]
+        bare = next(b for b in reference["records"] if b["scenario"] == r["scenario"] and b["condition"] == "bare")
+        assert len(measures) == len(r["generated_ids"])
+        assert [m["sequence_length"] for m in measures] == [len(r["input_ids"])]+[1]*(len(measures)-1)
+        if r["coefficient"] == 0:
+            assert r["generated_ids"] == bare["generated_ids"]
+        for m in measures:
+            assert m["next_block_input_exact"] and not any(m["all_position_patch_norms"][:-1])
+            if r["coefficient"]:
+                assert m["target_gap_error"] < .05
+            else:
+                assert not any(m["all_position_patch_norms"])
+            steps.append({"scenario": r["scenario"], "condition": r["condition"], **m})
+        lines += ["## "+r["scenario"]+" / "+r["condition"], "", "Input as consumed:", "```text", r["rendered"], "```", "", "Fresh response:", "> "+r["text"], ""]
+        for name in ("bare", "gap_minus", "direct_minus"):
+            b = next(b for b in reference["records"] if b["scenario"] == r["scenario"] and b["condition"] == name)
+            lines += ["Reused "+name+":", "> "+b["text"], ""]
+        js = {j["order"]: j for j in judgments if j["vignette"] == r["scenario"] and j["condition"] == r["condition"]}
+        for order,j in sorted(js.items()):
+            s = j["judgment"]
+            assert abs(j["exported_effect"]-export.signed_axis_effect("-C",[export.score_cell(j)])) < 1e-9
+            b,t = ("A","B") if order == "AB" else ("B","A")
+            score = {"scenario": r["scenario"], "order": order, "bare_on_axis": s["on_axis_"+b], "steered_on_axis": s["on_axis_"+t],
+                "bare_off_axis": s["off_axis_"+b], "steered_off_axis": s["off_axis_"+t], "effect": j["exported_effect"], **s}
+            scores.append(score)
+            lines += [order+" mapped score:", "```json", json.dumps(score,ensure_ascii=False), "```", ""]
+        if js:
+            a,b = (js[o]["exported_effect"] for o in ("AB","BA"))
+            old = {j["order"]:j["exported_effect"] for j in prior_judgments if j["vignette"]==r["scenario"] and j["condition"]=="gap_minus"}
+            paired.append({"scenario":r["scenario"],"AB_effect":a,"BA_effect":b,"strict_reversal":a*b<0,"tie_disagreement":(a==0)!=(b==0),
+                "prefill_only_AB_effect":old["AB"],"prefill_only_BA_effect":old["BA"]})
+    for name,rows in (("steps.csv",steps),("scores.csv",scores),("paired.csv",paired)):
+        with (folder/name).open("w") as file:
+            writer=csv.DictWriter(file,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+    (folder/"responses-and-scores.md").write_text("\n".join(lines)+"\n")
+    summary={"fresh_responses":6,"reused_responses":21,"comparisons":3,"judgments":6,
+        "treatment_prefill_calls":3,"treatment_decode_calls":sum(len(r["measurements"])-1 for r in fresh if r["coefficient"]),
+        "identity_prefill_calls":3,"identity_decode_calls":sum(len(r["measurements"])-1 for r in fresh if not r["coefficient"]),
+        "max_target_gap_error":max(m["target_gap_error"] for r in fresh if r["coefficient"] for m in r["measurements"]),
+        "strict_reversals":sum(p["strict_reversal"] for p in paired),"tie_disagreements":sum(p["tie_disagreement"] for p in paired),
+        "judge_cost_usd":sum(j["cost_usd"] for j in judgments),"runtime":data["runtime"],
+        "generation_sha256":gap.sha(folder/"generation.json"),"reference_sha256":data["reference_sha256"]}
+    (folder/"summary.json").write_text(json.dumps(summary,indent=2)+"\n")
+    print("PERSISTENCE_REPORT_PASS",json.dumps(summary),flush=True)
 
 
 # PI/OpenAI Codex: standalone entrypoint reuses the project image without editing run_modal.py.

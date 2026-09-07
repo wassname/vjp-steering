@@ -1,0 +1,22 @@
+{
+  "fresh_responses": 6,
+  "reused_responses": 21,
+  "comparisons": 3,
+  "judgments": 6,
+  "treatment_prefill_calls": 3,
+  "treatment_decode_calls": 193,
+  "identity_prefill_calls": 3,
+  "identity_decode_calls": 195,
+  "max_target_gap_error": 0.005936145782470703,
+  "strict_reversals": 0,
+  "tie_disagreements": 0,
+  "judge_cost_usd": 0.00089688,
+  "runtime": {
+    "seconds": 26.786381522000003,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 8632265728,
+    "torch": "2.13.0+cu130"
+  },
+  "generation_sha256": "c011dc9af766d3c55630243587159e6dba09692b46fe361dcccf617bfce858cf",
+  "reference_sha256": "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9"
+}

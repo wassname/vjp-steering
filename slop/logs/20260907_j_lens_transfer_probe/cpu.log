@@ -1,0 +1,75 @@
+COMMAND: OMP_NUM_THREADS=1 PYTHONPATH=src uv run --no-sync scripts/scratch/j_lens_transfer_probe.py --self-test
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/cache_utils.py", line 1461, in has_previous_state
+    layer_idx = next(
+        idx
+        for idx in range(len(self) - 1, -1, -1)
+        if isinstance(self.layers[idx], LinearAttentionCacheLayerMixin)
+    )
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_transfer_probe.py", line 290, in <module>
+    self_test()
+    ~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_transfer_probe.py", line 122, in self_test
+    base_ids, base = generate("bare")
+                     ~~~~~~~~^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_transfer_probe.py", line 120, in generate
+    ids = model.generate(**inp, max_new_tokens=3, do_sample=False, use_cache=True)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 2681, in generate
+    result = decoding_method(
+        self,
+    ...<5 lines>...
+        **model_kwargs,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 2881, in _sample
+    outputs = self._prefill(
+        input_ids,
+    ...<2 lines>...
+        is_first_iteration=not generation_config.is_assistant,
+    )
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/generation/utils.py", line 3961, in _prefill
+    return self(**model_inputs, return_dict=True)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/generic.py", line 911, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1654, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+                                       ~~~~~~~~~~^
+        input_ids=input_ids,
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/generic.py", line 1040, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/utils/output_capturing.py", line 262, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1205, in forward
+    "linear_attention": create_recurrent_attention_mask(**mask_kwargs),
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/masking_utils.py", line 1468, in create_recurrent_attention_mask
+    if past_key_values is not None and past_key_values.has_previous_state():
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/transformers/cache_utils.py", line 1467, in has_previous_state
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: `has_previous_state` can only be called on LinearAttention layers, and the current Cache seem to only contain Attention layers.
+EXIT_CODE=1

@@ -1,0 +1,22 @@
+{
+  "responses": 21,
+  "comparisons": 12,
+  "judgments": 24,
+  "strict_reversals": 2,
+  "tie_disagreements": 2,
+  "both_ties": 2,
+  "reported_judge_cost_usd": 0.00359868,
+  "runtime": {
+    "seconds": 49.875740414999996,
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "peak_memory_bytes": 8689468416,
+    "torch": "2.13.0+cu130"
+  },
+  "identity_exact": 6,
+  "generation_sha256": "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9",
+  "judgments_sha256": "6ab29de6d8708176306e5b48f2ba2ad611f9a2b6f0177aa656a8c47d94100ef1",
+  "judge_code_sha256": "e4da183dc38ccf65034ebfe7411968fd53c7ca17d398d9a8a81cc1c547545ba6",
+  "export_code_sha256": "d4f289e7b6c9b00d3894b2cdf33202d278a8d37c63b15e5fb679a99157b014ab",
+  "max_projected_coordinate_error": 0.001081705093383789,
+  "max_target_gap_error": 0.002261519432067871
+}
