@@ -69,6 +69,12 @@ Unchanged norm.judge_run reconstructs the row from artifact method/side/scenario
 
 judge_identity_audit.py independentlyreconstructs ALL60prompts andcachekeys exactly,verifiesone rawattempt each,checks unchangedsource bytes against executionrevision,and exercises judge_one with anOFFLINEfakeclient returning the savedrawoutputs. Allrequests/returnedratings/keys match. This is not anHTTPwirecapture and no providerrequestIDs were saved;upstreamhandling cannot be independentlyreplayed. Evidence favors a judge/model-provider output error over a local row/order/cache mixup. Full reconstructedrequest kwargs,exactIDs/text,serializedprompts,rawrecords saved in DNL-exact-requests-and-records.json. No APIcall in thisaudit.
 
+## Bounded equality inventory across this run
+
+Offline equal_response_inventory.py inspects all30treatment/baselinepairs and60savedjudgments,nototherexperiments. Allgenerated-IDfields available;0missingpairs. Exactly2pairs aretext-equal ANDtoken-equal:fin_pnf_02plus andphys_pnf_02minus(DNL). FinanceplusAB/BAeffects0/0;DNLminus+1.6/0. Thusonly1of4text-equal orderingjudgments is nonzero,andonly1of2equalpairs has anynonzeroeffect. DNLis the sole observedexact-equalitycounterexample in thisrun;this doesnot bounderrors onunequaltexts.
+
+Equalpairs contribute0tofullplusmeans and+0.1066667tofullminusABmean,+0toBAmean,+0.0533333tofullminuspairedmean (denominators15,15,30 respectively). Theseareadditive contributions usingoriginalscores,notadjustedbenchmarkestimates. Fullminusmeans remain-.173333/-.493333,paired-.333333. Complete60rowequality/key/effectinventory saved in equal-response-inventory.json;command/output in matching.log. No rejudge,filter,scorecorrection ornewpaidcall.
+
 ## Evidence-separated interpretation and next boundary
 
 Implementationbugs remain a scientific alternative,not assumed impossible. Fixed sign/rawcomponentorder,FP64reconstruction,alpha0identity,independentnextblockinput and1982actualtreatmentcallchecks provide evidence against wrongdelivery. The DNL apparentjudge regression is specificallynot explained by generationchange or swappedresponses. No code change is justified merely to force expectedratings.

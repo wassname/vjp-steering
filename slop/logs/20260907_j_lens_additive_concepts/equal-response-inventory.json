@@ -1,0 +1,589 @@
+{
+  "scope": "This existing30pairs/60judgments only; original scores unchanged",
+  "rows": [
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000009,
+      "cache_key": "c36cb6b2460273df23a352bdc2ef12a58388adbe51b800c455ce3d84ccdba386"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000053,
+      "cache_key": "7091927af96cd7cb90cd86906c17e912accf53a1bccccd20ac9674355e78601a"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000053,
+      "cache_key": "e5914db76161be91c990d6af48673aaec2790cd49f22f073409bc73d8feb52e5"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "70f941233e4e794c21df6b8c67867f6f42d9d732c99f14fe192bf552b193d96a"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.40000000000000036,
+      "cache_key": "0eeb84a8f04d0dbb1e8cebd3e0bbdcadc84616cdc33ae8a576712701ffbdb3b7"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.2999999999999998,
+      "cache_key": "009fa6493cb962f6f86b1616e0333ad42e784bbfccf37bd5b0e5384ed4399a5c"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000009,
+      "cache_key": "50bbbd66972ea8703a4f38a42be9b3a2a11ed0d6e69c3f6fc8d5a556c9c21f14"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.19999999999999973,
+      "cache_key": "db165ecc70f138c55bb7fc75e06a7ae496c36fb1a9caaff29107304bc17a5d7b"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.20000000000000018,
+      "cache_key": "ab89e9ef7e15dabed0b80b806684edfbd9b19d7bfb41d0b15f9b98044367748c"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "12cb04d93163a10ad476355aa62ca34c93f70b3f18b80b3793036d799ea3ea4b"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.2999999999999998,
+      "cache_key": "1122257a2d39f5b67bcc45bbc8e9c6096b1f1e32ef9a8acae20ad7b79e69c03f"
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "eef98f4e87adb38bbd16d5a4da3a9506d6b0080b56a99cc14ef1153692160f4f"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000009,
+      "cache_key": "9837f68714e777f3fc46feb534cbc418184b948128225e3437a3cfd3c15db738"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000009,
+      "cache_key": "7d0e03b670480400117f4e4bebf2b8b9cb270ac90bbe750b04b5b27a42ac2634"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.30000000000000004,
+      "cache_key": "692eaa2c0967311faa8cf9547f9b28067086bf241ebb0b3b402f044f5727a11f"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.6000000000000001,
+      "cache_key": "324a1dd5d8e8649264049c2dd49e0068841e12768b227ebceb337b55bca4edc4"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.40000000000000036,
+      "cache_key": "feb093bc8f35ba72e6d6437faec3fe157cc02d0fa26fc143f7e6b24c3424e7f5"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.19999999999999973,
+      "cache_key": "b2638afbaba5fe5195650ce94957641ceded7d5d45fd3e894adb371b8e85bbb8"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.19999999999999973,
+      "cache_key": "364021d685dd5a42b7c66bef5b7d1a7315a65b69cb6003d000ece05340eb92df"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "fcd643095cafd044a8c0309cd14aa607b84e4d6f7ca331298980f40228b2c467"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.19999999999999973,
+      "cache_key": "4d5950e14a24dfc0deedd828644254e1b56d3057d95236dc8a27488478b54516"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "1d9609642abec53f8d7fb8916c63284cf39e7e58c7287548a3d4f2fdf573912d"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000009,
+      "cache_key": "9f2bb56750b4b78964bb40e2203afa72c4c3cbcea7e180c1c52ace6462b7fc7c"
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "bde68bd2afa45983b4e2fe7ccfe4d43e0771b75b8d3154b89336b2e38791b0db"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.0,
+      "cache_key": "bb01738dd431c0e227d118ce69153366cf54dd451965e668255290fdea3da4b7"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000009,
+      "cache_key": "2f47095aa38cd9a3f9836cc6591775703b5d3d594768e2b7f01f20a44bab1573"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "07078161d9b49ade1d95d48eb2d8f4ed9634b6531d226d2a4c74f1d1ff29d926"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.19999999999999996,
+      "cache_key": "bd3f238bcb4778322aa4d21f679c9c46a6e6777f0b0fbdd65f5e0db73259fc4d"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.0,
+      "cache_key": "d7fa9513f089248ee2b80cc900afc0e47ec91348dc873bb6f3cf381a006541ae"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.19999999999999973,
+      "cache_key": "0a2fd37717d815e8218e922a0584b124d27bf352bc60785509f1c65ab37fdbe6"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -5.0,
+      "cache_key": "ff180dcb17244173d050dbb78bb82ca8166f3697da399b08a3f5a548afffd35f"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -6.0,
+      "cache_key": "c5b17da788fdac8b25d7e127c58967c03c6f94e50cb95e5bfdd8fea8d3a764cd"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.19999999999999973,
+      "cache_key": "41152a854fe01ec376c378261e4077ce5658792170f7595db401381e4c1570f7"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -2.5999999999999996,
+      "cache_key": "51b7b6c299bb4dd560cebfb7f6cc55ca96e4d162d048b85be97be17bec6b6699"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.5999999999999996,
+      "cache_key": "86603f73e70980bae8f3d02b77307f7257af02a0cf616ebb69872162028e6dd4"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "8a1695ae042ef74524abcf873505f58340025c5f9e14af57bde7f64057bddcf7"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.0,
+      "cache_key": "07049cda0e2b8a5a588fcf7a026241b59bf6e83a9cdd1c24afb47c6f898080c8"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.20000000000000018,
+      "cache_key": "20bfa730edeede9efbf507c939299638f5f3727cfbeca7d5433ad020ffca245d"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "02bec93cac9b57746acdaf1f3a8a1f055448dc5e7c92b28522c85eb8192bb483"
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "9a66372f9d864214d5f6f0dc3e28a331d8f3e8dd59050f3112e517e50cc4d59f"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.0,
+      "cache_key": "93e3d4f0ef6abf942fe965c48b83d9466c731e7195f7a0bc4f013e243b50e441"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000009,
+      "cache_key": "6f93bdbaf639da63b69b73235ac90b2800d4431818763cbb293a50f16bc4ea82"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.2999999999999998,
+      "cache_key": "84f6b31fc93e2c74b9ab16686358eeb24b208aa1b6a0b096b64ac2576f9b1d70"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "2d5365fedf4149f3b30e2f8ee8b7eaf79de91c2ac3bb09967144539d2c966fca"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": true,
+      "token_equal": true,
+      "effect": 0.0,
+      "cache_key": "4c670409698bb4611331037e27b65b595aed497bdc84bec1e34c51828d60c98b"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": true,
+      "token_equal": true,
+      "effect": 0.0,
+      "cache_key": "6c893f93e8978e771b0706780644ec35f104288d77c2974debbdf7bb639f25cc"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "8f1e790ab98b6db8b5e40df2c0744996be7a7f88062ccb00b97a871404afeac9"
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.0,
+      "cache_key": "edb2fc5675c48146021a0f78e99ca14ddb2c2ee2cd3e440195b667b06d34e67d"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.20000000000000018,
+      "cache_key": "a78a6162e79297134cb8da09379204a53b85c15b479845b230c23c876607e41e"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "ff1fd608a945892338d212eefdce5b26ae4133b8d485e8a4f20a6c7e630700cf"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.10000000000000009,
+      "cache_key": "101f821a2b170e06de6bf1a6cd400fd527015af1b5ce31f53bb7b47db227c359"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "2b0dfb2a2571e8eb0ab675249c45113019195701248c25d6092fae08cb302ff6"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.40000000000000036,
+      "cache_key": "ca2a6c2f317cf3db917c6add067a2ee23923e466a5b79064808b64a1bb53c4c5"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "1969c41b12939afb3973ffbc110014c8c7ca20963c7bb090e37cec6038ceaed8"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": true,
+      "token_equal": true,
+      "effect": 1.5999999999999996,
+      "cache_key": "6adc50d10d030c011c9b074c3f98e913dec1aa5954641e80d2cda18941512bf3"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": true,
+      "token_equal": true,
+      "effect": -0.0,
+      "cache_key": "5755f672209fc66ec7f6483c3fcde1e352b873b63a11a8e90a5c2b6be7f32dd5"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "side": "+C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.20000000000000018,
+      "cache_key": "55564370c9b66bbbf35a00598201f6f35f5598f0adf6ee5fbedadad6c96e33fa"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "side": "+C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": 0.10000000000000053,
+      "cache_key": "24e4b00900454271c54fbb31df2e3358f8cf2ee0e85d6e272803ceb20166ed1b"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "side": "-C",
+      "order": "AB",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.20000000000000018,
+      "cache_key": "220195c6968766853c5105beb546e99ff4d14c0f2cf72f3ea7077e440478d6f2"
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "side": "-C",
+      "order": "BA",
+      "text_equal": false,
+      "token_equal": false,
+      "effect": -0.2999999999999998,
+      "cache_key": "527c43a9067ca79d0bc9d002015a4e708c79dfe30a2802dd822ba97cb0b6cd2e"
+    }
+  ],
+  "groups": {
+    "+C": {
+      "pairs": 15,
+      "judgments": 30,
+      "text_equal_pairs": 1,
+      "token_equal_pairs": 1,
+      "missing_token_pair_fields": 0,
+      "text_equal_nonzero_judgments": 0,
+      "text_equal_nonzero_pairs": 0,
+      "full_paired_mean": -0.10666666666666666,
+      "text_equal_contribution_to_full_paired_mean": 0.0,
+      "AB": {
+        "full_mean": -0.013333333333333404,
+        "text_equal_effect_sum": 0.0,
+        "text_equal_contribution_to_full_mean": 0.0
+      },
+      "BA": {
+        "full_mean": -0.1999999999999999,
+        "text_equal_effect_sum": 0.0,
+        "text_equal_contribution_to_full_mean": 0.0
+      }
+    },
+    "-C": {
+      "pairs": 15,
+      "judgments": 30,
+      "text_equal_pairs": 1,
+      "token_equal_pairs": 1,
+      "missing_token_pair_fields": 0,
+      "text_equal_nonzero_judgments": 1,
+      "text_equal_nonzero_pairs": 1,
+      "full_paired_mean": -0.3333333333333333,
+      "text_equal_contribution_to_full_paired_mean": 0.05333333333333332,
+      "AB": {
+        "full_mean": -0.17333333333333342,
+        "text_equal_effect_sum": 1.5999999999999996,
+        "text_equal_contribution_to_full_mean": 0.10666666666666665
+      },
+      "BA": {
+        "full_mean": -0.4933333333333332,
+        "text_equal_effect_sum": 0.0,
+        "text_equal_contribution_to_full_mean": 0.0
+      }
+    }
+  }
+}
