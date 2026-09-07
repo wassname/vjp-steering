@@ -1,0 +1,422 @@
+{
+  "raw_attribution_cells": [
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "order": "AB",
+      "baseline": -1.0,
+      "steered": 0.6000000000000001,
+      "change": -0.3999999999999999,
+      "effect": -0.20000000000000018
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "order": "AB",
+      "baseline": -1.0,
+      "steered": 1.2999999999999998,
+      "change": 0.2999999999999998,
+      "effect": 0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "order": "BA",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": 0.10000000000000053
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "order": "AB",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "order": "BA",
+      "baseline": -0.5999999999999996,
+      "steered": 1.0,
+      "change": 0.40000000000000036,
+      "effect": 0.10000000000000053
+    },
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "order": "BA",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": -0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "order": "AB",
+      "baseline": -1.3,
+      "steered": 1.0,
+      "change": -0.30000000000000004,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "order": "BA",
+      "baseline": -2.2,
+      "steered": 2.4,
+      "change": 0.19999999999999996,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "order": "AB",
+      "baseline": -0.7000000000000002,
+      "steered": 1.0,
+      "change": 0.2999999999999998,
+      "effect": 0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "order": "AB",
+      "baseline": -0.3999999999999999,
+      "steered": 0.3999999999999999,
+      "change": 0.0,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "order": "BA",
+      "baseline": 0.3999999999999999,
+      "steered": 0.0,
+      "change": 0.3999999999999999,
+      "effect": 0.10000000000000009
+    },
+    {
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "order": "BA",
+      "baseline": -1.4000000000000004,
+      "steered": 1.0,
+      "change": -0.40000000000000036,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "order": "BA",
+      "baseline": -2.3,
+      "steered": 2.0,
+      "change": -0.2999999999999998,
+      "effect": -0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "order": "AB",
+      "baseline": 1.1,
+      "steered": -1.7,
+      "change": -0.5999999999999999,
+      "effect": -0.30000000000000004
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "order": "AB",
+      "baseline": 1.3,
+      "steered": -0.19999999999999996,
+      "change": 1.1,
+      "effect": 0.6000000000000001
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "order": "BA",
+      "baseline": 0.6000000000000001,
+      "steered": -0.40000000000000036,
+      "change": 0.19999999999999973,
+      "effect": -0.10000000000000009
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "order": "BA",
+      "baseline": -0.6999999999999997,
+      "steered": -0.7000000000000002,
+      "change": -1.4,
+      "effect": -0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "order": "AB",
+      "baseline": -2.0,
+      "steered": 0.0,
+      "change": -2.0000000000000004,
+      "effect": 0.19999999999999973
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "order": "AB",
+      "baseline": 1.9000000000000004,
+      "steered": -1.7999999999999998,
+      "change": 0.10000000000000053,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "order": "BA",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": 0.10000000000000053
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "order": "AB",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "order": "AB",
+      "baseline": 0.0,
+      "steered": 0.0,
+      "change": 0.0,
+      "effect": 0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "order": "BA",
+      "baseline": 0.9999999999999996,
+      "steered": -1.0,
+      "change": -4.440892098500626e-16,
+      "effect": 0.10000000000000009
+    },
+    {
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "order": "BA",
+      "baseline": 0.2999999999999998,
+      "steered": -0.40000000000000036,
+      "change": -0.10000000000000053,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "order": "AB",
+      "baseline": -2.1,
+      "steered": 1.1,
+      "change": -1.0,
+      "effect": 0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "order": "BA",
+      "baseline": 0.2999999999999998,
+      "steered": -0.7000000000000002,
+      "change": -0.40000000000000036,
+      "effect": 0.0
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "order": "AB",
+      "baseline": 0.0,
+      "steered": -0.2999999999999998,
+      "change": -0.2999999999999998,
+      "effect": 0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "order": "BA",
+      "baseline": 0.20000000000000018,
+      "steered": 0.2999999999999998,
+      "change": 0.5,
+      "effect": 0.20000000000000018
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "order": "AB",
+      "baseline": 0.40000000000000036,
+      "steered": -0.5999999999999996,
+      "change": -0.1999999999999993,
+      "effect": -0.2999999999999998
+    },
+    {
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "order": "BA",
+      "baseline": -0.2999999999999998,
+      "steered": 0.0,
+      "change": -0.2999999999999998,
+      "effect": 0.0
+    }
+  ],
+  "raw_attribution_summary": {
+    "baseline": -0.2833333333333333,
+    "steered": 0.1433333333333333,
+    "change": -0.14,
+    "effect": 0.04000000000000004
+  },
+  "task_donor_geometry": [
+    {
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "bare_coordinate": 0.24113868486745466,
+      "donor_coordinate": 0.26375641892146306,
+      "task_delta_coordinate": 0.022617734054008437,
+      "task_delta_norm": 6.794175949722036,
+      "parallel_norm": 0.02261773405400844,
+      "complement_norm": 6.794138302528701,
+      "parallel_energy_fraction": 1.10821648745104e-05,
+      "BF16_parallel_only_difference_from_bare": 0.02288280740321375,
+      "BF16_complement_only_difference_from_donor": 0.02325792333562651,
+      "BF16_parallel_arm_error": 0.012612474846676746,
+      "BF16_complement_arm_error": 0.012617661047984537,
+      "bare_tokens": 55,
+      "donor_tokens": 108,
+      "conditions_in_donor_context": [
+        "direct_minus",
+        "donor_identity_minus"
+      ],
+      "full_donor_copy_exact": true,
+      "donor_identity_exact": true
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "bare_coordinate": 0.2885251459972379,
+      "donor_coordinate": 0.3553230883452444,
+      "task_delta_coordinate": 0.06679794234800679,
+      "task_delta_norm": 5.585525991756065,
+      "parallel_norm": 0.06679794234800682,
+      "complement_norm": 5.585126555368343,
+      "parallel_energy_fraction": 0.00014302040878963755,
+      "BF16_parallel_only_difference_from_bare": 0.06860834494516471,
+      "BF16_complement_only_difference_from_donor": 0.0682708250500153,
+      "BF16_parallel_arm_error": 0.016888970530928613,
+      "BF16_complement_arm_error": 0.016312935684542028,
+      "bare_tokens": 72,
+      "donor_tokens": 125,
+      "conditions_in_donor_context": [
+        "direct_minus",
+        "donor_identity_minus"
+      ],
+      "full_donor_copy_exact": true,
+      "donor_identity_exact": true
+    },
+    {
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "bare_coordinate": 0.06432755176515276,
+      "donor_coordinate": 0.17802157884400815,
+      "task_delta_coordinate": 0.11369402707885493,
+      "task_delta_norm": 5.324367011690832,
+      "parallel_norm": 0.11369402707885493,
+      "complement_norm": 5.323152988914387,
+      "parallel_energy_fraction": 0.0004559732142939603,
+      "BF16_parallel_only_difference_from_bare": 0.11448846975094122,
+      "BF16_complement_only_difference_from_donor": 0.11439335385918974,
+      "BF16_parallel_arm_error": 0.016047153744829,
+      "BF16_complement_arm_error": 0.015108027501030102,
+      "bare_tokens": 69,
+      "donor_tokens": 122,
+      "conditions_in_donor_context": [
+        "direct_minus",
+        "donor_identity_minus"
+      ],
+      "full_donor_copy_exact": true,
+      "donor_identity_exact": true
+    }
+  ],
+  "schema_inventory": {
+    "transfer_record_keys": [
+      "condition",
+      "downstream",
+      "final_states",
+      "first_token",
+      "generated_ids",
+      "health",
+      "hook_calls",
+      "input_ids",
+      "patch",
+      "prompt",
+      "rendered",
+      "scenario",
+      "text"
+    ],
+    "transfer_saved_final_layers": [
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31"
+    ],
+    "transfer_first_token_keys": [
+      "id",
+      "kl_from_bare",
+      "kl_from_direct_minus",
+      "top20_ids"
+    ],
+    "projection_record_keys": [
+      "attention_mask",
+      "condition",
+      "generated_ids",
+      "health",
+      "input_ids",
+      "measurements",
+      "method",
+      "prompt",
+      "rendered",
+      "scenario",
+      "side",
+      "text"
+    ],
+    "projection_measurement_keys": [
+      "actual_norm",
+      "call",
+      "coordinate_after",
+      "coordinate_before",
+      "desired_norm",
+      "next_block_exact",
+      "nonfinal_exact",
+      "norm_error",
+      "operator",
+      "orthogonal_change_norm",
+      "position",
+      "removal_fraction",
+      "rounding_bound",
+      "rounding_error_norm",
+      "sequence_length"
+    ],
+    "no_serialized_KV_or_recurrent_state_in_these_schemas": true
+  },
+  "protected_hashes": {
+    "results/plot.png": "2f775fe3598a7d902d329551cbe3ba9ad5698866425343c4aad0f3914e374f49",
+    "results/plot_pareto.png": "50d2bd48c1eb1c1d75b0d94a6a985c310cf47c52e2706bab8484fc123432ab7d",
+    "results/index.md": "6df314db07417047a1d21bc2d07d708fa28594982a0521ca2cab33218161a2ba",
+    "results/index.html": "7b2234f44351febbb362416ba9687c3a04df1f2ad55ea2614e0afe3553c3ad18",
+    "data/results.csv": "2802acd96b16a67b05c284133d711257068f8dec937b1c949dbf59c8ca0a6c20",
+    "scripts/scratch/j_lens_transfer_probe.py": "7b74062eac8583b68ee8c5b2f688e7bedf5e77dfaeaa7a9f1f75e5bafd6a50e5",
+    "scripts/scratch/j_lens_additive_concepts.py": "979d88b25d1b0c7f8da66b548b188be66540524bcbf49e897b754a756dce0f04",
+    "slop/logs/20260907_j_lens_transfer_probe/generation.json": "b69925310ad2b2744e107442b1d283569d106365fda73c5a1ec98f857bf169e9",
+    "slop/logs/20260907_j_lens_named_concepts/generation.json": "9b47dcb594efc67f9b3491013273106346a0afb8c32fea3a6111e6121ca34a53",
+    "slop/logs/20260907_j_lens_single_concept/generation.json": "556e36f0b21019707f20a7ad25d44e3276ec0a356484aacb57f1db372bac41f6",
+    "slop/logs/20260907_j_lens_projection_removal/generation.json": "03aaaae93f1aaad0436c0f92e12469a04b8a7ad27e58acf2f6d3bd890ffca431",
+    "slop/logs/20260907_j_lens_single_concept/judgments.jsonl": "ece63cca95be7f8912dcbd176ddb35393317133d2eb2cde9d7d2969441a8dcf5",
+    "slop/logs/20260907_j_lens_projection_removal/judgments.jsonl": "9f9ebb91109e8380beab4c9d2daf248a6b94ab80b9c6779e8963c6afc937f88d",
+    "slop/logs/20260907_j_lens_projection_removal/budget.json": "f1ce18927d8bf8658e6b6c3e81a936779d0dc56846c4a6fe76e9002e5ce4ad82"
+  },
+  "cost_proposal": {
+    "unreserved_usd": 2.01988872744,
+    "new_reservation_usd": 0,
+    "proposal_only_cap_usd": 1.2,
+    "timeout_seconds": 360,
+    "GPU_runtime_upper_estimate_usd": 0.39492000000000005,
+    "startup_and_non_GPU_allowance_usd": 0.70508,
+    "judge_allowance_usd": 0.1,
+    "if_separately_authorized_remaining_usd": 0.8198887274400002,
+    "invoice_is_available": false,
+    "generation_count": 15,
+    "judge_count": 18
+  },
+  "online_treatment_calls": 1069,
+  "goals_open": true,
+  "paid_calls": 0
+}
