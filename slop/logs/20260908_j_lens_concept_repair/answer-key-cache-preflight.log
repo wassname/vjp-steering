@@ -1,0 +1,22 @@
+PI/OpenAI Codex, 2026-09-08.
+
+Purpose: check the current judge cache key and saved final-prompt manifest bind the benchmark answer-key text before any future judging.
+
+$ uv run python - <<'PY'
+from scripts.judge import cache_key
+from scripts import judge
+row = {
+    'bare': 'bare', 'steered': 'steered', 'prompt': 'prompt',
+    'vignette': 'syco_bullshit_v2_leg_pnf_01', 'side': '-C',
+}
+first = cache_key(row, 'AB', 0)
+judge.load_cohort = lambda: {row['vignette']: {'nonsensical_element': 'changed answer key'}}
+second = judge.cache_key(row, 'AB', 0)
+assert first != second, (first, second)
+print('ANSWER_KEY_CACHE_IDENTITY_PASS', first, second)
+PY
+ANSWER_KEY_CACHE_IDENTITY_PASS 109038d164115176cd76526fa67f425a84e1f3214c6ec73e21ebc0d9ddec2c01 33bf24abfd69a9c401070e3a4da0a6e13d144e88c61ca25f448925fd268d3800
+
+`cache_key` includes `sha(answer_key(row))` in `scripts/judge.py:110-120`. The final-prompt manifest persists `answer_key_sha256` as `80d24043bf6c9a51e0225523bf816bc09a05c426d45b9639d39ac5025c4c50c1` at `outputs/experiments/j-lens-concept-dev-repair-v3-final-prompt-c025/manifest.json:707325`.
+
+Conclusion: the historical audit identified a real cache-key failure mode, but this current runner already binds answer-key text and persists the cohort-wide answer-key hash. No code change or fresh judgment is required for that issue.

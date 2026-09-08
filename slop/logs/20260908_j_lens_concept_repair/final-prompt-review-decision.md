@@ -11,7 +11,7 @@ The generation audit passed. This establishes pairable, responsive output. It do
 - J-lens `-C=.25` raw candidness effect: `+0.2600`.
 - Random-minus raw candidness effect: `+0.2267`.
 - Difference: `+0.0333`.
-- J-lens has slightly worse off-axis values: delta `-0.0333` versus `-0.0267`; steered off-axis `1.1700` versus `1.0433`.
+- J-lens has a slightly lower mean off-axis delta (`-0.0333` versus `-0.0267`), but a higher absolute steered off-axis score (`1.1700` versus `1.0433`). These are different comparisons.
 - Eleven of fifteen J-lens/random responses are byte-identical. The remaining apparent difference is concentrated in measurement-sensitive `phys_pnf_01`, where J-lens reverses between AB and BA and an exact-equal random/bare pair has nonzero effect.
 - TCA is shared by J-lens and random-minus. The prior TCA result remains a local correction observation, not an endpoint-selection result.
 
