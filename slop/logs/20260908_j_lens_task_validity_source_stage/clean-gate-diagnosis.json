@@ -1,0 +1,4924 @@
+{
+  "summary": {
+    "corpus_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e",
+    "method": "The literal policy label maps valid worlds to policy_actions[0] and invalid worlds to policy_actions[1], then maps that action through each row's A/B option order.",
+    "records": 384,
+    "frozen_accuracy": 0.5,
+    "literal_policy_accuracy": 0.8125,
+    "policy_orders": {
+      "0": {
+        "records": 192,
+        "frozen_accuracy": 0.8125,
+        "literal_policy_accuracy": 0.8125
+      },
+      "1": {
+        "records": 192,
+        "frozen_accuracy": 0.1875,
+        "literal_policy_accuracy": 0.8125
+      }
+    },
+    "label_disagrees_with_prompt": 192,
+    "prompt_correct_but_frozen_wrong": 156,
+    "prompt_wrong": 72,
+    "cases_all_literal_policy_correct": 56,
+    "cases_all_frozen_correct": 1
+  },
+  "cases": [
+    {
+      "semantic_case_id": "tv1_capacity_0_allocation_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_capacity_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_0_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_0_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_1_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_capacity_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_1_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_1_routing_0",
+      "frozen_correct": 1,
+      "literal_policy_correct": 1,
+      "variants": [
+        {
+          "id": "tv3_capacity_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_1_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_2_allocation_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_capacity_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_2_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_2_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_capacity_3_notification_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_notification_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_3_notification_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_3_notification_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_3_notification_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_notification_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_notification_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_notification_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_3_storage_0",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_capacity_3_storage_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_storage_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_capacity_3_storage_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_storage_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_capacity_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_capacity_3_storage_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_storage_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_storage_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_capacity_3_storage_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_0_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_0_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_0_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_1_allocation_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_link_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_link_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_1_allocation_1",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_link_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_link_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_1_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_1_routing_1",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_link_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_link_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_2_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_2_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_2_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_3_notification_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_3_notification_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_notification_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_3_storage_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_link_3_storage_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_storage_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_link_3_storage_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_link_3_storage_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_link_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_link_3_storage_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_storage_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_storage_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_link_3_storage_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_0_allocation_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_parity_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_0_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_0_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_1_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_parity_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_1_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_1_routing_0",
+      "frozen_correct": 0,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_parity_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_1_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_2_allocation_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_parity_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_2_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_2_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_parity_3_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_3_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_3_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_3_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_3_storage_0",
+      "frozen_correct": 0,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_parity_3_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_3_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_parity_3_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_parity_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_parity_3_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_parity_3_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_0_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_precedence_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_0_allocation_1",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_precedence_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_0_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_1_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_precedence_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_1_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_1_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_1_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_2_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_precedence_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_2_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_2_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_precedence_3_notification_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_notification_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_3_notification_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_3_notification_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_3_notification_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_notification_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_notification_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_notification_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_3_storage_0",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_precedence_3_storage_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_storage_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_precedence_3_storage_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_storage_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_precedence_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_precedence_3_storage_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_storage_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_storage_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_precedence_3_storage_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_0_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_roster_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_0_allocation_1",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_roster_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_0_routing_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_roster_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_1_allocation_0",
+      "frozen_correct": 4,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_roster_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_1_allocation_1",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_roster_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_1_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_roster_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_1_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_2_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_roster_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_2_allocation_1",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_roster_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_2_routing_0",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_roster_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_3_notification_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_3_notification_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_notification_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_3_storage_0",
+      "frozen_correct": 1,
+      "literal_policy_correct": 1,
+      "variants": [
+        {
+          "id": "tv3_roster_3_storage_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_3_storage_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_roster_3_storage_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_storage_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_roster_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_roster_3_storage_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_storage_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_storage_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_roster_3_storage_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_0_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 0,
+      "variants": [
+        {
+          "id": "tv3_seal_match_0_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_0_allocation_1",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_seal_match_0_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_0_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 0,
+      "variants": [
+        {
+          "id": "tv3_seal_match_0_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_0_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_0_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_0_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_1_allocation_0",
+      "frozen_correct": 1,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_seal_match_1_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_1_allocation_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_1_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_1_routing_0",
+      "frozen_correct": 0,
+      "literal_policy_correct": 2,
+      "variants": [
+        {
+          "id": "tv3_seal_match_1_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_1_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_1_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_1_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_2_allocation_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 0,
+      "variants": [
+        {
+          "id": "tv3_seal_match_2_allocation_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_2_allocation_1",
+      "frozen_correct": 3,
+      "literal_policy_correct": 3,
+      "variants": [
+        {
+          "id": "tv3_seal_match_2_allocation_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_allocation_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_2_routing_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 0,
+      "variants": [
+        {
+          "id": "tv3_seal_match_2_routing_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": false
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_2_routing_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_2_routing_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_2_routing_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_3_notification_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_3_notification_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_3_notification_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_3_notification_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_notification_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_3_storage_0",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_3_storage_p0_o0_0",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p0_o1_0",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p1_o0_0",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": false,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p1_o1_0",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": false,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    },
+    {
+      "semantic_case_id": "tv1_seal_match_3_storage_1",
+      "frozen_correct": 2,
+      "literal_policy_correct": 4,
+      "variants": [
+        {
+          "id": "tv3_seal_match_3_storage_p0_o0_1",
+          "policy_order": 0,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p0_o1_1",
+          "policy_order": 0,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": true,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p1_o0_1",
+          "policy_order": 1,
+          "option_order": 0,
+          "valid": true,
+          "frozen_expected_letter": "A",
+          "literal_policy_expected_letter": "B",
+          "actual_letter": "B",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        },
+        {
+          "id": "tv3_seal_match_3_storage_p1_o1_1",
+          "policy_order": 1,
+          "option_order": 1,
+          "valid": true,
+          "frozen_expected_letter": "B",
+          "literal_policy_expected_letter": "A",
+          "actual_letter": "A",
+          "frozen_correct": false,
+          "literal_policy_correct": true
+        }
+      ]
+    }
+  ]
+}

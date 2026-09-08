@@ -1,8 +1,10 @@
-# Source-gate decision: BLOCK
+# Superseded source-gate decision: BLOCK
 
 PI/OpenAI Codex, 2026-09-08.
 
-The frozen v3 source stage is **BLOCKED**. This is a clean-task failure, not an intervention result.
+**Superseded:** [clean-gate-diagnosis-decision.md](clean-gate-diagnosis-decision.md) found that v3 policy-order-one prompts reverse their stated action relation without reversing the frozen expected answer. Do not use this file as evidence that the model failed the source task. It remains the contemporaneous record of why job 705 stopped before intervention.
+
+The frozen v3 source stage was **BLOCKED** by its recorded gate. This was a clean-task failure under the then-recorded scorer, not an intervention result.
 
 | check | required | observed | result |
 |---|---:|---:|---|

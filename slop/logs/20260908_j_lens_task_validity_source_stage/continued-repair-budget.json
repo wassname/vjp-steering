@@ -1,0 +1,26 @@
+{
+  "author": "PI/OpenAI Codex",
+  "purpose": "cumulative accounting after invalidating v3 as a source-stage admission task; no new paid work authorized",
+  "global_cap_usd": "40.00",
+  "Modal": {
+    "job_704_usd": "0.02227301",
+    "job_705_usd": "0.19453738",
+    "cumulative_metered_usd": "0.21681039",
+    "source_stage_reservation_usd": "2.00000000",
+    "released_unused_source_stage_reservation_usd": "1.78318961",
+    "metered_not_final_invoice": true
+  },
+  "external_review": {
+    "v3_prior_reservation_usd": "0.50",
+    "source_gate_reviews": ["j_lens_task_validity_source_gate_705", "j_lens_task_validity_source_gate_705_r2"],
+    "provider_dollar_receipt": null,
+    "accounting_status": "unreconciled, do not infer a dollar amount from model list prices or elapsed time"
+  },
+  "known_spend_under_40_usd_cap": "0.21681039",
+  "maximum_remaining_before_unreconciled_external_review_spend_usd": "39.78318961",
+  "prior_unreserved_after_v3_review_reservation_usd": "5.22509672744",
+  "modal_only_unreserved_after_source_stage_usd": "5.00828633744",
+  "continued_repair_budget_status": "blocked pending a separately costed revised-source specification and reconciliation of external-review receipts",
+  "paid_launches_authorized": 0,
+  "both_research_goals": "OPEN"
+}

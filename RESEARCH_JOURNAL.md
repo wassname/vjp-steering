@@ -160,3 +160,15 @@ Interpretation: my read is that it is almost certain the frozen source task fail
 The source stage ends without transfer or benchmark work.
 
 <!-- PI/OpenAI Codex: journal entry written 2026-09-08. -->
+
+## 2026-09-08 -- V3 policy mirror invalidates source-gate interpretation
+
+This entry corrects the behavioral interpretation of the frozen source-stage result.
+
+Evidence: [clean-gate-diagnosis.json](slop/logs/20260908_j_lens_task_validity_source_stage/clean-gate-diagnosis.json) compares every saved output to its frozen answer and to the action stated by its literal policy. It reports 384 rows, 81.25 percent literal-policy accuracy for each of both policy orders, and frozen-label accuracy of 81.25 percent for policy order zero versus 18.75 percent for policy order one. The frozen label disagrees with the stated prompt action on all 192 policy-order-one rows. The build source defines reversed `policy_actions` but computes `expected` from the unreversed valid or invalid action in [v3/build.py](slop/logs/20260908_j_lens_task_validity_corpus/v3/build.py). One complete paired case has four literal-policy-correct outputs while its two policy-order-one outputs are frozen-wrong. The full paired receipt is in [clean-gate-diagnosis.json](slop/logs/20260908_j_lens_task_validity_source_stage/clean-gate-diagnosis.json).
+
+Interpretation: my read is that it is almost certain the v3 gate does not measure the stated source task after policy reversal. The model still has real task or instruction errors, with 72 literal-policy-wrong outputs, but the original gate failure cannot separate those from the 156 literal-policy-correct outputs it scores wrong. The prior blocked-gate entry is superseded as a behavioral conclusion by [the revise decision](slop/logs/20260908_j_lens_task_validity_source_stage/clean-gate-diagnosis-decision.md).
+
+The saved output now supports source-task revision rather than a causal claim.
+
+<!-- PI/OpenAI Codex: journal entry written 2026-09-08. -->
