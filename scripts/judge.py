@@ -298,10 +298,11 @@ def experiment_rows(
         candidates = {
             side: [
                 cell["coefficient"]
-                for cell in manifest["cells"][side].values()
+                for cell in cells.values()
                 if cell["rows"] >= profile_.cohort_size
             ]
-            for side in ("+C", "-C")
+            for side, cells in manifest["cells"].items()
+            if cells
         }
     else:
         selected = json.loads((data_dir(DEV, experiment_id) / "selected.json").read_text())
@@ -310,6 +311,8 @@ def experiment_rows(
             for side in ("+C", "-C")
         }
     if side_filter is not None:
+        if side_filter not in candidates:
+            raise ValueError(f"experiment does not contain generated side={side_filter}")
         candidates = {side_filter: candidates[side_filter]}
     if coefficient_filter is not None:
         if side_filter is None:

@@ -1,0 +1,3 @@
+$ uv run python -m py_compile scripts/judge.py
+$ uv run python '<load sparse -C experiment rows>'
+SPARSE_SIDE_JUDGE_PASS rows=15 side=-C
