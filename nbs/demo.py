@@ -8,7 +8,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.5
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: .venv
 #     language: python
 #     name: python3
 # ---
@@ -97,10 +97,12 @@ vectors = {
 # The reference vector pins the extraction on the published model.
 
 # %%
+
+device = "cuda"
 if MODEL == "Qwen/Qwen3.5-4B":
     reference = load_file(ROOT / "data" / "vjp_delta_reference.safetensors")
     vector_max_abs_diff = max(
-        (vjp_vector.stacked[layer]["v"] - reference[f"stacked.layer{layer}.v"]).abs().max().item()
+        (vjp_vector.stacked[layer]["v"] - reference[f"stacked.layer{layer}.v"].to(device)).abs().max().item()
         for layer in layers
     )
     if vector_max_abs_diff >= 1e-4:
@@ -156,3 +158,5 @@ print(tabulate(grid, headers="keys", tablefmt="grid", floatfmt="+.3f", maxcolwid
 # %%
 # PNG, not an interactive figure, because GitHub does not run the plotly javascript
 Image(plot(_rows()).to_image(format="png", scale=2))
+
+# %%
