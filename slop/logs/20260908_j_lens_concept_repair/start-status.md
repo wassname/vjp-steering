@@ -18,4 +18,6 @@ PI started a local `pueued` process only to inspect the queue. The shared `defau
 
 Job `777` was queued in that lane, then removed before it could start. Its generic Modal entrypoint had a 24-hour container timeout, which could not enforce the $2 DEV reservation. The follower exited with no task log because removal occurred before execution. This is queue administration, not a failed generation.
 
-The replacement uses `scripts/run_modal.py::j_lens_concept_repair_dev`. Its one H100 container has a 900-second Modal timeout, one container, and no retry loop. It passed local Modal entrypoint help and Python compilation. The replacement is not queued until this revised reserve is saved.
+The replacement uses `scripts/run_modal.py::j_lens_concept_repair_dev`. Its one H100 container has a 900-second Modal timeout, one container, and no retry loop. It passed local Modal entrypoint help and Python compilation.
+
+Pueue reused ID `777` for the replacement job after removal. The new job is queued in the paused default lane with priority 1. Its command is `uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev`. PI attached a fresh `pqf 777` follower for native completion notification.

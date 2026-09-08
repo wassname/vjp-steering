@@ -32,6 +32,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "no v13 generation, judgment, or new Modal bill has started; removed queued job 777 before it could run because its generic 24-hour runner timeout did not enforce the $2 DEV Modal reservation",
+  "spend_status": "replacement job 777 is queued in paused pueue default; no v13 generation, judgment, or new Modal bill has started. Its dedicated entrypoint enforces the $2 DEV Modal reservation with one 900-second H100 container and no retry loop",
   "both_research_goals": "OPEN"
 }
