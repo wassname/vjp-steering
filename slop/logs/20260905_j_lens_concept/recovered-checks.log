@@ -1,0 +1,7 @@
+COMMAND: uv run python scripts/experiment.py j_lens_concept --self-test
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true
+COMMAND: uv run python scripts/export.py --self-test
+EXPORT_SELF_TEST_PASS
+COMMAND: uv run python -m compileall -q src/vjp_steering/j_lens_concept.py scripts/experiment.py scripts/concept_checks.py scripts/walk.py scripts/run_modal.py

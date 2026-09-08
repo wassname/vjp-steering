@@ -1,0 +1,17 @@
+J_LENS_PROMPT_SPAN_ACTIVITY_SELF_TEST_PASS
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+CORRECTED_PRIMARY_READOUT_PASS cells=90 raw_top1_different_layers=16
+CORRECTED_READOUT_DTYPE_BIAS_SOFTCAP_PASS dtypes=float32,bfloat16
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/j_lens_prompt_span_activity.py", line 1323, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/j_lens_prompt_span_activity.py", line 1207, in main
+    readout_self_test(companion=args.companion_self_test)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/.venv/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/workspace/2026/jspace/j-steer_pub/scripts/j_lens_prompt_span_activity.py", line 1198, in readout_self_test
+    assert [[cell["candidates"][word]["rank"] for word in candidates] for cell in actual_cells] == ranks.tolist()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,18 @@
+{
+  "experiment_id": "persona-prefill-full-residual-control-dev-v1",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 0.0625,
+      "candidates_descending": [
+        0.0625,
+        0.03125
+      ],
+      "effect": -0.05999999999999999,
+      "off_axis_perturbation": 0.060000000000000005
+    }
+  }
+}

@@ -1,0 +1,89 @@
+COMMIT: 6df611a8e03c82740cb92a93e1cfeff77c31e185
+GRID_PROVENANCE: C=.125,.25,.5 produced responsive text on one positive-side prompt; this does not establish cohort-wide or negative-side validity.
+122fade54679fd9f3d2f1cfd692e7a305b3994353b7f2f3b778239fae97e4525  outputs/experiments/j-lens-concept-calibration-v1/calibration.json
+0d22dd059445ab9e748d330a0291b77626e4f9afdade2683fd494733dcece97b  results/plot.png
+a8dc7f9b38584e808637140467271c2f080e8d6406225ea21a78b2661757fe4e  results/plot_pareto.png
+936a3621bfa048c16b384e816cc0d1a41e239d6b36c7561d1b143bcebb7acb19  outputs/experiments/j-lens-concept-dev-v1/manifest.json
+COMMAND: uv run python scripts/experiment.py j_lens_concept --dev --experiment-id j-lens-concept-dev-v2-calibrated --reuse-extraction-from j-lens-concept-dev-v1 --coefficients-plus 0.125,0.25,0.5 --coefficients-minus 0.125,0.25,0.5
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-DL38cgN54P5XFZaIyZZHfg
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 348.86it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 442.13it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   3%|▎         | 12/426 [00:00<00:04, 92.83it/s]
+[1ALoading weights:   7%|▋         | 28/426 [00:00<00:03, 125.09it/s]
+[1ALoading weights:  10%|█         | 43/426 [00:00<00:02, 128.25it/s]
+[1ALoading weights:  14%|█▍        | 61/426 [00:00<00:02, 146.37it/s]
+[1ALoading weights:  20%|█▉        | 84/426 [00:00<00:01, 172.55it/s]
+[1ALoading weights:  24%|██▍       | 102/426 [00:00<00:02, 141.99it/s]
+[1ALoading weights:  28%|██▊       | 119/426 [00:00<00:02, 148.83it/s]
+[1ALoading weights:  32%|███▏      | 135/426 [00:00<00:02, 138.90it/s]
+[1ALoading weights:  37%|███▋      | 158/426 [00:01<00:01, 160.30it/s]
+[1ALoading weights:  41%|████      | 175/426 [00:01<00:01, 142.23it/s]
+[1ALoading weights:  45%|████▍     | 190/426 [00:01<00:01, 140.10it/s]
+[1ALoading weights:  48%|████▊     | 205/426 [00:01<00:01, 133.05it/s]
+[1ALoading weights:  53%|█████▎    | 226/426 [00:01<00:01, 152.76it/s]
+[1ALoading weights:  57%|█████▋    | 242/426 [00:01<00:01, 137.61it/s]
+[1ALoading weights:  61%|██████    | 260/426 [00:01<00:01, 147.58it/s]
+[1ALoading weights:  65%|██████▍   | 276/426 [00:01<00:01, 132.95it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 216.25it/s]
+2026-09-05 11:14:49.262 | INFO     | __main__:load_or_extract:270 - EXTRACTION_REUSED source=j-lens-concept-dev-v1 hashes={'+C': '8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97', '-C': '8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97'}
+2026-09-05 11:15:03.334 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:05.891 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:08.259 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:10.343 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:14.101 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:18.806 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:22.146 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 11:15:22.974 | INFO     | __main__:gpu_stage:699 - GPU_STAGE_COMPLETE experiment=j-lens-concept-dev-v2-calibrated profile=dev cells=6
+EXPERIMENT_GPU_COMPLETE id=j-lens-concept-dev-v2-calibrated profile=dev cells=6
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-DL38cgN54P5XFZaIyZZHfg
+✓ Finished downloading files to local!
+2026-09-05 19:15:47.696 | INFO     | __main__:experiment_rows:297 - experiment manifest id=j-lens-concept-dev-v2-calibrated profile=dev cells=6 demo_sides=90
+2026-09-05 19:15:48.185 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 19:15:48.691 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 19:15:49.227 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 19:15:49.771 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 19:15:50.306 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 19:15:50.812 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 19:15:51.288 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 19:15:51.768 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 19:15:52.166 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 19:15:52.548 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 19:15:52.941 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 19:15:53.214 | INFO     | __main__:main:670 - CACHE_CHECK required=89 cached=2 missing=87 API_calls=87
+2026-09-05 19:16:32.043 | INFO     | __main__:run:632 - judge progress=87/87
+2026-09-05 19:16:32.538 | INFO     | __main__:cached_keys:330 - cache scan records=20000 valid_keys=0
+2026-09-05 19:16:33.155 | INFO     | __main__:cached_keys:330 - cache scan records=40000 valid_keys=0
+2026-09-05 19:16:33.772 | INFO     | __main__:cached_keys:330 - cache scan records=60000 valid_keys=0
+2026-09-05 19:16:34.368 | INFO     | __main__:cached_keys:330 - cache scan records=80000 valid_keys=11699
+2026-09-05 19:16:34.923 | INFO     | __main__:cached_keys:330 - cache scan records=100000 valid_keys=31699
+2026-09-05 19:16:35.476 | INFO     | __main__:cached_keys:330 - cache scan records=120000 valid_keys=51368
+2026-09-05 19:16:35.981 | INFO     | __main__:cached_keys:330 - cache scan records=140000 valid_keys=71368
+2026-09-05 19:16:36.480 | INFO     | __main__:cached_keys:330 - cache scan records=160000 valid_keys=91368
+2026-09-05 19:16:36.916 | INFO     | __main__:cached_keys:330 - cache scan records=180000 valid_keys=111368
+2026-09-05 19:16:37.368 | INFO     | __main__:cached_keys:330 - cache scan records=200000 valid_keys=130444
+2026-09-05 19:16:37.780 | INFO     | __main__:cached_keys:330 - cache scan records=220000 valid_keys=150271
+2026-09-05 19:16:38.078 | INFO     | __main__:main:683 - JUDGE_COMPLETE required=89 missing=0
+2026-09-05 19:16:40.899 | INFO     | judge:experiment_rows:297 - experiment manifest id=j-lens-concept-dev-v2-calibrated profile=dev cells=6 demo_sides=90
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-concept-dev-v2-calibrated profile=dev arms=6 scenarios=90
+0d22dd059445ab9e748d330a0291b77626e4f9afdade2683fd494733dcece97b  results/plot.png
+a8dc7f9b38584e808637140467271c2f080e8d6406225ea21a78b2661757fe4e  results/plot_pareto.png
+936a3621bfa048c16b384e816cc0d1a41e239d6b36c7561d1b143bcebb7acb19  outputs/experiments/j-lens-concept-dev-v1/manifest.json

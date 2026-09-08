@@ -1,0 +1,17 @@
+COMMAND: OMP_NUM_THREADS=4 uv run python scripts/experiment.py j_lens_concept --concept-calibrate --dev --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --source-experiment j-lens-concept-tiny-smoke-v3 --experiment-id j-lens-concept-tiny-calibration-v1 --max-new-tokens 8
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 4739.89it/s]
+2026-09-05 17:45:00.962 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.0 logit_delta=0 KL=0 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.044 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=1.0 logit_delta=4.2078 KL=5.6833e-05 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.148 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.5 logit_delta=2.1043 KL=1.433e-05 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.234 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.25 logit_delta=1.0523 KL=4.365e-06 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.322 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.125 logit_delta=0.52618 KL=1.3606e-06 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.399 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.0625 logit_delta=0.2631 KL=6.5119e-07 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+2026-09-05 17:45:01.535 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.03125 logit_delta=0.13151 KL=2.3829e-07 health=['unfinished'] text='ratingsevt.toArray startX哩_ring㎛ migrant'
+CONCEPT_CALIBRATION_COMPLETE id=j-lens-concept-tiny-calibration-v1 doses=7

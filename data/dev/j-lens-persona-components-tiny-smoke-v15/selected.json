@@ -1,0 +1,12 @@
+{
+  "experiment_id": "j-lens-persona-components-tiny-smoke-v15",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "status": "no_accepted_endpoint"
+    }
+  }
+}

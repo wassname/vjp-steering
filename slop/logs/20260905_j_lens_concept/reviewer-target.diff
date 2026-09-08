@@ -1,0 +1,848 @@
+diff --git a/scripts/concept_checks.py b/scripts/concept_checks.py
+new file mode 100644
+index 0000000..16bab1c
+--- /dev/null
++++ b/scripts/concept_checks.py
+@@ -0,0 +1,243 @@
++"""Focused checks and real tiny-pipeline smoke for concept addition. — PI/OpenAI Codex"""
++
++import hashlib
++import json
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++from types import SimpleNamespace
++
++import torch
++from steering_lite import Vector
++
++from vjp_steering.j_lens_concept import (
++    JLensConceptC, concept_prefill, concept_spec, final_positions, gradient_pursuit, implementation_hash,
++)
++from vjp_steering.vjp import _activations
++
++
++def calibrate(args):
++    import experiment
++    import walk
++
++    root = experiment.experiment_dir(args.experiment_id)
++    if root.exists():
++        raise ValueError(f"calibration output exists: {root}")
++    source = experiment.experiment_dir(args.source_experiment)
++    model, tokenizer = experiment.load_model(args)
++    vectors, metadata = experiment.load_or_extract(args, source, model, tokenizer)
++    rows, cohort_hash = walk.read_cohort(1)
++    prompts = walk.generation_inputs(tokenizer, rows)
++    encoded = tokenizer(prompts, return_tensors="pt", padding=True, add_special_tokens=False).to(args.device)
++    mask = encoded.attention_mask.bool()
++    observations = []
++    with torch.inference_mode():
++        bare_logits = model(**encoded).logits[:, -1].float()
++    for coefficient in (0., 1., .5, .25, .125, .0625, .03125):
++        before, diagnostics, handles = {}, {}, []
++
++        def before_hook(layer):
++            def capture(_module, _inputs, output):
++                hidden = output[0] if isinstance(output, tuple) else output
++                before[layer] = hidden.detach().clone()
++            return capture
++
++        def after_hook(layer):
++            def capture(_module, _inputs, output):
++                hidden = output[0] if isinstance(output, tuple) else output
++                h = before[layer][mask].float()
++                actual = hidden[mask].float() - h
++                direction = vectors["+C"].stacked[layer]["v"][0].to(h)
++                intended = coefficient * direction
++                raw_norm = h.norm(dim=-1)
++                diagnostics[str(layer)] = {
++                    "hidden_norms": raw_norm.tolist(), "actual_patch_norms": actual.norm(dim=-1).tolist(),
++                    "patch_residual_ratios": (actual.norm(dim=-1) / raw_norm).tolist(),
++                    "actual_direction_coordinates": (actual @ direction).tolist(),
++                    "intended_patch_norm": intended.norm().item(),
++                    "changed_coordinate_fraction": (actual != 0).float().mean().item(),
++                    "relative_quantization_error": ((actual - intended).norm(dim=-1) / max(abs(coefficient), 1e-30)).tolist(),
++                    "dtype": str(hidden.dtype),
++                }
++            return capture
++
++        try:
++            for layer in vectors["+C"].cfg.layers:
++                handles.append(model.model.layers[layer].register_forward_hook(before_hook(layer)))
++            with concept_prefill(model, vectors["+C"], mask, coefficient) as calls:
++                for layer in vectors["+C"].cfg.layers:
++                    handles.append(model.model.layers[layer].register_forward_hook(after_hook(layer)))
++                with torch.inference_mode():
++                    logits = model(**encoded).logits[:, -1].float()
++        finally:
++            for handle in handles:
++                handle.remove()
++        assert all(count == 1 for count in calls.values())
++        if coefficient == 0:
++            torch.testing.assert_close(logits, bare_logits, rtol=0, atol=0)
++        log_probs, bare_log_probs = logits.log_softmax(-1), bare_logits.log_softmax(-1)
++        top = logits[0].topk(10)
++        path = root / f"c{experiment.coefficient_slug(coefficient)}.jsonl"
++        records = experiment.extend_generation(
++            path, rows, prompts, model, tokenizer, args, profile_name="dev", side="+C",
++            coefficient=coefficient, vector=vectors["+C"],
++        )
++        health, reasons = walk.health(tokenizer, [record["text"] for record in records])
++        observation = {
++            "coefficient": coefficient, "path": path.name, "health": health, "breakdown_reasons": reasons,
++            "layers": diagnostics, "hook_calls": calls,
++            "logit_delta_norm": (logits - bare_logits).norm().item(),
++            "kl_bare_to_steered": (bare_log_probs.exp() * (bare_log_probs - log_probs)).sum().item(),
++            "top_token_ids": top.indices.tolist(), "top_tokens": [tokenizer.decode([i]) for i in top.indices.tolist()],
++            "top_logits": top.values.tolist(), "text": records[0]["text"],
++        }
++        observations.append(observation)
++        experiment.atomic_json(root / "calibration.json", {
++            "source_experiment": args.source_experiment, "source_metadata_sha256": hashlib.sha256((source / "extraction/metadata.json").read_bytes()).hexdigest(),
++            "vector_content_sha256": metadata["vector_content_sha256"], "cohort_sha256": cohort_hash,
++            "scenario": rows[0]["scenario"], "prompt": prompts[0], "input_ids": encoded.input_ids.tolist(),
++            "attention_mask": encoded.attention_mask.tolist(), "batch_size": 1,
++            "original_dev_batch_size": 15, "note": "single-prompt rerun; BF16 batch-shape effects may prevent byte-exact original output",
++            "observations": observations,
++        })
++        print(f"CONCEPT_CALIBRATION C={coefficient} logit_delta={observation['logit_delta_norm']:.5g} KL={observation['kl_bare_to_steered']:.5g} health={reasons} text={records[0]['text']!r}", flush=True)
++    print(f"CONCEPT_CALIBRATION_COMPLETE id={args.experiment_id} doses={len(observations)}")
++
++
++def self_test():
++    from experiment import concept_grid, validate_extraction_identity, vector_sha256
++
++    dictionary = torch.tensor([[1., 0., 0.], [.6, .8, 0.], [0., 0., 1.]])
++    signal = torch.tensor([.3, 1., -.5])
++    w, component, errors = gradient_pursuit(signal, dictionary)
++    assert (w >= 0).all() and w.count_nonzero() <= 16 and errors[-1] < signal.norm()
++    torch.testing.assert_close(component, w @ dictionary)
++    torch.testing.assert_close(signal, component + (signal - component))
++    assert w[0] == 0 and w[1] > 0 and w[2] == 0
++    two_steps, _, early = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=2)
++    refined, _, late = gradient_pursuit(torch.tensor([1., 1., 0.]), dictionary, k=16)
++    assert two_steps[0] > 0 and two_steps[1] > 0
++    assert refined[1] != two_steps[1] and late[-1] < early[-1]
++    for exact in (torch.zeros(3), torch.tensor([1., 0., 0.])):
++        weights, component, _ = gradient_pursuit(exact, torch.eye(3))
++        assert torch.isfinite(weights).all()
++        torch.testing.assert_close(component, exact)
++    try:
++        gradient_pursuit(torch.full((3,), float("nan")), torch.eye(3))
++    except ValueError:
++        pass
++    else:
++        raise AssertionError("nonfinite pursuit did not fail")
++    torch.testing.assert_close(final_positions(torch.tensor([[0, 1, 1], [1, 1, 0], [0, 0, 1]])),
++                               torch.tensor([2, 1, 2]))
++
++    class Toy(torch.nn.Module):
++        def __init__(self):
++            super().__init__()
++            self.model = torch.nn.Module()
++            self.model.layers = torch.nn.ModuleList([torch.nn.Identity()])
++
++        def forward(self, x):
++            return self.model.layers[0](x)
++
++    model = Toy()
++    vector = Vector(JLensConceptC(layers=(0,)), {0: {}}, {0: {"v": torch.tensor([[1., 0., 0.]])}})
++    hidden = torch.zeros(2, 3, 3)
++    mask = torch.tensor([[0, 1, 1], [1, 1, 1]])
++    results = {}
++    for coefficient in (0., 2., -2.):
++        with concept_prefill(model, vector, mask, coefficient) as calls:
++            results[coefficient] = model(hidden)
++            assert calls == {0: 1}
++            assert not model.model.layers[0]._forward_hooks
++            torch.testing.assert_close(model(torch.zeros(2, 1, 3)), torch.zeros(2, 1, 3))
++        assert not model.model.layers[0]._forward_hooks
++    torch.testing.assert_close(results[0.], hidden)
++    torch.testing.assert_close(results[2.], -results[-2.])
++    torch.testing.assert_close(results[2.][:, :, 0], 2 * mask.float())
++    with concept_prefill(model, vector, torch.ones(1, 1), 2.):
++        torch.testing.assert_close(model(torch.zeros(1, 1, 3)), torch.tensor([[[2., 0., 0.]]]))
++    try:
++        with concept_prefill(model, vector, mask, 2.):
++            raise RuntimeError("synthetic exception")
++    except RuntimeError:
++        pass
++    assert not model.model.layers[0]._forward_hooks
++    with tempfile.TemporaryDirectory() as directory:
++        path = str(Path(directory) / "v.safetensors")
++        vector.save(path)
++        assert vector_sha256(vector) == vector_sha256(Vector.load(path))
++    args = SimpleNamespace(method="j_lens_concept", model="tiny", dtype="float32", lens_file=None)
++    metadata = {"method": args.method, "model": args.model, "dtype": args.dtype, "spec_sha256": concept_spec()[1],
++                "implementation_sha256": implementation_hash()}
++    validate_extraction_identity(args, metadata)
++    for bad in ({**metadata, "method": "j_lens_swap"}, {**metadata, "spec_sha256": "old"},
++                {**metadata, "model": "other"}, {**metadata, "dtype": "bfloat16"},
++                {**metadata, "implementation_sha256": "stale"}):
++        try:
++            validate_extraction_identity(args, bad)
++        except ValueError:
++            pass
++        else:
++            raise AssertionError("stale cache accepted")
++    assert concept_grid(SimpleNamespace(coefficients_plus="0.125,0.25,0.5", coefficients_minus="0.25")) == {
++        "+C": [.125, .25, .5], "-C": [.25]}
++    print("J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true")
++
++
++def smoke(args):
++    import experiment
++    import walk
++
++    torch.set_num_threads(4)
++    if args.model != "wassname/qwen3-5lyr-tiny-random" or args.dtype != "float32":
++        raise ValueError("concept smoke requires tiny random model and float32")
++    root = experiment.experiment_dir(args.experiment_id)
++    root.mkdir(parents=True, exist_ok=True)
++    model, tokenizer = experiment.load_model(args)
++    layers = walk.resolve_layers(model, None)
++    prompt = tokenizer("A cat sits on a mat.", return_tensors="pt").to(args.device)
++    jacobians = {layer: [] for layer in layers}
++    with _activations(model, tuple(sorted({*layers, len(model.model.layers) - 1})), graph_root=min(layers)) as found:
++        model.model(**prompt, use_cache=False)
++        final = found[len(model.model.layers) - 1]
++        n = final.shape[1]
++        for dimension in range(final.shape[-1]):
++            grads = torch.autograd.grad(final[..., dimension].sum(), [found[layer] for layer in layers], retain_graph=True)
++            for layer, gradient in zip(layers, grads, strict=True):
++                jacobians[layer].append(gradient.sum((0, 1)).detach().cpu() / (n * (n + 1) / 2))
++    args.lens_file = root / "tiny_actual_jacobian.pt"
++    torch.save({"J": {layer: torch.stack(rows) for layer, rows in jacobians.items()}, "n_prompts": 1,
++                "source_layers": layers, "d_model": model.config.hidden_size}, args.lens_file)
++    print(f"TINY_LENS_FIT actual_autograd=true n_prompts=1 layers={layers}")
++    del model
++    args.dev = True
++    experiment.gpu_stage(args)
++    model, tokenizer = experiment.load_model(args)
++    vectors, _ = experiment.load_or_extract(args, root, model, tokenizer)
++    encoded = tokenizer("A cat sits on a mat.", return_tensors="pt").to(args.device)
++    with torch.inference_mode():
++        bare = model(**encoded).logits
++        with concept_prefill(model, vectors["+C"], encoded.attention_mask, 1.) as calls:
++            steered = model(**encoded).logits
++        restored = model(**encoded).logits
++    assert not torch.equal(bare, steered)
++    torch.testing.assert_close(bare, restored)
++    assert all(count == 1 for count in calls.values())
++    assert all(not model.model.layers[layer]._forward_hooks for layer in layers)
++    print("CONCEPT_REAL_HOOK_CHECK changed_logits=true restored_logits=true calls_once=true removed=true")
++    del model
++    for command in (
++        [sys.executable, "scripts/judge.py", "--experiment-id", args.experiment_id, "--profile", "dev", "--refresh"],
++        [sys.executable, "scripts/export.py", "--experiment-id", args.experiment_id, "--profile", "dev"],
++    ):
++        print("COMMAND:", " ".join(command), flush=True)
++        subprocess.run(command, check=True)
++    metadata = json.loads((root / "extraction/metadata.json").read_text())
++    assert metadata["vector_content_sha256"]["+C"] == metadata["vector_content_sha256"]["-C"]
++    for layer in metadata["layers"].values():
++        for d in layer["decomposition"]:
++            assert min(d["weights_unit_dictionary"]) >= 0 and d["achieved_nonzero_count"] <= 16
++            assert d["reconstruction_error"] == 0
++    print(f"J_LENS_CONCEPT_PIPELINE_SMOKE_PASS id={args.experiment_id} actual_lens=true generation=true judge=true export=true public_outputs_untouched=true")
+diff --git a/scripts/experiment.py b/scripts/experiment.py
+index 009b77f..69e737b 100644
+--- a/scripts/experiment.py
++++ b/scripts/experiment.py
+@@ -20,6 +20,7 @@ from steering_lite.data import make_persona_pairs
+ from transformers import AutoModelForCausalLM, AutoTokenizer
+ 
+ import walk
++from vjp_steering.j_lens_concept import concept_spec, extract_concept, implementation_hash
+ from vjp_steering.experiment import (
+     DEFAULT_EXPERIMENT_IDS,
+     DEV,
+@@ -57,6 +58,7 @@ GRID_HIGH = 1.33
+ GRID_POINTS = 9
+ J_LENS_SWAP_POSITIVE_GRID = (0.5, 1.0, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2.0, 3.0, 4.0, 6.0, 8.0)
+ J_LENS_SWAP_NEGATIVE_GRID = J_LENS_SWAP_POSITIVE_GRID
++J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
+ 
+ 
+ def parse_args() -> argparse.Namespace:
+@@ -65,6 +67,11 @@ def parse_args() -> argparse.Namespace:
+     parser.add_argument("--dev", action="store_true")
+     parser.add_argument("--gpu-stage", action="store_true")
+     parser.add_argument("--self-test", action="store_true")
++    parser.add_argument("--concept-smoke", action="store_true")
++    parser.add_argument("--concept-calibrate", action="store_true")
++    parser.add_argument("--source-experiment", default="j-lens-concept-dev-v1")
++    parser.add_argument("--reuse-extraction-from", default="")
++    parser.add_argument("--lens-file", type=Path)
+     parser.add_argument("--local", action="store_true")
+     parser.add_argument("--experiment-id", default="")
+     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
+@@ -174,6 +181,15 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str],
+ 
+ 
+ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
++    if args.method == "j_lens_concept":
++        layers = walk.resolve_layers(model, None)
++        rows, _ = walk.read_cohort(DEV.cohort_size)
++        vectors, metadata = extract_concept(
++            model, tokenizer, layers, batch_size=args.extract_batch_size,
++            max_length=args.max_length, dev_prompts=walk.generation_inputs(tokenizer, rows),
++            lens_file=args.lens_file,
++        )
++        return vectors, metadata, 0, "concept:" + metadata["spec_sha256"]
+     if args.method == "j_lens_swap":
+         layers = walk.resolve_layers(model, None)
+         positive, positive_metadata = j_lens_swap(
+@@ -208,6 +224,16 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
+     return vectors, metadata, len(positive), sample_id
+ 
+ 
++def validate_extraction_identity(args, metadata):
++    if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
++        raise ValueError("extraction cache method/model/dtype mismatch")
++    if args.method == "j_lens_concept":
++        if metadata["spec_sha256"] != concept_spec()[1] or metadata["implementation_sha256"] != implementation_hash():
++            raise ValueError("concept extraction cache specification/implementation mismatch")
++        if args.lens_file is not None and metadata["lens_sha256"] != hashlib.sha256(args.lens_file.read_bytes()).hexdigest():
++            raise ValueError("concept extraction cache lens mismatch")
++
++
+ def load_or_extract(
+     args: argparse.Namespace,
+     root: Path,
+@@ -218,12 +244,32 @@ def load_or_extract(
+     metadata_path = root / "extraction" / "metadata.json"
+     if metadata_path.exists() and all(path.exists() for path in paths.values()):
+         metadata = json.loads(metadata_path.read_text())
++        validate_extraction_identity(args, metadata)
+         vectors = {side: Vector.load(str(path)) for side, path in paths.items()}
+         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
+         if actual != metadata["vector_content_sha256"]:
+             raise ValueError("saved extraction vector hash mismatch")
+         return vectors, metadata
+ 
++    if args.reuse_extraction_from:
++        if args.method != "j_lens_concept":
++            raise ValueError("extraction reuse flag is restricted to concept calibration")
++        source = experiment_dir(args.reuse_extraction_from)
++        source_path = source / "extraction/metadata.json"
++        metadata = json.loads(source_path.read_text())
++        validate_extraction_identity(args, metadata)
++        vectors = {side: Vector.load(str(source / metadata["vector_files"][side])) for side in paths}
++        if {side: vector_sha256(v) for side, v in vectors.items()} != metadata["vector_content_sha256"]:
++            raise ValueError("source extraction vector hash mismatch")
++        paths["+C"].parent.mkdir(parents=True, exist_ok=True)
++        for side, vector in vectors.items():
++            vector.save(str(paths[side]))
++        metadata = {**metadata, "extraction_reused_from": args.reuse_extraction_from,
++                    "source_metadata_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest()}
++        atomic_json(metadata_path, metadata)
++        logger.info("EXTRACTION_REUSED source={} hashes={}", args.reuse_extraction_from, metadata["vector_content_sha256"])
++        return vectors, metadata
++
+     started = time.monotonic()
+     vectors, extraction_metadata, n_pairs, sample_id = extract_vectors(args, model, tokenizer)
+     paths["+C"].parent.mkdir(parents=True, exist_ok=True)
+@@ -333,6 +379,9 @@ def extend_generation(
+     missing_prompts = prompts[len(existing):]
+     if vector is None:
+         answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
++    elif args.method == "j_lens_concept":
++        answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens,
++                                prefill_vector=vector, coefficient=applied_coefficient(args.method, side, coefficient))
+     else:
+         with vector(model, C=applied_coefficient(args.method, side, coefficient)):
+             answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
+@@ -502,13 +551,24 @@ def completed_profile_cell_count(
+     return count
+ 
+ 
++def concept_grid(args):
++    grid = {side: [float(c) for c in text.split(",") if c] if text else list(J_LENS_CONCEPT_GRID)
++            for side, text in (("+C", args.coefficients_plus), ("-C", args.coefficients_minus))}
++    if any(not math.isfinite(c) or c <= 0 for values in grid.values() for c in values):
++        raise ValueError("concept grid requires finite positive magnitudes")
++    return grid
++
++
+ def gpu_stage(args: argparse.Namespace) -> None:
++    if args.method == "j_lens_concept" and not args.dev:
++        raise ValueError("concept intervention is DEV-only")
+     profile_name = "dev" if args.dev else "full"
+     limit = DEV.cohort_size if args.dev else FULL.cohort_size
+     root = experiment_dir(args.experiment_id)
+     root.mkdir(parents=True, exist_ok=True)
+     manifest = json.loads(manifest_path(args.experiment_id).read_text()) if manifest_path(args.experiment_id).exists() else {
+-        "schema": "j_lens_swap_experiment_v1" if args.method == "j_lens_swap" else "mlp_up_left_right_experiment_v1",
++        "schema": ("j_lens_concept_experiment_v1" if args.method == "j_lens_concept" else
++                   "j_lens_swap_experiment_v1" if args.method == "j_lens_swap" else "mlp_up_left_right_experiment_v1"),
+         "experiment_id": args.experiment_id,
+         "method": args.method,
+         "date": time.strftime("%Y%m%d"),
+@@ -528,8 +588,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
+     if args.method == "j_lens_swap" and manifest["schema"] == "mlp_up_left_right_experiment_v1":
+         manifest["schema"] = "j_lens_swap_experiment_v1"
+         atomic_json(manifest_path(args.experiment_id), manifest)
++    if args.method == "j_lens_concept" and "extraction" in manifest:
++        validate_extraction_identity(args, manifest["extraction"])
+     if args.dev and "boundaries" in manifest:
+-        if args.method == "j_lens_swap":
++        if args.method == "j_lens_concept":
++            expanded_grid = concept_grid(args)
++        elif args.method == "j_lens_swap":
+             expanded_grid = {
+                 "+C": list(J_LENS_SWAP_POSITIVE_GRID),
+                 "-C": list(J_LENS_SWAP_NEGATIVE_GRID),
+@@ -571,7 +635,10 @@ def gpu_stage(args: argparse.Namespace) -> None:
+     if "grid" not in manifest:
+         if not args.dev:
+             raise RuntimeError("full mode requires its automatic dev stage first")
+-        if args.method == "j_lens_swap":
++        if args.method == "j_lens_concept":
++            boundaries = {side: {"meaning": "signed unit concept contrast", "trace": []} for side in ("+C", "-C")}
++            grid = concept_grid(args)
++        elif args.method == "j_lens_swap":
+             boundaries = {
+                 "+C": {"meaning": "abrasive-to-flattering directed transfer", "trace": []},
+                 "-C": {"meaning": "flattering-to-abrasive directed transfer", "trace": []},
+@@ -666,6 +733,10 @@ def modal_stage(
+     ]
+     if args.verify_extraction:
+         command.append("--verify-extraction")
++    if args.reuse_extraction_from:
++        command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
++    if args.method == "j_lens_concept" and dev:
++        coefficients = concept_grid(args)
+     if coefficients is not None:
+         command.extend([
+             "--coefficients-plus", ",".join(map(str, coefficients["+C"])),
+@@ -684,6 +755,8 @@ def modal_stage(
+ 
+ 
+ def local_pipeline(args: argparse.Namespace) -> None:
++    if args.method == "j_lens_concept" and not args.dev:
++        raise ValueError("concept intervention is DEV-only; full confirmation is not authorized")
+     if args.local:
+         args.gpu_stage = True
+         gpu_stage(args)
+@@ -702,7 +775,8 @@ def local_pipeline(args: argparse.Namespace) -> None:
+     render_command = [sys.executable, "-m", "vjp_steering.results"]
+     if args.method != "j_lens_swap":
+         render_command.extend(["--experiment-id", args.experiment_id, "--profile", "dev"])
+-    subprocess.run(render_command, cwd=walk.ROOT, check=True)
++    if args.method != "j_lens_concept":
++        subprocess.run(render_command, cwd=walk.ROOT, check=True)
+     if args.dev:
+         return
+     selected = json.loads((walk.ROOT / "data" / "dev" / args.experiment_id / "selected.json").read_text())
+@@ -1050,6 +1124,15 @@ def main() -> None:
+     args = parse_args()
+     if args.self_test:
+         self_test()
++        if args.method == "j_lens_concept":
++            from concept_checks import self_test as concept_self_test
++            concept_self_test()
++    elif args.concept_smoke:
++        from concept_checks import smoke
++        smoke(args)
++    elif args.concept_calibrate:
++        from concept_checks import calibrate
++        calibrate(args)
+     elif args.j_lens_diagnostic:
+         j_lens_paper_native_diagnostic(args)
+     elif args.gpu_stage:
+diff --git a/scripts/run_modal.py b/scripts/run_modal.py
+index 88f868b..7b2e3cc 100644
+--- a/scripts/run_modal.py
++++ b/scripts/run_modal.py
+@@ -99,7 +99,19 @@ def run_experiment(method: str, argv: list[str]) -> str:
+     finally:
+         cache.commit()
+     experiment_id = argv[argv.index("--experiment-id") + 1]
+-    return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
++    filename = "calibration.json" if "--concept-calibrate" in argv else "manifest.json"
++    return Path(f"/cache/outputs/experiments/{experiment_id}/{filename}").read_text()
++
++
++@app.local_entrypoint()
++def calibrate_concept(
++    experiment_id: str = "j-lens-concept-calibration-v1",
++    source_experiment: str = "j-lens-concept-dev-v1",
++):
++    print(run_experiment.remote("j_lens_concept", [
++        "--concept-calibrate", "--dev", "--experiment-id", experiment_id,
++        "--source-experiment", source_experiment, "--model", MODEL,
++    ])[:500])
+ 
+ 
+ @app.function(
+@@ -173,6 +185,7 @@ def experiment(
+     max_new_tokens: int = 512,
+     coefficients_plus: str = "",
+     coefficients_minus: str = "",
++    reuse_extraction_from: str = "",
+     verify_extraction: bool = False,
+ ):
+     if profile not in {"dev", "full"}:
+@@ -189,18 +202,20 @@ def experiment(
+     ]
+     if verify_extraction:
+         argv.append("--verify-extraction")
+-    if profile == "full":
++    if reuse_extraction_from:
++        argv.extend(["--reuse-extraction-from", reuse_extraction_from])
++    if profile == "full" or coefficients_plus or coefficients_minus:
+         argv.extend([
+             "--coefficients-plus", coefficients_plus,
+             "--coefficients-minus", coefficients_minus,
+         ])
+     if profile == "dev":
+         argv.append("--dev")
+-    json.loads(run_experiment.remote(method, argv))
++    manifest = json.loads(run_experiment.remote(method, argv))
+     cell_count = (
+         len([value for value in coefficients_plus.split(",") if value])
+         + len([value for value in coefficients_minus.split(",") if value])
+-        if profile == "full" else (12 if method == "j_lens_swap" else 18)
++        if profile == "full" else sum(len(values) for values in manifest["grid"].values())
+     )
+     print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={cell_count}")
+ 
+diff --git a/scripts/walk.py b/scripts/walk.py
+index 13413e3..a0d97f4 100644
+--- a/scripts/walk.py
++++ b/scripts/walk.py
+@@ -1,6 +1,7 @@
+ """Extract one steering vector and run one bare/+C/-C benchmark dose."""
+ 
+ import argparse
++from contextlib import nullcontext
+ import hashlib
+ import json
+ import math
+@@ -20,6 +21,7 @@ from steering_lite.data import make_persona_pairs
+ from transformers import AutoModelForCausalLM, AutoTokenizer
+ 
+ from vjp_steering import j_lens_swap, j_word, vjp_delta, vjp_mlp_up_shrink
++from vjp_steering.j_lens_concept import concept_prefill
+ from vjp_steering.vjp import (
+     J_LENS_SWAP_SOURCE,
+     J_LENS_SWAP_TARGET,
+@@ -444,7 +446,8 @@ def generation_inputs(tokenizer, rows: list[dict[str, str]]) -> list[str]:
+ 
+ 
+ @torch.inference_mode()
+-def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_tokens: int) -> list[str]:
++def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_tokens: int,
++             *, prefill_vector=None, coefficient: float = 0.0) -> list[str]:
+     answers = []
+     tokenizer.padding_side = "left"
+     for start in range(0, len(prompts), batch_size):
+@@ -456,15 +459,20 @@ def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_toke
+         ).to(
+             next(model.parameters()).device
+         )
+-        output = model.generate(
+-            **batch,
+-            do_sample=False,
+-            temperature=None,
+-            top_p=None,
+-            top_k=None,
+-            pad_token_id=tokenizer.eos_token_id,
+-            max_new_tokens=max_new_tokens,
+-        )
++        context = nullcontext() if prefill_vector is None else concept_prefill(
++            model, prefill_vector, batch.attention_mask, coefficient)
++        with context as calls:
++            output = model.generate(
++                **batch,
++                do_sample=False,
++                temperature=None,
++                top_p=None,
++                top_k=None,
++                pad_token_id=tokenizer.eos_token_id,
++                max_new_tokens=max_new_tokens,
++            )
++        if prefill_vector is not None:
++            assert all(count == 1 for count in calls.values()), f"unexpected prefill hook counts: {calls}"
+         answers.extend(
+             tokenizer.batch_decode(output[:, batch["input_ids"].shape[1] :], skip_special_tokens=True)
+         )
+diff --git a/src/vjp_steering/experiment.py b/src/vjp_steering/experiment.py
+index dfc4a7c..7451306 100644
+--- a/src/vjp_steering/experiment.py
++++ b/src/vjp_steering/experiment.py
+@@ -9,12 +9,14 @@ METHOD = "vjp_mlp_up_left_right_shrink"
+ SHARED_METHOD = "vjp_mlp_up_shared_eb"
+ SHARED_LAST_TOKEN_METHOD = "vjp_mlp_up_shared_last_token_eb"
+ J_LENS_SWAP_METHOD = "j_lens_swap"
+-METHODS = (METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD, J_LENS_SWAP_METHOD)
++J_LENS_CONCEPT_METHOD = "j_lens_concept"
++METHODS = (METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD, J_LENS_SWAP_METHOD, J_LENS_CONCEPT_METHOD)
+ DEFAULT_EXPERIMENT_IDS = {
+     METHOD: "mlp-up-left-right-formative-v7-eb-audited",
+     SHARED_METHOD: "mlp-up-shared-eb-formative-v1",
+     SHARED_LAST_TOKEN_METHOD: "mlp-up-shared-last-token-eb-formative-v1",
+     J_LENS_SWAP_METHOD: "j-lens-transfer-formative-v2",
++    J_LENS_CONCEPT_METHOD: "j-lens-concept-dev-v1",
+ }
+ DEFAULT_EXPERIMENT_ID = DEFAULT_EXPERIMENT_IDS[METHOD]
+ 
+diff --git a/src/vjp_steering/j_lens_concept.py b/src/vjp_steering/j_lens_concept.py
+new file mode 100644
+index 0000000..cf3141a
+--- /dev/null
++++ b/src/vjp_steering/j_lens_concept.py
+@@ -0,0 +1,217 @@
++"""Sparse concept decomposition and signed prompt-only addition. — PI/OpenAI Codex"""
++
++from contextlib import contextmanager
++from dataclasses import dataclass
++import hashlib
++import json
++from pathlib import Path
++
++import torch
++from jaxtyping import Float, Int
++from loguru import logger
++from steering_lite import Vector
++from steering_lite.config import SteeringConfig, register_config
++
++from .vjp import _activations, _blocks, _load_j_lens
++
++
++SPEC_PATH = Path(__file__).with_name("j_lens_concepts.json")
++METHOD = "j_lens_concept"
++VERSION = "mean100-gp16-unit-dictionary-signed-add-v1"
++
++
++@register_config
++@dataclass
++class JLensConceptC(SteeringConfig):
++    method: str = METHOD
++
++
++def concept_spec() -> tuple[dict, str]:
++    spec = json.loads(SPEC_PATH.read_text())
++    assert len(spec["baseline"]) == len(set(spec["baseline"])) == 100
++    digest = hashlib.sha256(json.dumps([VERSION, spec], sort_keys=True).encode()).hexdigest()
++    return spec, digest
++
++
++def implementation_hash() -> str:
++    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
++
++
++def tensor_hash(tensor: torch.Tensor) -> str:
++    return hashlib.sha256(tensor.detach().float().contiguous().cpu().numpy().tobytes()).hexdigest()
++
++
++def final_positions(mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b"]:
++    positions = torch.arange(mask.shape[1], device=mask.device).expand_as(mask)
++    last = positions.masked_fill(~mask.bool(), -1).max(dim=1).values
++    assert (last >= 0).all(), "empty prompt"
++    return last
++
++
++@torch.no_grad()
++def gradient_pursuit(
++    signal: Float[torch.Tensor, "d"], dictionary: Float[torch.Tensor, "v d"], k: int = 16,
++) -> tuple[torch.Tensor, torch.Tensor, list[float]]:
++    if not torch.isfinite(signal).all() or not torch.isfinite(dictionary).all():
++        raise ValueError("nonfinite pursuit input")
++    weights = torch.zeros(dictionary.shape[0], device=dictionary.device)
++    errors = []
++    for _ in range(k):
++        residual = signal - weights @ dictionary
++        scores = dictionary @ residual
++        active = weights != 0
++        active[scores.argmax()] = True
++        gradient = active * scores
++        change = gradient @ dictionary
++        denominator = change.square().sum()
++        if denominator == 0:
++            break
++        step = (change @ residual) / denominator
++        weights = (weights + step * gradient).clamp_min(0)
++        errors.append((signal - weights @ dictionary).norm().item())
++    return weights, weights @ dictionary, errors
++
++
++@contextmanager
++def concept_prefill(model, vector: Vector, mask: torch.Tensor, coefficient: float):
++    handles = []
++    calls = {layer: 0 for layer in vector.cfg.layers}
++
++    def hook(layer):
++        def apply(_module, _inputs, output):
++            calls[layer] += 1
++            hidden = output[0] if isinstance(output, tuple) else output
++            delta = vector.stacked[layer]["v"].sum(0).to(hidden)
++            edited = hidden + coefficient * mask.to(hidden).unsqueeze(-1) * delta
++            handles_by_layer[layer].remove()
++            return (edited, *output[1:]) if isinstance(output, tuple) else edited
++        return apply
++
++    handles_by_layer = {}
++    try:
++        for layer in vector.cfg.layers:
++            handle = _blocks(model)[layer].register_forward_hook(hook(layer))
++            handles_by_layer[layer] = handle
++            handles.append(handle)
++        yield calls
++    finally:
++        for handle in handles:
++            handle.remove()
++
++
++@torch.inference_mode()
++def residuals(model, tokenizer, prompts, layers, batch_size, max_length):
++    found_rows = {layer: [] for layer in layers}
++    tokens = []
++    for start in range(0, len(prompts), batch_size):
++        encoded = tokenizer(prompts[start:start + batch_size], return_tensors="pt", padding=True,
++                            add_special_tokens=False).to(next(model.parameters()).device)
++        if encoded.input_ids.shape[1] > max_length:
++            raise ValueError("concept/diagnostic prompt truncation")
++        last = final_positions(encoded.attention_mask)
++        with _activations(model, layers) as found:
++            model.model(**encoded, use_cache=False)
++        for layer in layers:
++            found_rows[layer].append(found[layer][torch.arange(len(last), device=last.device), last].float().cpu())
++        for ids, mask, position in zip(encoded.input_ids, encoded.attention_mask, last, strict=True):
++            tokens.append({"input_ids": ids.tolist(), "attention_mask": mask.tolist(),
++                           "final_position": position.item(), "final_token_id": ids[position].item()})
++    return {layer: torch.cat(values) for layer, values in found_rows.items()}, tokens
++
++
++def _activity(hidden, dictionary, pair_ids, null_ids, raw_norms):
++    scores = hidden @ dictionary.T
++    pair_scores = scores[:, pair_ids]
++    null_scores = scores[:, null_ids]
++    raw_scores = scores * raw_norms
++    return {
++        "raw_pair_scores": raw_scores[:, pair_ids].tolist(),
++        "raw_vocabulary_ranks": (1 + (raw_scores.unsqueeze(1) > raw_scores[:, pair_ids].unsqueeze(-1)).sum(-1)).tolist(),
++        "unit_scores": pair_scores.tolist(),
++        "cosines": (pair_scores / hidden.norm(dim=-1, keepdim=True)).tolist(),
++        "positive": (pair_scores > 0).tolist(),
++        "vocabulary_ranks": (1 + (scores.unsqueeze(1) > pair_scores.unsqueeze(-1)).sum(-1)).tolist(),
++        "null_token_unit_scores": null_scores.tolist(),
++        "null_percentiles": (null_scores.unsqueeze(1) <= pair_scores.unsqueeze(-1)).float().mean(-1).tolist(),
++        "pair_pseudoinverse_coordinates": (hidden @ torch.linalg.pinv(dictionary[pair_ids])).tolist(),
++    }
++
++
++@torch.inference_mode()
++def extract_concept(model, tokenizer, layers, *, batch_size, max_length, dev_prompts, lens_file=None):
++    spec, spec_hash = concept_spec()
++    texts = [spec["positive"], spec["negative"], *spec["baseline"]]
++    prompts = [tokenizer.apply_chat_template([{"role": "user", "content": f"Tell me about {text}"}],
++               tokenize=False, add_generation_prompt=True, enable_thinking=False) for text in texts]
++    logger.info("concept extraction spec={} layers={} final_prompt_token=true", spec_hash, layers)
++    logger.info("concept extraction demo={} ", prompts[0])
++    hidden, token_records = residuals(model, tokenizer, prompts + dev_prompts, layers, batch_size, max_length)
++    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
++    device = next(model.parameters()).device
++    unembedding = model.lm_head.weight.detach().float()
++    pair_ids = []
++    for word in ("abrasive", "flattering"):
++        ids = tokenizer(" " + word, add_special_tokens=False).input_ids
++        if len(ids) != 1:
++            raise ValueError(f"old lexical diagnostic requires one token: {word} {ids}")
++        pair_ids.append(ids[0])
++    null_ids = torch.randperm(unembedding.shape[0], generator=torch.Generator().manual_seed(0))
++    null_ids = [i for i in null_ids.tolist() if i not in pair_ids][:128]
++    state, layer_meta = {}, {}
++    for layer in layers:
++        raw = unembedding @ checkpoint["J"][layer].float().to(device)
++        norms = raw.norm(dim=-1)
++        if not (norms > 0).all():
++            raise ValueError(f"zero J-lens row at layer {layer}")
++        dictionary = raw / norms[:, None]
++        del raw
++        hs = hidden[layer].to(device)
++        baseline = hs[2:102].mean(0)
++        components, decomposition = [], []
++        for index in (0, 1):
++            concept = hs[index] - baseline
++            weights, component, errors = gradient_pursuit(concept, dictionary, 16)
++            selected = weights.nonzero().flatten()
++            remainder = concept - component
++            components.append(component)
++            decomposition.append({
++                "concept": texts[index], "achieved_nonzero_count": selected.numel(), "selected_ids": selected.tolist(),
++                "selected_tokens": [tokenizer.decode([i]) for i in selected.tolist()],
++                "weights_unit_dictionary": weights[selected].tolist(), "raw_row_norms": norms[selected].tolist(),
++                "concept_norm": concept.norm().item(), "j_norm": component.norm().item(),
++                "remainder_norm": remainder.norm().item(), "error_history": errors,
++                "j_remainder_dot": (component @ remainder).item(),
++                "reconstruction_error": (concept - component - remainder).norm().item(),
++                "concept_vector": concept.tolist(), "j_vector": component.tolist(), "remainder": remainder.tolist(),
++                "concept_sha256": tensor_hash(concept), "j_sha256": tensor_hash(component),
++                "remainder_sha256": tensor_hash(remainder),
++            })
++        contrast = components[0] - components[1]
++        if not torch.isfinite(contrast).all() or contrast.norm() <= 1e-6 * max(c.norm() for c in components):
++            raise ValueError(f"zero, nonfinite, or numerically unresolved concept contrast at layer {layer}")
++        state[layer] = {"v": (contrast / contrast.norm()).cpu().unsqueeze(0)}
++        layer_meta[str(layer)] = {
++            "decomposition": decomposition, "contrast_norm": contrast.norm().item(),
++            "component_cosine": torch.nn.functional.cosine_similarity(components[0], components[1], dim=0).item(),
++            "baseline_mean": baseline.tolist(), "baseline_mean_sha256": tensor_hash(baseline),
++            "pair_unit_cosine": (dictionary[pair_ids[0]] @ dictionary[pair_ids[1]]).item(),
++            "pair_singular_values": torch.linalg.svdvals(dictionary[pair_ids]).tolist(),
++            "baseline_activity": _activity(hs[2:102], dictionary, pair_ids, null_ids, norms),
++            "dev_activity": _activity(hs[102:], dictionary, pair_ids, null_ids, norms),
++        }
++        logger.info("concept layer={} j_norms={} remainder_norms={} contrast_norm={:.4f}", layer,
++                    [d["j_norm"] for d in decomposition], [d["remainder_norm"] for d in decomposition], contrast.norm())
++    vector = Vector(JLensConceptC(layers=layers), {layer: {} for layer in layers}, state)
++    return {"+C": vector, "-C": vector}, {
++        "operator": VERSION, "spec_sha256": spec_hash, "implementation_sha256": implementation_hash(),
++        "spec": spec, "source_layers": list(layers),
++        "equation": "h_valid_prompt + C * unit(j_positive - j_negative)",
++        "extraction_mask": "final_real_chat_prompt_token", "application_mask": "all_valid_prefill_tokens_only",
++        "activity_mask": "final_real_chat_prompt_token_only_not_all_patched_positions",
++        "dictionary_normalization": "unit_rows_local_convention_not_specified_by_paper", "gp_steps": 16,
++        "concept_prompts": prompts, "dev_prompts": dev_prompts, "token_records": token_records,
++        "pair_ids": pair_ids, "pair_tokens": [tokenizer.decode([i]) for i in pair_ids],
++        "null_token_ids": null_ids, "null_seed": 0,
++        "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
++        "lens_file": str(lens_file), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_meta,
++    }
+diff --git a/src/vjp_steering/j_lens_concepts.json b/src/vjp_steering/j_lens_concepts.json
+new file mode 100644
+index 0000000..55e6ea2
+--- /dev/null
++++ b/src/vjp_steering/j_lens_concepts.json
+@@ -0,0 +1,27 @@
++{
++  "positive": "sycophantic agreement and flattery toward the user",
++  "negative": "independent critical assessment of the user's claims",
++  "baseline_provenance": "Fixed locally authored neutral concept list, not the paper's undisclosed baseline list. PI/OpenAI Codex",
++  "baseline": [
++    "astronomy", "volcanoes", "photosynthesis", "ocean currents", "plate tectonics",
++    "gravity", "magnetism", "electricity", "thermodynamics", "sound waves",
++    "rainbows", "clouds", "glaciers", "deserts", "rainforests",
++    "coral reefs", "mushrooms", "pollination", "migration", "hibernation",
++    "DNA", "enzymes", "bacteria", "viruses", "immune systems",
++    "digestion", "circulation", "respiration", "bones", "muscles",
++    "geometry", "algebra", "calculus", "probability", "prime numbers",
++    "fractals", "symmetry", "topology", "statistics", "algorithms",
++    "compilers", "databases", "computer networks", "cryptography", "operating systems",
++    "telescopes", "microscopes", "satellites", "robotics", "solar panels",
++    "wind turbines", "batteries", "bridges", "railways", "canals",
++    "architecture", "pottery", "weaving", "glassmaking", "metallurgy",
++    "agriculture", "irrigation", "crop rotation", "composting", "fermentation",
++    "bread", "cheese", "tea", "coffee", "spices",
++    "orchestras", "rhythm", "melody", "harmony", "musical notation",
++    "painting", "sculpture", "photography", "animation", "calligraphy",
++    "linguistics", "phonetics", "grammar", "etymology", "translation",
++    "archaeology", "cartography", "navigation", "calendars", "timekeeping",
++    "trade routes", "currency", "supply chains", "insurance", "auctions",
++    "chess", "knots", "origami", "gardening", "woodworking"
++  ]
++}

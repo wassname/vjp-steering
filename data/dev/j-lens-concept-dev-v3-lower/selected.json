@@ -1,0 +1,17 @@
+{
+  "experiment_id": "j-lens-concept-dev-v3-lower",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 0.125,
+      "candidates_descending": [
+        0.125
+      ],
+      "effect": -0.5333333333333333,
+      "off_axis_perturbation": 0.21999999999999997
+    }
+  }
+}

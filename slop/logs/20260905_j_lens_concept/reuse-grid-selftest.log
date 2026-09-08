@@ -1,0 +1,15 @@
+COMMAND: uv run python scripts/experiment.py j_lens_concept --self-test
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true
+COMMAND: OMP_NUM_THREADS=4 uv run python scripts/experiment.py j_lens_concept --gpu-stage --dev --model wassname/qwen3-5lyr-tiny-random --device cpu --dtype float32 --reuse-extraction-from j-lens-concept-tiny-smoke-v3 --experiment-id j-lens-concept-tiny-reuse-v1 --coefficients-plus 0.125,0.25,0.5 --coefficients-minus 0.125,0.25,0.5 --max-new-tokens 8
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 7425.62it/s]
+2026-09-05 17:50:29.397 | INFO     | __main__:load_or_extract:270 - EXTRACTION_REUSED source=j-lens-concept-tiny-smoke-v3 hashes={'+C': '43c33fbabe7e9b32a1d0d0c456c534a4cc1d03a7eed7216f592aea6c5afb1d8f', '-C': '43c33fbabe7e9b32a1d0d0c456c534a4cc1d03a7eed7216f592aea6c5afb1d8f'}
+2026-09-05 17:50:29.548 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:29.657 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:29.797 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:29.905 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:30.025 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:30.134 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:30.240 | INFO     | walk:generate:481 - generation 15/15
+2026-09-05 17:50:30.256 | INFO     | __main__:gpu_stage:699 - GPU_STAGE_COMPLETE experiment=j-lens-concept-tiny-reuse-v1 profile=dev cells=6

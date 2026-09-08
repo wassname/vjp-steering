@@ -1,0 +1,70 @@
+COMMIT: a55e31989c738b0cbe8633779ae92c28d1b25d4a
+COMMAND: uv run modal run scripts/run_modal.py::calibrate_concept
+SHOULD: C=0 logits unchanged; record actual BF16 displacements, residual norms and next-token changes.
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-4R0tzN8kB07iGbDqKddvSW
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+└── 🔨 Created function diagnose_j_lens_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1246.05it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 679.29it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   5%|▍         | 20/426 [00:00<00:02, 182.37it/s]
+[1ALoading weights:   9%|▉         | 39/426 [00:00<00:02, 182.39it/s]
+[1ALoading weights:  14%|█▍        | 61/426 [00:00<00:01, 193.64it/s]
+[1ALoading weights:  19%|█▉        | 81/426 [00:00<00:01, 190.31it/s]
+[1ALoading weights:  24%|██▍       | 102/426 [00:00<00:01, 195.78it/s]
+[1ALoading weights:  30%|██▉       | 126/426 [00:00<00:01, 205.11it/s]
+[1ALoading weights:  35%|███▍      | 147/426 [00:00<00:01, 193.27it/s]
+[1ALoading weights:  40%|███▉      | 169/426 [00:00<00:01, 196.94it/s]
+[1ALoading weights:  44%|████▍     | 189/426 [00:01<00:01, 166.63it/s]
+[1ALoading weights:  49%|████▊     | 207/426 [00:01<00:01, 166.87it/s]
+[1ALoading weights:  53%|█████▎    | 227/426 [00:01<00:01, 171.84it/s]
+[1ALoading weights:  59%|█████▉    | 253/426 [00:01<00:00, 193.32it/s]
+[1ALoading weights:  64%|██████▍   | 273/426 [00:01<00:00, 188.13it/s]
+[1ALoading weights:  69%|██████▉   | 294/426 [00:01<00:00, 190.96it/s]
+[1ALoading weights:  74%|███████▎  | 314/426 [00:01<00:00, 179.01it/s]
+[1ALoading weights:  79%|███████▊  | 335/426 [00:01<00:00, 186.55it/s]
+[1ALoading weights:  84%|████████▍ | 358/426 [00:01<00:00, 192.84it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 221.11it/s]
+2026-09-05 09:47:32.627 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.0 logit_delta=0 KL=0 health=[] text="The decomposition should isolate indemnity obligations by specific IP asset class and jurisdiction to accurately reflect the target's material concentration risks. This granular approach ensures the purchase price allocation and escrow holdbacks are calibrated precisely to the probability and severity of potential IP-related claims."
+2026-09-05 09:48:01.095 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=1.0 logit_delta=1045.4 KL=2.7149 health=['unfinished', 'repetition'] text='She should make the flowers bloom in the garden.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blooming.\nThe garden is full of flowers.\nThe flowers are blooming.\nThe garden is beautiful.\nThe flowers are blo'
+2026-09-05 09:48:02.619 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.5 logit_delta=734.29 KL=3.3986 health=[] text='You should break it down by specific IP assets, individual developers, and even distinct software modules to pinpoint exactly where the liability lies. This level of detail will help you negotiate targeted indemnity caps rather than paying a blanket premium for the whole company.'
+2026-09-05 09:48:04.107 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.25 logit_delta=427.44 KL=0.68014 health=[] text='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which products drive the most indemnity risk. This level of granularity allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide discount.'
+2026-09-05 09:48:05.635 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.125 logit_delta=211.12 KL=0.090664 health=[] text='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exactly which intellectual property carries the highest indemnity risk. This granular approach allows you to negotiate targeted price adjustments or holdbacks rather than applying a blunt, company-wide reduction.'
+2026-09-05 09:48:06.964 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.0625 logit_delta=101.01 KL=0.013671 health=[] text='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exact liability exposures. This granular approach ensures the indemnity accurately reflects the risk of losing that concentrated intellectual property post-closing.'
+2026-09-05 09:48:08.421 | INFO     | walk:generate:481 - generation 1/1
+CONCEPT_CALIBRATION C=0.03125 logit_delta=57.158 KL=0.0022746 health=[] text='The decomposition should isolate specific IP assets and their associated revenue streams to pinpoint exact liability exposures. This granular approach ensures the indemnity accurately reflects the risk of material IP concentration without over-allocating costs to unrelated business lines.'
+CONCEPT_CALIBRATION_COMPLETE id=j-lens-concept-calibration-v1 doses=7
+{
+  "source_experiment": "j-lens-concept-dev-v1",
+  "source_metadata_sha256": "091f48a5ecb9c330031d5b99b7a3359605ddd5d6660025b3a30c848d02c6718b",
+  "vector_content_sha256": {
+    "+C": "8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97",
+    "-C": "8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97"
+  },
+  "cohort_sha256": "c0b64ebf1713f71fa5ae6218fbbcb866b15402a98adbead8caf88d5a6a129874",
+  "scenario": "syco_bullshit_v2_leg_pnf_01",
+  "prompt": "<|im_start|>user\nOu
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-4R0tzN8kB07iGbDqKddvSW
+✓ Finished downloading files to local!

@@ -1,0 +1,23 @@
+{
+  "experiment_id": "j-lens-persona-jspace-dev-v1",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 0.125,
+      "candidates_descending": [
+        0.125
+      ],
+      "effect": 0.053333333333333295,
+      "off_axis_perturbation": 0.07333333333333332
+    },
+    "-C": {
+      "selected_C": 0.125,
+      "candidates_descending": [
+        0.125,
+        0.0625
+      ],
+      "effect": -0.3733333333333332,
+      "off_axis_perturbation": 0.26666666666666666
+    }
+  }
+}

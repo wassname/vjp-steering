@@ -1,0 +1,50 @@
+[
+  {
+    "app_id": "ap-yh5THLF10Dl4TQlTFdJunH",
+    "description": "jsteer-matched-random-additive",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 03:44:23+08:00",
+    "stopped_at": "2026-09-08 03:49:58+08:00"
+  },
+  {
+    "app_id": "ap-Jn7Nu6PXsg2X6L0N2rE02k",
+    "description": "jsteer-additive-named-concepts",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 03:25:30+08:00",
+    "stopped_at": "2026-09-08 03:27:14+08:00"
+  },
+  {
+    "app_id": "ap-aYL1ssqbkydA4TFhLYF7pR",
+    "description": "jsteer-additive-named-concepts",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 03:16:22+08:00",
+    "stopped_at": "2026-09-08 03:18:27+08:00"
+  },
+  {
+    "app_id": "ap-3MCDju5IC9Yha0o3AeBok8",
+    "description": "jsteer-additive-named-concepts",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 02:55:09+08:00",
+    "stopped_at": "2026-09-08 02:56:59+08:00"
+  },
+  {
+    "app_id": "ap-YVqsE9fUixswqzzPBQrMUs",
+    "description": "jsteer-named-concepts",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 02:38:37+08:00",
+    "stopped_at": "2026-09-08 02:41:06+08:00"
+  },
+  {
+    "app_id": "ap-4enxAlfRRsVPe0POK4gNVL",
+    "description": "jsteer-dictionary-control",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 01:52:14+08:00",
+    "stopped_at": "2026-09-08 01:54:27+08:00"
+  }
+]

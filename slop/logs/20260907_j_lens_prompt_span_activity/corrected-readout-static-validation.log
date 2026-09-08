@@ -1,0 +1,19 @@
+PI/OpenAI Codex
+COMMAND: python -m py_compile scripts/j_lens_prompt_span_activity.py scripts/run_modal.py
+PY_COMPILE_EXIT=0
+COMMAND: git diff --check -- scripts/j_lens_prompt_span_activity.py scripts/run_modal.py
+DIFF_CHECK_EXIT=0
+FROZEN_CONTRACT_AST_PASS functions=one_token_ids,render_condition,span_mask,assert_span_exclusions,exact_candidate_ranks,select_source,evaluate_decision,lexical_random_pool,random_source_sets,first_nonstructural_token,greedy_control_answer,capture_condition,pair_geometry,summarize constants=WORKSPACE_LAYERS,ASSESSMENT_PAIRS,CONTROL_TEMPLATE,ORIGINAL_SUFFIX,PASS_COUNT,RANDOM_SEED,RANDOM_SETS,RANDOM_SET_SIZE
+MODAL_DEPENDENCY_ISOLATION_AST_PASS shared_image=no_companion diagnostic_image=pinned_no_deps
+NO_STAGED_FILES_PASS
+STATIC_TEST_EXIT=0
+ scripts/j_lens_prompt_span_activity.py | 619 ++++++++++++++++++++++++++++++++-
+ scripts/run_modal.py                   |  67 +++-
+ 2 files changed, 674 insertions(+), 12 deletions(-)
+FINAL_RECHECK: python -m py_compile scripts/j_lens_prompt_span_activity.py scripts/run_modal.py
+PY_COMPILE_EXIT=0
+DIFF_CHECK_EXIT=0
+SOURCE_SHA256:
+0f49daffc10c39ee2f70cfed467acf05d9f561d17c0ec719bd63fdb028857149  scripts/j_lens_prompt_span_activity.py
+5c3dc0ebb092b19b75d69757769025a24e8de2f35fc3f65e3cb57981e71d25f5  scripts/run_modal.py
+STAGED_FILES:

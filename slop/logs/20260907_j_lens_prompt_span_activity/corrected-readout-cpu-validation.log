@@ -1,0 +1,3 @@
+PI/OpenAI Codex
+COMMAND: OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=src:/home/code/.cache/uv/git-v0/checkouts/41f7024740f025b9/581d398 timeout 180 .venv/bin/python -u scripts/j_lens_prompt_span_activity.py --companion-self-test
+EXIT=124

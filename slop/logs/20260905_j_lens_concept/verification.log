@@ -1,0 +1,25 @@
+VECTOR_HASH 8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97 SPEC_HASH b40f2f7a72f1ca9bdc356e312c030b60ec92bd887d5a24fd14dbaa48b757353f CODE_HASH fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31 LENS_HASH 1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e
+ACTIVITY_SCOPE final_real_chat_prompt_token_only_not_all_patched_positions
+FINAL_TOKEN_RECORDS_PASS 117
+CELLS_SIGNS_COUNTS_PASS 6 cells x 15 rows
+LAYER 6 contrast_norm 0.19412876665592194 component_cos 0.7860894203186035 pair_cos 0.27512693405151367
+DECOMP sycophantic agreement and flattery toward the user nonzero 16 top [(0.088516965508461, ' quis'), (0.07649455964565277, ' portent'), (0.0688571110367775, '第三'), (0.06876571476459503, '冷笑'), (0.06068260595202446, '话语'), (0.05939660221338272, 'L'), (0.056775957345962524, ' jedenfalls'), (0.05019901320338249, ' Leaf')]
+DECOMP independent critical assessment of the user's claims nonzero 16 top [(0.11455255001783371, ' indicative'), (0.07740750163793564, '第三'), (0.0708562433719635, 'ibus'), (0.052306994795799255, ' Critical'), (0.05128806456923485, ' dossier'), (0.045401833951473236, 'jev'), (0.038718584924936295, ' diplomatic'), (0.03712930157780647, '回避')]
+ACTIVITY medians unit scores/raw ranks/null percentile [0.17757810652256012, -0.24380096793174744] [28307, 243098] [0.9296875, 0.015625]
+ACTIVITY positive count (abrasive,flattering) [15, 0]
+LAYER 12 contrast_norm 0.6373618841171265 component_cos 0.8091851472854614 pair_cos 0.21828098595142365
+DECOMP sycophantic agreement and flattery toward the user nonzero 16 top [(0.23766355216503143, ' abusive'), (0.20472951233386993, ' C'), (0.202708438038826, ' refusal'), (0.15697255730628967, '假'), (0.13467568159103394, '面谈'), (0.125486820936203, ' pej'), (0.11867796629667282, '另行'), (0.11770974099636078, ' Psychological')]
+DECOMP independent critical assessment of the user's claims nonzero 16 top [(0.373958557844162, ' refusal'), (0.24596650898456573, ' C'), (0.21684308350086212, ' Editorial'), (0.19814540445804596, '假'), (0.17684899270534515, ' interloc'), (0.17233161628246307, '认罪'), (0.17050586640834808, ' SG'), (0.16681860387325287, '个别')]
+ACTIVITY medians unit scores/raw ranks/null percentile [0.28619807958602905, -0.1151585653424263] [23596, 224841] [0.9296875, 0.125]
+ACTIVITY positive count (abrasive,flattering) [15, 0]
+LAYER 18 contrast_norm 1.6308190822601318 component_cos 0.7927378416061401 pair_cos 0.2493831217288971
+DECOMP sycophantic agreement and flattery toward the user nonzero 16 top [(0.6947426199913025, ' Ma'), (0.6353270411491394, ' FALSE'), (0.5332232713699341, '恶意'), (0.5261457562446594, ' requests'), (0.479934424161911, '反'), (0.45969414710998535, '.”'), (0.44164520502090454, ' refusal'), (0.4367847442626953, ' effectivement')]
+DECOMP independent critical assessment of the user's claims nonzero 16 top [(0.53530353307724, '?”'), (0.5174991488456726, ' Kov'), (0.5138411521911621, ' E'), (0.4502234160900116, ' procedural'), (0.438671737909317, '反'), (0.4347757399082184, ' SOP'), (0.4134680926799774, ' refusal'), (0.34653759002685547, '假')]
+ACTIVITY medians unit scores/raw ranks/null percentile [0.5854067802429199, -0.06949891895055771] [11502, 190534] [0.9609375, 0.265625]
+ACTIVITY positive count (abrasive,flattering) [15, 5]
+LAYER 24 contrast_norm 4.750982284545898 component_cos 0.6477758884429932 pair_cos 0.18010291457176208
+DECOMP sycophantic agreement and flattery toward the user nonzero 16 top [(1.6161049604415894, ' I'), (1.5130418539047241, ' submissive'), (1.3517729043960571, '诚恳'), (1.1635431051254272, '概念'), (1.1210906505584717, '我不能'), (1.115932822227478, ' While'), (1.0760990381240845, 'Regarding'), (1.0454334020614624, ' richiesta')]
+DECOMP independent critical assessment of the user's claims nonzero 16 top [(1.2485451698303223, '"'), (1.1360565423965454, ' Independent'), (1.0478774309158325, '我不'), (1.0146187543869019, ' A'), (0.9696476459503174, ' самостоятельно'), (0.9412890672683716, '缺乏'), (0.9228211641311646, ' Evalu'), (0.8833398222923279, '真诚的')]
+ACTIVITY medians unit scores/raw ranks/null percentile [1.2308803796768188, 0.481777548789978] [54161, 150154] [0.7734375, 0.4296875]
+ACTIVITY positive count (abrasive,flattering) [15, 10]
+DECOMPOSITION_PASS nonzero_range 15 16 j_energy_fraction_range 0.02793801762163639 0.09773591160774231 contrast_norm_range 0.19412876665592194 4.750982284545898 component_cos_range 0.6477758884429932 0.8115496635437012

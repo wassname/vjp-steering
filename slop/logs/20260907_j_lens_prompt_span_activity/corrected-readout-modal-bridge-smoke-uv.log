@@ -1,0 +1,83 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-RU2y4tu1NIPmrVaCSYOJJF
+Building image im-fjk4D5IIQnFwrXjYdpnWoA
+
+Using legacy Image Builder version. We suggest upgrading at https://modal.com/settings/image-config.
+
+=> Step 0: FROM base
+
+=> Step 1: COPY --from=ghcr.io/astral-sh/uv:latest /uv /.uv/uv
+Getting image source signatures
+Copying blob sha256:3bf5a1739ff9d32bbbc9c446873d6ccac733ae8c071cd561506c2c218fbd37f9
+Copying blob sha256:a3ca80cfbbd0a2643f858cae52b596a1f8eb2d0dbb5f529c44568c6ba6d9959f
+Copying config sha256:0d84b70a5418728b74f19aa09d543db74ba466e1a7f9521b7010a4016b26e99d
+Writing manifest to image destination
+Unpacking OCI image
+   • unpacking rootfs ...     
+   • ... done                 
+   • unpacked image rootfs: /tmp/task-data/ta-01M1XTZBSX681F50PSC684AXNB/registry-unpackuD8539
+
+=> Step 2: RUN /.uv/uv pip install --python $(command -v python) --compile-bytecode --no-deps git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e
+Using Python 3.13.0 environment at: /.uv/.venv
+Resolved 1 package in 218ms
+   Updating https://github.com/anthropics/jacobian-lens.git (581d398613e5602a5af361e1c34d3a92ea82ba8e)
+    Updated https://github.com/anthropics/jacobian-lens.git (581d398613e5602a5af361e1c34d3a92ea82ba8e)
+   Building jlens @ git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e
+      Built jlens @ git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e
+Prepared 1 package in 1.57s
+Installed 1 package in 4ms
+Bytecode compiled 9 files in 62ms
+ + jlens==0.1.0 (from git+https://github.com/anthropics/jacobian-lens.git@581d398613e5602a5af361e1c34d3a92ea82ba8e)
+Saving image...
+Image saved, took 713.83ms
+
+Built image im-fjk4D5IIQnFwrXjYdpnWoA in 4.78s
+
+
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function diagnose_j_lens_remote.
+└── 🔨 Created function j_lens_prompt_span_activity_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1019.08it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 683.33it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 16/426 [00:00<00:02, 146.11it/s]
+[1ALoading weights:   7%|▋         | 31/426 [00:00<00:03, 126.21it/s]
+[1ALoading weights:  12%|█▏        | 50/426 [00:00<00:02, 138.26it/s]
+[1ALoading weights:  15%|█▌        | 66/426 [00:00<00:02, 144.77it/s]
+[1ALoading weights:  21%|██        | 89/426 [00:00<00:01, 172.04it/s]
+[1ALoading weights:  25%|██▌       | 107/426 [00:00<00:01, 167.62it/s]
+[1ALoading weights:  30%|███       | 128/426 [00:00<00:01, 172.07it/s]
+[1ALoading weights:  34%|███▍      | 146/426 [00:00<00:01, 170.17it/s]
+[1ALoading weights:  39%|███▉      | 166/426 [00:01<00:01, 175.38it/s]
+[1ALoading weights:  43%|████▎     | 184/426 [00:01<00:01, 166.13it/s]
+[1ALoading weights:  47%|████▋     | 202/426 [00:01<00:01, 164.44it/s]
+[1ALoading weights:  51%|█████▏    | 219/426 [00:01<00:01, 161.03it/s]
+[1ALoading weights:  55%|█████▌    | 236/426 [00:01<00:01, 158.79it/s]
+[1ALoading weights:  59%|█████▉    | 252/426 [00:01<00:01, 156.30it/s]
+[1ALoading weights:  63%|██████▎   | 268/426 [00:01<00:01, 143.24it/s]
+[1ALoading weights:  69%|██████▉   | 293/426 [00:01<00:00, 165.77it/s]
+[1ALoading weights:  73%|███████▎  | 310/426 [00:01<00:00, 151.48it/s]
+[1ALoading weights:  77%|███████▋  | 327/426 [00:02<00:00, 147.62it/s]
+[1ALoading weights:  82%|████████▏ | 351/426 [00:02<00:00, 167.21it/s]
+[1ALoading weights:  87%|████████▋ | 369/426 [00:02<00:00, 161.81it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 183.85it/s]
+J_LENS_READOUT_BRIDGE_COMPLETE {"answer_seam_matches": 1, "checks_evaluated": false, "decision": "BRIDGE_SMOKE_ONLY", "emitted_answer_j_lens_prefill_rank1_coverage": 0, "emitted_answer_j_lens_request_span_rank1_coverage": 0, "parity_passed": true, "pass_count": 10, "scenario_count": 1, "token_prefill_rank1_coverage": {"bare_false": 0, "bare_true": 0, "leading_space_false": 0, "leading_space_true": 0}, "token_request_span_rank1_coverage": {"bare_false": 0, "bare_true": 0, "leading_space_false": 0, "leading_space_true": 0}}
+J_LENS_READOUT_BRIDGE_DOWNLOADED {"output": "/workspace/2026/jspace/j-steer_pub/outputs/audits/20260907_j_lens_prompt_span_activity/readout-bridge-corrected-smoke-v2.json", "status": "SMOKE", "summary": {"answer_seam_matches": 1, "checks_evaluated": false, "decision": "BRIDGE_SMOKE_ONLY", "emitted_answer_j_lens_prefill_rank1_coverage": 0, "emitted_answer_j_lens_request_span_rank1_coverage": 0, "parity_passed": true, "pass_count": 10, "scenario_count": 1, "token_prefill_rank1_coverage": {"bare_false": 0, "bare_true": 0, "leading_space_false": 0, "leading_space_true": 0}, "token_request_span_rank1_coverage": {"bare_false": 0, "bare_true": 0, "leading_space_false": 0, "leading_space_true": 0}}}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-RU2y4tu1NIPmrVaCSYOJJF
