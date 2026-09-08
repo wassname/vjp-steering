@@ -1,0 +1,22 @@
+{
+  "author": "PI/OpenAI Codex",
+  "purpose": "one bounded v3 source-state Modal H100 diagnostic; no benchmark generation or judging",
+  "prior_unreserved_usd": "5.22509672744",
+  "reservation_usd": "2.00",
+  "unreserved_after_reservation_usd": "3.22509672744",
+  "reservation_basis": {
+    "H100_900_seconds_at_3_95_per_hour_usd": "0.98750",
+    "startup_cpu_memory_storage_shutdown_and_late_billing_allowance_usd": "1.01250"
+  },
+  "limits": {
+    "modal_timeout_seconds": 900,
+    "max_containers": 1,
+    "retries": 0,
+    "judging_calls": 0,
+    "benchmark_generations": 0
+  },
+  "metered_cost_known": false,
+  "allocation_not_provider_enforced": true,
+  "release_condition": "retain until a billing receipt and stopped-app status are saved",
+  "both_research_goals": "OPEN"
+}
