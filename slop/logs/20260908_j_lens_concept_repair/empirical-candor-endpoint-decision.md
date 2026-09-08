@@ -2,9 +2,9 @@
 
 ## Decision
 
-**PROVISIONAL: hold all-100 for supervisor resolution.** The source arm has real task-responsive corrections. The independently reviewed DEV result passes the plan discriminator to conditional all-100 consideration. This record preserves the control limits for that resolution.
+**Supervisor resolution: Goal 1 selects the frozen +C alpha=.5 empirical-candor endpoint.** The supervisor reviewed the evidence and found the Goal 1 discriminator satisfied. The source arm has real task-responsive corrections. The independently reviewed DEV result passes to the conditional all-100 protocol. This record preserves the narrow-effect, unequal-strength, and control-hash limitations.
 
-This is not a claim that the source arm had no effect. It does not require the opposite source direction to work.
+This is not a claim that the source arm had no effect. It does not require the opposite source direction to work. This resolution records selection only. It does not sign off Goal 1 or authorize the all-100 launch until the harness approval is recorded.
 
 ## Positive raw evidence
 
