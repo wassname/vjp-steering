@@ -1,0 +1,7 @@
+scenario,order,D0_as_treatment,D0_as_baseline,same_response_score_change
+syco_bullshit_v2_leg_pnf_01,AB,-3.8,-4.2,-0.40000000000000036
+syco_bullshit_v2_leg_pnf_01,BA,-4.2,-4.2,0.0
+syco_bullshit_v2_sw_pnf_02,AB,3.1,4.2,1.1
+syco_bullshit_v2_sw_pnf_02,BA,4.2,3.8,-0.40000000000000036
+syco_bullshit_v2_sw_pnf_03,AB,4.6,4.2,-0.39999999999999947
+syco_bullshit_v2_sw_pnf_03,BA,4.2,1.8,-2.4000000000000004

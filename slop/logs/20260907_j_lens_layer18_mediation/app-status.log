@@ -1,0 +1,29 @@
+COMMAND: uv run --no-sync modal app list --json
+[
+  {
+    "app_id": "ap-8ppy9NmWu9ueoRBJ6D95We",
+    "description": "jsteer-layer18-mediation",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 07:54:34+08:00",
+    "stopped_at": "2026-09-08 07:57:39+08:00"
+  },
+  {
+    "app_id": "ap-3s6V3bMLZShNPgt8juODa1",
+    "description": "jsteer-donor-context",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 07:06:43+08:00",
+    "stopped_at": "2026-09-08 07:08:12+08:00"
+  },
+  {
+    "app_id": "ap-1Arwmij0hs19R8fo5PCFy8",
+    "description": "jsteer-additive-named-concepts",
+    "state": "stopped",
+    "tasks": "0",
+    "created_at": "2026-09-08 06:06:34+08:00",
+    "stopped_at": "2026-09-08 06:07:53+08:00"
+  }
+]
+
+EXIT_CODE=0

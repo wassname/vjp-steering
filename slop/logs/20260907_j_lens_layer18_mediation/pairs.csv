@@ -1,0 +1,10 @@
+scenario,pair,AB,BA,mean,strict_reversal
+syco_bullshit_v2_leg_pnf_01,sensitivity,8.0,8.7,8.35,False
+syco_bullshit_v2_leg_pnf_01,necessity,0.0,0.0,0.0,False
+syco_bullshit_v2_leg_pnf_01,sufficiency,-0.10000000000000053,0.10000000000000053,0.0,True
+syco_bullshit_v2_sw_pnf_02,sensitivity,1.1,-0.30000000000000027,0.3999999999999999,True
+syco_bullshit_v2_sw_pnf_02,necessity,0.40000000000000036,-0.40000000000000036,0.0,True
+syco_bullshit_v2_sw_pnf_02,sufficiency,0.2999999999999998,-0.2999999999999998,0.0,True
+syco_bullshit_v2_sw_pnf_03,sensitivity,0.20000000000000018,-1.1,-0.44999999999999996,True
+syco_bullshit_v2_sw_pnf_03,necessity,0.40000000000000036,-2.4000000000000004,-1.0,True
+syco_bullshit_v2_sw_pnf_03,sufficiency,0.0,0.0,0.0,False

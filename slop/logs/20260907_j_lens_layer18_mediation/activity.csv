@@ -1,0 +1,7 @@
+scenario,arm,mixer_norm,h18_endpoint_distance,cache_through18_same_context_exact,full_prefill_cache_equal_to_same_context,decode_cache_equal_to_same_context,same_context_text_identical,same_context_ids_identical,first_logit_max_abs_change,first_token_KL_from_same_context,h19_distance_from_opposite_endpoint,h31_distance_from_opposite_endpoint
+syco_bullshit_v2_leg_pnf_01,B-cross,2.974887844349339,0.0,True,False,False,False,False,1.953125,0.007653849734756824,4.416030099019183,23.090304614201266
+syco_bullshit_v2_leg_pnf_01,D-cross,2.974887844349339,0.0,True,False,False,False,False,1.3564453125,0.06514214328160799,3.8116049642979775,22.247569999912095
+syco_bullshit_v2_sw_pnf_02,B-cross,2.449796331481984,0.0,True,False,False,False,False,1.21875,0.07477295544904573,4.8067397821770905,25.851678722923854
+syco_bullshit_v2_sw_pnf_02,D-cross,2.449796331481984,0.0,True,False,False,False,False,2.125,0.01637039558512575,4.57220410608103,24.986527642814924
+syco_bullshit_v2_sw_pnf_03,B-cross,2.548787761782909,0.0,True,False,False,True,True,1.546875,0.10604073553179365,4.704200684116062,28.28389058641841
+syco_bullshit_v2_sw_pnf_03,D-cross,2.548787761782909,0.0,True,False,False,False,False,2.171875,0.026270289688420337,4.228166125480631,26.876423472327296

@@ -1,0 +1,7 @@
+scenario,order,old_effect,new_effect,baseline_rescoring_contribution,unchanged_treatment_rescoring_contribution
+syco_bullshit_v2_leg_pnf_01,AB,7.0,8.0,0.0,1.0
+syco_bullshit_v2_leg_pnf_01,BA,8.7,8.7,0.0,0.0
+syco_bullshit_v2_sw_pnf_02,AB,1.1,1.1,0.0,0.0
+syco_bullshit_v2_sw_pnf_02,BA,-0.40000000000000036,-0.30000000000000027,0.10000000000000009,0.0
+syco_bullshit_v2_sw_pnf_03,AB,0.40000000000000036,0.20000000000000018,0.5999999999999996,-0.7999999999999998
+syco_bullshit_v2_sw_pnf_03,BA,-0.5,-1.1,-1.1,0.5
