@@ -24,6 +24,8 @@ Pueue reused ID `777` for the replacement job after removal. The new job is queu
 
 ## Monitor update, 2026-09-08
 
-`pueue group` still reports `default` as `paused` with one parallel slot. Job `777` remains `Queued`; its recorded start and end are both null. The follower process `pqf 777 100000` is still running. `uv run modal app list` returned no active Modal apps, so this queue state has not made a paid Modal launch.
+The prior blocker explanation was wrong. Modal uses its own remote H100 and does not contend for the local GPU. The local `default` pueue group remains paused, but it is irrelevant to this run and was not changed.
 
-Pueue state contains only the paused flag. Its configuration has `pause_group_on_failure: false`, and there is no running default-lane task. The cause is therefore not an automatic failure pause visible in the saved state. It is probably a manually persisted shared-lane pause. Only the owner who paused `default` can resume it safely. The required action is `pueue parallel 1 --group default` only if needed to preserve the one-slot limit, then `pueue start --group default` by that owner. PI will not do this on a shared lane.
+PI removed the unstarted default-group task `777`, confirmed it was absent from pueue state, then created a dedicated `modal` pueue group with one slot. Pueue reused ID `777` for the replacement. The replacement is running in group `modal`; it has command `uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev` and Modal app `ap-Q0l7Hrx5rsBq3RkPkJqBZ9` is ephemeral. The old follower failed only because its queued task was removed before it ran. PI attached a new follower, `pqf 777 100000`, to the running replacement.
+
+The dedicated runner keeps the 900-second H100 timeout, one container, and no automatic retry. No all-100 generation or plot update is authorized by this launch.
