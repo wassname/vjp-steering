@@ -26,7 +26,51 @@
     "metadata_sha256": "488bcc265a147ae0d62c0d00c23059cbc52798681e131dd1c153be2f970dc61d",
     "implementation_sha256": "7fd703e79b2f68c4b55ccac2e695da044de62c0c34ceba05d02745868cab71ee"
   },
-  "execution_implementation_sha256": "3b65ab8abc927a865e946c63921d91603f2bb2c82f7fac0ea98969655eeff65d",
+  "execution_implementation_sha256": "b73a35fbd5587aa363531600b5b0e7ae5c9d13106f1980638b210df33c1830b7",
+  "layer_selection_layouts": {
+    "frozen_component_plus": {
+      "method": "j_lens_concept_components",
+      "full_vector_sha256": "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197",
+      "subset_layers": [
+        13,
+        17,
+        21
+      ],
+      "subset_layer_state_sha256": {
+        "13": "1903ba74a45e527bae30b54b0549688841a98157d4d1b46de4a99a3dee4f9894",
+        "17": "bcced12758ef0a2507b1fb2f2e0ce4923b53744558c7478a46f7399958bdd26a",
+        "21": "35a8bf2fd05af6567e516ebf15dff86b1321def6fb29e582563644744a8f44de"
+      }
+    },
+    "frozen_component_minus": {
+      "method": "j_lens_concept_components",
+      "full_vector_sha256": "eb2f586b30ae2efa776f294c9e2bb179e4a6ea739a1b95862b670de9902f4091",
+      "subset_layers": [
+        13,
+        17,
+        21
+      ],
+      "subset_layer_state_sha256": {
+        "13": "19ae208f471a25b716546f62e685f6fd5fad20b1676a40bd9b020abdf7fd3e6f",
+        "17": "5b2371f58163219079a8114f0af2ded44fa7237e7674c2cdfe8fad1bd8a8b541",
+        "21": "b1d4b4bed90e844c64bf66d214a793b6376f1d17759d32ef5c8768a959332bd7"
+      }
+    },
+    "saved_additive_plus": {
+      "method": "j_lens_concept",
+      "full_vector_sha256": "8841bc93cf13558a0b01c61d8fdeb737437ee82389754c786d4dd02f351e0f97",
+      "subset_layers": [
+        6,
+        15,
+        24
+      ],
+      "subset_layer_state_sha256": {
+        "6": "dbb767939c93958f37f2c4c236b6d5fdb6b520a84c62991e77460e1105b5b391",
+        "15": "ce3253a15b60924b8728cd19118a3ce0b2d5c7b72553d7f71d304ee053d45627",
+        "24": "90b99375e227e47281db102006ce3713af32d6ecdf1df5709601f9560f7d730b"
+      }
+    }
+  },
   "component_control_geometry": {
     "13": {
       "source_basis_sha256": "16734e076050191e9ef5bc343e35e4bcc3d435326d5d7299f422b4647fa4b376",

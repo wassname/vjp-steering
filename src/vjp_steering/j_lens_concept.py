@@ -115,15 +115,15 @@ def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
         raise ValueError(f"invalid concept application layers={layers}; available={available}")
     cfg = type(vector.cfg)(layers=layers)
     cfg.dtype = vector.cfg.dtype
-    stacked = (
-        {} if vector.cfg.method == COMPONENT_PAIR_METHOD
-        else {layer: vector.stacked[layer] for layer in layers}
-    )
-    return Vector(
-        cfg,
-        {layer: vector.shared[layer] for layer in layers},
-        stacked,
-    )
+    if vector.cfg.method == COMPONENT_PAIR_METHOD:
+        shared = {layer: vector.shared[layer] for layer in layers}
+        stacked = {}
+    elif vector.cfg.method == METHOD:
+        shared = {}
+        stacked = {layer: vector.stacked[layer] for layer in layers}
+    else:
+        raise ValueError(f"unsupported concept vector method: {vector.cfg.method}")
+    return Vector(cfg, shared, stacked)
 
 
 def final_positions(mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b"]:

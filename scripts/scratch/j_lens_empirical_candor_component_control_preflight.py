@@ -31,6 +31,7 @@ from vjp_steering.experiment import behavior_axis_direction
 import vjp_steering.results as results_renderer
 
 SOURCE_EXPERIMENT = "j-lens-behavior-components-target-ordered-source-v8"
+ADDITIVE_EXPERIMENT = "j-lens-concept-dev-v1"
 SOURCE_SHA256 = "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197"
 LAYERS = tuple(range(13, 22))
 ALPHA = 0.5
@@ -59,6 +60,38 @@ def vector_sha256(vector: Vector) -> str:
     return digest.hexdigest()
 
 
+def layer_state_sha256(vector: Vector, layer: int) -> str:
+    digest = hashlib.sha256()
+    for kind, tree in (("shared", vector.shared), ("stacked", vector.stacked)):
+        tensors = tree.get(layer, {})
+        for name, tensor in sorted(tensors.items()):
+            value = tensor.detach().contiguous().cpu()
+            digest.update(f"{kind}:{layer}:{name}:{value.dtype}:{tuple(value.shape)}".encode())
+            digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
+    return digest.hexdigest()
+
+
+def selected_layout_check(vector: Vector) -> dict:
+    layers = tuple(vector.cfg.layers)
+    full = select_concept_layers(vector, layers)
+    if vector_sha256(full) != vector_sha256(vector):
+        raise ValueError("full layer selection changed a saved vector")
+    subset = (layers[0], layers[len(layers) // 2], layers[-1])
+    selected = select_concept_layers(vector, subset)
+    if tuple(selected.cfg.layers) != subset:
+        raise ValueError("subset layer selection changed layer order")
+    source_hashes = {str(layer): layer_state_sha256(vector, layer) for layer in subset}
+    selected_hashes = {str(layer): layer_state_sha256(selected, layer) for layer in subset}
+    if source_hashes != selected_hashes:
+        raise ValueError("subset layer selection changed tensor values")
+    return {
+        "method": vector.cfg.method,
+        "full_vector_sha256": vector_sha256(full),
+        "subset_layers": list(subset),
+        "subset_layer_state_sha256": selected_hashes,
+    }
+
+
 def run(output: Path) -> None:
     source_root = ROOT / "outputs" / "experiments" / SOURCE_EXPERIMENT
     metadata = json.loads((source_root / "extraction" / "metadata.json").read_text())
@@ -76,6 +109,16 @@ def run(output: Path) -> None:
         raise ValueError("component layer selection changed the frozen full-layer source")
     if any(int(source.shared[layer]["target_index"].item()) != 0 for layer in LAYERS):
         raise ValueError("frozen +C source no longer selects target index zero")
+    additive_root = ROOT / "outputs" / "experiments" / ADDITIVE_EXPERIMENT
+    additive_metadata = json.loads((additive_root / "extraction" / "metadata.json").read_text())
+    additive = Vector.load(str(additive_root / additive_metadata["vector_files"]["+C"]))
+    selection_layouts = {
+        "frozen_component_plus": selected_layout_check(source),
+        "frozen_component_minus": selected_layout_check(
+            Vector.load(str(source_root / metadata["vector_files"]["-C"]))
+        ),
+        "saved_additive_plus": selected_layout_check(additive),
+    }
 
     control, geometry = random_gram_matched_component_vector(source, SEED)
     replay, replay_geometry = random_gram_matched_component_vector(source, SEED)
@@ -203,6 +246,7 @@ def run(output: Path) -> None:
             "implementation_sha256": metadata["implementation_sha256"],
         },
         "execution_implementation_sha256": implementation_hash(),
+        "layer_selection_layouts": selection_layouts,
         "component_control_geometry": geometry,
         "computed_operator_patch_difference_on_fixed_hidden": patch_difference,
         "realized_prefill_hook_patch_difference_on_fixed_hidden": {

@@ -18,13 +18,15 @@
   "maximum_remaining_before_reservations_usd": "33.59893158",
   "reservations_usd": {
     "conditional_full_endpoint": "18.00",
-    "empirical_candor_dev_generation_and_judging": "3.00",
-    "unallocated_contingency": "12.59893158"
+    "task795_unknown_modal_cost": "0.50",
+    "empirical_candor_dev_corrected_retry_generation_and_judging": "3.00",
+    "unallocated_contingency": "12.09893158"
   },
   "reservation_basis": {
     "external_reviews": "No reviewer provider emitted a dollar receipt. The $6.00 reserve remains unreleased until receipts exist or the $40 work block closes.",
     "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. It is reserved, not authorized.",
-    "empirical_candor_dev_generation_and_judging": "One H100 900-second no-retry DEV generation, unchanged candidness AB/BA judging, raw-response audit, and independent endpoint review. This reservation is an upper bound, not claimed spend.",
+    "task795_unknown_modal_cost": "Task 795 failed after loading weights and before generation. No Modal dollar receipt is saved, so retain a conservative $0.50 instead of treating its cost as zero.",
+    "empirical_candor_dev_corrected_retry_generation_and_judging": "One explicit corrected retry, not an automatic retry: one H100 900-second DEV generation, unchanged candidness AB/BA judging, raw-response audit, and independent endpoint review. This $3.00 reservation is an upper bound, not claimed spend.",
     "modal_reconciliation": "The C=.125, C=.25, and final-prompt Modal upper bounds were released after exact metered reports recorded actual costs."
   },
   "limits": {
@@ -35,6 +37,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "The empirical-candor DEV test is authorized with a capped $3.00 generation-and-judging reserve. Its $18.00 conditional full reserve remains blocked. No other new paid work is authorized.",
+  "spend_status": "Task 795 is failed and retains a $0.50 unknown-cost reserve. One corrected empirical-candor DEV retry is explicitly authorized with a separate capped $3.00 generation-and-judging reserve. Its $18.00 conditional full reserve remains blocked. No other new paid work is authorized.",
   "both_research_goals": "OPEN"
 }
