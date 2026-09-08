@@ -2,7 +2,7 @@
   "author": "PI/OpenAI Codex",
   "purpose": "v13 J-lens repair from comparable DEV through a conditional all-100 endpoint",
   "whole_block_cap_usd": "40.00",
-  "known_modal_spend_usd": "0.47824492",
+  "known_modal_spend_usd": "0.57794118",
   "known_modal_spend_source": {
     "source_stage_apps": "0.21681039",
     "job_777": {"app": "ap-Q0l7Hrx5rsBq3RkPkJqBZ9", "total_usd": "0.06868381", "billing_report": "job777-billing-report.json"},
@@ -14,7 +14,11 @@
     "metered_not_final_invoice": true
   },
   "external_review_reserve_usd": "9.00",
-  "external_review_reserve_basis": "The timed-out empirical-candor endpoint review has no delivered verdict and its provider usage is not a receipt. Retain $1.00 for each of six prior requests, the failed endpoint-review attempt, one bounded endpoint-review retry, and this selected-full code review.",
+  "external_review_reserve_basis": "No reviewer provider emitted a dollar receipt. Retain a conservative $1.00 for each of six pre-full review requests and $3.00 for the completed full generation, result, and plot reviews. This $9.00 reserve is already counted in the $40 cap; it is not additional spend.",
+  "external_review_reserve_allocation_usd": {
+    "pre_full_reviews_including_timeout_and_retry": "6.00",
+    "full_generation_result_plot_reviews": "3.00"
+  },
   "completed_dev_judging_cost_usd": "0.02379654",
   "completed_dev_judging_cost_source": "judging-cost-reconciliation.json records $0.01799770 for earlier judged DEV work. empirical-candor-dev-judgment-summary.md records $0.00579884 for 37 new candidness AB/BA calls. These are provider usage records, not invoices.",
   "completed_full_judging_cost_usd": "0.02987468",
@@ -26,8 +30,8 @@
     "unallocated_contingency": "12.49795854"
   },
   "reservation_basis": {
-    "external_reviews": "No reviewer provider emitted a dollar receipt. The $9.00 reserve remains unreleased until receipts exist or the $40 work block closes. It includes $1.00 for one bounded recovery attempt after endpoint reviewer run d7a9f276 timed out and $1.00 for this selected-full code review.",
-    "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. Task 800 consumed $0.09969626 Modal plus $0.02987468 judging from its $18.00 allocation; $17.87042906 remains reserved.",
+    "external_reviews": "No reviewer provider emitted a dollar receipt. The $9.00 reserve remains unreleased until receipts exist or the $40 work block closes. Its $3.00 full-review slice retains the completed generation, result, and plot reviews; it is already included in the $40 cap.",
+    "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, rendering, and the separately tracked $3.00 full-review slice within the retained external-review reserve. Task 800 consumed $0.09969626 Modal plus $0.02987468 judging from its $18.00 allocation; $17.87042906 remains reserved.",
     "empirical_candor_dev": "The two Modal attempts cost $0.09517420 and new candidness AB/BA judging cost $0.00579884 from provider usage records. The required endpoint review and selected-full code review remain inside the retained $9.00 unknown-cost external-review reserve, so they are not reserved twice.",
     "modal_reconciliation": "All recorded Modal totals are resource-metered snapshots, not final invoices."
   },
