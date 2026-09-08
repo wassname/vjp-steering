@@ -1,0 +1,249 @@
+{
+  "per_consumer_label_balance": [
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": true,
+      "counts": {
+        "B": 6
+      },
+      "balanced": false
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": false,
+      "counts": {
+        "A": 6
+      },
+      "balanced": false
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": true,
+      "counts": {
+        "A": 6
+      },
+      "balanced": false
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": false,
+      "counts": {
+        "B": 6
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": true,
+      "counts": {
+        "A": 4,
+        "B": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": false,
+      "counts": {
+        "B": 4,
+        "A": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "notification",
+      "valid": true,
+      "counts": {
+        "A": 1
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "notification",
+      "valid": false,
+      "counts": {
+        "B": 1
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": true,
+      "counts": {
+        "B": 4,
+        "A": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": false,
+      "counts": {
+        "A": 4,
+        "B": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "storage",
+      "valid": true,
+      "counts": {
+        "B": 1
+      },
+      "balanced": false
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "storage",
+      "valid": false,
+      "counts": {
+        "A": 1
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": true,
+      "counts": {
+        "B": 4,
+        "A": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": false,
+      "counts": {
+        "A": 4,
+        "B": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": true,
+      "counts": {
+        "A": 5
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": false,
+      "counts": {
+        "B": 5
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": true,
+      "counts": {
+        "A": 4,
+        "B": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": false,
+      "counts": {
+        "B": 4,
+        "A": 2
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": true,
+      "counts": {
+        "B": 5
+      },
+      "balanced": false
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": false,
+      "counts": {
+        "A": 5
+      },
+      "balanced": false
+    }
+  ],
+  "withheld_consumer_leaks": [
+    "tv1_parity_3_storage_1",
+    "tv1_parity_3_storage_0",
+    "tv1_parity_3_notification_1",
+    "tv1_parity_3_notification_0"
+  ],
+  "unique_rule_evidence_cues": 40,
+  "cross_split_reused_cues": [
+    {
+      "ids": [
+        "tv1_capacity_0_routing_1",
+        "tv1_capacity_0_allocation_1",
+        "tv1_capacity_2_routing_1",
+        "tv1_capacity_2_allocation_1"
+      ],
+      "splits": [
+        "source_calibration",
+        "train"
+      ]
+    },
+    {
+      "ids": [
+        "tv1_capacity_0_routing_0",
+        "tv1_capacity_0_allocation_0",
+        "tv1_capacity_2_routing_0",
+        "tv1_capacity_2_allocation_0"
+      ],
+      "splits": [
+        "source_calibration",
+        "train"
+      ]
+    },
+    {
+      "ids": [
+        "tv1_capacity_1_routing_1",
+        "tv1_capacity_1_allocation_1",
+        "tv1_capacity_3_storage_1",
+        "tv1_capacity_3_notification_1"
+      ],
+      "splits": [
+        "train",
+        "withheld_source"
+      ]
+    },
+    {
+      "ids": [
+        "tv1_capacity_1_routing_0",
+        "tv1_capacity_1_allocation_0",
+        "tv1_capacity_3_storage_0",
+        "tv1_capacity_3_notification_0"
+      ],
+      "splits": [
+        "train",
+        "withheld_source"
+      ]
+    }
+  ]
+}

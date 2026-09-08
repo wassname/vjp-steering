@@ -1,0 +1,3 @@
+COMMAND: python slop/logs/20260908_j_lens_task_validity_corpus/v2/build.py
+CORPUS_V2_FREEZE_PASS 9d99757d9a449bb821f3b61b4174f5239a5fa51b3249e1c2cbb130b95af88ea9 192
+EXIT_CODE=0

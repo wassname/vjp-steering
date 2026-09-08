@@ -1,0 +1,7 @@
+COMMAND: python slop/logs/20260908_j_lens_task_validity_corpus/validate.py
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/slop/logs/20260908_j_lens_task_validity_corpus/validate.py", line 81, in <module>
+    assert len(ids)==m['source_unique_count']
+                     ~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'source_unique_count'
+EXIT_CODE=1
