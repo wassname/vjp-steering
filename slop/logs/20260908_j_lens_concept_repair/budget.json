@@ -41,6 +41,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "C=.125 endpoint STOPPED before all-100. One C=.25 upper-layer DEV generation and AB/BA judging are reserved but not launched. No further paid work fits the cap after this bounded test unless an existing reserve is reconciled and released.",
+  "spend_status": "C=.125 endpoint STOPPED before all-100. Job 780 is running the reserved C=.25 upper-layer DEV generation in one bounded Modal container. AB/BA judging remains unstarted. No further paid work fits the cap after this bounded test unless an existing reserve is reconciled and released.",
   "both_research_goals": "OPEN"
 }

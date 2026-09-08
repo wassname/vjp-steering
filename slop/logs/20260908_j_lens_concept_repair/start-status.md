@@ -45,3 +45,7 @@ Job `777` is `Done: Success` in dedicated group `modal`. The local `default` gro
 ## Endpoint decision, 2026-09-08
 
 The independent judgment audit returned STOP. The low-dose J-lens endpoint does not clearly beat its same-sign random control. [dev-review-decision.md](dev-review-decision.md) blocks all-100 generation and public plot changes. Both research goals remain open.
+
+## C=.25 repair, 2026-09-08
+
+Offline inspection of the `sw_pnf_02` outlier found a real candid correction, but it was concentrated in one scenario. [next-dev-protocol.md](next-dev-protocol.md) changes only C from `.125` to `.25` at the same upper layer band and repeats matched controls and AB/BA accounting. Job `780` is running in dedicated pueue group `modal` with a 900-second timeout and no retry. It cannot authorize an all-100 run by command success alone.
