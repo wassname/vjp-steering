@@ -2,25 +2,34 @@
   "author": "PI/OpenAI Codex",
   "purpose": "v13 J-lens repair from comparable DEV through a conditional all-100 endpoint",
   "whole_block_cap_usd": "40.00",
-  "known_modal_spend_usd": "0.21681039",
-  "known_modal_spend_source": "two completed source-stage apps, ap-FAW0E4RXpgmbCm1yMZPYnL and ap-obvcLJSqNatyyblyseqPK5",
+  "known_modal_spend_usd": "0.28549420",
+  "known_modal_spend_source": {
+    "source_stage_apps": "0.21681039",
+    "job_777_app": "ap-Q0l7Hrx5rsBq3RkPkJqBZ9",
+    "job_777_cpu_usd": "0.00054712",
+    "job_777_memory_usd": "0.00010897",
+    "job_777_h100_usd": "0.06802772",
+    "job_777_total_usd": "0.06868381",
+    "billing_report": "job777-billing-report.json",
+    "metered_not_final_invoice": true
+  },
   "prior_external_review_reserve_usd": "3.00",
   "prior_external_review_reserve_basis": "three completed non-Claude review requests at a conservative accounting bound of $1.00 each; provider emitted no dollar receipt, so this is retained as a reserve rather than claimed spend",
   "prior_external_review_spend_usd": null,
-  "accounted_before_new_repair_usd": "3.21681039",
-  "maximum_remaining_before_new_repair_reservations_usd": "36.78318961",
+  "accounted_before_unstarted_judging_usd": "3.28549420",
+  "maximum_remaining_before_unstarted_judging_reservations_usd": "36.71450580",
   "reservations_usd": {
-    "dev_modal_generation": "2.00",
+    "dev_modal_generation": "0.06868381",
+    "dev_modal_unused_reservation_released": "1.93131619",
     "dev_judging": "8.00",
     "conditional_full_endpoint": "18.00",
-    "unallocated_contingency": "8.78318961"
+    "unallocated_contingency": "10.71450580"
   },
   "dev_modal_reservation_basis": {
     "max_container_timeout_seconds": 900,
     "max_containers": 1,
     "automatic_retries": 0,
-    "H100_900_seconds_at_3_95_per_hour_usd": "0.98750",
-    "startup_cpu_memory_storage_and_late_billing_allowance_usd": "1.01250"
+    "job_777_outcome": "generation completed and app stopped"
   },
   "dev_judging_reservation_basis": "up to 120 existing-rubric DEV pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus) x both AB and BA order presentations. Each AB/BA pair remains one scenario-arm sample in selection.",
   "conditional_full_endpoint_reservation_basis": "one selected endpoint only, including its generation, existing-rubric full judging, raw-response audit, and rendering; it is not authorized by this reservation",
@@ -32,6 +41,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "job 777 is running in dedicated one-slot pueue group modal. Modal app ap-Q0l7Hrx5rsBq3RkPkJqBZ9 has started; its dedicated entrypoint enforces the $2 DEV Modal reservation with one 900-second H100 container and no retry loop. No v13 judgment has started",
+  "spend_status": "job 777 generation completed; no v13 judgment has started. Start unchanged-rubric AB and BA judging only after the independent raw-response audit finds the generated arms valid.",
   "both_research_goals": "OPEN"
 }

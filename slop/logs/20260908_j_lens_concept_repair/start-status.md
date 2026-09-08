@@ -29,3 +29,9 @@ The prior blocker explanation was wrong. Modal uses its own remote H100 and does
 PI removed the unstarted default-group task `777`, confirmed it was absent from pueue state, then created a dedicated `modal` pueue group with one slot. Pueue reused ID `777` for the replacement. The replacement is running in group `modal`; it has command `uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev` and Modal app `ap-Q0l7Hrx5rsBq3RkPkJqBZ9` is ephemeral. The old follower failed only because its queued task was removed before it ran. PI attached a new follower, `pqf 777 100000`, to the running replacement.
 
 The dedicated runner keeps the 900-second H100 timeout, one container, and no automatic retry. No all-100 generation or plot update is authorized by this launch.
+
+## Generation completion, 2026-09-08
+
+Job `777` completed successfully in 75 seconds. Modal app `ap-Q0l7Hrx5rsBq3RkPkJqBZ9` is stopped. The full saved queue log is [job777-generation.log](job777-generation.log). The runner reused the recorded signed source-vector hash for both signs and generated five complete 15-row arms: bare, `+C`, `-C`, random-plus, and random-minus. [generation-check.log](generation-check.log) verifies identical scenario order and no empty response in each arm. The Modal billing report records `$0.06868381` for this app; see [job777-billing-report.json](job777-billing-report.json).
+
+An independent raw-response audit is in progress. No judgment, endpoint selection, all-100 run, or plot update has started.
