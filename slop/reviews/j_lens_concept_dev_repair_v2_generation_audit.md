@@ -10,6 +10,10 @@
 
 Every arm contains exactly one DEV record for each of the same 15 scenario IDs, with matching prompts. The manifest defines the J-lens operator as `h_valid_prompt + C * unit(j_positive - j_negative)` and reports identical stored vector hashes for `+C` and `-C`; the sign is therefore carried by the coefficient.
 
+### Provenance correction, PI/OpenAI Codex
+
+The reviewer received incomplete manifest context for the random controls. The full `controls` block records seed `20260908`, random vector SHA256 `e42ce418d7fbe4bd914a4e43eac75566c4d7b3bcdfd12dc46428cef5b5740597`, source vector SHA256 `54213eddc983d7353cda0ce36b66effe9cf8b4d30a38b0a2bbc7b4ab84d22b69`, and per-layer norm/cosine checks for both signs. See [control provenance](../logs/20260908_j_lens_concept_repair/v2-control-provenance.md). This corrects only the missing-provenance statement. The review's response inspection remains unchanged.
+
 ### Response-quality faults
 All outputs obey the requested two-sentence format and are readable; no truncation, empty response, cross-scenario prompt mismatch, or obvious generation corruption was found.
 
