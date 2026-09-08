@@ -1,0 +1,11 @@
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:1177: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  figure.write_image(output / "plot.png", width=1064, height=590, scale=2)
+/workspace/2026/jspace/j-steer_pub/src/vjp_steering/results.py:1178: DeprecationWarning: 
+Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
+Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
+
+  pareto_figure.write_image(output / "plot_pareto.png", width=1064, height=590, scale=2)
+wrote 8 table rows and 2 plots from 801 measured evaluations

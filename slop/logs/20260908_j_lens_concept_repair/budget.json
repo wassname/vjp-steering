@@ -10,21 +10,24 @@
     "job_782": {"app": "ap-htvaRSG5tbbztSZcx9Prl0", "total_usd": "0.02666808", "billing_report": "job782-billing-report.json"},
     "task_795": {"app": "ap-eP3e05VeeCNztul5R3mkVZ", "total_usd": "0.02219009", "billing_report": "empirical-candor-dev-modal-billing.json", "generation": "failed_before_generation"},
     "task_796": {"app": "ap-Hsh1tnVlNSpZSs4uuFCgFC", "total_usd": "0.07298411", "billing_report": "empirical-candor-dev-modal-billing.json", "generation": "success"},
+    "task_800": {"app": "ap-QTIDRAI5zwA9KFlI62VPjz", "total_usd": "0.09969626", "billing_report": "empirical-candor-full-task800-billing.json", "generation": "success"},
     "metered_not_final_invoice": true
   },
   "external_review_reserve_usd": "9.00",
   "external_review_reserve_basis": "The timed-out empirical-candor endpoint review has no delivered verdict and its provider usage is not a receipt. Retain $1.00 for each of six prior requests, the failed endpoint-review attempt, one bounded endpoint-review retry, and this selected-full code review.",
   "completed_dev_judging_cost_usd": "0.02379654",
   "completed_dev_judging_cost_source": "judging-cost-reconciliation.json records $0.01799770 for earlier judged DEV work. empirical-candor-dev-judgment-summary.md records $0.00579884 for 37 new candidness AB/BA calls. These are provider usage records, not invoices.",
-  "known_modal_external_reserve_and_judging_usd": "9.50204146",
-  "maximum_remaining_before_reservations_usd": "30.49795854",
+  "completed_full_judging_cost_usd": "0.02987468",
+  "completed_full_judging_cost_source": "190 new Parasail candidness AB/BA records for task 800 in outputs/demo_judgments/judgments.jsonl; 10 content-keyed cells were reused without new listed cost.",
+  "known_modal_external_reserve_and_judging_usd": "9.63161240",
+  "maximum_remaining_before_reservations_usd": "30.36838760",
   "reservations_usd": {
-    "conditional_full_endpoint": "18.00",
+    "conditional_full_endpoint": "17.87042906",
     "unallocated_contingency": "12.49795854"
   },
   "reservation_basis": {
     "external_reviews": "No reviewer provider emitted a dollar receipt. The $9.00 reserve remains unreleased until receipts exist or the $40 work block closes. It includes $1.00 for one bounded recovery attempt after endpoint reviewer run d7a9f276 timed out and $1.00 for this selected-full code review.",
-    "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. It is reserved, not authorized.",
+    "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. Task 800 consumed $0.09969626 Modal plus $0.02987468 judging from its $18.00 allocation; $17.87042906 remains reserved.",
     "empirical_candor_dev": "The two Modal attempts cost $0.09517420 and new candidness AB/BA judging cost $0.00579884 from provider usage records. The required endpoint review and selected-full code review remain inside the retained $9.00 unknown-cost external-review reserve, so they are not reserved twice.",
     "modal_reconciliation": "All recorded Modal totals are resource-metered snapshots, not final invoices."
   },
@@ -36,6 +39,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "Task 795 is reconciled as a failed $0.02219009 Modal attempt. Task 796 completed generation for $0.07298411. Candidness AB/BA judging added $0.00579884 from 37 saved provider usage records. Endpoint reviewer d7a9f276 timed out without a verdict. The $9.00 conservative external-review reserve retains the recovery review and one selected-full code review. The $18.00 conditional full reserve remains blocked until formal Goal 1 approval and full-run approval. No paid full work is authorized.",
+  "spend_status": "Task 795 is reconciled as a failed $0.02219009 Modal attempt. Task 796 completed generation for $0.07298411. Candidness DEV AB/BA judging added $0.00579884 from 37 saved provider usage records. Task 800 completed the one authorized full generation for $0.09969626 and added $0.02987468 for 190 new full candidness AB/BA records; 10 content-keyed cells were reused. Endpoint reviewer d7a9f276 timed out without a verdict. The $9.00 conservative external-review reserve remains retained because no provider dollar receipts exist. No additional full generation is authorized.",
   "both_research_goals": "OPEN"
 }

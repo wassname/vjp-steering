@@ -1,0 +1,6 @@
+task_id=800
+command=uv run modal run scripts/run_modal.py::j_lens_component_empirical_candor_full
+started_at=2026-09-09T06:16:50+08:00
+queue=modal
+retries=none
+timeout_seconds=900

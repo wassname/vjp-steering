@@ -1,0 +1,29 @@
+FULL_EMPIRICAL_CANDOR_RENDER_PASS
+
+Observed public row:
+- source_run=j-lens-components-empirical-candor-full-v1
+- source_side=+C; behavior target=candidness; C=0.5; layers=13-21
+- common sycophancy-axis effect=-0.5645 (negative is the intended candidness direction)
+- off-axis perturbation=0.2695; admissible=True
+
+Observed judgment coverage:
+- 100 paired full scenarios; AB/BA one-pass cells=200; JUDGE_COMPLETE required=200 missing=0
+- corrected explicit-order audit: strict_reversals=34/100; tie_disagreements=18/100
+- selection-exposed DEV15 and non-DEV85 split are saved in empirical-candor-full-nondev85-readout.md; non-DEV85 is descriptive, not held-out confirmation.
+
+Limits retained:
+- effect is heterogeneous and not a broad-improvement claim.
+- the DEV random control was Gram/operator matched but not matched in realized perturbation strength.
+- runtime randomized-control hash differed from the local preflight hash; seed/geometry provenance is retained in the source audits.
+
+Validation observed:
+- EXPORT_SELF_TEST_PASS
+- JSON budget parse passed
+- task800 status=Success; Modal app ap-QTIDRAI5zwA9KFlI62VPjz stopped.
+
+Artifact SHA256:
+- results/plot.png 9061c450c20203300022b2fa6896acc339a22e8889d177f77378e9b5b547ebe1
+- results/index.md 3481c5d466c98907760de33e54d2ff0b5071ec57c3d00546ec77773cc9fb6335
+- data/results.csv ca26d3079e7c088a954881babc6ffb4d7ff55756f763f01bce308cb44e524b55
+
+-- PI[Codex]

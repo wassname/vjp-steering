@@ -1,0 +1,54 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-QTIDRAI5zwA9KFlI62VPjz
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function j_lens_gap_clamp_remote.
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function run_j_lens_concept_repair.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function diagnose_j_lens_remote.
+└── 🔨 Created function j_lens_prompt_span_activity_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1133.22it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 672.33it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 10/426 [00:00<00:04, 92.74it/s]
+[1ALoading weights:   5%|▍         | 21/426 [00:00<00:04, 98.32it/s]
+[1ALoading weights:  10%|▉         | 41/426 [00:00<00:02, 132.54it/s]
+[1ALoading weights:  13%|█▎        | 56/426 [00:00<00:02, 137.97it/s]
+[1ALoading weights:  18%|█▊        | 75/426 [00:00<00:02, 152.21it/s]
+[1ALoading weights:  23%|██▎       | 98/426 [00:00<00:01, 167.24it/s]
+[1ALoading weights:  27%|██▋       | 116/426 [00:00<00:01, 157.43it/s]
+[1ALoading weights:  33%|███▎      | 140/426 [00:00<00:01, 169.62it/s]
+[1ALoading weights:  37%|███▋      | 157/426 [00:01<00:01, 140.00it/s]
+[1ALoading weights:  41%|████      | 175/426 [00:01<00:01, 148.20it/s]
+[1ALoading weights:  46%|████▌     | 196/426 [00:01<00:01, 163.41it/s]
+[1ALoading weights:  50%|█████     | 214/426 [00:01<00:01, 161.59it/s]
+[1ALoading weights:  54%|█████▍    | 231/426 [00:01<00:01, 157.50it/s]
+[1ALoading weights:  58%|█████▊    | 248/426 [00:01<00:01, 143.94it/s]
+[1ALoading weights:  63%|██████▎   | 268/426 [00:01<00:01, 155.39it/s]
+[1ALoading weights:  68%|██████▊   | 289/426 [00:01<00:00, 168.96it/s]
+[1ALoading weights:  72%|███████▏  | 307/426 [00:02<00:00, 161.21it/s]
+[1ALoading weights:  76%|███████▌  | 324/426 [00:02<00:00, 155.79it/s]
+[1ALoading weights:  80%|████████  | 342/426 [00:02<00:00, 152.23it/s]Loading weights: 100%|██████████| 426/426 [00:02<00:00, 188.38it/s]
+2026-09-08 22:17:15.946 | INFO     | __main__:load_or_extract:603 - EMPIRICAL_COMPONENT_EXTRACTION_REUSED source=j-lens-behavior-components-target-ordered-source-v8 hash_plus=dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197
+2026-09-08 22:17:41.967 | INFO     | walk:generate:501 - generation 100/100
+2026-09-08 22:17:53.432 | INFO     | walk:generate:501 - generation 100/100
+2026-09-08 22:17:55.220 | INFO     | __main__:gpu_stage:1208 - GPU_STAGE_COMPLETE experiment=j-lens-components-empirical-candor-full-v1 profile=full cells=1
+✓ Finished downloading files to local!
+J_LENS_COMPONENT_EMPIRICAL_CANDOR_FULL_COMPLETE id=j-lens-components-empirical-candor-full-v1 output=/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-components-empirical-candor-full-v1
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-QTIDRAI5zwA9KFlI62VPjz

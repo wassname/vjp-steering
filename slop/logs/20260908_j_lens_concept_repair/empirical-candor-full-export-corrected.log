@@ -1,0 +1,2 @@
+2026-09-09 06:36:08.757 | INFO     | judge:experiment_rows:394 - experiment manifest id=j-lens-components-empirical-candor-full-v1 profile=full cells=1 demo_sides=100
+EXPERIMENT_EXPORT_COMPLETE id=j-lens-components-empirical-candor-full-v1 profile=full arms=1 scenarios=100

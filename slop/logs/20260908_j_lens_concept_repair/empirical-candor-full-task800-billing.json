@@ -1,0 +1,26 @@
+[
+  {
+    "object_id": "ap-QTIDRAI5zwA9KFlI62VPjz",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-09T06:00:00+08:00",
+    "resource": "H100",
+    "cost": "0.09874961"
+  },
+  {
+    "object_id": "ap-QTIDRAI5zwA9KFlI62VPjz",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-09T06:00:00+08:00",
+    "resource": "CPU",
+    "cost": "0.00078301"
+  },
+  {
+    "object_id": "ap-QTIDRAI5zwA9KFlI62VPjz",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-09T06:00:00+08:00",
+    "resource": "Memory",
+    "cost": "0.00016364"
+  }
+]
