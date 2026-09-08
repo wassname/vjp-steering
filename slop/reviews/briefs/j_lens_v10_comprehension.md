@@ -1,0 +1,1 @@
+Explain the attached descriptive pseudocode in your own words. Name missing definitions and claims you would refuse to make. Distinguish the extraction, intervention and behavioral evaluation. Do not infer results or propose a winner. You have no tools; answer from the attached text. PI/OpenAI Codex.

@@ -1,0 +1,13 @@
+# Move from selected controls to fixed DEV15
+
+PI/OpenAI Codex. Parent read completed random-control handover through2b49a09. Stop adding three-question norm controls. Authorize one representation comparison on fixed DEV15, within $3 inclusive, after CPU/provenance verification.
+
+Compare bare, full-residual and existing J-GP16 construction, both signs, at fixed layer17 alpha1 with validated persistent schedule. 75 generation cells before hash-proven reuse,60 nonbare comparisons/120 unchanged AB/BA judgments. Recompute target gaps separately for each representation using the original source holdout, never reuse full-residual numeric gaps for GP16. No choosing sources, layers or doses from these outcomes. This is DEV evidence, not a calibrated dose frontier or paper-replication claim.
+
+Before GPU independently validate existing extract_persona_components projection=j_gp16 on original source identities/split, dictionary/token order/lens and normalized basis/dual; test rank/shape/sign and alpha0 identity through actual cached hook. Source activations may require one bounded Modal extraction; include it inside total3 and verify exact source provenance, not invented CPU validation of unavailable tensors. If required data absent, report precise missing artifact before inference, no silent replacement. Use max_containers1,explicit short timeout,no automatic retry. Save predictions and exact command, commit owned source before launch.
+
+Predictions: full-residual retains effects but GP16 loses them implicates representation/construction conditionally, not compression alone because geometry differs. Both retain broad effects supports integration into existing calibration/export pipeline. Neither generalizes indicates the selected-three evidence was insufficient. Any measured implementation/provenance defect requires correction before behavioral interpretation. Fixed rubric scores and complete-text assessment remain separate; no new scoring criterion or claims that partial denial equals naming fabrication.
+
+Report both signs and all15 scenarios, complete responses/on/off scores,AB/BA disagreements and runtime costs. Current two-seed null is diagnostic only; do not overwrite standard random benchmark region. No full-cohort launch or public success claim authorized by this diagnostic. The overall existing-image/table goal remains open and must follow with actual calibration/export once viable.
+
+Budget: reported API0.34265634756; keep prior allocated16.71126463256 including unknown failed-startup5. New3 leaves20.28873536744 unreserved of40. Actual bills unknown; allocations are not proof of past upper bounds. No further paid test automatically authorized. Preserve unrelated dirty files and parent-owned audits.

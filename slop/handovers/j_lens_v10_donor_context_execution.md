@@ -1,0 +1,9 @@
+# Donor-context diagnostic authorization
+
+PI/OpenAI Codex. Supervisor explicitly authorizes the fixed donor-context test. Reserve $1.20 from reconciled $8.42509672744, leaving $7.22509672744 budget margin. This is an allocation, NOT an enforced provider cap. Keep $0.25 late-billing adjustment and all other retained reserves. Source accounting: slop/logs/20260907_j_lens_billing_reconciliation/decision.md, commit bac8715.
+
+Execute exactly synthesis.md section3 at slop/logs/20260907_j_lens_failed_repair_synthesis/: same3 donor prompts, pinned Qwen snapshot, layer17 final-prefill one-shot, frozen GP axis, no cache transplant. Fifteen generations: unpatched donor, neither hB, parallel hB+p, complement hD-p, both exact hD per scenario;18 unchanged AB/BA judgments against donor. Identity replay mandatory, full-removal loss needed before inferring component sufficiency. Preserve null/redundancy/interaction branches. BF16 component contamination must be measured, not hidden.
+
+One sole worker owns implementation/tests/run/evidence. Before paid launch: saved-vector provenance, actual tiny hybrid hook/identity/cleanup, correct diagnostic request cardinalities, mounted imports and tokenizer-order checks. Commit source and predictions first. One H100 max_containers1 timeout360 retries0; no automatic retry. Save full command/log/appID. Native async completion notification belongs to worker run. Download persisted artifacts, do not regenerate after transport failure.
+
+Read all15 full responses and18 raw judgments. Save online array/coordinate/norm and next-block checks, same-context controls, baseline/steered attribution as relevant. Query read-only Modal billing report for app costs; record metered snapshot/latency honestly, retain reservation until accounting reconciled. No further variants, no public score replacement or new plot points, no automatic next experiment. Both main goals OPEN.
