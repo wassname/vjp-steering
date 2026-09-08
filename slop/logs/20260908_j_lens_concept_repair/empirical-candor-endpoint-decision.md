@@ -2,9 +2,9 @@
 
 ## Decision
 
-**STOP before all-100.** The source arm has real task-responsive corrections, but this DEV result does not yet show that J-lens is clearly better than a matched random behavioral control under Goal 1.
+**PROVISIONAL: hold all-100 for supervisor resolution.** The source arm has real task-responsive corrections. The independently reviewed DEV result passes the plan discriminator to conditional all-100 consideration. This record preserves the control limits for that resolution.
 
-This is an endpoint-selection decision, not a claim that the source arm had no effect. It does not require the opposite source direction to work.
+This is not a claim that the source arm had no effect. It does not require the opposite source direction to work.
 
 ## Positive raw evidence
 
@@ -14,15 +14,15 @@ In the TCA row, bare says TCA is "typically used to measure existing coupling." 
 
 These are substantive premise corrections, not refusal, incoherence, repetition, or task loss. The generation audit found all 45 answers complete and pairable.
 
-## Why this does not yet pass Goal 1
+## Limits carried into Goal 1 review
 
-The source mean paired candidness effect is +0.6800 versus random -0.0100, but the difference is concentrated in those two corrections. The other 13 source scenario effects average -0.0731. This concentration is an observation, not a new scenario-count threshold.
+The source mean paired candidness effect is +0.6800 versus random -0.0100, but the difference is concentrated in two corrections. The other 13 source scenario effects average -0.0731. This concentration is an observation, not a new scenario-count threshold.
 
-Five of 15 source pairs have strict AB/BA sign reversals. They remain included in the source mean and are not extra samples. They lower confidence that the aggregate is a stable cohort effect.
+Five of 15 source pairs have strict AB/BA sign reversals. They remain included in the source mean and are not extra samples. They are small, mixed-sign effects. They do not overturn the ICU and TCA corrections, which are positive in both orders.
 
-The control preserves rank-two Gram geometry but not realized perturbation strength. Source final-token KL from bare is 0.08884294 versus random 0.00311300. Source logit-delta norm is 175.8067 versus random 30.2873. Therefore the random arm is not an equal-strength behavioral placebo. It cannot establish that the source-control gap is specific to the J-lens representation rather than the larger realized source intervention.
+The control preserves the predeclared rank-two Gram geometry, target-order operator, cohort, and source-side coefficient. The protocol did not predeclare equal realized KL or logit displacement. Source final-token KL from bare is 0.08884294 versus random 0.00311300. Source logit-delta norm is 175.8067 versus random 30.2873. This limits causal attribution to direction rather than perturbation magnitude. It is not an automatic failure of the configured control or plan discriminator.
 
-The runtime random vector hash also differs from the frozen local-preflight hash, and no runtime control tensor was saved. The saved runtime seed, source hash, implementation, layer ranks, Gram errors, and dual errors support the configured construction. They do not prove bitwise equivalence or fully rule out a changed random basis.
+The runtime random vector hash differs from the frozen local-preflight hash, and no runtime control tensor was saved. The saved runtime seed, source hash, implementation, layer ranks, Gram errors, and dual errors support the configured construction. They do not prove bitwise equivalence or fully rule out a changed random basis.
 
 ## Verification
 
@@ -36,4 +36,4 @@ The runtime random vector hash also differs from the frozen local-preflight hash
 - Control limit: `empirical-candor-control-hash-reconciliation.md`
 - Verification: `empirical-candor-endpoint-decision-verification.log`
 
-The bounded independent review retry is still required. Public artifacts and all-100 remain unchanged.
+The independent recovery review returned `PASS_TO_CONDITIONAL_ALL100`. Public artifacts and all-100 remain unchanged pending supervisor resolution.
