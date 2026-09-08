@@ -61,6 +61,15 @@ def profile(dev: bool) -> ExperimentProfile:
     return DEV if dev else FULL
 
 
+def behavior_axis_direction(source_side: str, behavior_target: str | None = None) -> int:
+    axis = behavior_target or source_side
+    if axis in ("+C", "sycophancy"):
+        return 1
+    if axis in ("-C", "candidness"):
+        return -1
+    raise ValueError(f"unknown behavior axis: {axis}")
+
+
 def experiment_dir(experiment_id: str) -> Path:
     return ROOT / "outputs" / "experiments" / experiment_id
 

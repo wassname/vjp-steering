@@ -585,7 +585,9 @@ def self_test():
         pass
     else:
         raise AssertionError("unknown legacy cache accepted")
-    assert concept_grid(SimpleNamespace(coefficients_plus="0.125,0.25,0.5", coefficients_minus="0.25")) == {
+    assert concept_grid(SimpleNamespace(
+        coefficients_plus="0.125,0.25,0.5", coefficients_minus="0.25", concept_sides=("+C", "-C"),
+    )) == {
         "+C": [.125, .25, .5], "-C": [.25]}
     print("J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true")
 

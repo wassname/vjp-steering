@@ -30,8 +30,9 @@ from vjp_steering.j_lens_concept import (
     PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_FULL_COMPONENT_PAIR_VERSION,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     concept_prefill_mask, extract_concept, extract_persona_components, extract_persona_contrast,
-    implementation_hash, mask_metadata, persona_component_spec, prefill_diagnostics, select_concept_layers,
-    tokenizer_content_hash, validate_component_pair,
+    implementation_hash, mask_metadata, persona_component_spec, prefill_diagnostics,
+    random_gram_matched_component_vector, select_concept_layers, tokenizer_content_hash,
+    validate_component_pair,
 )
 from vjp_steering.vjp import _resolve_j_lens_file
 from vjp_steering.experiment import (
@@ -84,6 +85,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--persona-prompt-control", action="store_true")
     parser.add_argument("--source-experiment", default="")
     parser.add_argument("--reuse-extraction-from", default="")
+    parser.add_argument("--reuse-component-extraction-from", default="")
+    parser.add_argument("--component-empirical-candor", action="store_true")
+    parser.add_argument("--behavior-target", choices=("", "candidness"), default="")
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--local", action="store_true")
     parser.add_argument("--experiment-id", default="")
@@ -117,15 +121,34 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if (args.random_control_seed is None) != (args.random_control_coefficient is None):
         raise ValueError("random control requires both seed and coefficient")
+    component_control = args.method == COMPONENT_PAIR_METHOD and args.component_empirical_candor
     if args.random_control_seed is not None and (
-        args.method != "j_lens_concept" or not args.dev or args.random_control_coefficient <= 0
+        not args.dev or args.random_control_coefficient <= 0
+        or (args.method != "j_lens_concept" and not component_control)
     ):
-        raise ValueError("random control is DEV-only for j_lens_concept with a positive coefficient")
+        raise ValueError("random control is DEV-only with a positive coefficient")
     if args.concept_application_mask == "final_prompt" and args.method != "j_lens_concept":
         raise ValueError("final_prompt application is only defined for j_lens_concept")
     args.concept_sides = tuple(args.concept_sides.split(","))
     if not args.concept_sides or len(set(args.concept_sides)) != len(args.concept_sides) or set(args.concept_sides) - {"+C", "-C"}:
         raise ValueError("concept sides must be a nonempty unique subset of +C,-C")
+    if args.component_empirical_candor:
+        if args.method != COMPONENT_PAIR_METHOD or not args.dev:
+            raise ValueError("empirical candidness is DEV-only for component-pair J-lens")
+        if args.concept_sides != ("+C",) or args.behavior_target != "candidness":
+            raise ValueError("empirical candidness requires source side +C and behavior target candidness")
+        if args.concept_application_mask != "user_turn":
+            raise ValueError("component target-order application is fixed to all attended prefill positions")
+        if not args.reuse_component_extraction_from:
+            raise ValueError("empirical candidness requires an explicit frozen component extraction")
+        if [float(value) for value in args.coefficients_plus.split(",") if value] != [0.5]:
+            raise ValueError("empirical candidness is fixed to source coefficient .5")
+        if args.coefficients_minus:
+            raise ValueError("empirical candidness has no source -C arm")
+        if args.random_control_coefficient != 0.5:
+            raise ValueError("empirical candidness control is fixed to coefficient .5")
+    elif args.reuse_component_extraction_from:
+        raise ValueError("component extraction reuse requires the empirical-candor route")
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     return args
 
@@ -211,7 +234,8 @@ def random_control_complete(manifest: dict, root: Path, args: argparse.Namespace
     if args.random_control_seed is None:
         return True
     controls = manifest.get("controls", {})
-    for name in ("random_plus", "random_minus"):
+    for side in args.concept_sides:
+        name = "random_plus" if side == "+C" else "random_minus"
         control = controls.get(name)
         if not control:
             return False
@@ -434,7 +458,25 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
     return vectors, metadata, len(positive), sample_id
 
 
-def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse: bool = False):
+def validate_component_empirical_candor_source(args, metadata) -> None:
+    if not args.component_empirical_candor:
+        raise ValueError("component empirical source used outside its route")
+    if metadata["method"] != COMPONENT_PAIR_METHOD:
+        raise ValueError("empirical candidness source has wrong method")
+    if (metadata["model"], metadata["dtype"]) != (args.model, args.dtype):
+        raise ValueError("empirical candidness source model/dtype mismatch")
+    if metadata["operator"] != COMPONENT_PAIR_VERSION:
+        raise ValueError("empirical candidness source operator mismatch")
+    if tuple(metadata["source_layers"]) != tuple(range(13, 22)):
+        raise ValueError("empirical candidness source layers changed")
+    if metadata["vector_content_sha256"]["+C"] != "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197":
+        raise ValueError("empirical candidness source vector hash changed")
+
+
+def validate_extraction_identity(
+    args, metadata, *, allow_explicit_legacy_reuse: bool = False,
+    allow_explicit_component_reuse: bool = False,
+):
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method in CONCEPT_METHODS:
@@ -465,7 +507,9 @@ def validate_extraction_identity(args, metadata, *, allow_explicit_legacy_reuse:
         if metadata["operator"] != expected_operator or metadata["spec_sha256"] != expected_spec:
             raise ValueError("separate J-lens component specification mismatch")
         if metadata["implementation_sha256"] != implementation_hash():
-            raise ValueError("separate J-lens component implementation mismatch")
+            if not allow_explicit_component_reuse:
+                raise ValueError("separate J-lens component implementation mismatch")
+            validate_component_empirical_candor_source(args, metadata)
     if args.method == "j_lens_concept":
         source = getattr(args, "j_lens_source", "concept")
         expected_source = {
@@ -512,7 +556,10 @@ def load_or_extract(
     if metadata_path.exists() and all(path.exists() for path in paths.values()):
         metadata = json.loads(metadata_path.read_text())
         validate_extraction_identity(
-            args, metadata, allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+            args,
+            metadata,
+            allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+            allow_explicit_component_reuse=bool(args.reuse_component_extraction_from),
         )
         if args.method == COMPONENT_PAIR_METHOD and args.j_lens_source == "persona_components":
             validate_persona_component_source_identity(args, metadata, model, tokenizer)
@@ -525,6 +572,32 @@ def load_or_extract(
             raise ValueError("saved extraction vector hash mismatch")
         if args.method == COMPONENT_PAIR_METHOD:
             validate_component_pair(vectors)
+        return vectors, metadata
+
+    if args.reuse_component_extraction_from:
+        source = experiment_dir(args.reuse_component_extraction_from)
+        source_path = source / "extraction/metadata.json"
+        source_metadata = json.loads(source_path.read_text())
+        validate_component_empirical_candor_source(args, source_metadata)
+        vectors = {side: Vector.load(str(source / source_metadata["vector_files"][side])) for side in paths}
+        validate_component_pair(vectors)
+        if {side: vector_sha256(vector) for side, vector in vectors.items()} != source_metadata["vector_content_sha256"]:
+            raise ValueError("empirical candidness source vector hash mismatch")
+        paths["+C"].parent.mkdir(parents=True, exist_ok=True)
+        for side, vector in vectors.items():
+            vector.save(str(paths[side]))
+        metadata = {
+            **source_metadata,
+            "extraction_reused_from": args.reuse_component_extraction_from,
+            "source_metadata_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+            "current_execution_implementation_sha256": implementation_hash(),
+        }
+        atomic_json(metadata_path, metadata)
+        logger.info(
+            "EMPIRICAL_COMPONENT_EXTRACTION_REUSED source={} hash_plus={}",
+            args.reuse_component_extraction_from,
+            metadata["vector_content_sha256"]["+C"],
+        )
         return vectors, metadata
 
     if args.reuse_extraction_from:
@@ -621,12 +694,15 @@ def generation_records(
     coefficient: float,
     profile_name: str,
     method: str,
+    behavior_target: str,
 ) -> list[dict]:
     return [
         {
             "status": "DEV" if profile_name == "dev" else "FORMATIVE",
             "profile": profile_name,
             "side": side,
+            "source_side": side,
+            "behavior_target": behavior_target or None,
             "coefficient": applied_coefficient(method, side, coefficient) if side else 0.0,
             "scenario": row["scenario"],
             "prompt": row["prompt"],
@@ -680,6 +756,7 @@ def extend_generation(
         coefficient=coefficient,
         profile_name=profile_name,
         method=args.method,
+        behavior_target=args.behavior_target,
     )
     combined = existing + added
     atomic_jsonl(path, combined)
@@ -821,13 +898,13 @@ def completed_profile_cell_count(
         "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
         "-C": [float(value) for value in args.coefficients_minus.split(",") if value],
     }
-    if not coefficients or any(not coefficients[side] for side in ("+C", "-C")):
+    if not coefficients or not any(coefficients.values()):
         return None
     bare = manifest.get("bare")
     if not bare or len(read_jsonl(root / bare["path"])) < limit:
         return None
     count = 0
-    for side in ("+C", "-C"):
+    for side in args.concept_sides:
         for coefficient in coefficients[side]:
             entry = manifest.get("cells", {}).get(side, {}).get(f"{coefficient:.12g}")
             if not entry or len(read_jsonl(root / entry["path"])) < limit:
@@ -879,6 +956,9 @@ def gpu_stage(args: argparse.Namespace) -> None:
             "max_new_tokens": args.max_new_tokens,
             "j_lens_source": args.j_lens_source,
             "persona_direction": args.persona_direction,
+            "component_empirical_candor": args.component_empirical_candor,
+            "source_side": "+C" if args.component_empirical_candor else None,
+            "behavior_target": args.behavior_target or None,
         },
     }
     if manifest["method"] != args.method:
@@ -888,8 +968,10 @@ def gpu_stage(args: argparse.Namespace) -> None:
         atomic_json(manifest_path(args.experiment_id), manifest)
     if args.method in CONCEPT_METHODS and "extraction" in manifest:
         validate_extraction_identity(
-            args, manifest["extraction"],
+            args,
+            manifest["extraction"],
             allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
+            allow_explicit_component_reuse=bool(args.reuse_component_extraction_from),
         )
         requested_layers = concept_application_layers(args, manifest["extraction"]["source_layers"])
         saved_layers = tuple(manifest["extraction"].get("application_layers", manifest["extraction"]["source_layers"]))
@@ -955,7 +1037,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 if args.method == COMPONENT_PAIR_METHOD
                 else {"+C": "signed unit concept contrast", "-C": "signed unit concept contrast"}
             )
-            boundaries = {side: {"meaning": meanings[side], "trace": []} for side in ("+C", "-C")}
+            boundaries = {side: {"meaning": meanings[side], "trace": []} for side in args.concept_sides}
             grid = concept_grid(args)
         else:
             boundaries = {
@@ -968,6 +1050,17 @@ def gpu_stage(args: argparse.Namespace) -> None:
         manifest["extraction"] = extraction
         manifest["cohort_sha256"] = cohort_sha256
         manifest["answer_key_sha256"] = walk.answer_key_sha256(walk.read_cohort(100)[0])
+        if args.component_empirical_candor:
+            manifest["candidate"] = {
+                "source_experiment": args.reuse_component_extraction_from,
+                "source_side": "+C",
+                "behavior_target": "candidness",
+                "operator": extraction["operator"],
+                "source_vector_sha256": extraction["vector_content_sha256"]["+C"],
+                "layers": extraction["application_layers"],
+                "coefficient": grid["+C"],
+                "application_mask": "all_attended_prefill_positions",
+            }
         atomic_json(manifest_path(args.experiment_id), manifest)
     coefficients = manifest["grid"] if args.dev else {
         "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
@@ -987,8 +1080,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
             tokenizer, encoded_prompts.input_ids, encoded_prompts.attention_mask, vectors["+C"],
             application_mask=args.concept_application_mask,
         )
+        application_mask = (
+            "all_attended_prefill_positions"
+            if args.method == COMPONENT_PAIR_METHOD else args.concept_application_mask
+        )
         execution_mask = mask_metadata(
-            encoded_prompt_patch_mask, encoded_prompts.attention_mask, args.concept_application_mask,
+            encoded_prompt_patch_mask, encoded_prompts.attention_mask, application_mask,
         )
         manifest["execution"] = {
             "implementation_sha256": implementation_hash(),
@@ -998,7 +1095,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 "application_mask": extraction["application_mask"],
             },
         }
-    for side in ("+C", "-C"):
+    for side in args.concept_sides:
         for coefficient in coefficients[side]:
             records = extend_generation(
                 cell_path(root, side, coefficient),
@@ -1015,6 +1112,8 @@ def gpu_stage(args: argparse.Namespace) -> None:
             stats, reasons = generation_health(args, tokenizer, [record["text"] for record in records])
             cell = {
                 "coefficient": coefficient,
+                "source_side": side,
+                "behavior_target": args.behavior_target or None,
                 "path": str(cell_path(root, side, coefficient).relative_to(root)),
                 "rows": len(records),
                 "health": stats,
@@ -1035,11 +1134,19 @@ def gpu_stage(args: argparse.Namespace) -> None:
             atomic_json(manifest_path(args.experiment_id), manifest)
             generated_cells += 1
     if args.random_control_seed is not None:
-        random_vector, layer_checks = random_matched_concept_vector(
-            vectors["+C"], args.random_control_seed
-        )
+        if args.method == COMPONENT_PAIR_METHOD:
+            random_vector, layer_checks = random_gram_matched_component_vector(
+                vectors["+C"], args.random_control_seed
+            )
+            random_kind = "seeded_rank_two_gram_matched_target_order_control"
+        else:
+            random_vector, layer_checks = random_matched_concept_vector(
+                vectors["+C"], args.random_control_seed
+            )
+            random_kind = "seeded_norm_matched_random_direction"
         assert encoded_prompts is not None and encoded_prompt_patch_mask is not None
-        for side, name in (("+C", "random_plus"), ("-C", "random_minus")):
+        for side in args.concept_sides:
+            name = "random_plus" if side == "+C" else "random_minus"
             if not coefficients[side]:
                 continue
             random_path = root / "controls" / f"{name}.jsonl"
@@ -1059,10 +1166,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 args, tokenizer, [record["text"] for record in random_records]
             )
             manifest.setdefault("controls", {})[name] = {
-                "kind": "seeded_norm_matched_random_direction",
+                "kind": random_kind,
                 "profile": profile_name,
                 "seed": args.random_control_seed,
                 "side": side,
+                "source_side": side,
+                "behavior_target": args.behavior_target or None,
                 "coefficient": args.random_control_coefficient,
                 "path": str(random_path.relative_to(root)),
                 "rows": len(random_records),
@@ -1127,6 +1236,10 @@ def modal_stage(
         command.append("--verify-extraction")
     if args.reuse_extraction_from:
         command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
+    if args.reuse_component_extraction_from:
+        command.extend(["--reuse-component-extraction-from", args.reuse_component_extraction_from])
+    if args.component_empirical_candor:
+        command.extend(["--component-empirical-candor", "--behavior-target", args.behavior_target])
     if args.concept_layers:
         command.extend(["--concept-layers", args.concept_layers])
     if args.random_control_seed is not None:
@@ -1499,7 +1612,9 @@ def self_test() -> None:
                 path = root / f"{side}_{coefficient}.jsonl"
                 path.write_text("{}\n" * DEV.cohort_size)
                 manifest["cells"][side][f"{coefficient:.12g}"] = {"path": path.name}
-        args = SimpleNamespace(method="test", dev=True, coefficients_plus="", coefficients_minus="")
+        args = SimpleNamespace(
+            method="test", dev=True, coefficients_plus="", coefficients_minus="", concept_sides=("+C", "-C"),
+        )
         assert completed_profile_cell_count(args, manifest, root, "dev", DEV.cohort_size) == GRID_POINTS * 2
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
@@ -1508,7 +1623,7 @@ def main() -> None:
     args = parse_args()
     component_diagnostic = (
         args.self_test or args.concept_smoke or args.concept_calibrate or args.persona_prompt_control
-        or args.extract_only or args.verify_extraction
+        or args.extract_only or args.verify_extraction or args.component_empirical_candor
     )
     if args.method == COMPONENT_PAIR_METHOD and not component_diagnostic:
         raise ValueError(

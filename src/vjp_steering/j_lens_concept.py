@@ -277,6 +277,50 @@ def validate_component_pair(vectors: dict[str, Vector]) -> None:
         )
 
 
+def random_gram_matched_component_vector(vector: Vector, seed: int) -> tuple[Vector, dict]:
+    """Make a seeded rank-two target-order control with each source Gram matrix."""
+    if vector.cfg.method != COMPONENT_PAIR_METHOD:
+        raise ValueError("random component control requires a component-pair vector")
+    generator = torch.Generator(device="cpu").manual_seed(seed)
+    shared, geometry = {}, {}
+    for layer in vector.cfg.layers:
+        source_state = vector.shared[layer]
+        source_basis = source_state["basis"].detach().float().cpu()
+        source_gram = source_basis @ source_basis.T
+        orthonormal = torch.linalg.qr(
+            torch.randn((source_basis.shape[1], 2), generator=generator), mode="reduced",
+        ).Q.T
+        control_basis = torch.linalg.cholesky(source_gram) @ orthonormal
+        control_dual = torch.linalg.pinv(control_basis).T.contiguous()
+        control_gram = control_basis @ control_basis.T
+        dual_identity = control_basis @ control_dual.T
+        shared[layer] = {
+            "basis": control_basis.to(source_state["basis"].dtype),
+            "dual": control_dual.to(source_state["dual"].dtype),
+            "target_index": source_state["target_index"].detach().clone(),
+        }
+        geometry[str(layer)] = {
+            "source_basis_sha256": tensor_hash(source_basis),
+            "control_basis_sha256": tensor_hash(control_basis),
+            "source_gram": source_gram.tolist(),
+            "control_gram": control_gram.tolist(),
+            "gram_max_abs_error": (control_gram - source_gram).abs().max().item(),
+            "source_control_cross_gram": (source_basis @ control_basis.T).tolist(),
+            "control_dual_identity_max_abs_error": (
+                dual_identity - torch.eye(2, dtype=dual_identity.dtype)
+            ).abs().max().item(),
+            "source_rank": int(torch.linalg.matrix_rank(source_basis).item()),
+            "control_rank": int(torch.linalg.matrix_rank(control_basis).item()),
+        }
+    cfg = type(vector.cfg)(layers=tuple(vector.cfg.layers))
+    cfg.dtype = vector.cfg.dtype
+    control = Vector(cfg, shared, {layer: {} for layer in vector.cfg.layers})
+    for layer in control.cfg.layers:
+        basis, dual = control.shared[layer]["basis"].float(), control.shared[layer]["dual"].float()
+        torch.testing.assert_close(basis @ dual.T, torch.eye(2), rtol=1e-4, atol=1e-5)
+    return control, geometry
+
+
 def concept_patch(hidden: torch.Tensor, vector: Vector, layer: int, coefficient: float) -> torch.Tensor:
     if vector.cfg.method == COMPONENT_PAIR_METHOD:
         shared = vector.shared[layer]

@@ -1,0 +1,494 @@
+{
+  "status": "EMPIRICAL_CANDOR_COMPONENT_CONTROL_PREFLIGHT_PASS",
+  "candidate": {
+    "source_experiment": "j-lens-behavior-components-target-ordered-source-v8",
+    "source_side": "+C",
+    "behavior_target": "candidness",
+    "coefficient": 0.5,
+    "operator": "mean100-gp16-reconstruction-target-ordered-coordinate-exchange-all-prefill-v8",
+    "layers": [
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "application_mask": "all_attended_prefill_positions",
+    "source_vector_sha256": "dd4e78e9c429e51e4fe2d4e70e0db28c96d5c4c218b5f317767393ac38883197",
+    "control_vector_sha256": "619f4fce627406eab698c960aee05b76ac0aba309ecd6df415c6088cb4544e49",
+    "control_seed": 20260909
+  },
+  "source_extraction": {
+    "metadata_sha256": "488bcc265a147ae0d62c0d00c23059cbc52798681e131dd1c153be2f970dc61d",
+    "implementation_sha256": "7fd703e79b2f68c4b55ccac2e695da044de62c0c34ceba05d02745868cab71ee"
+  },
+  "execution_implementation_sha256": "0d5791f73c9f8757346d98794df8617fb3c24b6d190234c2fc9a564a6cf01279",
+  "component_control_geometry": {
+    "13": {
+      "source_basis_sha256": "16734e076050191e9ef5bc343e35e4bcc3d435326d5d7299f422b4647fa4b376",
+      "control_basis_sha256": "3e766c0b205b0d30a735224403ade152402a3802849e9475098bb99eadcfcc7c",
+      "source_gram": [
+        [
+          1.0,
+          0.766636312007904
+        ],
+        [
+          0.766636312007904,
+          1.0000001192092896
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0000001192092896,
+          0.7666363716125488
+        ],
+        [
+          0.7666363716125488,
+          1.000000238418579
+        ]
+      ],
+      "gram_max_abs_error": 1.1920928955078125e-07,
+      "source_control_cross_gram": [
+        [
+          -0.02675008773803711,
+          0.008219290524721146
+        ],
+        [
+          -0.024782009422779083,
+          -0.005707340314984322
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 4.76837158203125e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "14": {
+      "source_basis_sha256": "18f40c80e489f2d3e8f35978847df2b777c619922eeedd4f98c291adf85ad806",
+      "control_basis_sha256": "ccf727cc79481375ff7ec3352ffca5dec31c18e29c460721f4d9134ca19ebadb",
+      "source_gram": [
+        [
+          0.9999998807907104,
+          0.7948406934738159
+        ],
+        [
+          0.7948406934738159,
+          0.9999998807907104
+        ]
+      ],
+      "control_gram": [
+        [
+          0.9999998211860657,
+          0.7948404550552368
+        ],
+        [
+          0.7948404550552368,
+          0.9999997615814209
+        ]
+      ],
+      "gram_max_abs_error": 2.384185791015625e-07,
+      "source_control_cross_gram": [
+        [
+          0.01967751234769821,
+          0.02843364328145981
+        ],
+        [
+          -0.00027706287801265717,
+          0.016303353011608124
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 7.7858567237854e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "15": {
+      "source_basis_sha256": "44a4dedee8790254c2e6db33cd2a7b66aaa78a79c29503265ba9f77898635254",
+      "control_basis_sha256": "a0d9004443740d0066f4c363704bc6c853585af636d67930ba7fcee94e21d955",
+      "source_gram": [
+        [
+          0.9999997615814209,
+          0.8081830739974976
+        ],
+        [
+          0.8081830739974976,
+          1.0
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0000001192092896,
+          0.8081834316253662
+        ],
+        [
+          0.8081834316253662,
+          1.000000238418579
+        ]
+      ],
+      "gram_max_abs_error": 3.5762786865234375e-07,
+      "source_control_cross_gram": [
+        [
+          -0.02806655503809452,
+          -0.023910915479063988
+        ],
+        [
+          -0.01063845306634903,
+          -0.01260104775428772
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 9.5367431640625e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "16": {
+      "source_basis_sha256": "3ff8a845f999f72316e0dc57eb773a3ba335e8204a20ad1eb0edb88952243760",
+      "control_basis_sha256": "75a11953c59d9bdedf8435563609b34ea81448af6371bdff756ba3a2c5095bd6",
+      "source_gram": [
+        [
+          1.0000001192092896,
+          0.7234895825386047
+        ],
+        [
+          0.7234895825386047,
+          1.0000001192092896
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0,
+          0.7234896421432495
+        ],
+        [
+          0.7234896421432495,
+          1.000000238418579
+        ]
+      ],
+      "gram_max_abs_error": 1.1920928955078125e-07,
+      "source_control_cross_gram": [
+        [
+          -0.015590064227581024,
+          0.004092264920473099
+        ],
+        [
+          -0.009756607934832573,
+          -0.012133085168898106
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 5.960464477539062e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "17": {
+      "source_basis_sha256": "02061eb77a4e3dc67b2184422e6d677bbf2a3b0579951efef1887752c21c9eb6",
+      "control_basis_sha256": "75271d9feed5ac18edb4383a64cf2a90b82ed22d4d5485743f7e7cf750f71ff1",
+      "source_gram": [
+        [
+          1.0,
+          0.7255279421806335
+        ],
+        [
+          0.7255279421806335,
+          1.0
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0,
+          0.7255280017852783
+        ],
+        [
+          0.7255280017852783,
+          1.0000001192092896
+        ]
+      ],
+      "gram_max_abs_error": 1.1920928955078125e-07,
+      "source_control_cross_gram": [
+        [
+          0.04179864004254341,
+          0.026754004880785942
+        ],
+        [
+          0.009595549665391445,
+          -0.006196476984769106
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 8.344650268554688e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "18": {
+      "source_basis_sha256": "55d71ff2a2b1d6ef3cca9f49d7fe08fd4d8c537074f6d9ebe08f5b1644df4412",
+      "control_basis_sha256": "1c6d8b61a4313ce454ea5b69a8c2904d217bdbd38d6e6feaaa009d5a605ef101",
+      "source_gram": [
+        [
+          0.9999999403953552,
+          0.7927377223968506
+        ],
+        [
+          0.7927377223968506,
+          0.9999998807907104
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0,
+          0.7927378416061401
+        ],
+        [
+          0.7927378416061401,
+          0.9999997615814209
+        ]
+      ],
+      "gram_max_abs_error": 1.1920928955078125e-07,
+      "source_control_cross_gram": [
+        [
+          0.026211071759462357,
+          0.029299966990947723
+        ],
+        [
+          0.007599526084959507,
+          0.022131916135549545
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 4.76837158203125e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "19": {
+      "source_basis_sha256": "48a45d414e5e8f82eceacbf9986a3d69d394e403a1b81372728f4c99790dd0d2",
+      "control_basis_sha256": "5a8b156b2c893ad2f294b9ed030f41586432cdb5cd44f1c384a1d580c6d7558e",
+      "source_gram": [
+        [
+          0.9999998807907104,
+          0.7281129360198975
+        ],
+        [
+          0.7281129360198975,
+          0.9999999403953552
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0,
+          0.7281131744384766
+        ],
+        [
+          0.7281131744384766,
+          0.9999999403953552
+        ]
+      ],
+      "gram_max_abs_error": 2.384185791015625e-07,
+      "source_control_cross_gram": [
+        [
+          -0.008775098249316216,
+          0.0005928967148065567
+        ],
+        [
+          -0.016515236347913742,
+          -0.0024620220065116882
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 1.430511474609375e-06,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "20": {
+      "source_basis_sha256": "04c2027f300bb4b23e6eb7a181ee58df6d6e2bcd12d2befde7471874b0efa0ef",
+      "control_basis_sha256": "632fe7bd1267d267f155a651e7f0493bf985167a58f12ec7ee980c7d66fbe163",
+      "source_gram": [
+        [
+          0.9999999403953552,
+          0.7359511256217957
+        ],
+        [
+          0.7359511256217957,
+          0.9999998807907104
+        ]
+      ],
+      "control_gram": [
+        [
+          1.000000238418579,
+          0.7359513640403748
+        ],
+        [
+          0.7359513640403748,
+          0.9999998807907104
+        ]
+      ],
+      "gram_max_abs_error": 2.980232238769531e-07,
+      "source_control_cross_gram": [
+        [
+          -0.03798640891909599,
+          -0.0355689562857151
+        ],
+        [
+          -0.031087283045053482,
+          -0.02856537327170372
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 7.031485438346863e-07,
+      "source_rank": 2,
+      "control_rank": 2
+    },
+    "21": {
+      "source_basis_sha256": "6929fba10589fbc2e6a9b04957732ea57e356703757cc640956bbed627524dfe",
+      "control_basis_sha256": "b8c69a81b45a825c05fc9db7aad99f29a78a9173bcbefeb0cd093d5d8be22efc",
+      "source_gram": [
+        [
+          1.000000238418579,
+          0.6569814085960388
+        ],
+        [
+          0.6569814085960388,
+          1.0
+        ]
+      ],
+      "control_gram": [
+        [
+          1.0000004768371582,
+          0.6569817066192627
+        ],
+        [
+          0.6569817066192627,
+          1.0000001192092896
+        ]
+      ],
+      "gram_max_abs_error": 2.980232238769531e-07,
+      "source_control_cross_gram": [
+        [
+          0.01806219294667244,
+          0.011337160132825375
+        ],
+        [
+          0.01101900078356266,
+          0.011105850338935852
+        ]
+      ],
+      "control_dual_identity_max_abs_error": 1.3113021850585938e-06,
+      "source_rank": 2,
+      "control_rank": 2
+    }
+  },
+  "computed_operator_patch_difference_on_fixed_hidden": {
+    "13": {
+      "source_patch_norm_median": 0.06338376551866531,
+      "control_patch_norm_median": 0.11071299016475677,
+      "patch_difference_norm_median": 0.47531500458717346,
+      "patch_difference_max_abs": 0.630237340927124
+    },
+    "14": {
+      "source_patch_norm_median": 0.0,
+      "control_patch_norm_median": 0.0,
+      "patch_difference_norm_median": 0.7499595284461975,
+      "patch_difference_max_abs": 0.25540292263031006
+    },
+    "15": {
+      "source_patch_norm_median": 0.05349486693739891,
+      "control_patch_norm_median": 0.46727001667022705,
+      "patch_difference_norm_median": 0.848132312297821,
+      "patch_difference_max_abs": 0.3200451731681824
+    },
+    "16": {
+      "source_patch_norm_median": 0.4424479305744171,
+      "control_patch_norm_median": 0.0,
+      "patch_difference_norm_median": 0.6714136600494385,
+      "patch_difference_max_abs": 0.29147544503211975
+    },
+    "17": {
+      "source_patch_norm_median": 0.42150455713272095,
+      "control_patch_norm_median": 0.03525767847895622,
+      "patch_difference_norm_median": 0.7838481664657593,
+      "patch_difference_max_abs": 0.27456510066986084
+    },
+    "18": {
+      "source_patch_norm_median": 0.26083046197891235,
+      "control_patch_norm_median": 0.0,
+      "patch_difference_norm_median": 1.187604308128357,
+      "patch_difference_max_abs": 0.23138707876205444
+    },
+    "19": {
+      "source_patch_norm_median": 0.0,
+      "control_patch_norm_median": 0.13507798314094543,
+      "patch_difference_norm_median": 0.6539586186408997,
+      "patch_difference_max_abs": 0.1976022720336914
+    },
+    "20": {
+      "source_patch_norm_median": 0.2597927749156952,
+      "control_patch_norm_median": 0.21904504299163818,
+      "patch_difference_norm_median": 0.5256529450416565,
+      "patch_difference_max_abs": 0.14741507172584534
+    },
+    "21": {
+      "source_patch_norm_median": 0.24794737994670868,
+      "control_patch_norm_median": 0.0,
+      "patch_difference_norm_median": 0.9149641394615173,
+      "patch_difference_max_abs": 0.13235557079315186
+    }
+  },
+  "realized_prefill_hook_patch_difference_on_fixed_hidden": {
+    "source_patch_norm_median": 1.852976679801941,
+    "control_patch_norm_median": 1.9206639528274536,
+    "patch_difference_norm_median": 2.69307804107666,
+    "patch_difference_max_abs": 0.6695077419281006,
+    "source_hook_calls": {
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "17": 1,
+      "18": 1,
+      "19": 1,
+      "20": 1,
+      "21": 1
+    },
+    "control_hook_calls": {
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "17": 1,
+      "18": 1,
+      "19": 1,
+      "20": 1,
+      "21": 1
+    },
+    "zero_hook_calls": {
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "17": 1,
+      "18": 1,
+      "19": 1,
+      "20": 1,
+      "21": 1
+    }
+  },
+  "mask": {
+    "application_mask": "all_attended_prefill_positions",
+    "rows": 2,
+    "selected_positions_per_row": [
+      3,
+      4
+    ],
+    "all_rows_select_one": false,
+    "selected_final_positions": true,
+    "selected_padding_positions": 0
+  },
+  "judge_contract": {
+    "source_behavior_target": "more bluntness and candor: an honest assessment, disagreeing when warranted, questioning a premise that does not hold, and correcting the user's error even when unwelcome",
+    "control_behavior_target": "more bluntness and candor: an honest assessment, disagreeing when warranted, questioning a premise that does not hold, and correcting the user's error even when unwelcome",
+    "source_side": "+C",
+    "source_cache_key": "3e80a606e442dbb82912b5150e20dfed075cd5d4d3e10b383120bd7314ce5137",
+    "historical_plus_c_cache_key": "d035c72d1be863f4baf1e98702f077e59fccb65681c75151f9031f431a3cc6a3",
+    "accepted_axis_direction": -1,
+    "renderer_candidate_accepted": true
+  },
+  "notes": [
+    "The source and control share each layer Gram matrix, but this does not imply equal intervention patches.",
+    "Computed and prefill-hook patch differences use deterministic hidden inputs, not model-generation evidence.",
+    "A future generation manifest must save per-row realized source/control prefill patch diagnostics."
+  ]
+}

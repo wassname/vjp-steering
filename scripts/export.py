@@ -19,7 +19,7 @@ from judge import (
     experiment_rows,
     valid,
 )
-from vjp_steering.experiment import DEV, FULL, data_dir, experiment_dir
+from vjp_steering.experiment import DEV, FULL, behavior_axis_direction, data_dir, experiment_dir
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,9 +69,13 @@ def cache_records(keys: set[str]) -> dict[str, dict]:
     return records
 
 
-def signed_axis_effect(side: str, cells: list[tuple[float, float, float]]) -> float:
+def signed_axis_effect(axis: str, cells: list[tuple[float, float, float]]) -> float:
     effect = mean(cell[0] for cell in cells)
-    return -effect if side == "-C" else effect
+    if axis in ("-C", "candidness"):
+        return -effect
+    if axis in ("+C", "sycophancy"):
+        return effect
+    raise ValueError(f"unknown behavior axis: {axis}")
 
 
 def score_cell(record: dict) -> tuple[float, float, float]:
@@ -280,7 +284,7 @@ def export_experiment(
                     for pass_index in range(profile_.passes)
                 ]
                 cells = [score_cell(record) for record in records]
-                effect = signed_axis_effect(side, cells)
+                effect = signed_axis_effect(row.get("behavior_target") or side, cells)
                 order_reversal, score_spread = judge_diagnostics(cells)
                 cell_scenarios.append({
                     "source_run": experiment_id,
@@ -354,8 +358,9 @@ def export_experiment(
         writer.writeheader()
         writer.writerows(scenario_rows)
     selected = {"experiment_id": experiment_id, "profile": profile_name, "sides": {}}
+    behavior_target = manifest.get("candidate", {}).get("behavior_target")
     for side in ("+C", "-C"):
-        direction = 1 if side == "+C" else -1
+        direction = behavior_axis_direction(side, behavior_target)
         side_rows = sorted(
             (
                 row for row in result_rows
@@ -390,6 +395,9 @@ def self_test() -> None:
     assert score_cell({"order": "BA", "judgment": judgment}) == (3.0, -2.0, 0.5)
     assert signed_axis_effect("+C", [(3.0, 0.0, 0.0)]) == 3.0
     assert signed_axis_effect("-C", [(3.0, 0.0, 0.0)]) == -3.0
+    assert signed_axis_effect("candidness", [(3.0, 0.0, 0.0)]) == -3.0
+    assert behavior_axis_direction("+C", "candidness") == -1
+    assert behavior_axis_direction("+C", "candidness") * -0.1 > 0
     assert judge_diagnostics([(-2, 0, 0), (-1, 0, 0), (1, 0, 0), (3, 0, 0)]) == (True, 5)
     print("EXPORT_SELF_TEST_PASS")
 

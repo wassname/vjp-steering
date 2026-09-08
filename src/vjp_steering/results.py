@@ -12,7 +12,14 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 
-from vjp_steering.experiment import DEV, FULL, data_dir, results_dir
+from vjp_steering.experiment import (
+    DEV,
+    FULL,
+    behavior_axis_direction,
+    data_dir,
+    experiment_dir,
+    results_dir,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -102,6 +109,18 @@ def _rows(
     return rows
 
 
+def _behavior_target(row: dict) -> str | None:
+    manifest_file = experiment_dir(row["source_run"]) / "manifest.json"
+    if not manifest_file.exists():
+        return None
+    candidate = json.loads(manifest_file.read_text()).get("candidate")
+    if candidate is None:
+        return None
+    if candidate["source_side"] != row["side"]:
+        raise ValueError("candidate result source side differs from its manifest")
+    return candidate["behavior_target"]
+
+
 def _means(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
@@ -120,13 +139,18 @@ def _means(
                 seeds = {row["seed"] for row in rows_at_dose}
                 complete = seeds == method_seeds[method]
                 if complete or (include_rejected and seeds):
+                    behavior_targets = {_behavior_target(row) for row in rows_at_dose}
+                    if len(behavior_targets) != 1:
+                        raise ValueError("a rendered point has mixed behavior targets")
+                    behavior_target = behavior_targets.pop()
                     effect = mean(row["effect"] for row in rows_at_dose)
                     admissible = complete and all(row["admissible"] for row in rows_at_dose)
                     points.append({"method": method, "C": C, "side": side,
+                                   "behavior_target": behavior_target,
                                    "effect": effect,
                                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
                                    "admissible": admissible,
-                                   "accepted": admissible and (effect > 0 if side == "+C" else effect < 0),
+                                   "accepted": admissible and behavior_axis_direction(side, behavior_target) * effect > 0,
                                    "complete": complete})
     return points
 
