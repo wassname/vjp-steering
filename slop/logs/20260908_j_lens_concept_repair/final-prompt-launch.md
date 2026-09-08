@@ -15,3 +15,5 @@ Frozen generation contract:
 - judge: unchanged rubric, AB and BA mapped once to arm identity
 
 The run cannot authorize all-100 generation or a public plot update. It first requires complete raw outputs, an independent raw-response audit, unchanged-rubric AB/BA judgment, and an independent endpoint review.
+
+Pueue task `782` was added to the dedicated one-slot `modal` group. The shared local `default` group remains paused and is unrelated. The attached completion follower is `pqf 782 100000`.
