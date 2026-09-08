@@ -242,6 +242,36 @@ def j_lens_concept_repair_dev(
 
 
 @app.local_entrypoint()
+def j_lens_concept_final_prompt_dev(
+    experiment_id: str = "j-lens-concept-dev-repair-v3-final-prompt-c025",
+    coefficient: float = 0.25,
+):
+    if coefficient != 0.25:
+        raise ValueError("final-prompt repair is fixed at C=.25")
+    argv = [
+        "--dev",
+        "--experiment-id", experiment_id,
+        "--model", MODEL,
+        "--dtype", "bfloat16",
+        "--n-pairs", "200",
+        "--batch-size", "32",
+        "--extract-batch-size", "8",
+        "--max-length", "384",
+        "--max-new-tokens", "512",
+        "--coefficients-minus", str(coefficient),
+        "--concept-sides=-C",
+        "--concept-application-mask", "final_prompt",
+        "--concept-layers", "18,19,20,21,22,23,24",
+        "--reuse-extraction-from", "j-lens-concept-dev-v1",
+        "--random-control-seed", "20260908",
+        "--random-control-coefficient", str(coefficient),
+    ]
+    manifest = json.loads(run_j_lens_concept_repair.remote("j_lens_concept", argv))
+    output = pull_experiment(experiment_id)
+    print(f"J_LENS_FINAL_PROMPT_REPAIR_GPU_COMPLETE id={manifest['experiment_id']} output={output}")
+
+
+@app.local_entrypoint()
 def persona_prompt_control(
     experiment_id: str = "j-lens-persona-prompt-control-exact-flaw-dev-v3",
 ):

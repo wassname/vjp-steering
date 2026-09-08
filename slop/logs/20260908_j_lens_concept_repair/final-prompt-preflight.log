@@ -1,0 +1,12 @@
+$ uv run python -m py_compile src/vjp_steering/j_lens_concept.py scripts/experiment.py scripts/walk.py scripts/run_modal.py scripts/scratch/j_lens_final_prompt_preflight.py
+$ uv run python scripts/scratch/j_lens_final_prompt_preflight.py
+FINAL_PROMPT_PREFLIGHT_PASS rows=2 selected_per_row=1 padding=0 c0_identity=true decode_patch=false masks_identical=true
+
+$ uv run python scripts/experiment.py j_lens_concept --help
+--concept-application-mask {user_turn,final_prompt}
+
+$ uv run modal run scripts/run_modal.py::j_lens_concept_final_prompt_dev --help
+--coefficient FLOAT
+
+$ uv run python '<parse -C-only final-prompt arguments>'
+FINAL_PROMPT_RUNNER_ARGUMENTS_PASS active_sides=-C C=0.25 mask=final_prompt

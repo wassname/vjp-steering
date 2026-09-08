@@ -30,7 +30,7 @@ from vjp_steering.j_lens_concept import (
     PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_FULL_COMPONENT_PAIR_VERSION,
     PERSONA_FULL_RESIDUAL_VERSION, PERSONA_VERSION, component_spec, concept_spec,
     concept_prefill_mask, extract_concept, extract_persona_components, extract_persona_contrast,
-    implementation_hash, persona_component_spec, prefill_diagnostics, select_concept_layers,
+    implementation_hash, mask_metadata, persona_component_spec, prefill_diagnostics, select_concept_layers,
     tokenizer_content_hash, validate_component_pair,
 )
 from vjp_steering.vjp import _resolve_j_lens_file
@@ -98,6 +98,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
+    parser.add_argument("--concept-application-mask", choices=("user_turn", "final_prompt"), default="user_turn")
+    parser.add_argument("--concept-sides", default="+C,-C")
     parser.add_argument("--random-control-seed", type=int)
     parser.add_argument("--random-control-coefficient", type=float)
     parser.add_argument(
@@ -119,6 +121,11 @@ def parse_args() -> argparse.Namespace:
         args.method != "j_lens_concept" or not args.dev or args.random_control_coefficient <= 0
     ):
         raise ValueError("random control is DEV-only for j_lens_concept with a positive coefficient")
+    if args.concept_application_mask == "final_prompt" and args.method != "j_lens_concept":
+        raise ValueError("final_prompt application is only defined for j_lens_concept")
+    args.concept_sides = tuple(args.concept_sides.split(","))
+    if not args.concept_sides or len(set(args.concept_sides)) != len(args.concept_sides) or set(args.concept_sides) - {"+C", "-C"}:
+        raise ValueError("concept sides must be a nonempty unique subset of +C,-C")
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     return args
 
@@ -656,8 +663,12 @@ def extend_generation(
     if vector is None:
         answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
     elif args.method in CONCEPT_METHODS:
-        answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens,
-                                prefill_vector=vector, coefficient=applied_coefficient(args.method, side, coefficient))
+        answers = walk.generate(
+            model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens,
+            prefill_vector=vector,
+            coefficient=applied_coefficient(args.method, side, coefficient),
+            concept_application_mask=args.concept_application_mask,
+        )
     else:
         with vector(model, C=applied_coefficient(args.method, side, coefficient)):
             answers = walk.generate(model, tokenizer, missing_prompts, args.batch_size, args.max_new_tokens)
@@ -834,8 +845,11 @@ def concept_application_layers(args: argparse.Namespace, available_layers) -> tu
 
 
 def concept_grid(args):
-    grid = {side: [float(c) for c in text.split(",") if c] if text else list(J_LENS_CONCEPT_GRID)
-            for side, text in (("+C", args.coefficients_plus), ("-C", args.coefficients_minus))}
+    grid = {
+        side: ([float(c) for c in text.split(",") if c] if text else list(J_LENS_CONCEPT_GRID))
+        if side in args.concept_sides else []
+        for side, text in (("+C", args.coefficients_plus), ("-C", args.coefficients_minus))
+    }
     if any(not math.isfinite(c) or c <= 0 for values in grid.values() for c in values):
         raise ValueError("concept grid requires finite positive magnitudes")
     return grid
@@ -964,13 +978,26 @@ def gpu_stage(args: argparse.Namespace) -> None:
     generated_cells = 0
     encoded_prompts = None
     encoded_prompt_patch_mask = None
+    execution_mask = None
     if args.method in CONCEPT_METHODS:
         encoded_prompts = tokenizer(
             prompts, return_tensors="pt", padding=True, add_special_tokens=False,
         ).to(args.device)
         encoded_prompt_patch_mask = concept_prefill_mask(
             tokenizer, encoded_prompts.input_ids, encoded_prompts.attention_mask, vectors["+C"],
+            application_mask=args.concept_application_mask,
         )
+        execution_mask = mask_metadata(
+            encoded_prompt_patch_mask, encoded_prompts.attention_mask, args.concept_application_mask,
+        )
+        manifest["execution"] = {
+            "implementation_sha256": implementation_hash(),
+            "concept_application_mask": execution_mask,
+            "reused_extraction_metadata": {
+                "implementation_sha256": extraction["implementation_sha256"],
+                "application_mask": extraction["application_mask"],
+            },
+        }
     for side in ("+C", "-C"):
         for coefficient in coefficients[side]:
             records = extend_generation(
@@ -1003,6 +1030,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                     applied_coefficient(args.method, side, coefficient),
                     patch_mask=encoded_prompt_patch_mask,
                 )
+                cell["execution_mask"] = execution_mask
             manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = cell
             atomic_json(manifest_path(args.experiment_id), manifest)
             generated_cells += 1
@@ -1012,6 +1040,8 @@ def gpu_stage(args: argparse.Namespace) -> None:
         )
         assert encoded_prompts is not None and encoded_prompt_patch_mask is not None
         for side, name in (("+C", "random_plus"), ("-C", "random_minus")):
+            if not coefficients[side]:
+                continue
             random_path = root / "controls" / f"{name}.jsonl"
             random_records = extend_generation(
                 random_path,
@@ -1049,6 +1079,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                     applied_coefficient(args.method, side, args.random_control_coefficient),
                     patch_mask=encoded_prompt_patch_mask,
                 ),
+                "execution_mask": execution_mask,
             }
     manifest["profiles"][profile_name] = {
         "status": "DEV" if args.dev else "FORMATIVE",

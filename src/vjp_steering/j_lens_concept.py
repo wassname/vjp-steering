@@ -150,11 +150,43 @@ def user_turn_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
     return mask
 
 
+def final_prompt_mask(attention_mask: Int[torch.Tensor, "b s"]) -> Int[torch.Tensor, "b s"]:
+    final = final_positions(attention_mask)
+    mask = torch.zeros_like(attention_mask, dtype=torch.bool)
+    mask[torch.arange(mask.shape[0], device=mask.device), final] = True
+    if not torch.equal(mask.sum(dim=1), torch.ones_like(final)):
+        raise ValueError("final-prompt mask must select exactly one position per row")
+    if (mask & ~attention_mask.bool()).any():
+        raise ValueError("final-prompt mask selected padding")
+    return mask
+
+
+def mask_metadata(mask: Int[torch.Tensor, "b s"], attention_mask: Int[torch.Tensor, "b s"],
+                  application_mask: str) -> dict:
+    final = final_positions(attention_mask)
+    selected = mask.sum(dim=1)
+    return {
+        "application_mask": application_mask,
+        "rows": mask.shape[0],
+        "selected_positions_per_row": selected.tolist(),
+        "all_rows_select_one": bool(torch.equal(selected, torch.ones_like(final))),
+        "selected_final_positions": bool(mask[torch.arange(mask.shape[0], device=mask.device), final].all()),
+        "selected_padding_positions": int((mask & ~attention_mask.bool()).sum()),
+    }
+
+
 def concept_prefill_mask(tokenizer, input_ids: Int[torch.Tensor, "b s"],
-                         attention_mask: Int[torch.Tensor, "b s"], vector: Vector) -> Int[torch.Tensor, "b s"]:
+                         attention_mask: Int[torch.Tensor, "b s"], vector: Vector,
+                         application_mask: str = "user_turn") -> Int[torch.Tensor, "b s"]:
     if vector.cfg.method == COMPONENT_PAIR_METHOD:
+        if application_mask != "user_turn":
+            raise ValueError("component pairs only support user_turn application")
         return attention_mask.bool()
-    return user_turn_mask(tokenizer, input_ids, attention_mask)
+    if application_mask == "user_turn":
+        return user_turn_mask(tokenizer, input_ids, attention_mask)
+    if application_mask == "final_prompt":
+        return final_prompt_mask(attention_mask)
+    raise ValueError(f"unknown concept application mask: {application_mask}")
 
 
 # PI/OpenAI Codex: follows TransformerLens' paper-matching gradient-pursuit update.

@@ -459,7 +459,8 @@ def generation_inputs(
 
 @torch.inference_mode()
 def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_tokens: int,
-             *, prefill_vector=None, coefficient: float = 0.0) -> list[str]:
+             *, prefill_vector=None, coefficient: float = 0.0,
+             concept_application_mask: str = "user_turn") -> list[str]:
     answers = []
     tokenizer.padding_side = "left"
     for start in range(0, len(prompts), batch_size):
@@ -474,7 +475,10 @@ def generate(model, tokenizer, prompts: list[str], batch_size: int, max_new_toke
         context = nullcontext() if prefill_vector is None else concept_prefill(
             model,
             prefill_vector,
-            concept_prefill_mask(tokenizer, batch.input_ids, batch.attention_mask, prefill_vector),
+            concept_prefill_mask(
+                tokenizer, batch.input_ids, batch.attention_mask, prefill_vector,
+                application_mask=concept_application_mask,
+            ),
             coefficient,
         )
         with context as calls:
