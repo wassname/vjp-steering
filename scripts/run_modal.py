@@ -187,6 +187,57 @@ def pull_experiment(experiment_id: str) -> Path:
     return destination
 
 
+@app.function(
+    gpu=os.environ.get("JSTEER_GPU", "H100"),
+    volumes={"/cache": cache},
+    timeout=15 * 60,
+)
+def run_j_lens_concept_repair(method: str, argv: list[str]) -> str:
+    from huggingface_hub import snapshot_download
+
+    Path("/cache/outputs").mkdir(parents=True, exist_ok=True)
+    if not Path("/repo/outputs").exists():
+        os.symlink("/cache/outputs", "/repo/outputs")
+    model = argv[argv.index("--model") + 1]
+    snapshot_download(model)
+    try:
+        subprocess.run(
+            [sys.executable, "scripts/experiment.py", method, "--gpu-stage", *argv],
+            cwd="/repo",
+            check=True,
+        )
+    finally:
+        cache.commit()
+    experiment_id = argv[argv.index("--experiment-id") + 1]
+    return Path(f"/cache/outputs/experiments/{experiment_id}/manifest.json").read_text()
+
+
+@app.local_entrypoint()
+def j_lens_concept_repair_dev(
+    experiment_id: str = "j-lens-concept-dev-repair-v1",
+):
+    argv = [
+        "--dev",
+        "--experiment-id", experiment_id,
+        "--model", MODEL,
+        "--dtype", "bfloat16",
+        "--n-pairs", "200",
+        "--batch-size", "32",
+        "--extract-batch-size", "8",
+        "--max-length", "384",
+        "--max-new-tokens", "512",
+        "--coefficients-plus", "0.125",
+        "--coefficients-minus", "0.125",
+        "--concept-layers", "18,19,20,21,22,23,24",
+        "--reuse-extraction-from", "j-lens-concept-dev-v1",
+        "--random-control-seed", "20260908",
+        "--random-control-coefficient", "0.125",
+    ]
+    manifest = json.loads(run_j_lens_concept_repair.remote("j_lens_concept", argv))
+    output = pull_experiment(experiment_id)
+    print(f"J_LENS_CONCEPT_REPAIR_GPU_COMPLETE id={manifest['experiment_id']} output={output}")
+
+
 @app.local_entrypoint()
 def persona_prompt_control(
     experiment_id: str = "j-lens-persona-prompt-control-exact-flaw-dev-v3",

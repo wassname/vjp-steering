@@ -4,18 +4,34 @@
   "whole_block_cap_usd": "40.00",
   "known_modal_spend_usd": "0.21681039",
   "known_modal_spend_source": "two completed source-stage apps, ap-FAW0E4RXpgmbCm1yMZPYnL and ap-obvcLJSqNatyyblyseqPK5",
-  "external_review_spend_usd": null,
-  "external_review_accounting": "provider did not emit a dollar receipt; do not infer a cost from elapsed time or model price",
-  "maximum_cap_remaining_before_unbilled_external_costs_usd": "39.78318961",
-  "reserved_for_unstarted_dev_and_conditional_full_usd": "39.78318961",
+  "prior_external_review_reserve_usd": "3.00",
+  "prior_external_review_reserve_basis": "three completed non-Claude review requests at a conservative accounting bound of $1.00 each; provider emitted no dollar receipt, so this is retained as a reserve rather than claimed spend",
+  "prior_external_review_spend_usd": null,
+  "accounted_before_new_repair_usd": "3.21681039",
+  "maximum_remaining_before_new_repair_reservations_usd": "36.78318961",
+  "reservations_usd": {
+    "dev_modal_generation": "2.00",
+    "dev_judging": "4.00",
+    "conditional_full_endpoint": "18.00",
+    "unallocated_contingency": "12.78318961"
+  },
+  "dev_modal_reservation_basis": {
+    "max_container_timeout_seconds": 900,
+    "max_containers": 1,
+    "automatic_retries": 0,
+    "H100_900_seconds_at_3_95_per_hour_usd": "0.98750",
+    "startup_cpu_memory_storage_and_late_billing_allowance_usd": "1.01250"
+  },
+  "dev_judging_reservation_basis": "up to 60 existing-rubric DEV pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus), one AB pass",
+  "conditional_full_endpoint_reservation_basis": "one selected endpoint only, including its generation, existing-rubric full judging, raw-response audit, and rendering; it is not authorized by this reservation",
   "limits": {
     "synthetic_source_work": 0,
     "dev_plot_updates": 0,
     "full_endpoint_count": 1,
-    "full_endpoint_requires": "a task-responsive DEV endpoint with fresh matched baseline and random controls",
+    "full_endpoint_requires": "a task-responsive DEV endpoint with fresh matched baseline and random controls, then separate review",
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "job 777 is queued in paused pueue default; no v13 generation, judge, or new Modal bill has started",
+  "spend_status": "no v13 generation, judgment, or new Modal bill has started; removed queued job 777 before it could run because its generic 24-hour runner timeout did not enforce the $2 DEV Modal reservation",
   "both_research_goals": "OPEN"
 }

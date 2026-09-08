@@ -20,21 +20,7 @@ The saved J-lens DEV evidence did not have a matched random behavioral direction
 ## Intended command
 
 ```sh
-uv run modal run scripts/run_modal.py::experiment \
-  --experiment-id j-lens-concept-dev-repair-v1 \
-  --profile dev \
-  --method j_lens_concept \
-  --n-pairs 200 \
-  --batch-size 32 \
-  --extract-batch-size 8 \
-  --max-length 384 \
-  --max-new-tokens 512 \
-  --coefficients-plus 0.125 \
-  --coefficients-minus 0.125 \
-  --concept-layers 18,19,20,21,22,23,24 \
-  --reuse-extraction-from j-lens-concept-dev-v1 \
-  --random-control-seed 20260908 \
-  --random-control-coefficient 0.125
+uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev
 ```
 
-The queued job will have `retries=0`. After generation, review raw responses and the unchanged judge output. A zero exit code is only pipeline evidence. Do not generate the all-100 endpoint or edit the public plot before a reviewer finds a task-responsive J-lens arm that beats its same-sign random control without response damage.
+This dedicated entrypoint fixes the complete runner contract above. It limits the one H100 container to 900 seconds and has no retry loop. The $2.00 Modal reserve includes 900 H100 seconds plus startup, CPU, memory, storage, and late-billing allowance. After generation, review raw responses and the unchanged judge output. A zero exit code is only pipeline evidence. Do not generate the all-100 endpoint or edit the public plot before a reviewer finds a task-responsive J-lens arm that beats its same-sign random control without response damage.

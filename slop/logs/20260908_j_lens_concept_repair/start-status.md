@@ -16,4 +16,6 @@ The working tree contains many unrelated modified and untracked files from concu
 
 PI started a local `pueued` process only to inspect the queue. The shared `default` lane is paused. PI will not unpause another owner's GPU lane or bypass pueue.
 
-Job `777` is queued in that lane with priority 1. It cannot start while paused. Its label, exact command, and decision rule are saved in the pueue database and [dev-repair-protocol.md](dev-repair-protocol.md). It has no retry loop. PI attached a `pqf 777` follower for completion notification.
+Job `777` was queued in that lane, then removed before it could start. Its generic Modal entrypoint had a 24-hour container timeout, which could not enforce the $2 DEV reservation. The follower exited with no task log because removal occurred before execution. This is queue administration, not a failed generation.
+
+The replacement uses `scripts/run_modal.py::j_lens_concept_repair_dev`. Its one H100 container has a 900-second Modal timeout, one container, and no retry loop. It passed local Modal entrypoint help and Python compilation. The replacement is not queued until this revised reserve is saved.

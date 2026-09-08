@@ -40,7 +40,11 @@ Observed options include:
 --concept-layers TEXT
 ```
 
-The real runner accepts the matched random-control arguments before any paid launch.
+The real runner accepts the matched random-control arguments before any paid launch. The generic entrypoint has a 24-hour container timeout, so it is not used for this budgeted DEV run.
+
+## Bounded entrypoint
+
+The dedicated `scripts/run_modal.py::j_lens_concept_repair_dev` entrypoint passed Modal help and Python compilation. Its remote function has one H100 container with `timeout=15 * 60`. It fixes the exact arguments in [dev-repair-protocol.md](dev-repair-protocol.md).
 
 ## New output identity
 

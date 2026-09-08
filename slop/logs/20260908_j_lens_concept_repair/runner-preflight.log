@@ -4,3 +4,9 @@ J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=e
 J_LENS_CONCEPT_RANDOM_CONTROL_SELF_TEST_PASS seeded=true norm_matched=true
 EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
 J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true
+
+$ uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev --help && uv run python -m py_compile scripts/run_modal.py
+Usage: modal run scripts/run_modal.py::j_lens_concept_repair_dev [OPTIONS]
+Options:
+  --experiment-id TEXT
+  -h, --help            Show this message and exit.
