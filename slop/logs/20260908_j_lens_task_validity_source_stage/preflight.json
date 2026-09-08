@@ -1,0 +1,19 @@
+{
+  "corpus_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e",
+  "model": "Qwen/Qwen3.5-4B",
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "snapshot": "/home/code/.cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "source_tokenizer_sha256": "0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4",
+  "generation_tokenizer_sha256": "a9fd60aa3bc1bf9c3b1718a2dbd490a80adf0d0612719f505d86ee9dc84f85eb",
+  "rendered_inputs": 384,
+  "unique_rendered_inputs": 336,
+  "duplicate_rendered_inputs": 48,
+  "input_id_sha256": "d55d0eea916696f71435dd1aca62af54046a69e7b4c161ff2b158eaa70472f17",
+  "protected_sha256": {
+    "results/plot.png": "2f775fe3598a7d902d329551cbe3ba9ad5698866425343c4aad0f3914e374f49",
+    "results/index.md": "6df314db07417047a1d21bc2d07d708fa28594982a0521ca2cab33218161a2ba",
+    "results/index.html": "7b2234f44351febbb362416ba9687c3a04df1f2ad55ea2614e0afe3553c3ad18",
+    "data/results.csv": "2802acd96b16a67b05c284133d711257068f8dec937b1c949dbf59c8ca0a6c20",
+    "scripts/judge.py": "e4da183dc38ccf65034ebfe7411968fd53c7ca17d398d9a8a81cc1c547545ba6"
+  }
+}
