@@ -1,0 +1,9 @@
+$ .venv/bin/python '<check v3 final-prompt manifest and all generated records>'
+FINAL_PROMPT_GENERATION_CHECK_PASS rows=15 arms=bare,j_minus,random_minus scenario_order=matched empty=0
+execution_hash 448d8e69ca7003481e3d585bd7ea37189d0de9e5cbf3d769deba345b77639746
+execution_mask {'application_mask': 'final_prompt', 'rows': 15, 'selected_positions_per_row': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 'all_rows_select_one': True, 'selected_final_positions': True, 'selected_padding_positions': 0}
+j_minus same_as_bare 10 unique 15
+random_minus same_as_bare 10 unique 15
+j_minus_same_as_random_minus 11
+j_final_kl 0.0035201169084757566
+random_final_kl 0.0011789860436692834
