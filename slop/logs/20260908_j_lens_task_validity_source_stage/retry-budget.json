@@ -1,0 +1,36 @@
+{
+  "author": "PI/OpenAI Codex",
+  "purpose": "one explicit no-retry repair of source-stage job 704; source-only, no benchmark release or judging",
+  "global_cap_usd": "40.00",
+  "prior_unreserved_usd": "5.22509672744",
+  "source_stage_allocation_usd": "2.00000000",
+  "job_704": {
+    "modal_app": "ap-FAW0E4RXpgmbCm1yMZPYnL",
+    "billing_report": "job704-billing-report.log",
+    "metered_usd": {
+      "H100": "0.02194490",
+      "Memory": "0.00003494",
+      "CPU": "0.00029317",
+      "total": "0.02227301"
+    },
+    "result": "failed before source generation"
+  },
+  "retry_reservation_usd": "1.97772699",
+  "unreserved_after_original_allocation_usd": "3.22509672744",
+  "global_cap_check": {
+    "retry_reservation_usd": "1.97772699",
+    "fits_40_usd_cap": true,
+    "fits_retained_source_stage_allocation": true
+  },
+  "retry_limits": {
+    "H100_timeout_seconds": 900,
+    "CPU_mounted_preflight_timeout_seconds": 60,
+    "max_containers": 1,
+    "automatic_retries": 0,
+    "judging_calls": 0,
+    "benchmark_generations": 0
+  },
+  "release_condition": "Keep the remainder reserved until the retry billing receipt, stopped-app status, and source-gate review are saved.",
+  "metered_not_final_invoice": true,
+  "both_research_goals": "OPEN"
+}

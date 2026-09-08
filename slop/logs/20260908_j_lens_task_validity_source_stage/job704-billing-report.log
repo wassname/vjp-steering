@@ -1,0 +1,26 @@
+[
+  {
+    "object_id": "ap-FAW0E4RXpgmbCm1yMZPYnL",
+    "description": "jsteer-task-validity-source-stage",
+    "environment": "main",
+    "interval_start": "2026-09-08T02:00:00",
+    "resource": "H100",
+    "cost": "0.02194490"
+  },
+  {
+    "object_id": "ap-FAW0E4RXpgmbCm1yMZPYnL",
+    "description": "jsteer-task-validity-source-stage",
+    "environment": "main",
+    "interval_start": "2026-09-08T02:00:00",
+    "resource": "Memory",
+    "cost": "0.00003494"
+  },
+  {
+    "object_id": "ap-FAW0E4RXpgmbCm1yMZPYnL",
+    "description": "jsteer-task-validity-source-stage",
+    "environment": "main",
+    "interval_start": "2026-09-08T02:00:00",
+    "resource": "CPU",
+    "cost": "0.00029317"
+  }
+]

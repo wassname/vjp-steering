@@ -296,6 +296,18 @@ def self_test():
     print("TASK_VALIDITY_RUNNER_FIXTURE_PASS", json.dumps({"generated_tokens": len(clean["generated_ids"]), "layer17_decode_hook_calls": clean["measurement"].get("decode_calls", 0), "hook_cleanup": True, "prefill_only": True, "semantic_mapping": True}), flush=True)
 
 
+def mounted_preflight(output):
+    rows = load_rows()
+    preflight_data = json.loads((ROOT / "preflight.json").read_text())
+    assert preflight_data["corpus_sha256"] == CORPUS_SHA and preflight_data["source_tokenizer_sha256"] == TOKENIZER_SHA
+    result = {"corpus_sha256": sha(CORPUS), "freeze_sha256": sha(FREEZE), "preflight_sha256": sha(ROOT / "preflight.json"),
+              "runner_sha256": sha(__file__), "rows": len(rows), "model": MODEL, "revision": REVISION,
+              "source_tokenizer_sha256": TOKENIZER_SHA}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(result, indent=2) + "\n")
+    print("TASK_VALIDITY_MOUNTED_PREFLIGHT_PASS", json.dumps(result), flush=True)
+
+
 def preflight():
     from huggingface_hub import snapshot_download
     from transformers import AutoTokenizer
@@ -341,7 +353,7 @@ def run(args):
     data = {"schema": "task_validity_source_stage_v1", "source_revision": args.source_revision, "implementation_sha256": sha(__file__),
         "corpus_sha256": CORPUS_SHA, "model": MODEL, "model_revision": REVISION, "tokenizer_sha256": TOKENIZER_SHA,
         "lens_sha256": LENS_SHA, "settings": {"layer": LAYER, "k": K, "batch": 1, "max_new_tokens": MAX_NEW_TOKENS, "one_shot_final_prefill": True, "retries": 0},
-        "protected_sha256": {str(path): sha(path) for path in PROTECTED}, "clean": [], "interventions": {}, "benchmark_released": False}
+        "mounted_input_preflight": json.loads(args.mounted_input_preflight.read_text()), "clean": [], "interventions": {}, "benchmark_released": False}
     for index, row in enumerate(rows):
         record = generate(model, tokenizer, row)
         data["clean"].append(record)
@@ -397,14 +409,22 @@ if __name__ != "__main__":
     from run_modal import REPO, cache, j_lens_diagnostic_image, source_revision
     source_image = j_lens_diagnostic_image.add_local_file(str(CORPUS), "/repo/" + str(CORPUS)).add_local_file(str(FREEZE), "/repo/" + str(FREEZE)).add_local_file(str(ROOT / "preflight.json"), "/repo/" + str(ROOT / "preflight.json"))
     app = modal.App("jsteer-task-validity-source-stage", image=source_image)
+    @app.function(timeout=60, max_containers=1, retries=0)
+    def remote_mounted_preflight():
+        destination = Path("/tmp/mounted-preflight.json")
+        subprocess.run([sys.executable, "scripts/scratch/j_lens_task_validity_source_stage.py", "--mounted-preflight", "--output", str(destination)], cwd="/repo", check=True)
+        return json.loads(destination.read_text())
+
     @app.function(gpu="H100", volumes={"/cache": cache}, timeout=900, max_containers=1, retries=0)
     def remote(revision):
         destination = Path("/cache/outputs/audits/20260908_task_validity_source_stage/generation.json")
         if destination.exists():
             raise FileExistsError(destination)
         try:
-            subprocess.run([sys.executable, "scripts/scratch/j_lens_task_validity_source_stage.py", "--output", str(destination), "--source-revision", revision], cwd="/repo", check=True)
-            return destination.read_text()
+            mounted_preflight_path = destination.parent / "mounted-preflight.json"
+            subprocess.run([sys.executable, "scripts/scratch/j_lens_task_validity_source_stage.py", "--mounted-preflight", "--output", str(mounted_preflight_path)], cwd="/repo", check=True)
+            subprocess.run([sys.executable, "scripts/scratch/j_lens_task_validity_source_stage.py", "--output", str(destination), "--source-revision", revision, "--mounted-input-preflight", str(mounted_preflight_path)], cwd="/repo", check=True)
+            return {"generation": json.loads(destination.read_text()), "mounted_preflight": json.loads(mounted_preflight_path.read_text())}
         finally:
             cache.commit()
     @app.local_entrypoint()
@@ -412,19 +432,32 @@ if __name__ != "__main__":
         output = ROOT / "generation.json"
         assert not output.exists()
         output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(remote.remote(source_revision()))
+        mounted_preflight = remote_mounted_preflight.remote()
+        (ROOT / "mounted-preflight.json").write_text(json.dumps(mounted_preflight, indent=2) + "\n")
+        result = remote.remote(source_revision())
+        assert result["mounted_preflight"] == mounted_preflight
+        protected = {str(path): sha(path) for path in PROTECTED}
+        preflight_data = json.loads((ROOT / "preflight.json").read_text())
+        assert protected == preflight_data["protected_sha256"]
+        result["generation"]["host_protected_sha256"] = protected
+        result["generation"]["host_protected_paths_exact"] = True
+        output.write_text(json.dumps(result["generation"]) + "\n")
         print("TASK_VALIDITY_SOURCE_DOWNLOADED", output, flush=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--preflight", action="store_true")
+    parser.add_argument("--mounted-preflight", action="store_true")
     parser.add_argument("--output", type=Path, default=ROOT / "generation.json")
     parser.add_argument("--source-revision", default="unknown")
+    parser.add_argument("--mounted-input-preflight", type=Path)
     args = parser.parse_args()
     if args.self_test:
         self_test()
     elif args.preflight:
         preflight()
+    elif args.mounted_preflight:
+        mounted_preflight(args.output)
     else:
         run(args)
