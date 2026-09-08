@@ -14,4 +14,6 @@ PI/OpenAI Codex, 2026-09-08.
 
 The working tree contains many unrelated modified and untracked files from concurrent work. This repair will not stage, edit, remove, or infer provenance for them.
 
-PI started a local `pueued` process only to inspect the queue. The shared `default` lane is paused. PI will not unpause another owner's GPU lane or bypass pueue. No repair job is started until its owner resumes the lane.
+PI started a local `pueued` process only to inspect the queue. The shared `default` lane is paused. PI will not unpause another owner's GPU lane or bypass pueue.
+
+Job `777` is queued in that lane with priority 1. It cannot start while paused. Its label, exact command, and decision rule are saved in the pueue database and [dev-repair-protocol.md](dev-repair-protocol.md). It has no retry loop. PI attached a `pqf 777` follower for completion notification.
