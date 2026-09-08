@@ -36,7 +36,7 @@ The earlier rejection was valid for its old two-sided, source-label-aligned clai
 
 - The v8 experiment has no same-cohort random direction. Its audit states that the random comparison was not reached because the predeclared `+C` target was sycophancy and `-C` was weak.
 - The direct exact-flaw, persona-GP16, and full-residual results test different source constructions. Their failures reject neither this frozen v8 `+C` vector nor its raw corrections.
-- The candidate is selected after reading DEV evidence. Therefore a fresh DEV control test is exploratory selection, not independent confirmation. A later all-100 test is a broader preregistered endpoint with the DEV-15 rows included; only its remaining 85 rows are held out from this selection.
+- The candidate is selected after reading DEV evidence. Therefore a fresh DEV control test is exploratory selection, not independent confirmation. A later all-100 run would be fresh generation on the required full cohort, but it contains the selection-exposed DEV-15 and is not an independent all-100 check. Keep the public result as the full cohort result and report the remaining 85 non-DEV scenarios separately as a descriptive generalization readout.
 
 ## Decision: candidate admitted, not launch-ready
 
