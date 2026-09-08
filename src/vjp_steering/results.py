@@ -30,6 +30,12 @@ PLOT_NOTE = (
     "dose means in dose order. The additional figure shows measured dose means as small dots and smoothly connects "
     "bare, the intended-side Pareto-efficient means, and each selected/final endpoint."
 )
+SELECTED_FULL_NOTE = (
+    "J-lens empirical-candor is one selected all-100 run: its source +C is mapped to the candidness target, "
+    "so its negative +C common-axis value is the intended direction. Fifteen rows were selection-exposed; "
+    "the non-DEV85 result is descriptive. AB/BA signs reverse in 34/100 pairs, and the DEV random control was "
+    "not matched in realized perturbation strength."
+)
 METHODS = (
     "vjp_delta",
     "mean_diff",
@@ -61,7 +67,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "j_lens_swap": "J-lens coordinate swap",
-    "j_lens_concept_components": "J-lens target-ordered exchange (adaptation)",
+    "j_lens_concept_components": "J-lens empirical-candor",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
     "vjp_mlp_up_shared_eb": "shared-pair VJP",
@@ -835,6 +841,8 @@ def _display_table(table: list[list[str]]) -> list[list[str]]:
     for row in display:
         if row[0] == "random":
             row[0] = "*random*"
+        elif row[0] == SELECTED_FULL_METHOD:
+            row[0] = "J-lens empirical-candor (+C source)"
     return display
 
 
@@ -1121,6 +1129,7 @@ def main() -> None:
         (
             "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort.",
             "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+            *((SELECTED_FULL_NOTE,) if SELECTED_FULL_METHOD in methods else ()),
             PLOT_NOTE,
         ),
         extra_pareto_plot=True,
@@ -1163,7 +1172,9 @@ def main() -> None:
         figure_html,
         "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort. "
         "The random cone shows ten vectors until fewer than half have two coherent directions. "
-        "The table reports rejected evaluations. " + PLOT_NOTE,
+        "The table reports rejected evaluations. "
+        + (SELECTED_FULL_NOTE + " " if SELECTED_FULL_METHOD in methods else "")
+        + PLOT_NOTE,
     )
     if dev_section:
         markdown_text += dev_section[0]

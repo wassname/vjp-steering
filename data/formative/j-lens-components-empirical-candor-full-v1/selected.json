@@ -1,0 +1,17 @@
+{
+  "experiment_id": "j-lens-components-empirical-candor-full-v1",
+  "profile": "full",
+  "sides": {
+    "+C": {
+      "selected_C": 0.5,
+      "candidates_descending": [
+        0.5
+      ],
+      "effect": -0.5645,
+      "off_axis_perturbation": 0.2695
+    },
+    "-C": {
+      "status": "no_accepted_endpoint"
+    }
+  }
+}
