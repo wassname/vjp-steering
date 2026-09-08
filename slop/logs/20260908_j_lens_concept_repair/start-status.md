@@ -41,3 +41,7 @@ All 120 AB/BA DEV judgment cells are complete: 66 new calls and 54 content-keyed
 ## Scheduled queue check, 2026-09-08
 
 Job `777` is `Done: Success` in dedicated group `modal`. The local `default` group is still paused, but it did not block this Modal job and was not changed.
+
+## Endpoint decision, 2026-09-08
+
+The independent judgment audit returned STOP. The low-dose J-lens endpoint does not clearly beat its same-sign random control. [dev-review-decision.md](dev-review-decision.md) blocks all-100 generation and public plot changes. Both research goals remain open.
