@@ -1,0 +1,51 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-Hsh1tnVlNSpZSs4uuFCgFC
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function j_lens_prompt_span_activity_remote.
+├── 🔨 Created function j_lens_gap_clamp_remote.
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function run_j_lens_concept_repair.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+└── 🔨 Created function diagnose_j_lens_remote.
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 549.61it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 242.84it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   2%|▏         | 9/426 [00:00<00:04, 87.79it/s]
+[1ALoading weights:   5%|▌         | 23/426 [00:00<00:03, 117.59it/s]
+[1ALoading weights:  11%|█         | 45/426 [00:00<00:02, 157.57it/s]
+[1ALoading weights:  14%|█▍        | 61/426 [00:00<00:02, 140.71it/s]
+[1ALoading weights:  18%|█▊        | 76/426 [00:00<00:02, 132.51it/s]
+[1ALoading weights:  21%|██        | 90/426 [00:00<00:02, 124.51it/s]
+[1ALoading weights:  25%|██▍       | 105/426 [00:00<00:02, 130.31it/s]
+[1ALoading weights:  28%|██▊       | 120/426 [00:00<00:02, 135.94it/s]
+[1ALoading weights:  31%|███▏      | 134/426 [00:01<00:02, 132.33it/s]
+[1ALoading weights:  35%|███▍      | 148/426 [00:01<00:02, 130.24it/s]
+[1ALoading weights:  40%|████      | 171/426 [00:01<00:01, 151.36it/s]
+[1ALoading weights:  44%|████▍     | 187/426 [00:01<00:01, 150.39it/s]
+[1ALoading weights:  48%|████▊     | 203/426 [00:01<00:01, 135.04it/s]
+[1ALoading weights:  51%|█████     | 218/426 [00:01<00:01, 138.20it/s]
+[1ALoading weights:  55%|█████▌    | 235/426 [00:01<00:01, 141.41it/s]
+[1ALoading weights:  59%|█████▉    | 252/426 [00:01<00:01, 145.13it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 231.40it/s]
+2026-09-08 10:24:09.692 | INFO     | walk:generate:501 - generation 15/15
+2026-09-08 10:24:11.892 | INFO     | walk:generate:501 - generation 15/15
+2026-09-08 10:24:14.631 | INFO     | walk:generate:501 - generation 15/15
+2026-09-08 10:24:15.086 | INFO     | __main__:gpu_stage:1200 - GPU_STAGE_COMPLETE experiment=j-lens-components-empirical-candor-dev-v1 profile=dev cells=1
+✓ Finished downloading files to local!
+J_LENS_COMPONENT_EMPIRICAL_CANDOR_DEV_COMPLETE id=j-lens-components-empirical-candor-dev-v1 output=/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-components-empirical-candor-dev-v1
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-Hsh1tnVlNSpZSs4uuFCgFC
+
+[pq] task 796 SUCCESS in 78s -- why: task795 failed before generation because generic selection expected additive stacked tensors; resolve: run the identical frozen +C candidness DEV-15 contract only after component/additive layout and tensor-hash preflight pass

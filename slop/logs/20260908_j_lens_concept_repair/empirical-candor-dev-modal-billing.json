@@ -1,0 +1,50 @@
+[
+  {
+    "object_id": "ap-Hsh1tnVlNSpZSs4uuFCgFC",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "CPU",
+    "cost": "0.00047283"
+  },
+  {
+    "object_id": "ap-Hsh1tnVlNSpZSs4uuFCgFC",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "H100",
+    "cost": "0.07241668"
+  },
+  {
+    "object_id": "ap-Hsh1tnVlNSpZSs4uuFCgFC",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "Memory",
+    "cost": "0.00009460"
+  },
+  {
+    "object_id": "ap-eP3e05VeeCNztul5R3mkVZ",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "CPU",
+    "cost": "0.00022422"
+  },
+  {
+    "object_id": "ap-eP3e05VeeCNztul5R3mkVZ",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "H100",
+    "cost": "0.02194391"
+  },
+  {
+    "object_id": "ap-eP3e05VeeCNztul5R3mkVZ",
+    "description": "jsteer-pub",
+    "environment": "main",
+    "interval_start": "2026-09-08T10:00:00",
+    "resource": "Memory",
+    "cost": "0.00002196"
+  }
+]

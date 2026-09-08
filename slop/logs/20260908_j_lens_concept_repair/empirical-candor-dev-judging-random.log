@@ -1,0 +1,26 @@
+2026-09-08 18:30:45.407 | INFO     | __main__:experiment_rows:327 - experiment control id=j-lens-components-empirical-candor-dev-v1 profile=dev control=random_plus demo_sides=15
+2026-09-08 18:30:47.559 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-08 18:30:49.715 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-08 18:30:51.799 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-08 18:30:53.283 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-08 18:30:55.056 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-08 18:30:56.718 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-08 18:30:58.165 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-08 18:30:59.691 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-08 18:31:00.787 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-08 18:31:01.987 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-08 18:31:03.233 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-08 18:31:05.174 | INFO     | __main__:main:775 - CACHE_CHECK required=30 cached=23 missing=7 API_calls=7
+2026-09-08 18:31:12.788 | INFO     | __main__:run:733 - judge progress=7/7
+2026-09-08 18:31:15.025 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-08 18:31:16.768 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-08 18:31:18.807 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-08 18:31:21.166 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-08 18:31:23.073 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-08 18:31:24.689 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-08 18:31:26.290 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-08 18:31:27.815 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-08 18:31:28.948 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-08 18:31:29.979 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-08 18:31:31.083 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-08 18:31:32.600 | INFO     | __main__:main:788 - JUDGE_COMPLETE required=30 missing=0

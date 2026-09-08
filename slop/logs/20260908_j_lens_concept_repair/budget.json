@@ -2,32 +2,31 @@
   "author": "PI/OpenAI Codex",
   "purpose": "v13 J-lens repair from comparable DEV through a conditional all-100 endpoint",
   "whole_block_cap_usd": "40.00",
-  "known_modal_spend_usd": "0.38307072",
+  "known_modal_spend_usd": "0.47824492",
   "known_modal_spend_source": {
     "source_stage_apps": "0.21681039",
     "job_777": {"app": "ap-Q0l7Hrx5rsBq3RkPkJqBZ9", "total_usd": "0.06868381", "billing_report": "job777-billing-report.json"},
     "job_780": {"app": "ap-EPTMERmPF3o4RRWFWSpdds", "total_usd": "0.07090844", "billing_report": "job780-billing-report.json"},
     "job_782": {"app": "ap-htvaRSG5tbbztSZcx9Prl0", "total_usd": "0.02666808", "billing_report": "job782-billing-report.json"},
+    "task_795": {"app": "ap-eP3e05VeeCNztul5R3mkVZ", "total_usd": "0.02219009", "billing_report": "empirical-candor-dev-modal-billing.json", "generation": "failed_before_generation"},
+    "task_796": {"app": "ap-Hsh1tnVlNSpZSs4uuFCgFC", "total_usd": "0.07298411", "billing_report": "empirical-candor-dev-modal-billing.json", "generation": "success"},
     "metered_not_final_invoice": true
   },
-  "external_review_reserve_usd": "6.00",
-  "external_review_reserve_basis": "Six completed non-Claude review requests have no provider dollar receipt. Retain $1.00 for each instead of claiming unknown spend: three earlier requests plus the empirical-candor candidate, preflight, and retry reviews.",
-  "completed_dev_judging_cost_usd": "0.01799770",
-  "completed_dev_judging_cost_source": "judging-cost-reconciliation.json: saved provider usage records for 66 C=.125 calls, 40 C=.25 calls, and 11 final-prompt calls; not an invoice",
-  "known_modal_external_reserve_and_judging_usd": "6.40106842",
-  "maximum_remaining_before_reservations_usd": "33.59893158",
+  "external_review_reserve_usd": "7.00",
+  "external_review_reserve_basis": "Seven completed or required non-Claude review requests have no provider dollar receipt. Retain $1.00 for each: six prior requests plus the required empirical-candor endpoint review.",
+  "completed_dev_judging_cost_usd": "0.02379654",
+  "completed_dev_judging_cost_source": "judging-cost-reconciliation.json records $0.01799770 for earlier judged DEV work. empirical-candor-dev-judgment-summary.md records $0.00579884 for 37 new candidness AB/BA calls. These are provider usage records, not invoices.",
+  "known_modal_external_reserve_and_judging_usd": "7.50204146",
+  "maximum_remaining_before_reservations_usd": "32.49795854",
   "reservations_usd": {
     "conditional_full_endpoint": "18.00",
-    "task795_unknown_modal_cost": "0.50",
-    "empirical_candor_dev_corrected_retry_generation_and_judging": "3.00",
-    "unallocated_contingency": "12.09893158"
+    "unallocated_contingency": "14.49795854"
   },
   "reservation_basis": {
-    "external_reviews": "No reviewer provider emitted a dollar receipt. The $6.00 reserve remains unreleased until receipts exist or the $40 work block closes.",
+    "external_reviews": "No reviewer provider emitted a dollar receipt. The $7.00 reserve remains unreleased until receipts exist or the $40 work block closes.",
     "conditional_full_endpoint": "One selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. It is reserved, not authorized.",
-    "task795_unknown_modal_cost": "Task 795 failed after loading weights and before generation. No Modal dollar receipt is saved, so retain a conservative $0.50 instead of treating its cost as zero.",
-    "empirical_candor_dev_corrected_retry_generation_and_judging": "One explicit corrected retry, not an automatic retry: one H100 900-second DEV generation, unchanged candidness AB/BA judging, raw-response audit, and independent endpoint review. This $3.00 reservation is an upper bound, not claimed spend.",
-    "modal_reconciliation": "The C=.125, C=.25, and final-prompt Modal upper bounds were released after exact metered reports recorded actual costs."
+    "empirical_candor_dev": "The two Modal attempts cost $0.09517420 and new candidness AB/BA judging cost $0.00579884 from provider usage records. The required endpoint review remains inside the retained $7.00 unknown-cost external-review reserve, so it is not reserved twice.",
+    "modal_reconciliation": "All recorded Modal totals are resource-metered snapshots, not final invoices."
   },
   "limits": {
     "synthetic_source_work": 0,
@@ -37,6 +36,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "Task 795 is failed and retains a $0.50 unknown-cost reserve. One corrected empirical-candor DEV retry is explicitly authorized with a separate capped $3.00 generation-and-judging reserve. Its $18.00 conditional full reserve remains blocked. No other new paid work is authorized.",
+  "spend_status": "Task 795 is reconciled as a failed $0.02219009 Modal attempt. Task 796 completed generation for $0.07298411. Candidness AB/BA judging added $0.00579884 from 37 saved provider usage records. The $7.00 conservative external-review reserve remains held because provider receipts are unavailable. The $18.00 conditional full reserve remains blocked until independent DEV endpoint review. No other new paid work is authorized.",
   "both_research_goals": "OPEN"
 }
