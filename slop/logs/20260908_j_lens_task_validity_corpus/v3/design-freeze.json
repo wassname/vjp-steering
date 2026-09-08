@@ -1,0 +1,25 @@
+{
+  "author": "PI/OpenAI Codex",
+  "date": "2026-09-08",
+  "candidate": "v3/corpus.jsonl",
+  "candidate_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e",
+  "parent_v2_sha256": "9d99757d9a449bb821f3b61b4174f5239a5fa51b3249e1c2cbb130b95af88ea9",
+  "preserved_versions": {
+    "v1_sha256": "4d459ea1cd2efb6257e7a72088febcfec7c5354dba4c44abcfb1377a61a67ded",
+    "v2_sha256": "9d99757d9a449bb821f3b61b4174f5239a5fa51b3249e1c2cbb130b95af88ea9"
+  },
+  "artifacts_sha256": {
+    "build.py": "13adbc85ff5a427b915ceade99a9a057378846e4a5c94439c9e7cc5c169d1d7c",
+    "validate.py": "e50e328d195da85c91b350f6c2cbeee62f0aa10e63eb90a7761a47d24a90fd73",
+    "validation.json": "fa0a1f3a1838e38b69d1d680ea0d39c3d480e35a65073184ea4e857d30fad0f5",
+    "validation.log": "ded95f58333fc04b8cb5362a93c41fd74033fcfda8e6f0445470a95fe490adbb",
+    "spec.md": "358a2a73d49fe3f0999664946845d34255e8fa76118c99a61c8d69feb56d1a5d",
+    "test-proposal.md": "a90b349c6dc3d5c70831c32325012ebffb062eb37f5def6a1b161adf220d1ed6",
+    "review-pending.md": "b285c8554c1a5fce8872f9621c9dbf62cbfe940e47e41bf5aaa69ba982ebb60c"
+  },
+  "offline_checks": "v3/validation.log: TASK_VALIDITY_V3_CORPUS_PASS",
+  "review": "pending due to configured non-Claude reviewer usage limit",
+  "decision": "NO PAID WORK",
+  "unreserved_usd": "5.72509672744",
+  "both_research_goals": "OPEN"
+}

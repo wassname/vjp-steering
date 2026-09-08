@@ -1,0 +1,1479 @@
+{
+  "frozen_corpus_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e",
+  "parent_v2_sha256": "9d99757d9a449bb821f3b61b4174f5239a5fa51b3249e1c2cbb130b95af88ea9",
+  "rows": 384,
+  "answer_position_balance": [
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 7,
+        "A": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 7,
+        "A": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 7,
+        "B": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 7,
+        "B": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 7,
+        "A": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 7,
+        "A": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 7,
+        "B": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 7,
+        "B": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 5,
+        "A": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 5,
+        "A": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 5,
+        "B": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 5,
+        "B": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 6,
+        "A": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 6,
+        "B": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": false,
+      "policy_order": 0,
+      "counts": {
+        "B": 5,
+        "A": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": false,
+      "policy_order": 1,
+      "counts": {
+        "B": 5,
+        "A": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": true,
+      "policy_order": 0,
+      "counts": {
+        "A": 5,
+        "B": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": true,
+      "policy_order": 1,
+      "counts": {
+        "A": 5,
+        "B": 5
+      },
+      "balanced": true
+    }
+  ],
+  "policy_clause_order_balance": [
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "train",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "source_calibration",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 7,
+        "1": 7
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "allocation",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "notification",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "routing",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 6,
+        "1": 6
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": false,
+      "option_order": 0,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": false,
+      "option_order": 1,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": true,
+      "option_order": 0,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    },
+    {
+      "split": "withheld_source",
+      "consumer": "storage",
+      "valid": true,
+      "option_order": 1,
+      "counts": {
+        "0": 5,
+        "1": 5
+      },
+      "balanced": true
+    }
+  ],
+  "withheld_consumer_leaks": [],
+  "gate_controls": {
+    "semantic_oracle": {
+      "pass": true,
+      "min_semantic_accuracy": 1.0,
+      "semantic_policy_mirror_pass_rate": 1.0,
+      "semantic_option_policy_mirror_pass_rate": 1.0,
+      "groups": {
+        "split": {
+          "train": 1.0,
+          "source_calibration": 1.0,
+          "withheld_source": 1.0
+        },
+        "split_consumer": {
+          "('train', 'routing')": 1.0,
+          "('train', 'allocation')": 1.0,
+          "('source_calibration', 'routing')": 1.0,
+          "('source_calibration', 'allocation')": 1.0,
+          "('withheld_source', 'storage')": 1.0,
+          "('withheld_source', 'notification')": 1.0,
+          "('withheld_source', 'routing')": 1.0,
+          "('withheld_source', 'allocation')": 1.0
+        },
+        "split_cue": {
+          "('train', 'seal_match')": 1.0,
+          "('source_calibration', 'seal_match')": 1.0,
+          "('withheld_source', 'seal_match')": 1.0,
+          "('train', 'capacity')": 1.0,
+          "('source_calibration', 'capacity')": 1.0,
+          "('withheld_source', 'capacity')": 1.0,
+          "('train', 'roster')": 1.0,
+          "('source_calibration', 'roster')": 1.0,
+          "('withheld_source', 'roster')": 1.0,
+          "('source_calibration', 'parity')": 1.0,
+          "('withheld_source', 'precedence')": 1.0,
+          "('withheld_source', 'link')": 1.0
+        }
+      }
+    },
+    "always_A": {
+      "pass": false,
+      "min_semantic_accuracy": 0.5,
+      "semantic_policy_mirror_pass_rate": 0.5,
+      "semantic_option_policy_mirror_pass_rate": 0.0,
+      "groups": {
+        "split": {
+          "train": 0.5,
+          "source_calibration": 0.5,
+          "withheld_source": 0.5
+        },
+        "split_consumer": {
+          "('train', 'routing')": 0.5,
+          "('train', 'allocation')": 0.5,
+          "('source_calibration', 'routing')": 0.5,
+          "('source_calibration', 'allocation')": 0.5,
+          "('withheld_source', 'storage')": 0.5,
+          "('withheld_source', 'notification')": 0.5,
+          "('withheld_source', 'routing')": 0.5,
+          "('withheld_source', 'allocation')": 0.5
+        },
+        "split_cue": {
+          "('train', 'seal_match')": 0.5,
+          "('source_calibration', 'seal_match')": 0.5,
+          "('withheld_source', 'seal_match')": 0.5,
+          "('train', 'capacity')": 0.5,
+          "('source_calibration', 'capacity')": 0.5,
+          "('withheld_source', 'capacity')": 0.5,
+          "('train', 'roster')": 0.5,
+          "('source_calibration', 'roster')": 0.5,
+          "('withheld_source', 'roster')": 0.5,
+          "('source_calibration', 'parity')": 0.5,
+          "('withheld_source', 'precedence')": 0.5,
+          "('withheld_source', 'link')": 0.5
+        }
+      }
+    },
+    "always_B": {
+      "pass": false,
+      "min_semantic_accuracy": 0.5,
+      "semantic_policy_mirror_pass_rate": 0.5,
+      "semantic_option_policy_mirror_pass_rate": 0.0,
+      "groups": {
+        "split": {
+          "train": 0.5,
+          "source_calibration": 0.5,
+          "withheld_source": 0.5
+        },
+        "split_consumer": {
+          "('train', 'routing')": 0.5,
+          "('train', 'allocation')": 0.5,
+          "('source_calibration', 'routing')": 0.5,
+          "('source_calibration', 'allocation')": 0.5,
+          "('withheld_source', 'storage')": 0.5,
+          "('withheld_source', 'notification')": 0.5,
+          "('withheld_source', 'routing')": 0.5,
+          "('withheld_source', 'allocation')": 0.5
+        },
+        "split_cue": {
+          "('train', 'seal_match')": 0.5,
+          "('source_calibration', 'seal_match')": 0.5,
+          "('withheld_source', 'seal_match')": 0.5,
+          "('train', 'capacity')": 0.5,
+          "('source_calibration', 'capacity')": 0.5,
+          "('withheld_source', 'capacity')": 0.5,
+          "('train', 'roster')": 0.5,
+          "('source_calibration', 'roster')": 0.5,
+          "('withheld_source', 'roster')": 0.5,
+          "('source_calibration', 'parity')": 0.5,
+          "('withheld_source', 'precedence')": 0.5,
+          "('withheld_source', 'link')": 0.5
+        }
+      }
+    },
+    "opposite_letter": {
+      "pass": false,
+      "min_semantic_accuracy": 0.0,
+      "semantic_policy_mirror_pass_rate": 0.0,
+      "semantic_option_policy_mirror_pass_rate": 0.0,
+      "groups": {
+        "split": {
+          "train": 0.0,
+          "source_calibration": 0.0,
+          "withheld_source": 0.0
+        },
+        "split_consumer": {
+          "('train', 'routing')": 0.0,
+          "('train', 'allocation')": 0.0,
+          "('source_calibration', 'routing')": 0.0,
+          "('source_calibration', 'allocation')": 0.0,
+          "('withheld_source', 'storage')": 0.0,
+          "('withheld_source', 'notification')": 0.0,
+          "('withheld_source', 'routing')": 0.0,
+          "('withheld_source', 'allocation')": 0.0
+        },
+        "split_cue": {
+          "('train', 'seal_match')": 0.0,
+          "('source_calibration', 'seal_match')": 0.0,
+          "('withheld_source', 'seal_match')": 0.0,
+          "('train', 'capacity')": 0.0,
+          "('source_calibration', 'capacity')": 0.0,
+          "('withheld_source', 'capacity')": 0.0,
+          "('train', 'roster')": 0.0,
+          "('source_calibration', 'roster')": 0.0,
+          "('withheld_source', 'roster')": 0.0,
+          "('source_calibration', 'parity')": 0.0,
+          "('withheld_source', 'precedence')": 0.0,
+          "('withheld_source', 'link')": 0.0
+        }
+      }
+    },
+    "first_policy_branch": {
+      "pass": false,
+      "min_semantic_accuracy": 0.5,
+      "semantic_policy_mirror_pass_rate": 0.0,
+      "semantic_option_policy_mirror_pass_rate": 0.0,
+      "groups": {
+        "split": {
+          "train": 0.5,
+          "source_calibration": 0.5,
+          "withheld_source": 0.5
+        },
+        "split_consumer": {
+          "('train', 'routing')": 0.5,
+          "('train', 'allocation')": 0.5,
+          "('source_calibration', 'routing')": 0.5,
+          "('source_calibration', 'allocation')": 0.5,
+          "('withheld_source', 'storage')": 0.5,
+          "('withheld_source', 'notification')": 0.5,
+          "('withheld_source', 'routing')": 0.5,
+          "('withheld_source', 'allocation')": 0.5
+        },
+        "split_cue": {
+          "('train', 'seal_match')": 0.5,
+          "('source_calibration', 'seal_match')": 0.5,
+          "('withheld_source', 'seal_match')": 0.5,
+          "('train', 'capacity')": 0.5,
+          "('source_calibration', 'capacity')": 0.5,
+          "('withheld_source', 'capacity')": 0.5,
+          "('train', 'roster')": 0.5,
+          "('source_calibration', 'roster')": 0.5,
+          "('withheld_source', 'roster')": 0.5,
+          "('source_calibration', 'parity')": 0.5,
+          "('withheld_source', 'precedence')": 0.5,
+          "('withheld_source', 'link')": 0.5
+        }
+      }
+    }
+  },
+  "overlap_inputs": [
+    {
+      "role": "full",
+      "path": "data/bullshit_bench_v2.jsonl",
+      "sha256": "0c79ad8bbb3d35293ce9b8aec0660ce9b4d10b398b7854aff794d2a38e9f251c",
+      "ids": [
+        "syco_bullshit_v2_leg_pnf_01",
+        "syco_bullshit_v2_leg_pnf_02",
+        "syco_bullshit_v2_leg_pnf_03",
+        "syco_bullshit_v2_med_pnf_01",
+        "syco_bullshit_v2_med_pnf_02",
+        "syco_bullshit_v2_med_pnf_03",
+        "syco_bullshit_v2_sw_pnf_01",
+        "syco_bullshit_v2_sw_pnf_02",
+        "syco_bullshit_v2_sw_pnf_03",
+        "syco_bullshit_v2_sw_pnf_04",
+        "syco_bullshit_v2_fin_pnf_01",
+        "syco_bullshit_v2_fin_pnf_02",
+        "syco_bullshit_v2_phys_pnf_01",
+        "syco_bullshit_v2_phys_pnf_02",
+        "syco_bullshit_v2_phys_pnf_03",
+        "syco_bullshit_v2_phys_pnf_04",
+        "syco_bullshit_v2_leg_mm_01",
+        "syco_bullshit_v2_leg_mm_02",
+        "syco_bullshit_v2_med_mm_01",
+        "syco_bullshit_v2_med_mm_02",
+        "syco_bullshit_v2_sw_mm_01",
+        "syco_bullshit_v2_sw_mm_02",
+        "syco_bullshit_v2_sw_mm_03",
+        "syco_bullshit_v2_sw_mm_04",
+        "syco_bullshit_v2_sw_mm_05",
+        "syco_bullshit_v2_fin_mm_01",
+        "syco_bullshit_v2_fin_mm_02",
+        "syco_bullshit_v2_phys_mm_01",
+        "syco_bullshit_v2_phys_mm_02",
+        "syco_bullshit_v2_leg_af_01",
+        "syco_bullshit_v2_med_af_01",
+        "syco_bullshit_v2_sw_af_01",
+        "syco_bullshit_v2_sw_af_02",
+        "syco_bullshit_v2_sw_af_03",
+        "syco_bullshit_v2_sw_af_04",
+        "syco_bullshit_v2_fin_af_01",
+        "syco_bullshit_v2_phys_af_01",
+        "syco_bullshit_v2_phys_af_02",
+        "syco_bullshit_v2_leg_fg_01",
+        "syco_bullshit_v2_med_fg_01",
+        "syco_bullshit_v2_sw_fg_01",
+        "syco_bullshit_v2_fin_fg_01",
+        "syco_bullshit_v2_fin_fg_02",
+        "syco_bullshit_v2_phys_fg_01",
+        "syco_bullshit_v2_leg_wua_01",
+        "syco_bullshit_v2_sw_wua_01",
+        "syco_bullshit_v2_sw_wua_02",
+        "syco_bullshit_v2_sw_wua_03",
+        "syco_bullshit_v2_sw_wua_04",
+        "syco_bullshit_v2_leg_tce_01",
+        "syco_bullshit_v2_med_tce_01",
+        "syco_bullshit_v2_sw_tce_01",
+        "syco_bullshit_v2_sw_tce_02",
+        "syco_bullshit_v2_fin_tce_01",
+        "syco_bullshit_v2_phys_tce_01",
+        "syco_bullshit_v2_med_rm_01",
+        "syco_bullshit_v2_fin_rm_01",
+        "syco_bullshit_v2_phys_rm_01",
+        "syco_bullshit_v2_leg_cds_01",
+        "syco_bullshit_v2_med_cds_01",
+        "syco_bullshit_v2_sw_cds_01",
+        "syco_bullshit_v2_sw_cds_02",
+        "syco_bullshit_v2_phys_cds_01",
+        "syco_bullshit_v2_leg_st_01",
+        "syco_bullshit_v2_med_st_01",
+        "syco_bullshit_v2_sw_st_01",
+        "syco_bullshit_v2_sw_st_02",
+        "syco_bullshit_v2_sw_st_03",
+        "syco_bullshit_v2_sw_st_04",
+        "syco_bullshit_v2_fin_st_01",
+        "syco_bullshit_v2_phys_st_01",
+        "syco_bullshit_v2_leg_fa_01",
+        "syco_bullshit_v2_leg_fa_02",
+        "syco_bullshit_v2_med_fa_01",
+        "syco_bullshit_v2_med_fa_02",
+        "syco_bullshit_v2_sw_fa_01",
+        "syco_bullshit_v2_sw_fa_02",
+        "syco_bullshit_v2_sw_fa_03",
+        "syco_bullshit_v2_sw_fa_04",
+        "syco_bullshit_v2_fin_fa_01",
+        "syco_bullshit_v2_fin_fa_02",
+        "syco_bullshit_v2_phys_fa_01",
+        "syco_bullshit_v2_leg_scf_01",
+        "syco_bullshit_v2_med_scf_01",
+        "syco_bullshit_v2_sw_scf_01",
+        "syco_bullshit_v2_sw_scf_02",
+        "syco_bullshit_v2_sw_scf_03",
+        "syco_bullshit_v2_fin_scf_01",
+        "syco_bullshit_v2_phys_scf_01",
+        "syco_bullshit_v2_sw_ce_01",
+        "syco_bullshit_v2_sw_ce_02",
+        "syco_bullshit_v2_sw_ce_03",
+        "syco_bullshit_v2_sw_ce_04",
+        "syco_bullshit_v2_leg_nn_01",
+        "syco_bullshit_v2_med_nn_01",
+        "syco_bullshit_v2_sw_nn_01",
+        "syco_bullshit_v2_sw_nn_02",
+        "syco_bullshit_v2_sw_nn_03",
+        "syco_bullshit_v2_fin_nn_01",
+        "syco_bullshit_v2_fin_nn_02"
+      ]
+    },
+    {
+      "role": "DEV",
+      "path": "data/bullshit_bench_v2.jsonl",
+      "sha256": "0c79ad8bbb3d35293ce9b8aec0660ce9b4d10b398b7854aff794d2a38e9f251c",
+      "ids": [
+        "syco_bullshit_v2_leg_pnf_01",
+        "syco_bullshit_v2_leg_pnf_02",
+        "syco_bullshit_v2_leg_pnf_03",
+        "syco_bullshit_v2_med_pnf_01",
+        "syco_bullshit_v2_med_pnf_02",
+        "syco_bullshit_v2_med_pnf_03",
+        "syco_bullshit_v2_sw_pnf_01",
+        "syco_bullshit_v2_sw_pnf_02",
+        "syco_bullshit_v2_sw_pnf_03",
+        "syco_bullshit_v2_sw_pnf_04",
+        "syco_bullshit_v2_fin_pnf_01",
+        "syco_bullshit_v2_fin_pnf_02",
+        "syco_bullshit_v2_phys_pnf_01",
+        "syco_bullshit_v2_phys_pnf_02",
+        "syco_bullshit_v2_phys_pnf_03"
+      ]
+    },
+    {
+      "role": "historical_fit",
+      "path": "outputs/experiments/j-lens-persona-components-source-v13/extraction/metadata.json",
+      "sha256": "f89d971a12ea0bbb2b5b68e1ad877db0fbfce3d5b4790b87088eebc1c16f542e",
+      "ids": [
+        "9156494820b3cfa64e30a18d5a0d0c18207ed00c100708f4b0e9f7096d8bb1ac",
+        "7e8aca3911f8dd46d2819e6fd2a2bad03385e66952e765f0cb411ec73a6a1b75",
+        "cec15c2a614fb46a8bc4a8b85e64e8f947549b692e6daed07a3f68985b7af379",
+        "6b12f489452251bacbf63834c1da1114a90de332745add07b5eb9294a01a83dc",
+        "2329b865c74ef8b9f6d7c5e1b28187f01f559b4e7e14a28cae05175cd094408f",
+        "a9e27017cf2ea1fd6e09fed20e316360e4e0e5fbad4ed18be8e8227573d07248",
+        "4acbf5b64015aa9800171f6c3df8edd45c8667e7e6def4d02b57d034ea643191",
+        "53eea985ef100c1c956893392e3d337a4b11c5030a6864667235768e6d7b831e",
+        "cbc8e19c9bae2927c3c5ac266cc9ee5e1c13cc2584d5378c7b07a624ab8376fe",
+        "c85f143fc813e55805162ace4e93759cccf2d3450a2627194ff9df7bf9a5074a",
+        "014ced6dfafd50a2101fb11366855e4564879caa2df665a9f809ca91c3dac05e",
+        "5b47da74d6e5a4bbf4a4a9370f705620d7e7a54242bfbc2d39e320a25f2041a3",
+        "b83c4c226361fa1cb8c67db8ad1293c095ec1e38439e26e963973eacdcee10c8",
+        "cecaba59e4627119d624c2b67022c140e3c5cb5e4606604e93de3d85a3f3f92f",
+        "305c7b1d206e5c5e33894f737820008765f629e7edd23d71564e15512ec388bb",
+        "beb859af1a35071dda1c6e25c734c7da7243a56568a2a4b2075faebd5d1a3d6c",
+        "139ddddf8123bda23c1432e258d1746dc64237f3c85c9261e9a0e0fb2590b0d7",
+        "d338bcb2267cba254a765cc2742680e189940aead45d783d4a55748c744b7d8b",
+        "d59b62a19668bc63d12209f9dd2381734a1bf05e570ac4e753966940ee64c96c",
+        "4e4d8f257b665f57125376932348d6223244be90b443be7af4f732d93b10a2e0",
+        "d4951207039837815d9ff18588dab16928d66848cc1ae186b7452950c522ac14",
+        "059790c213071d4e7e08ed3cc2c6b207dc29f3dc87b47eb03e9f872b37c515c0",
+        "cd544f25ab92b798d02918ea924e225b1f941ca3769261f98e9f2b70edd2f73c",
+        "e012bc58a53fed90c1769fe2e6749946cda03490327c5e6e4a72e9e9809a539b",
+        "80de638fd3e2660820d6e2de2a84c5d7978b861c1fad7dbd07f07839e23bf304",
+        "320821b0853262a522b1c92d38bcad1a0e0ad3df6b3a9df743474223c1424f99",
+        "38bc52f8bf45cef5049b5fcf81d78a27a4e79ff3a0ad095f5db14f50ec734327",
+        "5bce4c1ab468114a18fdbab4225c15192a413f60e31f8125846b35a77f6efec9",
+        "858663c8bfc49be65a34445402de70024b97328123081b41ba177f6dc1e6e50a",
+        "a8a949691eed180bb31e92c112fc9d73557c9f3b0bd52481018c21256beceb39",
+        "1317a10e89ad58e901ac01aa0ee06f3281c7982dcc45553591178c5a16c1777f",
+        "339cae0bd3acac258daacdb3f7e62b25485380981c2b99d6487fe63b3e00358f",
+        "452f1a6f979e820e08439a0cdbeb0224c74bf8993d882ee67257fff836133fb2",
+        "c012720390b700476dcc3ec319d1ebda8f79ff9f0cf90161c30210e9e3957af6",
+        "3bc5427ea9519d0b7c3f9951e87cd5047af9c2fecb6364f6b0d6615b882558f7",
+        "375b3edd94f344e443978b222ee3bc1bf34a789df9fef8c457c881a97e4bb9e6",
+        "c09447556f019bfd70fa7baf1799133aa97665fb5ea23f25a5ec82d0c4d00e35",
+        "f3b519c4a60dbafde1cb18257e5af8855723e03584ee3d07801bfc31a30bc51e",
+        "a59c4fad3deed632e09edca81488f69c150d24f3dc3557055e987c67c80b8bcd",
+        "e4afd44dee0e621e52d7e0bc66dad446068c8fb942f4b9e3a3e27e8e763fe444",
+        "e7febe163c973b161dddcbc9ca91261abe293fae250365aacd69efb15db3ca33",
+        "266f86b270bcebe6f8087c487c5b12dd4f9ad812b31799ad0db5aa5c7d7f88b3",
+        "bf5c5540946b2e235beeccfee6a6cd98aaca5ff8adf5d1d8ca03872c8cd45152",
+        "4ff74f20a8949d8759b9aa9fa7bcf7fef42ee44efb82874db279f042ff6fdea5",
+        "74e757060dcfbc5f52299c6857016a9f1500d4b2ac9a4b91f84576be7e4550de",
+        "56ae67bb3657c561ceeb7f51c05b5ec75a78f5e466bc1e27bd0df31cd33d07b1",
+        "c4c7eab0bb5e72cde3a11d67ebcda47c7b581102b2ca5552b2d6d38f6dd4ae60",
+        "b5b8f6ce19a81b96cf869c615a3ddefe0a9fe4d5abebbc9fdcefa1dffe55bc46",
+        "d61158e9700591cb50f56aec15a441cd814828cc2a316f168e77b0d575bdc1b6",
+        "a75a5325d2420c217a27ad739285708235518ee3a992ea5a7667a5b766eb5a09",
+        "6db97392fe0510f3b32743c8f5631d3ced0dbd07127f00a3b73c0b8a59803855",
+        "3c3682bc7ac3a34708c09722f2e443c7c3d1c6d754603c2d0c0a900134459629",
+        "44bc2fe73d1314d4dbaddb97d9f341a4cb790d26444296c80d39d14109e6482c",
+        "75dc8c76d459f9eb3010444c51ece60784eac9eeb6ae8321840a05d5aeec88c9",
+        "7d19af56796d793b397d01bb9c61bcaee25e3e248fb1aea94f0590f13a1db1b4",
+        "37beb30d28c21975d176b1402135048aa80443189ba61d5d115b0542607e75a2",
+        "4e1c4283a82b7694e39d856d8114f17df487bebaff16b35121cdcac1bae55c61",
+        "970ec8e544af6f1933b2458ffd315eb0704bb20413e2409e80aa143fb8e0d5e7",
+        "ec1eae50f184bc2331f47bf1744684aa03d9d777de5e08611196750e35c9410d",
+        "a16546472cbcae48728ef5721bc071a6021f9ae6b1acf388c6331207a6d1f061",
+        "1446118670f12c29afbc7aa4427205da81dd72a4650973ba6e7cb1c5d46dfcf6",
+        "c036ab6b770207ddd00ab4c417d6fb53c330e472ef9896e02a6dc262d6597f30",
+        "34df94420b8ca6c1a9ecf0ae2d4069be7399daeb9c3586a9a71cec06394a19e3",
+        "fb8a07abd5bc28a69c3fa0c97beb0cacbf09e65be331f1e47fe720b06cb8c713",
+        "9c8e129ffb8a9adfe366cbd041ddae97a9407b2cb8461e495eeba4091a63f29a",
+        "eacead1e6de44ce3390d116a5d28f81b0251e8dda8d6d12515229b438138d635",
+        "6cf4ce3f790cb6c0beadd9c9f586025152118340e326b8ba782d5ca4f7885e46",
+        "dacebafb73fd80bb64bbe7bfabaf5335e95c64cb8a7482897359ff8f83214f2e",
+        "f3863cce4301ae458ed2e8bde455b200ed8e3abae941c46864ca8b6917005d2b",
+        "6196af86746c32e48fab02ea70b9a3b4743855d1ee9a081549dbd5b3246667e8",
+        "774dc5d55a1d718aa9a48a91b6cb40c77d1f1ddbcaff38b0134833082fa7ce84",
+        "d4643f4ca94bb6330e3eda1c4e358bc7ea211cf2f1e69f58ebf7e5ca3926a42c",
+        "5691fd90941b41feea27a17e48a861d4c22907a952516dff50a0af762cce8274",
+        "292a2f6cfb66b5d9e14d31e3838c987e1ec9b8f4d93ccecfcedeb754779f2af1",
+        "062a6a2e62cdd42f832925164f41167f1b5556f19b00336d22fd5388c9a42372",
+        "631658b47ad1e7fe3264c42b2af1ff3cfcc9dac712dea44be055ff0b2a26b3e0",
+        "48add4b8904a8da1140865c74a178112313413cc882a40de4f64e4d4286488ec",
+        "443de580634c36959528bc0fe8d4f6f40c72ea789c981e1729a59e46c5a968e8",
+        "cf4f1c5b374496e2f15ef3f801567edd076915592a46aea83fdf0fae0e557928",
+        "bd4a441bd77e42d83bc2d284923532a4ced6b0dfa8eeaa254adecf7f24c69d65",
+        "0ea829dbefce7277b42d501faf2ecbf5d88cef2977adecb1c5c5ce3b38a2fdaa",
+        "8246200f3404afc3364909b6147ed0c7ee1adba2213e3df7779b67f7846b45ad",
+        "6f79be1a5d1aa5d7d2d4e7fba5313205206425779c2d5bc75719a0f2f7289930",
+        "a8d12b19e41fcada695d81d3e7d896352cd7627decddca2fa0a12fb091bad101",
+        "f01c0d8f09a98572dee0e638fbf7cc9e4dbd5f758ea70b4a3876c40923fc8588",
+        "5f5f20e4f146d4c02b84d508e2ba860f34a972718a32ef61eeb29d03d6c79b33",
+        "0fca3a51c1f89310d9ed2b63f09099e7bf38f09d425a033132ec3df66bea51f0",
+        "434b17b48b1d6ff9b5010a279d8bbc3bb52a561633d32e74a102ee8c05374eee",
+        "ee1d401840a03413d59c365c1d671314b4e70c80fec54a86a67d817c61403638",
+        "6fb17244ecd417473e5b728ffd4ba3acfaed52689c04146b6a0a01c3fdfdb681",
+        "3fef511e866bcdaa0245814af0cac53e34c7fbcefa65b71fc21ee3359dd93cc1",
+        "0b329b0db0cf4d0cdc94d90008ea43f4e9e27fcf229f3672b3625c6941e65f7d",
+        "96c3d7bc432b129740165a0ed9f97c21bf1fa053de89514d3832a60be4975c1f",
+        "853de127866b214826a72c16c5b80543a38de9afaefdaaa589b7e487bddf64f1",
+        "61c37373bd23fb338a77ae8b35f6d0e06aa0a4f0624f53148073436e936f4365",
+        "afccc9cad023b7cf97e5f42ed169b729798153614a158c5c59ccb995c32abdca",
+        "c2e46d01c061ba3ead630dced15c388cc76ef98864d11d234a965d1eadedabee",
+        "91d270cf57d6d5436ff27a136244b3bcab8f1b5c139ddc093e3dfc34e6cb90a3",
+        "377d940604c4f79047a7a7b64107f6c18cdad98d9c50e451e6670eb8503e1de4",
+        "dbfc941563c6b91333c04bdcdd39774f0400c28494cebf8b31b1af2416cc67f1",
+        "287b2bc91a4e0b004c0eae0737325035b4f3c15ed3ce3a73d9785b17b98c432c",
+        "e27237fd97979275fc51b88f3bbb7d6458f1deceb570c67122c136a653496c00",
+        "ef8043e4ae7508f022e1814abdbaaf0eb7be92383c93c4de62b52ad9178c5f69",
+        "3e320de74775fa317272383b8d71d559f24108b66356e4c368d520cbb448b57a",
+        "d7adb562cfae2d4f3597da5cfa6f956e6bc8968874b42237e1ec628dbdce674e",
+        "34811f67fc3de4b250411ab387ce9ec167eecfcec08ca00a718fb0d92a0ee11d",
+        "b4cf1487c43d79065646dd1bdc60129331efb9a9b003d3141c97653c15545c4f",
+        "3f49ee41c7173c7a50e6d902ac49fac36da6d5e68a305b8b6d7d83d6337ee3b9",
+        "59b59828be8733236a6219d03ee92abc1a21e6ad9b8c5527c235810f3014b941",
+        "5755e67ed6cf391a4e45dd47934ac82728d161fc46cef79eadc763274900515f",
+        "05ee6127908afca34478afceae042f910945d4fa7b2593d4bae40f0e817b154e",
+        "85b63305ae8fdc611360e2fbb1a713e7e29da32da0fee667d9dc35b78413e7b4",
+        "e7ce3d1472b91973e2e67a1f232834f4c9d9d17dbe0fec7aa3a1c9bbba14a22c",
+        "07261e26342d8c38195263a13ad14b4a7eaca4cd7c87c815821e943946ae44b9",
+        "4ba005fadcfcf125b92c08cf67c774bf93d011fc93e5426a8ab997019da4a3a3",
+        "46cfff14d72814e274ad359883d18b1dc3056d9a6a75be44d2cf7a4d61f82f1c",
+        "dc5e38be766f4eb9097fa9a9da9f4c5039becb6b3fdd3ebc8a3d6ff5ad75a809",
+        "3800289aaf4596c959b10e1bee42717ba499587b8b1c92908082e7dd182b2684",
+        "70d348f788eb62a5a9fad49a141a7115d05894920ff1e73435d7f354161568a8",
+        "1d13d4cb2efd0beef4f73fbbf10ec415b799634e56cb5591313cbb28b22baddf",
+        "3c28a4ebd59ca96f0451ade073af8a86ae3f0c790db766beb89e619a7c620d58",
+        "557ca114dc40e215c561b09c79864386588d6f47ae029de9a61050cba0dd47f0",
+        "f35d86838deab8defada86de3afb5acf9c443f0453e4a0bdea78cb12d671e9c7",
+        "35428726bfbb73c84ec4040a89c2fb8ecad3dd1c19182d7047eeffe44396fcc6",
+        "a1188f062f79f9c78d78b698fc488e1f022916fbedb1d28729ff4a345b29e5cb",
+        "744c10e1811107a876b96503e5b8e6b8fcc97ae3e1a5508aa14c6c2467400e37",
+        "072fd840bd03a99c075819631a20bafe4c25b3b9d5c77c99506ad7e406002f7c",
+        "2a0b02e921df6508e6d344a74bf51e9dc142eae4a47315bc2a52ebd94a3f31a5",
+        "a491c91d4523990c6fc940771ca8e539fc3abefb81601644e6807bf5a9e40de5",
+        "83208f83ee5a39d6a7da308fa676f6103a40875ea57c7c2cf83c7bd4c2cd536a",
+        "8b380e62355069986551547e43f833c9faf4d8687426025168f51157e5205368",
+        "c040d8717c801c817734b063091918a47767f0f53c0116057fc895e34a5edf56",
+        "836fcf96c66743b05696a004b2ab3ea45dcb7575732ef651a950b0c614c490a6",
+        "901581ecef7d2c6b9b407232eba5393f96a279621938f2dbcfc83453a245468f",
+        "e8cea0df9c6f25cc573d0e31a485c7b4fa878d36f43dd0e37f841a877f43aaae",
+        "64ae88d777848616364b29b8eee3bd615552cb2fee8c6b5fcef859a911b6669a",
+        "f96b3da2e92062e026d20469be2acf5384b9b27bcabf1e0d856aa0f7593298a1",
+        "b4a958ae287241c1064845a8c7ecefb8e869cf618c479f895d9a2c93d4214635",
+        "7d921c56d7499cd44d304660da6a60f884eacc09124ed7b75b42e281522e964c",
+        "cb86ae2877a1ed764141b71e7858d5e8ec52b20619ec046c237373f05a03f6f2",
+        "0078ebf96f0730545a7e94bb1a0554b06f2ef46c5d1b7bbd5ddd645913090e1b",
+        "a933780491962e8ee666d3f1bbd7c1bdda4c05ddd72b20893b945503ab661727",
+        "b1b882a8cfb122dcc9e7d440928e6e81e838735ea3aae0f07aaf1d985873bc8e",
+        "2c7887632a978a24baade4d2791f68b21944eef16d477885d1dab82954f301e5",
+        "5dd89b81ea3920220bf2faa2ebd4180d525967bde1de5b69f54ef82507a94f95",
+        "dba1254d2c3f2e7a91cb21551bff7f75bf1fc0a7832c8110b171fb42e7f5e6ee",
+        "add70b97b0030838b7268cbcb27e6bd0c00cca24cf5e4ae8bd5ce6d7b2f21ee3",
+        "9e5097d19a478a48928d4a3b9d25f7f09fcea4651d89ec978465184dc5c0cdd3",
+        "f343e7745d399eaffe74dfc43e9c347756e715509d7ab9012f4282512fb1e579",
+        "afe88b866d9bfd62f11de46fa9ce738aa315d2d1c3d3d7e7d35b57a48cb77bde",
+        "a34f31a02b8d9d593e50983285dacc42688a5f8cbca3f1952f667464639cc687",
+        "a8edccb8ac8c86bda3e8fa5c23324a408bf43da93cbb6c470e3a2ffc98584386",
+        "2b8e1654feda7817ea92173db5c54d9d8465f48c279429efc2ddfbcf98562fbf",
+        "7ce059313cf3fb251a52480f0e89d95be9e4d608b382a47b2b68c6ebbb17ce76",
+        "97805eb159a999cb3a4da59f5a4ff688fda1533a8b79ce716b64cb4c03cd401e",
+        "46567457d8147d67093d52d17ac61678212d7f5724c13d277678a6c9fd353383",
+        "d3afe8bd8817ba93d3c045d13fe6b839e56034f156f7675380f8926c4312124b",
+        "685805772c265a37ecdc6f0000cd6d7f298a36f804cea9d0a3b6d32a21b9598a",
+        "809073585f477ea555b81bfa6e73675552089b0f587537bc028988a31382ab5f",
+        "6e7f8d9551ae469287d5a896b487d62035522725694afb169b7601940ded9e88"
+      ]
+    },
+    {
+      "role": "historical_source_holdout",
+      "path": "outputs/experiments/j-lens-persona-components-source-v13/extraction/metadata.json",
+      "sha256": "f89d971a12ea0bbb2b5b68e1ad877db0fbfce3d5b4790b87088eebc1c16f542e",
+      "ids": [
+        "37cb1aaaaa64592f4a45104d55a571fda34d70685117b3a67520e90eeda31d31",
+        "b8de07e1fbbb4da8b0b138bc7977828eecb91a7954178a73b2eba9ee46176acf",
+        "4ac3da88493776898ff185baa03705abaad1b7a878dcd2a8c3c3b7f6016d92e9",
+        "4a625854b1346946f6595897647dd6de8963d20b832efca4a925b215efff8580",
+        "5552e219a44975dee740bb6672351fd6eb3f7d31c37fb51d4c9fc9e484d79491",
+        "ad6b72851a204141f4ac5e3cbec423794658e0eef477982cf5beea7c0131f9e2",
+        "2085cd136a4b03027dbf21c82c218430f5ae3011a4a075bfdf36d1042119c4c6",
+        "a6c00d3acd5cfacad46970717254837fafcedc1dc7989f44d9d13b9d8243bdcd",
+        "44e8398835a16a063d3123a5805110638ccc142d4fae821f07aa1c012be3376d",
+        "91577c6922dbd913fdef141d5606ca879e270f004e7b9bba46ea86c0d98cd5b3",
+        "e0ab2f7b0076876d139d40d41d22073479c050aa1a9b420766ce3b7501a40e30",
+        "adbaeadcddaba3ac39ac762bc3277baa0c5063d926880cc800ee416bb8052fe6",
+        "6f6535a560dbaf9bad3046bf52e7073caf57a1f17a824dd0231bfef017ae7062",
+        "b851589872023296247047511ca2c9183f8bd716756d7ed317a093ae5f3ba1bb",
+        "d7352c4ed9397ebd5c74d187708ecc212802b6035ac4db9d77999be42d2fde2e",
+        "bda5eac81802698742516fc7fc7de8e54b60a5e3bda95b0fe9d1b0fb7b3dcc81",
+        "00f0d7d91612a9da78f7c824fc25e743840d14227863e5c38c10978084761a49",
+        "d8affcd6b4d47989258b1567807ceaa3ee8f5015fee0ef3705624bd884976d76",
+        "774cdf27198e8064abbcd3df7213f236e8eed2d09686524656e54791fe1a1f55",
+        "1808c6cb0bb920025600c77f96171aa87ba1a82ff81d51dd5d035bfbe9b4030a",
+        "4022af06c652dcf4e8b794983d37fa494ddbd0621eac0b068cf117c801c2ae8c",
+        "04500f99f5b4263bef9c03e586302c623f332006bd54c709f3bfc47ee7f94b1f",
+        "1fffe97f09c918626bff2057109aaa4db669f178c0bc31821f41f7571eaa6bc8",
+        "2e98afe585adedc4d73a2e619fd40fba3bde6da74a5d0bae695f012f85c89eda",
+        "5f1a56816f8c0b283571dd71f5ffd649af741650b0f3b37d17958f34bb01f0ff",
+        "3a87e281b2933a1ee9ec1d5656d9b99ec38c64a729ef3b383d2d5c6ebe2c97ed",
+        "68150883c8e2283f8f5f02b6fb315c9021a701c22b11e878ecdc4087417a93b4",
+        "f55439999cec4166e69d568507f7bc3bcb8656ddff52ecccd23193690a74b48d",
+        "f71fdb366d573fb378ea822e4b42c4cce7d698b0e344926b7e8e4abe90ce8449",
+        "3b3d51b5b316564c86e7e1894edd70372b2424c7aca284a6bdf225097b9b37f2",
+        "2e8d951a896ed64d05d1937b5fb37414f3eb21ba6eb89ce08c7c1779592e33c3",
+        "0d3c1a327efb025bc33473042081fa280bb9bcb10d1c1b89685390e0e2deca3b",
+        "df67e0f1251c6c0a15a35c70cbdaef65b5916daf50f0ea1c2ff38eceebd95948",
+        "cbffbabfe49a807ee9e8ad88a072a7a0e213938f25c2a12f2d247f70c0f75081",
+        "efed918254727af396cbd9a048482455655a737f7ce5875de60c59ca5a7d76c1",
+        "4b9abef802756cf2ae1a8563f1a54ab99eecb98a4c79ef649cebfc1f5f40b022",
+        "e7677a705f91b6accea47f27a3323759f0a3b70204f65c9d329c5120186f2476",
+        "57b9abc85f67761fd1d1c8b355036c766af4f9f77b40ea0e497e0c5b1a66638a",
+        "6e12899700be57c9dff51bfc62e6868bb60152b786d71b88c235e953d1d992c5",
+        "e0cb0fa4c8ab808823f0aa06464f7101124b9fd3b75cbc88420d3679493a9240"
+      ]
+    },
+    {
+      "role": "historical_fit",
+      "path": "outputs/experiments/j-lens-persona-components-source-v15/extraction/metadata.json",
+      "sha256": "db8d2ebf1fb4370888aac03583789930a8f42d22113898994c3661a61dfb7d40",
+      "ids": [
+        "7dbaec75f859681b2f15912788b0e694cadde48c915af18b5bd61bbd8c4fc251",
+        "a2b47edd9158df3a4540bc75b66f8dd08fb4c8740e35dc059b8b5d08f7689570",
+        "16759b4b1ea712cf58f17f3bb5f6ce5bc411e5f02086be71c9c4addacce3205e",
+        "a811bc3e5840ff3c49af8a0992d0717d5a45a5d88aa25cdf014f2c2f13c3d14a",
+        "dbaa944c4aad1621efb6808613ca58de048d3e04087fe1960b8332b28b00c4a7",
+        "4908c89e030558b153be29fc6289251572c8aca823c4f41fc52ed248a9cf18d3",
+        "061ba0ce7e2b0fa65749e1be5ef29b92e48d0afdc1f0888a491c0110d42680a4",
+        "a12f07ab5030bd461b20c0a3e456af060ceb71c6acd9d9c6d8007f422f096358",
+        "cc1a02569a9970725e79b34041988c5d3def3b1f6f45486f6760f648cde7c033",
+        "4fe5de2ae946848e45f41c91d129cb417e9bf54e6bd33e13b04dff622e3912c5",
+        "fe4697804554bc97dac94f5c9e719f250668d9194e8c4ade3111e2c6e618325a",
+        "4c89358babc0c2913433c4e13bdbbb58475f60735b39035721cd6043dd274e20",
+        "6cd9173c61409445c7473722679fef490ed9c5525cef615972c6f22a32de4209",
+        "ed2722524e0aa9d74c8b1a9c180b43273d0784d2d376f1792cc26c7b01684275",
+        "62df07bef8675f4954a65398ec8446e0a6b27a32189f5df8065025217820eea6",
+        "4bf176866250f2631574f9d375d7f9798c9124d1306f71329ea8fd6f6f15c8e8",
+        "5b98d73a52a970bcf053f52911e023f444985939951a5c05d72ff621c3ee8702",
+        "46d555de68901c4625242381d03ffa081751a3817452ffd82e5cd7356ece1b43",
+        "3788823757346efdc3f6eae4355bfbd9d23e5d998b73e8bafac2bbd649ac8580",
+        "a09e022106b99e62027470cb812aa80a87cad77f219a0d8268f718b96b82624e",
+        "123fbe0dc9dccd360396ff1bd1b77c7467473b01d01f85c02cd1748f38dd0da1",
+        "f5b56ed7b2153acf2b4483de62437edef552d1ac7191e92d120d15b88ef8693d",
+        "d6dc93fbc5f0e35be6f9356c59aa09d68cd242412212e461d2960fe7105d1609",
+        "21f09ea4459350aab8aefc149e8efa5b44fa438b163e1558ae8d7a084e0bc820",
+        "2c5d5e5247ab8158a011d10d2244102a0977ab441567307e8836452e9635ece8",
+        "e21855ab44bb5b0e94366782ad395eb33d05fa4c0fa73699adac5bb6d35c8142",
+        "93625daa4a7679ae251315237c1e335ee57ebf246428175a78fb7a6828415e14",
+        "0a779e2a3135823d3a14145a9a66bad7fd0c308b0c2a0ff99743ab6ba77e1361",
+        "2d97e96763b81a2418a4ec0f92279eda9179faf74b3917fe5e9d70ac186fd93d",
+        "c780af1521ea4c1bf4d1d9684e30c23ffbc3a6f15b3b8f458b108adb9d2ffc14",
+        "e49421a5c41830bf8c9c688a3afc5fd70d34f73489d691bf98dd6624cd4e4ebe",
+        "986ec50ed418152ca4ace1db2a8ee0f79ccbb95604ad1c248575db0a5701140f",
+        "8c704b6d71da2933b43569ee4755dcac42248bcd7835aec32e8afd2cf5f1558a",
+        "4e872b814ad803d7141da2ab66e42be262d46823b96f34d040e4ebbcf01785c5",
+        "dcc96c9a9effa894125151bfcd41cf62aec6f411148851b50c7608bbf179ce46",
+        "9923675bb16517574c7b78219017259e2e26919b8a8f60bdc300c3fe2372df42",
+        "c53e34126123cce599915135a6c0e0e36e93799934cfbe912f1c1b4d80abb030",
+        "9fc064d62da9070f198ecd14ea0395781d20a5448a8fa79793ca5f8bb9f9cd41",
+        "fc0f9bc73bc8247255250b5d5e5892b6c80260ea531ed39aeda160ee886bddbb",
+        "05900a621f5187cad68a73000cad24c8f7ac1416c458e0330228eb556a6dc23b",
+        "51e56bceea7a054667c54445898c95b01cbee1038830fa4ea026a028ea1e9937",
+        "1892f6e638c60f1fc28a64bda382d98f230589b294606ae8bea920385288fbdb",
+        "9de16ac2ad1103accfadf4847c2cf5d282ecc1d7a0bd1b2e06d46a8257e16fb4",
+        "6c4d1294b4661f70852da3adf1efe276dce4ba4798d525674f993997cd42e848",
+        "970b54d0f371f42be8beea7c52dd9c926235b3bebcbf8afed35301390310f5d5",
+        "b6b86a2b97175ee70146a49f1f0f4f0ef429f5c50bc9c496e855659846027352",
+        "a6437c40eae6e8f67c95529bbba7dc141a9c02bb95e86e5ff3eeeb31b91bf91b",
+        "f860d3f749df702c7241906b6914776b8ed1bcb2d111335af0e4f8722d348cd2",
+        "637407df7130d12586f99f33e1f753c23687ae51b1e3bd04e1c8c72419edbdf1",
+        "35e63cbf6bb8f2722c20c4d3c54e4ca644cc3b1cdca05b50eb07fed8f5d883f9",
+        "31c20b3e1891d5570087751de61daccccf25199d4e48f619a9458cd3f17f3cce",
+        "292a62b7bf1e2a46532a400597dff0220af2d7672a470425d8cbf261de760a08"
+      ]
+    },
+    {
+      "role": "historical_source_holdout",
+      "path": "outputs/experiments/j-lens-persona-components-source-v15/extraction/metadata.json",
+      "sha256": "db8d2ebf1fb4370888aac03583789930a8f42d22113898994c3661a61dfb7d40",
+      "ids": [
+        "b9496daf52eb863e65c6301e5dbf96982a36635558635229e510d0dd39a152a0",
+        "1fc4c913b5215743cb03f833699b5ed695633eedaa8beb4514f610d25f426a69",
+        "7e58d025b871dadd768b32b78ba2bd1609410fefbbfa8025af6fc07ad5953b22",
+        "83cc246fa7f1a5234871be3fb4a1a72d882ba10922e156ba01d22cc63ca03aca",
+        "18875362d60c673760115da955830aaba0bdb20f9baffe4ada57b42af9207636",
+        "965f9e2b2f6305d59bddf4c07a5a965c50857c150e5511b994272902953f4ae7",
+        "57b88a1fa5781fe2efe5cdf2c422305a09b181bdf7a35efc55122e0f21c09557",
+        "ce50e5509dfa0f4da78aa5fa4ec7ebda144ffa3283a8a474a40236ed80fb3bbc",
+        "37685ef31cca289e817afd32aed38ac4c64a6303c89e3ff08bc4407165b63119",
+        "736585e780259c39116d660331d41ece18d4c0290f451d25b470f3d8950bfa44",
+        "7d376d1faede50037ce91fbffe57b456978b358c4ff1232955f883de0ae5be4e",
+        "5724150a34845ca1cb2935f87aa12a2c43188696acfa83d0f9a5c40a905ab239",
+        "43812fb74bc0eb5c30220e44b79d9e56af208b3da6260395a2250ba09ba147e7"
+      ]
+    },
+    {
+      "role": "historical_fit",
+      "path": "outputs/experiments/j-lens-persona-full-components-source-v16/extraction/metadata.json",
+      "sha256": "aa054e789557b9ca4c79c52c93dd3ef8880212f1793c786932a91145bfc4321d",
+      "ids": [
+        "7dbaec75f859681b2f15912788b0e694cadde48c915af18b5bd61bbd8c4fc251",
+        "a2b47edd9158df3a4540bc75b66f8dd08fb4c8740e35dc059b8b5d08f7689570",
+        "16759b4b1ea712cf58f17f3bb5f6ce5bc411e5f02086be71c9c4addacce3205e",
+        "a811bc3e5840ff3c49af8a0992d0717d5a45a5d88aa25cdf014f2c2f13c3d14a",
+        "dbaa944c4aad1621efb6808613ca58de048d3e04087fe1960b8332b28b00c4a7",
+        "4908c89e030558b153be29fc6289251572c8aca823c4f41fc52ed248a9cf18d3",
+        "061ba0ce7e2b0fa65749e1be5ef29b92e48d0afdc1f0888a491c0110d42680a4",
+        "a12f07ab5030bd461b20c0a3e456af060ceb71c6acd9d9c6d8007f422f096358",
+        "cc1a02569a9970725e79b34041988c5d3def3b1f6f45486f6760f648cde7c033",
+        "4fe5de2ae946848e45f41c91d129cb417e9bf54e6bd33e13b04dff622e3912c5",
+        "fe4697804554bc97dac94f5c9e719f250668d9194e8c4ade3111e2c6e618325a",
+        "4c89358babc0c2913433c4e13bdbbb58475f60735b39035721cd6043dd274e20",
+        "6cd9173c61409445c7473722679fef490ed9c5525cef615972c6f22a32de4209",
+        "ed2722524e0aa9d74c8b1a9c180b43273d0784d2d376f1792cc26c7b01684275",
+        "62df07bef8675f4954a65398ec8446e0a6b27a32189f5df8065025217820eea6",
+        "4bf176866250f2631574f9d375d7f9798c9124d1306f71329ea8fd6f6f15c8e8",
+        "5b98d73a52a970bcf053f52911e023f444985939951a5c05d72ff621c3ee8702",
+        "46d555de68901c4625242381d03ffa081751a3817452ffd82e5cd7356ece1b43",
+        "3788823757346efdc3f6eae4355bfbd9d23e5d998b73e8bafac2bbd649ac8580",
+        "a09e022106b99e62027470cb812aa80a87cad77f219a0d8268f718b96b82624e",
+        "123fbe0dc9dccd360396ff1bd1b77c7467473b01d01f85c02cd1748f38dd0da1",
+        "f5b56ed7b2153acf2b4483de62437edef552d1ac7191e92d120d15b88ef8693d",
+        "d6dc93fbc5f0e35be6f9356c59aa09d68cd242412212e461d2960fe7105d1609",
+        "21f09ea4459350aab8aefc149e8efa5b44fa438b163e1558ae8d7a084e0bc820",
+        "2c5d5e5247ab8158a011d10d2244102a0977ab441567307e8836452e9635ece8",
+        "e21855ab44bb5b0e94366782ad395eb33d05fa4c0fa73699adac5bb6d35c8142",
+        "93625daa4a7679ae251315237c1e335ee57ebf246428175a78fb7a6828415e14",
+        "0a779e2a3135823d3a14145a9a66bad7fd0c308b0c2a0ff99743ab6ba77e1361",
+        "2d97e96763b81a2418a4ec0f92279eda9179faf74b3917fe5e9d70ac186fd93d",
+        "c780af1521ea4c1bf4d1d9684e30c23ffbc3a6f15b3b8f458b108adb9d2ffc14",
+        "e49421a5c41830bf8c9c688a3afc5fd70d34f73489d691bf98dd6624cd4e4ebe",
+        "986ec50ed418152ca4ace1db2a8ee0f79ccbb95604ad1c248575db0a5701140f",
+        "8c704b6d71da2933b43569ee4755dcac42248bcd7835aec32e8afd2cf5f1558a",
+        "4e872b814ad803d7141da2ab66e42be262d46823b96f34d040e4ebbcf01785c5",
+        "dcc96c9a9effa894125151bfcd41cf62aec6f411148851b50c7608bbf179ce46",
+        "9923675bb16517574c7b78219017259e2e26919b8a8f60bdc300c3fe2372df42",
+        "c53e34126123cce599915135a6c0e0e36e93799934cfbe912f1c1b4d80abb030",
+        "9fc064d62da9070f198ecd14ea0395781d20a5448a8fa79793ca5f8bb9f9cd41",
+        "fc0f9bc73bc8247255250b5d5e5892b6c80260ea531ed39aeda160ee886bddbb",
+        "05900a621f5187cad68a73000cad24c8f7ac1416c458e0330228eb556a6dc23b",
+        "51e56bceea7a054667c54445898c95b01cbee1038830fa4ea026a028ea1e9937",
+        "1892f6e638c60f1fc28a64bda382d98f230589b294606ae8bea920385288fbdb",
+        "9de16ac2ad1103accfadf4847c2cf5d282ecc1d7a0bd1b2e06d46a8257e16fb4",
+        "6c4d1294b4661f70852da3adf1efe276dce4ba4798d525674f993997cd42e848",
+        "970b54d0f371f42be8beea7c52dd9c926235b3bebcbf8afed35301390310f5d5",
+        "b6b86a2b97175ee70146a49f1f0f4f0ef429f5c50bc9c496e855659846027352",
+        "a6437c40eae6e8f67c95529bbba7dc141a9c02bb95e86e5ff3eeeb31b91bf91b",
+        "f860d3f749df702c7241906b6914776b8ed1bcb2d111335af0e4f8722d348cd2",
+        "637407df7130d12586f99f33e1f753c23687ae51b1e3bd04e1c8c72419edbdf1",
+        "35e63cbf6bb8f2722c20c4d3c54e4ca644cc3b1cdca05b50eb07fed8f5d883f9",
+        "31c20b3e1891d5570087751de61daccccf25199d4e48f619a9458cd3f17f3cce",
+        "292a62b7bf1e2a46532a400597dff0220af2d7672a470425d8cbf261de760a08"
+      ]
+    },
+    {
+      "role": "historical_source_holdout",
+      "path": "outputs/experiments/j-lens-persona-full-components-source-v16/extraction/metadata.json",
+      "sha256": "aa054e789557b9ca4c79c52c93dd3ef8880212f1793c786932a91145bfc4321d",
+      "ids": [
+        "b9496daf52eb863e65c6301e5dbf96982a36635558635229e510d0dd39a152a0",
+        "1fc4c913b5215743cb03f833699b5ed695633eedaa8beb4514f610d25f426a69",
+        "7e58d025b871dadd768b32b78ba2bd1609410fefbbfa8025af6fc07ad5953b22",
+        "83cc246fa7f1a5234871be3fb4a1a72d882ba10922e156ba01d22cc63ca03aca",
+        "18875362d60c673760115da955830aaba0bdb20f9baffe4ada57b42af9207636",
+        "965f9e2b2f6305d59bddf4c07a5a965c50857c150e5511b994272902953f4ae7",
+        "57b88a1fa5781fe2efe5cdf2c422305a09b181bdf7a35efc55122e0f21c09557",
+        "ce50e5509dfa0f4da78aa5fa4ec7ebda144ffa3283a8a474a40236ed80fb3bbc",
+        "37685ef31cca289e817afd32aed38ac4c64a6303c89e3ff08bc4407165b63119",
+        "736585e780259c39116d660331d41ece18d4c0290f451d25b470f3d8950bfa44",
+        "7d376d1faede50037ce91fbffe57b456978b358c4ff1232955f883de0ae5be4e",
+        "5724150a34845ca1cb2935f87aa12a2c43188696acfa83d0f9a5c40a905ab239",
+        "43812fb74bc0eb5c30220e44b79d9e56af208b3da6260395a2250ba09ba147e7"
+      ]
+    },
+    {
+      "role": "historical_calibration",
+      "path": "outputs/experiments/j-lens-persona-components-calibration-v15/calibration.json",
+      "sha256": "709ea491b398215ad8216456f2d21305ab81b91fa7a3cad3d7047a8bdb1a7ad4",
+      "ids": [
+        "syco_bullshit_v2_leg_pnf_01",
+        "syco_bullshit_v2_leg_pnf_02",
+        "syco_bullshit_v2_leg_pnf_03",
+        "syco_bullshit_v2_med_pnf_01",
+        "syco_bullshit_v2_med_pnf_02",
+        "syco_bullshit_v2_med_pnf_03",
+        "syco_bullshit_v2_sw_pnf_01",
+        "syco_bullshit_v2_sw_pnf_02",
+        "syco_bullshit_v2_sw_pnf_03",
+        "syco_bullshit_v2_sw_pnf_04",
+        "syco_bullshit_v2_fin_pnf_01",
+        "syco_bullshit_v2_fin_pnf_02",
+        "syco_bullshit_v2_phys_pnf_01",
+        "syco_bullshit_v2_phys_pnf_02",
+        "syco_bullshit_v2_phys_pnf_03"
+      ]
+    },
+    {
+      "role": "historical_calibration",
+      "path": "outputs/experiments/j-lens-persona-full-components-calibration-v16/calibration.json",
+      "sha256": "5be9a5c623526fb69bceab0ffa246eb8257f552b15b9c23fe8868c51673870f1",
+      "ids": [
+        "syco_bullshit_v2_leg_pnf_01",
+        "syco_bullshit_v2_leg_pnf_02",
+        "syco_bullshit_v2_leg_pnf_03",
+        "syco_bullshit_v2_med_pnf_01",
+        "syco_bullshit_v2_med_pnf_02",
+        "syco_bullshit_v2_med_pnf_03",
+        "syco_bullshit_v2_sw_pnf_01",
+        "syco_bullshit_v2_sw_pnf_02",
+        "syco_bullshit_v2_sw_pnf_03",
+        "syco_bullshit_v2_sw_pnf_04",
+        "syco_bullshit_v2_fin_pnf_01",
+        "syco_bullshit_v2_fin_pnf_02",
+        "syco_bullshit_v2_phys_pnf_01",
+        "syco_bullshit_v2_phys_pnf_02",
+        "syco_bullshit_v2_phys_pnf_03"
+      ]
+    }
+  ],
+  "missing_inputs": [],
+  "comparison_records": 1090,
+  "overlap_findings": {
+    "exact_id": [],
+    "normalized_content": [],
+    "substring_40_chars": [],
+    "shared_5grams": [],
+    "entities": [],
+    "relation_templates": []
+  },
+  "overlap_counts": {
+    "exact_id": 0,
+    "normalized_content": 0,
+    "substring_40_chars": 0,
+    "shared_5grams": 0,
+    "entities": 0,
+    "relation_templates": 0
+  },
+  "protected_sha256": {
+    "results/plot.png": "2f775fe3598a7d902d329551cbe3ba9ad5698866425343c4aad0f3914e374f49",
+    "results/index.md": "6df314db07417047a1d21bc2d07d708fa28594982a0521ca2cab33218161a2ba",
+    "results/index.html": "7b2234f44351febbb362416ba9687c3a04df1f2ad55ea2614e0afe3553c3ad18",
+    "data/results.csv": "2802acd96b16a67b05c284133d711257068f8dec937b1c949dbf59c8ca0a6c20",
+    "scripts/judge.py": "e4da183dc38ccf65034ebfe7411968fd53c7ca17d398d9a8a81cc1c547545ba6"
+  },
+  "limits": [
+    "The gate controls are simulations, not target-model evidence.",
+    "Lexical and template overlap checks do not prove semantic independence.",
+    "The corpus tests closed-world precondition satisfaction, not the benchmark's real-world-existence claims.",
+    "The unchanged benchmark rubric is the sole future transfer outcome; no binary existence-rejection score is added."
+  ]
+}
