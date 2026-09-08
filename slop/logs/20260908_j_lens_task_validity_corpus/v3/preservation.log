@@ -1,0 +1,4 @@
+COMMAND: sha256sum slop/logs/20260908_j_lens_task_validity_corpus/{corpus.jsonl,v2/corpus.jsonl} && git diff --exit-code 141d87c6515a594669c011c3bc2eac3e2f043bca HEAD -- slop/logs/20260908_j_lens_task_validity_corpus/corpus.jsonl slop/logs/20260908_j_lens_task_validity_corpus/v2
+4d459ea1cd2efb6257e7a72088febcfec7c5354dba4c44abcfb1377a61a67ded  slop/logs/20260908_j_lens_task_validity_corpus/corpus.jsonl
+9d99757d9a449bb821f3b61b4174f5239a5fa51b3249e1c2cbb130b95af88ea9  slop/logs/20260908_j_lens_task_validity_corpus/v2/corpus.jsonl
+EXIT_CODE=0

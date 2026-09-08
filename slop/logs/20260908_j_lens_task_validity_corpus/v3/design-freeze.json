@@ -15,7 +15,8 @@
     "validation.log": "ded95f58333fc04b8cb5362a93c41fd74033fcfda8e6f0445470a95fe490adbb",
     "spec.md": "358a2a73d49fe3f0999664946845d34255e8fa76118c99a61c8d69feb56d1a5d",
     "test-proposal.md": "a90b349c6dc3d5c70831c32325012ebffb062eb37f5def6a1b161adf220d1ed6",
-    "review-pending.md": "b285c8554c1a5fce8872f9621c9dbf62cbfe940e47e41bf5aaa69ba982ebb60c"
+    "review-pending.md": "b285c8554c1a5fce8872f9621c9dbf62cbfe940e47e41bf5aaa69ba982ebb60c",
+    "preservation.log": "ab47cd7d1cad9e3249d40384e276af625f0874d563f0a47718e4f25a476e6a3a"
   },
   "offline_checks": "v3/validation.log: TASK_VALIDITY_V3_CORPUS_PASS",
   "review": "pending due to configured non-Claude reviewer usage limit",
