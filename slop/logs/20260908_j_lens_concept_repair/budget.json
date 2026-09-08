@@ -13,7 +13,7 @@
     "metered_not_final_invoice": true
   },
   "external_review_reserve_usd": "8.00",
-  "external_review_reserve_basis": "The timed-out empirical-candor endpoint review has no delivered verdict and its provider usage is not a receipt. Retain $1.00 for each of six prior requests, the failed endpoint-review attempt, and one bounded endpoint-review retry."
+  "external_review_reserve_basis": "The timed-out empirical-candor endpoint review has no delivered verdict and its provider usage is not a receipt. Retain $1.00 for each of six prior requests, the failed endpoint-review attempt, and one bounded endpoint-review retry.",
   "completed_dev_judging_cost_usd": "0.02379654",
   "completed_dev_judging_cost_source": "judging-cost-reconciliation.json records $0.01799770 for earlier judged DEV work. empirical-candor-dev-judgment-summary.md records $0.00579884 for 37 new candidness AB/BA calls. These are provider usage records, not invoices.",
   "known_modal_external_reserve_and_judging_usd": "8.50204146",

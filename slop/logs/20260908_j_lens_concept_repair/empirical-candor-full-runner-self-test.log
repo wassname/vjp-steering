@@ -1,0 +1,5 @@
+2026-09-08 18:59:26.416 | WARNING  | experiment:validate_extraction_identity:547 - EXPLICIT_LEGACY_EXTRACTION_REUSE source_implementation=fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31 current_implementation=b73a35fbd5587aa363531600b5b0e7ae5c9d13106f1980638b210df33c1830b7
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+J_LENS_CONCEPT_RANDOM_CONTROL_SELF_TEST_PASS seeded=true norm_matched=true
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true

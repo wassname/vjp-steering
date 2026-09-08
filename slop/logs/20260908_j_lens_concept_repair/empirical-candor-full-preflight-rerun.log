@@ -1,0 +1,1 @@
+EMPIRICAL_CANDOR_FULL_PREFLIGHT_PASS cohort=100 orders=AB,BA passes=1 source_side=+C behavior_target=candidness C=0.5 layers=13-21 mask=all_attended_prefill_positions random_arm=absent modal_timeout_seconds=900 renderer=formative_experiment_only primary_merge=not_implemented

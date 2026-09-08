@@ -87,6 +87,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reuse-extraction-from", default="")
     parser.add_argument("--reuse-component-extraction-from", default="")
     parser.add_argument("--component-empirical-candor", action="store_true")
+    parser.add_argument("--selected-empirical-candor-full", action="store_true")
     parser.add_argument("--behavior-target", choices=("", "candidness"), default="")
     parser.add_argument("--lens-file", type=Path)
     parser.add_argument("--local", action="store_true")
@@ -133,8 +134,10 @@ def parse_args() -> argparse.Namespace:
     if not args.concept_sides or len(set(args.concept_sides)) != len(args.concept_sides) or set(args.concept_sides) - {"+C", "-C"}:
         raise ValueError("concept sides must be a nonempty unique subset of +C,-C")
     if args.component_empirical_candor:
-        if args.method != COMPONENT_PAIR_METHOD or not args.dev:
-            raise ValueError("empirical candidness is DEV-only for component-pair J-lens")
+        if args.method != COMPONENT_PAIR_METHOD:
+            raise ValueError("empirical candidness requires component-pair J-lens")
+        if args.dev == args.selected_empirical_candor_full:
+            raise ValueError("empirical candidness requires DEV or explicit selected full, not both")
         if args.concept_sides != ("+C",) or args.behavior_target != "candidness":
             raise ValueError("empirical candidness requires source side +C and behavior target candidness")
         if args.concept_application_mask != "user_turn":
@@ -145,8 +148,10 @@ def parse_args() -> argparse.Namespace:
             raise ValueError("empirical candidness is fixed to source coefficient .5")
         if args.coefficients_minus:
             raise ValueError("empirical candidness has no source -C arm")
-        if args.random_control_coefficient != 0.5:
-            raise ValueError("empirical candidness control is fixed to coefficient .5")
+        if args.dev and args.random_control_coefficient != 0.5:
+            raise ValueError("empirical candidness DEV control is fixed to coefficient .5")
+        if args.selected_empirical_candor_full and args.random_control_seed is not None:
+            raise ValueError("selected empirical candidness full has no random arm")
     elif args.reuse_component_extraction_from:
         raise ValueError("component extraction reuse requires the empirical-candor route")
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
@@ -933,7 +938,7 @@ def concept_grid(args):
 
 
 def gpu_stage(args: argparse.Namespace) -> None:
-    if args.method in CONCEPT_METHODS and not args.dev:
+    if args.method in CONCEPT_METHODS and not args.dev and not args.selected_empirical_candor_full:
         raise ValueError("concept intervention is DEV-only")
     profile_name = "dev" if args.dev else "full"
     limit = DEV.cohort_size if args.dev else FULL.cohort_size
@@ -957,6 +962,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             "j_lens_source": args.j_lens_source,
             "persona_direction": args.persona_direction,
             "component_empirical_candor": args.component_empirical_candor,
+            "selected_empirical_candor_full": args.selected_empirical_candor_full,
             "source_side": "+C" if args.component_empirical_candor else None,
             "behavior_target": args.behavior_target or None,
         },
@@ -1029,7 +1035,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
         vector=None,
     )
     if "grid" not in manifest:
-        if not args.dev:
+        if not args.dev and not args.selected_empirical_candor_full:
             raise RuntimeError("full mode requires its automatic dev stage first")
         if args.method in CONCEPT_METHODS:
             meanings = (
@@ -1066,7 +1072,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
         "+C": [float(value) for value in args.coefficients_plus.split(",") if value],
         "-C": [float(value) for value in args.coefficients_minus.split(",") if value],
     }
-    if not args.dev and any(not coefficients[side] for side in ("+C", "-C")):
+    if not args.dev and not args.selected_empirical_candor_full and any(not coefficients[side] for side in ("+C", "-C")):
         raise ValueError("full GPU stage requires DEV-accepted candidates for both sides")
     generated_cells = 0
     encoded_prompts = None
@@ -1240,6 +1246,8 @@ def modal_stage(
         command.extend(["--reuse-component-extraction-from", args.reuse_component_extraction_from])
     if args.component_empirical_candor:
         command.extend(["--component-empirical-candor", "--behavior-target", args.behavior_target])
+    if args.selected_empirical_candor_full:
+        command.append("--selected-empirical-candor-full")
     if args.concept_layers:
         command.extend(["--concept-layers", args.concept_layers])
     if args.random_control_seed is not None:
@@ -1271,7 +1279,7 @@ def modal_stage(
 
 
 def local_pipeline(args: argparse.Namespace) -> None:
-    if args.method in CONCEPT_METHODS and not args.dev:
+    if args.method in CONCEPT_METHODS and not args.dev and not args.selected_empirical_candor_full:
         raise ValueError("concept intervention is DEV-only; full confirmation is not authorized")
     if args.local:
         args.gpu_stage = True

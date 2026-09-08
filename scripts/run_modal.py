@@ -299,6 +299,31 @@ def j_lens_component_empirical_candor_dev(
 
 
 @app.local_entrypoint()
+def j_lens_component_empirical_candor_full(
+    experiment_id: str = "j-lens-components-empirical-candor-full-v1",
+):
+    argv = [
+        "--experiment-id", experiment_id,
+        "--model", MODEL,
+        "--dtype", "bfloat16",
+        "--n-pairs", "200",
+        "--batch-size", "32",
+        "--extract-batch-size", "8",
+        "--max-length", "384",
+        "--max-new-tokens", "512",
+        "--coefficients-plus", "0.5",
+        "--concept-sides=+C",
+        "--component-empirical-candor",
+        "--selected-empirical-candor-full",
+        "--behavior-target", "candidness",
+        "--reuse-component-extraction-from", "j-lens-behavior-components-target-ordered-source-v8",
+    ]
+    manifest = json.loads(run_j_lens_concept_repair.remote("j_lens_concept_components", argv))
+    output = pull_experiment(experiment_id)
+    print(f"J_LENS_COMPONENT_EMPIRICAL_CANDOR_FULL_COMPLETE id={manifest['experiment_id']} output={output}")
+
+
+@app.local_entrypoint()
 def persona_prompt_control(
     experiment_id: str = "j-lens-persona-prompt-control-exact-flaw-dev-v3",
 ):
