@@ -21,3 +21,9 @@ Job `777` was queued in that lane, then removed before it could start. Its gener
 The replacement uses `scripts/run_modal.py::j_lens_concept_repair_dev`. Its one H100 container has a 900-second Modal timeout, one container, and no retry loop. It passed local Modal entrypoint help and Python compilation.
 
 Pueue reused ID `777` for the replacement job after removal. The new job is queued in the paused default lane with priority 1. Its command is `uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev`. PI attached a fresh `pqf 777` follower for native completion notification.
+
+## Monitor update, 2026-09-08
+
+`pueue group` still reports `default` as `paused` with one parallel slot. Job `777` remains `Queued`; its recorded start and end are both null. The follower process `pqf 777 100000` is still running. `uv run modal app list` returned no active Modal apps, so this queue state has not made a paid Modal launch.
+
+Pueue state contains only the paused flag. Its configuration has `pause_group_on_failure: false`, and there is no running default-lane task. The cause is therefore not an automatic failure pause visible in the saved state. It is probably a manually persisted shared-lane pause. Only the owner who paused `default` can resume it safely. The required action is `pueue parallel 1 --group default` only if needed to preserve the one-slot limit, then `pueue start --group default` by that owner. PI will not do this on a shared lane.
