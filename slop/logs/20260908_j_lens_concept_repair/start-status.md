@@ -37,3 +37,7 @@ Job `777` completed successfully in 75 seconds. Modal app `ap-Q0l7Hrx5rsBq3RkPkJ
 The independent raw-response audit passed, and is saved at [../../reviews/j_lens_concept_dev_repair_generation_audit.md](../../reviews/j_lens_concept_dev_repair_generation_audit.md). It found all five arms complete, task-responsive, and valid for unchanged-rubric comparison.
 
 All 120 AB/BA DEV judgment cells are complete: 66 new calls and 54 content-keyed cached cells. [judging.log](judging.log) preserves the commands and completion counts. Order-mapped results, strict reversals, and tie disagreements are saved in `judgment-order-audit-*.json` and summarized in [judgment-summary.log](judgment-summary.log). An independent judgment audit is in progress. No endpoint selection, all-100 run, or plot update has started.
+
+## Scheduled queue check, 2026-09-08
+
+Job `777` is `Done: Success` in dedicated group `modal`. The local `default` group is still paused, but it did not block this Modal job and was not changed.
