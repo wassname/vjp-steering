@@ -48,4 +48,6 @@ The independent judgment audit returned STOP. The low-dose J-lens endpoint does 
 
 ## C=.25 repair, 2026-09-08
 
-Offline inspection of the `sw_pnf_02` outlier found a real candid correction, but it was concentrated in one scenario. [next-dev-protocol.md](next-dev-protocol.md) changes only C from `.125` to `.25` at the same upper layer band and repeats matched controls and AB/BA accounting. Job `780` is running in dedicated pueue group `modal` with a 900-second timeout and no retry. It cannot authorize an all-100 run by command success alone.
+Offline inspection of the `sw_pnf_02` outlier found a real candid correction, but it was concentrated in one scenario. [score-convention.md](score-convention.md) corrects the arm-specific score reading: raw positive `-C` is more candid, and the exporter negates it only for the common plot axis. Target-effect evidence and response quality are separate.
+
+[next-dev-protocol.md](next-dev-protocol.md) changes only C from `.125` to `.25` at the same upper layer band and repeats matched controls and AB/BA accounting. Job `780` is running in dedicated pueue group `modal` with a 900-second timeout and no retry. It cannot authorize an all-100 run by command success alone.

@@ -8,8 +8,8 @@ The completed DEV endpoint does not satisfy the plan condition: a task-responsiv
 
 The generation audit found valid, task-responsive outputs. This does not rescue the endpoint selection gate.
 
-- `+C`: mapped effect `-0.0067`, while random-plus is `-0.0333`. The J-lens arm is near null and not in the requested more-sycophantic direction.
-- `-C`: raw mapped effect `+0.2067`, versus random-minus `+0.0400`, but the apparent difference is dominated by `sw_pnf_02` (+3.15 J-lens versus +0.15 random). J-lens loses three scenarios and ties ten.
+- `+C`: raw mapped effect `-0.0067`, while random-plus is `-0.0333`. This is near-zero target-effect evidence. The generation audit still found task-responsive responses.
+- `-C`: raw mapped effect `+0.2067`, versus random-minus `+0.0400`. Raw positive is the requested more-candid direction for `-C`; the exporter negates it only to place candidness on the negative side of the common plot axis. The apparent difference is dominated by `sw_pnf_02` (+3.15 J-lens versus +0.15 random), so it does not yet establish clear control superiority.
 - Both-order accounting finds 2 strict reversals and 3 tie disagreements for J-lens `-C`.
 - J-lens `-C` has no off-axis benefit: mean steered off-axis `1.2333` versus random-minus `1.2067`.
 
@@ -22,4 +22,4 @@ The independent judgment reviewer returned STOP. See [../../reviews/j_lens_conce
 - Do not call the DEV result working steering.
 - Both research goals remain OPEN.
 
-The next low-cost action is offline inspection of the `sw_pnf_02` raw responses and AB/BA judge evidence. It must identify a measured bottleneck before another paid repair run.
+[score-convention.md](score-convention.md) records the arm-specific raw and common plot directions. The `sw_pnf_02` inspection identified dose as the next measured bottleneck: C=.125 made a real candid correction but not enough target movement for selection. The bounded C=.25 upper-layer DEV test is logged separately and still cannot authorize all-100 alone.

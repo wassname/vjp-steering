@@ -86,7 +86,7 @@ The order-mapped summary is the main result:
 >
 > `random-minus ('-C', 0.125, 'random_minus') mapped_effect 0.039999999999999994 ... reversals 3 tie_disagreements 4`
 
-Source: [judgment-summary.log](../logs/20260908_j_lens_concept_repair/judgment-summary.log). For the negative target, downstream summaries must sign the raw effect before comparing it to the desired candid direction. The raw value is retained here to make order mapping inspectable.
+Source: [judgment-summary.log](../logs/20260908_j_lens_concept_repair/judgment-summary.log). Raw mapped effects are steered-minus-bare under the arm-specific judge target. Thus raw `-C` positive is more candid, its requested direction. The exporter negates only `-C` to put candidness on the negative side of the common plot axis. See [score convention](../logs/20260908_j_lens_concept_repair/score-convention.md).
 
 The independent judgment reviewer checked that transformation and the control comparison:
 
@@ -106,7 +106,7 @@ Source: [judgment audit](../reviews/j_lens_concept_dev_repair_judgment_audit.md)
 | baseline and control | Bare is same cohort/order. Random controls have matched per-layer norm and low source cosine in manifest. Raw audit reports `j_plus same_as_random_plus 8` and `j_minus same_as_random_minus 9`. |
 | complete sample review | Independent reviewer read all 75 complete responses. It reports no task loss and lists every scenario's equality relation. |
 | worst metric pattern | Minus direction's mean advantage is dominated by `sw_pnf_02`; it has `+3.15` J-lens versus `+0.15` random. This is not broad replication. |
-| surprise | Plus did not move toward its requested target despite random control: `-0.0067` raw mapped effect. Explained: the selected low dose is effectively null on most DEV rows. |
+| surprise | Plus has a near-zero target contrast, `-0.0067` raw mapped effect, despite a task-responsive generation audit. Explained: target-effect evidence is weak at this endpoint; it does not imply response-quality failure. |
 | missing to trust | Independent generation seed, another judge seed/model, and a held-out cohort. Exact execution revision is absent. |
 | competing diagnoses | H1-H4 below. |
 | fresh review | [generation audit](../reviews/j_lens_concept_dev_repair_generation_audit.md) found outputs valid for judging; [judgment audit](../reviews/j_lens_concept_dev_repair_judgment_audit.md) returned STOP for full endpoint selection. |
@@ -117,12 +117,12 @@ Source: [judgment audit](../reviews/j_lens_concept_dev_repair_judgment_audit.md)
 
 ### H1 [method | Likely | 65%]
 
-- **Mechanism:** The saved mean100 GP16 concept contrast at layers 18-24 and `.125` does not causally encode broad sycophancy/candid behavior in this model.
+- **Mechanism:** The saved mean100 GP16 concept contrast at layers 18-24 and `.125` produces target-effect evidence too small and concentrated to select this endpoint over its random control.
 - **Evidence:** "J-lens +C ... `-0.006666...`" and the independent review's "mean advantage is therefore dominated by one scenario’s **+3.00** differential" from [judgment summary](../logs/20260908_j_lens_concept_repair/judgment-summary.log) and [judgment audit](../reviews/j_lens_concept_dev_repair_judgment_audit.md).
 - **Contrary evidence:** The minus arm has a small raw mean difference versus its control, `+0.2067` versus `+0.0400`.
 - **Discriminating test:** Inspect the full judge records for `sw_pnf_02` and identify whether one response fact, length, or false-premise correction caused the +3.00 difference. A broad causal direction predicts several independent changed rows, not one outlier.
 - **Fix/action:** Do not select an all-100 endpoint. Retain the vector and records; identify the outlier mechanism before changing representation, layer band, or dose.
-- **Interpretability:** partial. This exact endpoint is a credible negative result, not a rejection of J-lens generally.
+- **Interpretability:** partial. This exact endpoint lacks enough evidence for selection; it is not a rejection of J-lens generally.
 
 ### H2 [measurement | Likely | 60%]
 
@@ -153,11 +153,11 @@ Source: [judgment audit](../reviews/j_lens_concept_dev_repair_judgment_audit.md)
 
 ## Decision
 
-1. **Resolve-condition verdict:** not met. The job label requires a "task-responsive arm only if it exceeds same-sign norm-matched random control without damage". The generation condition is met, but clear control superiority is not.
+1. **Resolve-condition verdict:** not met for selecting this endpoint. The job label requires a "task-responsive arm only if it exceeds same-sign norm-matched random control without damage". Generation quality is met; raw `-C` is in its requested candid direction; clear control superiority is not established.
 2. **Validity:** `P(result is invalid) ≈ 0.20-0.35`, where invalid means wrong arm identity, broken generation, wrong rubric, or mishandled order. This is an inconclusive but credible negative result for the tested endpoint.
-3. **Highest-information clues:** (1) plus is near zero and wrong target direction, (2) minus control advantage comes from one +3.00 scenario, (3) AB/BA strict reversals and ties occur in both J-lens and control arms.
+3. **Highest-information clues:** (1) plus target contrast is near zero, while its responses remain task-responsive, (2) minus control advantage comes from one +3.00 scenario, (3) AB/BA strict reversals and ties occur in both J-lens and control arms.
 4. **Missing metrics:** first, raw judge evidence for `sw_pnf_02`; second, independent judge seed/model; third, held-out endpoint replication; fourth, executed revision capture.
 5. **Bugs requiring code changes:** no demonstrated semantic bug. Record source revision in a future runner before new generation.
-6. **Misconceptions requiring reinterpretation:** a clean low-dose output and a positive mean minus score do not establish working J-lens steering. The full plot is not authorized.
-7. **What would change the verdict:** several scenario-level J-lens-minus advantages over same-sign random, stable under both order views and a fresh judge, would support a full endpoint. A rerun that reproduces only the `sw_pnf_02` outlier would strengthen the current STOP.
+6. **Misconceptions requiring reinterpretation:** clean output quality and a target-direction raw `-C` score do not establish endpoint selection. The full plot is not authorized.
+7. **What would change the verdict:** reproducible same-sign control superiority under both order views and a fresh judge would support a full endpoint. A rerun that only shifts the `sw_pnf_02` outlier would leave endpoint evidence limited.
 8. **Recommended sequence:** save this STOP decision, inspect the `sw_pnf_02` complete responses and judge evidence offline, then write one new measured-bottleneck protocol. Keep both goals open. Do not launch all-100 generation or render a DEV point into the public plot.

@@ -23,7 +23,7 @@ At layers 18-24 and C=.125, J-lens `-C` corrected the fabricated TCA premise in 
 - Cohort: existing DEV-15 and its existing order.
 - Generation: bare, J-lens plus/minus, random-plus/minus in one 900-second H100 container, no retry.
 - Judgment: unchanged rubric, AB and BA, arm-mapped order audit. AB/BA is one scenario-arm pair, not two samples.
-- Selection: no full endpoint unless an independent audit finds a task-responsive J-lens arm clearly better than its same-sign random control across more than an outlier scenario. No DEV plot.
+- Selection: no full endpoint unless an independent audit finds a task-responsive J-lens arm clearly better than its same-sign random control under unchanged-rubric AB/BA accounting. The outlier is diagnostic evidence, not an automatic pass or failure rule. No DEV plot.
 
 ## Exact command
 
