@@ -1,0 +1,17 @@
+# J-lens repair start status
+
+PI/OpenAI Codex, 2026-09-08.
+
+| item | observed status | source |
+|---|---|---|
+| branch and pushed HEAD | `dev3`, `5531a1d1093a4107ea6f53bec09da88a3a991673` | `git rev-parse HEAD origin/dev3` |
+| pi background processes | none | `process list` |
+| pueue client at start | unavailable, `/run/user/1000/pueue_code.socket` absent | `pq` and `pueue group` |
+| pueue after local daemon start | `default` has one slot but is paused; other repositories have queued work | `pueue status --json`, `pueue group` |
+| Modal apps billed today | source-stage apps only | Modal billing report |
+| preserved old DEV records | present but untracked alongside other concurrent work | `git status --short` |
+| synthetic v4 work | untracked PI-created draft, abandoned under v13 scope | `slop/logs/20260908_j_lens_task_validity_corpus/v4/` |
+
+The working tree contains many unrelated modified and untracked files from concurrent work. This repair will not stage, edit, remove, or infer provenance for them.
+
+PI started a local `pueued` process only to inspect the queue. The shared `default` lane is paused. PI will not unpause another owner's GPU lane or bypass pueue. No repair job is started until its owner resumes the lane.

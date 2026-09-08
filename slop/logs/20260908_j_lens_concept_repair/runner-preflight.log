@@ -1,0 +1,6 @@
+$ uv run python scripts/experiment.py j_lens_concept --self-test && uv run python -m py_compile scripts/judge.py scripts/run_modal.py
+2026-09-08 14:46:08.220 | WARNING  | experiment:validate_extraction_identity:491 - EXPLICIT_LEGACY_EXTRACTION_REUSE source_implementation=fc65ee58b5f5b4fc5d952cd0439f0e0f84f7f2ede2e06e7d1bb2134ff0085d31 current_implementation=ff42a271af22aaf5d51cc8d8962ebc1771d0c5e4f54c077fe757c0d3d4f0b62a
+J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact
+J_LENS_CONCEPT_RANDOM_CONTROL_SELF_TEST_PASS seeded=true norm_matched=true
+EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18
+J_LENS_CONCEPT_SELF_TEST_PASS nonnegative=true exact_fit=true zero_residual=true signed=true padding=true single_token=true cleanup=true reload=true cache_rejection=true

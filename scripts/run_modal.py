@@ -545,6 +545,8 @@ def experiment(
     j_lens_source: str = "concept",
     persona_direction: str = "j_gp16",
     reuse_extraction_from: str = "",
+    random_control_seed: int | None = None,
+    random_control_coefficient: float | None = None,
     verify_extraction: bool = False,
 ):
     if profile not in {"dev", "full"}:
@@ -565,6 +567,13 @@ def experiment(
         argv.extend(["--reuse-extraction-from", reuse_extraction_from])
     if concept_layers:
         argv.extend(["--concept-layers", concept_layers])
+    if random_control_seed is not None:
+        if random_control_coefficient is None:
+            raise ValueError("random control requires coefficient")
+        argv.extend([
+            "--random-control-seed", str(random_control_seed),
+            "--random-control-coefficient", str(random_control_coefficient),
+        ])
     if j_lens_source != "concept":
         argv.extend(["--j-lens-source", j_lens_source])
     if persona_direction != "j_gp16":

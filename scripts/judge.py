@@ -94,6 +94,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--side", choices=("+C", "-C"))
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--all-generated", action="store_true")
+    parser.add_argument("--control", choices=("random_plus", "random_minus"))
     return parser.parse_args()
 
 
@@ -238,6 +239,7 @@ def experiment_rows(
     side_filter: str | None = None,
     coefficient_filter: float | None = None,
     all_generated: bool = False,
+    control: str | None = None,
 ) -> list[dict]:
     profile_ = DEV if profile_name == "dev" else FULL
     root = experiment_dir(experiment_id)
@@ -246,6 +248,42 @@ def experiment_rows(
     bare = {record["scenario"]: record for record in bare_records[: profile_.cohort_size]}
     if len(bare) != profile_.cohort_size:
         raise ValueError(f"{profile_name} bare cohort is incomplete")
+    if control is not None:
+        control_spec = manifest.get("controls", {}).get(control)
+        if control_spec is None:
+            raise ValueError(f"experiment does not contain control={control}")
+        if control_spec["profile"] != profile_name:
+            raise ValueError(f"control={control} is not generated for profile={profile_name}")
+        if side_filter is not None and side_filter != control_spec["side"]:
+            raise ValueError(f"control={control} has side={control_spec['side']}")
+        if coefficient_filter is not None and not isclose(
+            coefficient_filter, control_spec["coefficient"], rel_tol=1e-10
+        ):
+            raise ValueError(f"control={control} has C={control_spec['coefficient']}")
+        control_records = [
+            json.loads(line)
+            for line in (root / control_spec["path"]).read_text().splitlines()
+        ][: profile_.cohort_size]
+        if len(control_records) != profile_.cohort_size:
+            raise ValueError(f"incomplete {profile_name} control={control}")
+        rows = []
+        for record in control_records:
+            bare_record = bare[record["scenario"]]
+            rows.append({
+                "run": experiment_id,
+                "method": manifest["method"],
+                "side": control_spec["side"],
+                "coefficient": control_spec["coefficient"],
+                "vignette": record["scenario"],
+                "prompt": bare_record["prompt"],
+                "bare": bare_record["text"],
+                "steered": record["text"],
+                "source": str(root / control_spec["path"]),
+                "profile": profile_name,
+                "control": control,
+            })
+        logger.info("experiment control id={} profile={} control={} demo_sides={}", experiment_id, profile_name, control, len(rows))
+        return rows
     if profile_name == "dev" or all_generated:
         candidates = {
             side: [
@@ -663,10 +701,11 @@ def main() -> None:
             side_filter=args.side,
             coefficient_filter=args.coefficient,
             all_generated=args.all_generated,
+            control=args.control,
         )
         cells = required_cells(rows, profile_.orders, profile_.passes)
     else:
-        if legacy_selection != 1 or args.profile is not None or args.side is not None:
+        if legacy_selection != 1 or args.profile is not None or args.side is not None or args.control is not None:
             raise ValueError("select exactly one of --run, --walks, or --walk-id")
         rows = manifest(args.run, args.walks, args.walk_id)
         cells = required_cells(rows)

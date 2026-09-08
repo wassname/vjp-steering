@@ -24,7 +24,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 import walk
 from vjp_steering.j_lens_concept import (
-    COMPONENT_PAIR_METHOD, COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION,
+    COMPONENT_PAIR_METHOD, COMPONENT_PAIR_REPRESENTATION_SOURCE, COMPONENT_PAIR_VERSION, JLensConceptC,
     LEGACY_EXTRACTION_IMPLEMENTATION_SHA256,
     PERSONA_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_COMPONENT_PAIR_VERSION,
     PERSONA_FULL_COMPONENT_PAIR_REPRESENTATION_SOURCE, PERSONA_FULL_COMPONENT_PAIR_VERSION,
@@ -98,6 +98,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
     parser.add_argument("--concept-layers", default="")
+    parser.add_argument("--random-control-seed", type=int)
+    parser.add_argument("--random-control-coefficient", type=float)
     parser.add_argument(
         "--j-lens-source", choices=("concept", "persona", "persona_prefill", "persona_components"),
         default="concept",
@@ -111,6 +113,12 @@ def parse_args() -> argparse.Namespace:
         default="outputs/audits/20260905_j_lens_paper_native/diagnostic.json",
     )
     args = parser.parse_args()
+    if (args.random_control_seed is None) != (args.random_control_coefficient is None):
+        raise ValueError("random control requires both seed and coefficient")
+    if args.random_control_seed is not None and (
+        args.method != "j_lens_concept" or not args.dev or args.random_control_coefficient <= 0
+    ):
+        raise ValueError("random control is DEV-only for j_lens_concept with a positive coefficient")
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     return args
 
@@ -170,6 +178,43 @@ def vector_sha256(vector: Vector) -> str:
                 digest.update(f"{kind}:{layer}:{name}:{value.dtype}:{tuple(value.shape)}".encode())
                 digest.update(value.reshape(-1).view(torch.uint8).numpy().tobytes())
     return digest.hexdigest()
+
+
+def random_matched_concept_vector(vector: Vector, seed: int) -> tuple[Vector, dict]:
+    if vector.cfg.method != "j_lens_concept":
+        raise ValueError("random concept control requires j_lens_concept")
+    generator = torch.Generator(device="cpu").manual_seed(seed)
+    stacked, layer_checks = {}, {}
+    for layer in vector.cfg.layers:
+        source = vector.stacked[layer]["v"].sum(0).detach().float().cpu()
+        random_direction = torch.randn(source.shape, generator=generator)
+        random_direction = random_direction / random_direction.norm() * source.norm()
+        stacked[layer] = {"v": random_direction.unsqueeze(0).to(vector.stacked[layer]["v"].dtype)}
+        layer_checks[str(layer)] = {
+            "source_norm": source.norm().item(),
+            "random_norm": random_direction.norm().item(),
+            "cosine": torch.nn.functional.cosine_similarity(source, random_direction, dim=0).item(),
+        }
+    cfg = type(vector.cfg)(layers=tuple(vector.cfg.layers))
+    cfg.dtype = vector.cfg.dtype
+    return Vector(cfg, {}, stacked), layer_checks
+
+
+def random_control_complete(manifest: dict, root: Path, args: argparse.Namespace, limit: int) -> bool:
+    if args.random_control_seed is None:
+        return True
+    controls = manifest.get("controls", {})
+    for name in ("random_plus", "random_minus"):
+        control = controls.get(name)
+        if not control:
+            return False
+        if control["seed"] != args.random_control_seed or not math.isclose(
+            control["coefficient"], args.random_control_coefficient, rel_tol=1e-12
+        ):
+            return False
+        if len(read_jsonl(root / control["path"])) < limit:
+            return False
+    return True
 
 
 def load_model(args: argparse.Namespace):
@@ -847,7 +892,11 @@ def gpu_stage(args: argparse.Namespace) -> None:
             manifest["grid"] = expanded_grid
             atomic_json(manifest_path(args.experiment_id), manifest)
     completed_cells = completed_profile_cell_count(args, manifest, root, profile_name, limit)
-    if completed_cells is not None and not args.verify_extraction:
+    if (
+        completed_cells is not None
+        and random_control_complete(manifest, root, args, limit)
+        and not args.verify_extraction
+    ):
         logger.info(
             "GPU_STAGE_COMPLETE experiment={} profile={} cells={} reused=true",
             args.experiment_id,
@@ -957,6 +1006,50 @@ def gpu_stage(args: argparse.Namespace) -> None:
             manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = cell
             atomic_json(manifest_path(args.experiment_id), manifest)
             generated_cells += 1
+    if args.random_control_seed is not None:
+        random_vector, layer_checks = random_matched_concept_vector(
+            vectors["+C"], args.random_control_seed
+        )
+        assert encoded_prompts is not None and encoded_prompt_patch_mask is not None
+        for side, name in (("+C", "random_plus"), ("-C", "random_minus")):
+            random_path = root / "controls" / f"{name}.jsonl"
+            random_records = extend_generation(
+                random_path,
+                rows,
+                prompts,
+                model,
+                tokenizer,
+                args,
+                profile_name=profile_name,
+                side=side,
+                coefficient=args.random_control_coefficient,
+                vector=random_vector,
+            )
+            random_stats, random_reasons = generation_health(
+                args, tokenizer, [record["text"] for record in random_records]
+            )
+            manifest.setdefault("controls", {})[name] = {
+                "kind": "seeded_norm_matched_random_direction",
+                "profile": profile_name,
+                "seed": args.random_control_seed,
+                "side": side,
+                "coefficient": args.random_control_coefficient,
+                "path": str(random_path.relative_to(root)),
+                "rows": len(random_records),
+                "vector_content_sha256": vector_sha256(random_vector),
+                "source_vector_content_sha256": vector_sha256(vectors["+C"]),
+                "per_layer": layer_checks,
+                "health": random_stats,
+                "breakdown_reasons": random_reasons,
+                "realized_prefill": prefill_diagnostics(
+                    model,
+                    random_vector,
+                    encoded_prompts.input_ids,
+                    encoded_prompts.attention_mask,
+                    applied_coefficient(args.method, side, args.random_control_coefficient),
+                    patch_mask=encoded_prompt_patch_mask,
+                ),
+            }
     manifest["profiles"][profile_name] = {
         "status": "DEV" if args.dev else "FORMATIVE",
         "cohort_size": limit,
@@ -1005,6 +1098,11 @@ def modal_stage(
         command.extend(["--reuse-extraction-from", args.reuse_extraction_from])
     if args.concept_layers:
         command.extend(["--concept-layers", args.concept_layers])
+    if args.random_control_seed is not None:
+        command.extend([
+            "--random-control-seed", str(args.random_control_seed),
+            "--random-control-coefficient", str(args.random_control_coefficient),
+        ])
     if args.j_lens_source != "concept":
         command.extend(["--j-lens-source", args.j_lens_source])
     if args.persona_direction != "j_gp16":
@@ -1302,6 +1400,19 @@ def self_test() -> None:
         vector.save(str(path))
         assert vector_sha256(Vector.load(str(path))) == vector_sha256(vector)
     print("J_LENS_SWAP_SELF_TEST_PASS alpha0=identity alpha1=coordinate_exchange transfer=exact prompt_only=exact reload=exact")
+
+    concept_vector = Vector(
+        JLensConceptC(layers=(1, 2)),
+        {},
+        {layer: {"v": torch.ones(1, 7)} for layer in (1, 2)},
+    )
+    random_vector, random_checks = random_matched_concept_vector(concept_vector, seed=7)
+    assert vector_sha256(random_vector) == vector_sha256(random_matched_concept_vector(concept_vector, seed=7)[0])
+    for layer in (1, 2):
+        assert math.isclose(
+            random_checks[str(layer)]["source_norm"], random_checks[str(layer)]["random_norm"], rel_tol=1e-2
+        )
+    print("J_LENS_CONCEPT_RANDOM_CONTROL_SELF_TEST_PASS seeded=true norm_matched=true")
 
     assert len(local_grid(1.0)) == GRID_POINTS
     assert math.isclose(local_grid(1.0)[0], GRID_LOW)
