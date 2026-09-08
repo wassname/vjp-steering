@@ -17,6 +17,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--experiment-id")
+    parser.add_argument("--profile", choices=("dev", "full"), default="dev")
     parser.add_argument("--control", choices=("random_plus", "random_minus"))
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
@@ -108,7 +109,7 @@ def main() -> None:
         raise ValueError("--experiment-id and --output are required unless --self-test")
     rows = experiment_rows(
         args.experiment_id,
-        "dev",
+        args.profile,
         all_generated=args.control is None,
         control=args.control,
     )
@@ -117,6 +118,7 @@ def main() -> None:
         "schema": "j_lens_concept_dev_order_audit_v1",
         "experiment_id": args.experiment_id,
         "control": args.control,
+        "profile": args.profile,
         "orders": ["AB", "BA"],
         "sampling": "AB and BA are two order presentations of one scenario-arm pair. mapped_pair_effect is their mean. The pair remains one sample.",
         "summary": summarize(audited),

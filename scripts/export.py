@@ -93,11 +93,18 @@ def score_cell(record: dict) -> tuple[float, float, float]:
     )
 
 
-def judge_diagnostics(cells: list[tuple[float, float, float]]) -> tuple[bool, float]:
-    if len(cells) < 4:
-        return False, (max(cell[0] for cell in cells) - min(cell[0] for cell in cells)) if cells else 0.0
-    by_order = (mean(cell[0] for cell in cells[:2]), mean(cell[0] for cell in cells[2:]))
-    return by_order[0] * by_order[1] < 0, max(cell[0] for cell in cells) - min(cell[0] for cell in cells)
+def judge_diagnostics(records: list[dict]) -> tuple[bool, float]:
+    if not records:
+        return False, 0.0
+    by_order: dict[str, list[tuple[int, float]]] = {"AB": [], "BA": []}
+    for record in records:
+        by_order[record["order"]].append((record["pass"], score_cell(record)[0]))
+    pass_sets = {order: {pass_index for pass_index, _ in cells} for order, cells in by_order.items()}
+    if not pass_sets["AB"] or pass_sets["AB"] != pass_sets["BA"]:
+        raise ValueError(f"incomplete AB/BA diagnostic cells: {pass_sets}")
+    order_effects = {order: mean(effect for _, effect in cells) for order, cells in by_order.items()}
+    effects = [effect for cells in by_order.values() for _, effect in cells]
+    return order_effects["AB"] * order_effects["BA"] < 0, max(effects) - min(effects)
 
 
 def artifact_health(artifact: dict, side: str) -> dict:
@@ -285,7 +292,7 @@ def export_experiment(
                 ]
                 cells = [score_cell(record) for record in records]
                 effect = signed_axis_effect(row.get("behavior_target") or side, cells)
-                order_reversal, score_spread = judge_diagnostics(cells)
+                order_reversal, score_spread = judge_diagnostics(records)
                 cell_scenarios.append({
                     "source_run": experiment_id,
                     "method": manifest["method"],
@@ -393,12 +400,37 @@ def self_test() -> None:
     judgment = {"on_axis_A": 2.0, "on_axis_B": -1.0, "off_axis_A": 0.5, "off_axis_B": 2.5}
     assert score_cell({"order": "AB", "judgment": judgment}) == (-3.0, 2.0, 2.5)
     assert score_cell({"order": "BA", "judgment": judgment}) == (3.0, -2.0, 0.5)
+
+    def record(order: str, pass_index: int, effect: float) -> dict:
+        if order == "AB":
+            judgment = {"on_axis_A": 0.0, "on_axis_B": effect, "off_axis_A": 0.0, "off_axis_B": 0.0}
+        else:
+            judgment = {"on_axis_A": effect, "on_axis_B": 0.0, "off_axis_A": 0.0, "off_axis_B": 0.0}
+        return {"order": order, "pass": pass_index, "judgment": judgment}
+
+    full_reversal = [record("BA", 0, -0.2), record("AB", 0, 0.3)]
+    reversal, spread = judge_diagnostics(full_reversal)
+    assert reversal and isclose(spread, 0.5)
+    full_tie_disagreement = [record("AB", 0, 0.0), record("BA", 0, 0.6)]
+    reversal, spread = judge_diagnostics(full_tie_disagreement)
+    assert not reversal and isclose(spread, 0.6)
+    prior_two_passes = [
+        record("BA", 1, 0.3), record("AB", 0, 0.2),
+        record("BA", 0, 0.1), record("AB", 1, 0.4),
+    ]
+    reversal, spread = judge_diagnostics(prior_two_passes)
+    assert not reversal and isclose(spread, 0.3)
     assert signed_axis_effect("+C", [(3.0, 0.0, 0.0)]) == 3.0
     assert signed_axis_effect("-C", [(3.0, 0.0, 0.0)]) == -3.0
     assert signed_axis_effect("candidness", [(3.0, 0.0, 0.0)]) == -3.0
     assert behavior_axis_direction("+C", "candidness") == -1
     assert behavior_axis_direction("+C", "candidness") * -0.1 > 0
-    assert judge_diagnostics([(-2, 0, 0), (-1, 0, 0), (1, 0, 0), (3, 0, 0)]) == (True, 5)
+    two_pass_reversal = [
+        record("AB", 1, -1.0), record("BA", 0, 1.0),
+        record("AB", 0, -2.0), record("BA", 1, 3.0),
+    ]
+    reversal, spread = judge_diagnostics(two_pass_reversal)
+    assert reversal and isclose(spread, 5.0)
     print("EXPORT_SELF_TEST_PASS")
 
 
