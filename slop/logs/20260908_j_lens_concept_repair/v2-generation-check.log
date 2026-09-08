@@ -1,0 +1,9 @@
+$ uv run python -c '<read each DEV arm; assert 15 rows and bare scenario order; compare response bytes>'
+bare same_as_bare 15 unique 15 empty 0
+j_plus same_as_bare 4 unique 15 empty 0
+j_minus same_as_bare 9 unique 15 empty 0
+random_plus same_as_bare 11 unique 15 empty 0
+random_minus same_as_bare 8 unique 15 empty 0
+j_plus same_as_random_plus 4
+j_minus same_as_random_minus 7
+GENERATION_ARM_CHECK_PASS rows=15 scenario_order=matched empty=0

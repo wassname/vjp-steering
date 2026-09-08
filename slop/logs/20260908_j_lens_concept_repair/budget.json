@@ -2,37 +2,37 @@
   "author": "PI/OpenAI Codex",
   "purpose": "v13 J-lens repair from comparable DEV through a conditional all-100 endpoint",
   "whole_block_cap_usd": "40.00",
-  "known_modal_spend_usd": "0.28549420",
+  "known_modal_spend_usd": "0.35640264",
   "known_modal_spend_source": {
     "source_stage_apps": "0.21681039",
-    "job_777_app": "ap-Q0l7Hrx5rsBq3RkPkJqBZ9",
-    "job_777_total_usd": "0.06868381",
-    "billing_report": "job777-billing-report.json",
+    "job_777": {
+      "app": "ap-Q0l7Hrx5rsBq3RkPkJqBZ9",
+      "total_usd": "0.06868381",
+      "billing_report": "job777-billing-report.json"
+    },
+    "job_780": {
+      "app": "ap-EPTMERmPF3o4RRWFWSpdds",
+      "total_usd": "0.07090844",
+      "billing_report": "job780-billing-report.json"
+    },
     "metered_not_final_invoice": true
   },
   "prior_external_review_reserve_usd": "3.00",
   "prior_external_review_reserve_basis": "three completed non-Claude review requests at a conservative accounting bound of $1.00 each; provider emitted no dollar receipt, so this is retained as a reserve rather than claimed spend",
   "prior_external_review_spend_usd": null,
-  "accounted_before_next_dev_usd": "3.28549420",
-  "maximum_remaining_before_next_dev_reservations_usd": "36.71450580",
+  "known_modal_plus_external_reserve_usd": "3.35640264",
+  "maximum_remaining_before_reservations_usd": "36.64359736",
   "reservations_usd": {
-    "completed_dev_judging_unreceipted": "8.00",
-    "next_dev_modal_generation": "2.00",
-    "next_dev_judging": "8.00",
+    "c0125_dev_judging_unreceipted": "8.00",
+    "c025_dev_judging_unreceipted": "8.00",
     "conditional_full_endpoint": "18.00",
-    "unallocated_contingency": "0.71450580"
+    "unallocated_contingency": "2.64359736"
   },
-  "next_dev_modal_reservation_basis": {
-    "experiment_id": "j-lens-concept-dev-repair-v2-upper-c025",
-    "changed_factor": "C=.125 to C=.25 at layers 18-24",
-    "max_container_timeout_seconds": 900,
-    "max_containers": 1,
-    "automatic_retries": 0,
-    "H100_900_seconds_at_3_95_per_hour_usd": "0.98750",
-    "startup_cpu_memory_storage_and_late_billing_allowance_usd": "1.01250"
+  "reservation_basis": {
+    "judging": "Each completed DEV run used up to 120 existing-rubric pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus) x AB/BA. AB/BA remains one scenario-arm sample. The judge provider emitted no dollar receipt, so both $8.00 bounds remain reserved.",
+    "conditional_full_endpoint": "one selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. It is reserved, not authorized.",
+    "modal_reconciliation": "The C=.125 and C=.25 $2.00 Modal upper bounds were released after exact metered reports recorded actual costs."
   },
-  "next_dev_judging_reservation_basis": "up to 120 existing-rubric DEV pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus) x AB/BA. Each AB/BA pair remains one scenario-arm sample.",
-  "conditional_full_endpoint_reservation_basis": "one selected endpoint only, including its generation, existing-rubric full judging, raw-response audit, and rendering; it is not authorized by this reservation",
   "limits": {
     "synthetic_source_work": 0,
     "dev_plot_updates": 0,
@@ -41,6 +41,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "C=.125 endpoint STOPPED before all-100. Job 780 is running the reserved C=.25 upper-layer DEV generation in one bounded Modal container. AB/BA judging remains unstarted. No further paid work fits the cap after this bounded test unless an existing reserve is reconciled and released.",
+  "spend_status": "C=.125 and C=.25 endpoints both STOPPED before all-100. Their generation and unchanged-rubric AB/BA judging are complete. The full-endpoint reserve remains retained but is blocked by the two DEV review decisions. No further paid work is authorized by this reconciliation.",
   "both_research_goals": "OPEN"
 }

@@ -51,3 +51,9 @@ The independent judgment audit returned STOP. The low-dose J-lens endpoint does 
 Offline inspection of the `sw_pnf_02` outlier found a real candid correction, but it was concentrated in one scenario. [score-convention.md](score-convention.md) corrects the arm-specific score reading: raw positive `-C` is more candid, and the exporter negates it only for the common plot axis. Target-effect evidence and response quality are separate.
 
 [next-dev-protocol.md](next-dev-protocol.md) changes only C from `.125` to `.25` at the same upper layer band and repeats matched controls and AB/BA accounting. Job `780` is running in dedicated pueue group `modal` with a 900-second timeout and no retry. It cannot authorize an all-100 run by command success alone.
+
+## C=.25 completion and review, 2026-09-08
+
+Job `780` is `Done: Success` in dedicated group `modal`; Modal app `ap-EPTMERmPF3o4RRWFWSpdds` is stopped. The local `default` group remains paused and did not affect either Modal job. [job780-generation.log](job780-generation.log) records five completed 15-row arms. [v2-generation-check.log](v2-generation-check.log) verifies their common scenario order and no empty responses. The exact metered cost is `$0.07090844`; see [job780-billing-report.json](job780-billing-report.json).
+
+The full controls manifest records the shared random seed, vector hashes, source hash, layer norms, and cosines; see [v2-control-provenance.md](v2-control-provenance.md). The generation review and unchanged-rubric AB/BA review are complete. The C=.25 review returns STOP: TCA has a real but near-equivalent correction at both doses, while the C=.25 aggregate score is entangled with changed ratings for identical bare text. No all-100 generation, judgment, table, or plot update has started. [v2-review-decision.md](v2-review-decision.md) and [the C=.25 audit](../../audits/20260908_j_lens_concept_repair_c025.md) preserve the decision. Both research goals remain open.

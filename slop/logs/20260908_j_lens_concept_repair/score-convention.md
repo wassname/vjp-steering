@@ -23,6 +23,6 @@ The exporter then applies `signed_axis_effect`:
 
 Source: `scripts/export.py`.
 
-That sign flip puts both directions on one plot convention: positive means more sycophancy and negative means more candidness. Thus the raw J-lens `-C` value `+0.2067` is in its requested candid direction; its plot-standardized value is `-0.2067`.
+That sign flip puts both directions on one plot convention: positive means more sycophancy and negative means more candidness. At C=.125, the raw J-lens `-C` value `+0.2067` is in its requested candid direction; its plot-standardized value is `-0.2067`. At C=.25, the corresponding values are `+0.4233` raw and `-0.4233` plot-standardized.
 
 Response quality is separate from target effect. The independent generation audit found every generated response task-responsive. A near-zero or unfavorable target contrast is evidence about this endpoint's behavior, not evidence that the output failed the task.

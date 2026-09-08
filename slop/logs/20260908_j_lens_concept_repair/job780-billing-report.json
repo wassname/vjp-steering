@@ -1,0 +1,5 @@
+[
+  {"object_id":"ap-EPTMERmPF3o4RRWFWSpdds","description":"jsteer-pub","environment":"main","interval_start":"2026-09-08T00:00:00","resource":"Memory","cost":"0.00010916"},
+  {"object_id":"ap-EPTMERmPF3o4RRWFWSpdds","description":"jsteer-pub","environment":"main","interval_start":"2026-09-08T00:00:00","resource":"H100","cost":"0.07022220"},
+  {"object_id":"ap-EPTMERmPF3o4RRWFWSpdds","description":"jsteer-pub","environment":"main","interval_start":"2026-09-08T00:00:00","resource":"CPU","cost":"0.00057708"}
+]
