@@ -60,6 +60,14 @@ def main() -> None:
         assert "requires DEV or explicit selected full" in str(error)
     else:
         raise AssertionError("unapproved component full contract parsed")
+    invalid = tuple(value for value in FULL_ARGS if value not in ("j_lens_concept_components", "--component-empirical-candor"))
+    invalid = ("j_lens_concept", *invalid)
+    try:
+        parsed(invalid)
+    except ValueError as error:
+        assert "requires the component-pair route" in str(error)
+    else:
+        raise AssertionError("selected-full flag unlocked another method")
 
     runner = (ROOT / "scripts/run_modal.py").read_text()
     assert "def j_lens_component_empirical_candor_full(" in runner

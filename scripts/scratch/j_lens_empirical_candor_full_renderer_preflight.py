@@ -50,7 +50,10 @@ def source_root(directory: Path, source_run: str, count: int) -> tuple[Path, Pat
     write_csv(root / "judged_scenarios.csv", ("source_run", "scenario"), scenarios)
     (root / "selected.json").write_text(json.dumps({"sides": {"+C": {"selected_C": 0.5}}}))
     manifest = directory / "manifest.json"
-    manifest.write_text(json.dumps({"candidate": {"source_side": "+C", "behavior_target": "candidness"}}))
+    manifest.write_text(json.dumps({
+        "profiles": {"full": {"status": "FORMATIVE", "generated": True, "cohort_size": 100}},
+        "candidate": {"source_side": "+C", "behavior_target": "candidness"},
+    }))
     return root, manifest
 
 
@@ -72,6 +75,14 @@ def main() -> None:
         assert results.behavior_axis_direction("+C", results._behavior_target(selected_row, manifest_file=manifest)) == -1
         results._summary(rows, methods, method_seeds)
         results.plot(rows, methods, method_seeds, include_rejected=True)
+        try:
+            results.promote_selected_full(
+                "selected-full-test", primary_path=primary, source_root=source, manifest_file=manifest,
+            )
+        except ValueError as error:
+            assert "already contain" in str(error)
+        else:
+            raise AssertionError("promotion accepted a duplicate selected method")
 
         incomplete, incomplete_manifest = source_root(directory / "incomplete", "incomplete-full-test", 99)
         try:

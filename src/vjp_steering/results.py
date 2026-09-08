@@ -978,8 +978,13 @@ def promote_selected_full(
     if len(source_rows) != 1:
         raise ValueError("selected full promotion requires exactly one source result row")
     source = source_rows[0]
-    if source["method"] != SELECTED_FULL_METHOD or source["side"] != "+C" or source["seed"] != "0":
-        raise ValueError("selected full promotion has wrong method, side, or seed")
+    if (
+        source["method"] != SELECTED_FULL_METHOD
+        or source["side"] != "+C"
+        or source["seed"] != "0"
+        or source["source_run"] != experiment_id
+    ):
+        raise ValueError("selected full promotion has wrong method, side, seed, or source run")
     if source["eval_cohort"] != "sycophancy_all100-v10":
         raise ValueError("selected full promotion requires the all-100 cohort")
     with scenarios_path.open(newline="") as handle:
@@ -989,6 +994,9 @@ def promote_selected_full(
     if {row["source_run"] for row in scenarios} != {experiment_id}:
         raise ValueError("selected full scenario rows have another source run")
     manifest = json.loads(manifest_path.read_text())
+    profile = manifest["profiles"]["full"]
+    if profile["status"] != "FORMATIVE" or not profile["generated"] or profile["cohort_size"] != FULL.cohort_size:
+        raise ValueError("selected full promotion lacks a generated all-100 full profile")
     candidate = manifest["candidate"]
     if candidate["source_side"] != "+C" or candidate["behavior_target"] != "candidness":
         raise ValueError("selected full promotion lacks the candidness behavior contract")

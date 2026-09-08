@@ -133,6 +133,8 @@ def parse_args() -> argparse.Namespace:
     args.concept_sides = tuple(args.concept_sides.split(","))
     if not args.concept_sides or len(set(args.concept_sides)) != len(args.concept_sides) or set(args.concept_sides) - {"+C", "-C"}:
         raise ValueError("concept sides must be a nonempty unique subset of +C,-C")
+    if args.selected_empirical_candor_full and not args.component_empirical_candor:
+        raise ValueError("selected empirical candidness full requires the component-pair route")
     if args.component_empirical_candor:
         if args.method != COMPONENT_PAIR_METHOD:
             raise ValueError("empirical candidness requires component-pair J-lens")
@@ -1064,7 +1066,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
                 "operator": extraction["operator"],
                 "source_vector_sha256": extraction["vector_content_sha256"]["+C"],
                 "layers": extraction["application_layers"],
-                "coefficient": grid["+C"],
+                "coefficient": grid["+C"][0] if args.selected_empirical_candor_full else grid["+C"],
                 "application_mask": "all_attended_prefill_positions",
             }
         atomic_json(manifest_path(args.experiment_id), manifest)
