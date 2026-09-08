@@ -1,0 +1,6 @@
+Mapped effects are steered-minus-bare after each order is mapped to arm identity. For the -C target, the existing exporter applies its sign after this table.
+
+j-lens ('+C', 0.125, None) mapped_effect -0.006666666666666702 mean_off_axis_delta 0.0033333333333333327 mean_steered_off_axis 0.36333333333333334 reversals 2 tie_disagreements 1
+j-lens ('-C', 0.125, None) mapped_effect 0.20666666666666664 mean_off_axis_delta 0.026666666666666665 mean_steered_off_axis 1.2333333333333334 reversals 2 tie_disagreements 3
+random-plus ('+C', 0.125, 'random_plus') mapped_effect -0.03333333333333333 mean_off_axis_delta 0.0033333333333333288 mean_steered_off_axis 0.33 reversals 1 tie_disagreements 1
+random-minus ('-C', 0.125, 'random_minus') mapped_effect 0.039999999999999994 mean_off_axis_delta -0.003333333333333342 mean_steered_off_axis 1.2066666666666668 reversals 3 tie_disagreements 4

@@ -1,0 +1,19 @@
+$ uv run python scripts/judge.py --experiment-id j-lens-concept-dev-repair-v1 --profile dev --all-generated --orders AB,BA --refresh
+experiment manifest id=j-lens-concept-dev-repair-v1 profile=dev cells=2 demo_sides=30
+CACHE_CHECK required=60 cached=16 missing=44 API_calls=44
+judge progress=44/44
+JUDGE_COMPLETE required=60 missing=0
+
+$ uv run python scripts/judge.py --experiment-id j-lens-concept-dev-repair-v1 --profile dev --control random_plus --orders AB,BA --refresh
+experiment control id=j-lens-concept-dev-repair-v1 profile=dev control=random_plus demo_sides=15
+CACHE_CHECK required=30 cached=17 missing=13 API_calls=13
+judge progress=13/13
+JUDGE_COMPLETE required=30 missing=0
+
+$ uv run python scripts/judge.py --experiment-id j-lens-concept-dev-repair-v1 --profile dev --control random_minus --orders AB,BA --refresh
+experiment control id=j-lens-concept-dev-repair-v1 profile=dev control=random_minus demo_sides=15
+CACHE_CHECK required=30 cached=21 missing=9 API_calls=9
+judge progress=9/9
+JUDGE_COMPLETE required=30 missing=0
+
+Totals: 120 required AB/BA cells; 54 cached identical-response cells; 66 new judge calls; all required cells complete.
