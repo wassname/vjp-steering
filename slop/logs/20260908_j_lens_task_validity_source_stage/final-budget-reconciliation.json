@@ -1,0 +1,32 @@
+{
+  "author": "PI/OpenAI Codex",
+  "scope": "Modal source-stage allocation only; OpenRouter review spend has no provider dollar receipt and remains separately unreconciled",
+  "global_cap_usd": "40.00",
+  "source_stage_allocation_usd": "2.00000000",
+  "modal_apps": {
+    "ap-FAW0E4RXpgmbCm1yMZPYnL": {
+      "pueue_job": 704,
+      "outcome": "failed before source generation",
+      "H100_usd": "0.02194490",
+      "memory_usd": "0.00003494",
+      "CPU_usd": "0.00029317",
+      "total_usd": "0.02227301"
+    },
+    "ap-obvcLJSqNatyyblyseqPK5": {
+      "pueue_job": 705,
+      "outcome": "clean gate blocked before intervention",
+      "H100_usd": "0.19102252",
+      "memory_usd": "0.00079189",
+      "CPU_usd": "0.00272297",
+      "total_usd": "0.19453738"
+    }
+  },
+  "total_metered_modal_usd": "0.21681039",
+  "unused_source_stage_reservation_released_usd": "1.78318961",
+  "prior_unreserved_after_v3_review_reservation_usd": "5.22509672744",
+  "modal_only_unreserved_after_release_usd": "5.00828633744",
+  "fits_40_usd_cap": true,
+  "billing_artifacts": ["job704-billing-report.log", "job705-billing-report.log"],
+  "metered_not_final_invoice": true,
+  "no_further_source_stage_launch_authorized": true
+}

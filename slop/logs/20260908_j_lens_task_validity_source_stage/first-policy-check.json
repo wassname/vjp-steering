@@ -1,0 +1,824 @@
+{
+  "method": "map each row's first policy action through that row's A/B option order, then compare with saved greedy output",
+  "records": 384,
+  "first_policy_matches": 248,
+  "first_policy_match_rate": 0.6458333333333334,
+  "mismatches": [
+    {
+      "id": "tv3_seal_match_0_allocation_p1_o0_1",
+      "semantic_case_id": "tv1_seal_match_0_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_1_routing_p1_o0_0",
+      "semantic_case_id": "tv1_seal_match_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_1_routing_p1_o1_0",
+      "semantic_case_id": "tv1_seal_match_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_seal_match_1_allocation_p1_o0_0",
+      "semantic_case_id": "tv1_seal_match_1_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_1_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_seal_match_1_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_1_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_seal_match_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_seal_match_2_allocation_p1_o0_1",
+      "semantic_case_id": "tv1_seal_match_2_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_3_storage_p0_o0_0",
+      "semantic_case_id": "tv1_seal_match_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_seal_match_3_storage_p1_o0_0",
+      "semantic_case_id": "tv1_seal_match_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_3_storage_p0_o1_0",
+      "semantic_case_id": "tv1_seal_match_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_3_storage_p1_o1_0",
+      "semantic_case_id": "tv1_seal_match_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_seal_match_3_notification_p0_o0_0",
+      "semantic_case_id": "tv1_seal_match_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_seal_match_3_notification_p1_o0_0",
+      "semantic_case_id": "tv1_seal_match_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_3_notification_p0_o1_0",
+      "semantic_case_id": "tv1_seal_match_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_seal_match_3_notification_p1_o1_0",
+      "semantic_case_id": "tv1_seal_match_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_0_routing_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_0_routing_p1_o0_0",
+      "semantic_case_id": "tv1_capacity_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_0_routing_p0_o1_0",
+      "semantic_case_id": "tv1_capacity_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_0_routing_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_0_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_0_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_capacity_0_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_0_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_1_routing_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_1_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_1_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_2_routing_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_2_routing_p1_o0_0",
+      "semantic_case_id": "tv1_capacity_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_2_routing_p0_o1_0",
+      "semantic_case_id": "tv1_capacity_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_2_routing_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_2_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_2_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_capacity_2_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_2_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_3_storage_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_3_storage_p1_o0_0",
+      "semantic_case_id": "tv1_capacity_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_capacity_3_storage_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_3_notification_p0_o0_0",
+      "semantic_case_id": "tv1_capacity_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_capacity_3_notification_p1_o1_0",
+      "semantic_case_id": "tv1_capacity_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_0_routing_p0_o0_0",
+      "semantic_case_id": "tv1_roster_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_0_routing_p1_o0_0",
+      "semantic_case_id": "tv1_roster_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_0_routing_p0_o1_0",
+      "semantic_case_id": "tv1_roster_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_0_allocation_p1_o0_1",
+      "semantic_case_id": "tv1_roster_0_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_0_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_roster_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_0_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_roster_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_1_routing_p1_o0_0",
+      "semantic_case_id": "tv1_roster_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_1_routing_p0_o1_0",
+      "semantic_case_id": "tv1_roster_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_1_allocation_p0_o1_1",
+      "semantic_case_id": "tv1_roster_1_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_1_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_roster_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_1_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_roster_1_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_2_routing_p0_o0_0",
+      "semantic_case_id": "tv1_roster_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_2_routing_p1_o0_0",
+      "semantic_case_id": "tv1_roster_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_2_routing_p0_o1_0",
+      "semantic_case_id": "tv1_roster_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_2_allocation_p1_o0_1",
+      "semantic_case_id": "tv1_roster_2_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_2_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_roster_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_2_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_roster_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_3_storage_p1_o0_0",
+      "semantic_case_id": "tv1_roster_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_3_notification_p0_o0_0",
+      "semantic_case_id": "tv1_roster_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_roster_3_notification_p1_o0_0",
+      "semantic_case_id": "tv1_roster_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_3_notification_p0_o1_0",
+      "semantic_case_id": "tv1_roster_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_roster_3_notification_p1_o1_0",
+      "semantic_case_id": "tv1_roster_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_0_routing_p0_o0_0",
+      "semantic_case_id": "tv1_parity_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_0_routing_p1_o0_0",
+      "semantic_case_id": "tv1_parity_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_0_routing_p0_o1_0",
+      "semantic_case_id": "tv1_parity_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_0_routing_p1_o1_0",
+      "semantic_case_id": "tv1_parity_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_0_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_parity_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_0_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_parity_0_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_0_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_parity_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_1_routing_p1_o0_0",
+      "semantic_case_id": "tv1_parity_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_1_routing_p1_o1_0",
+      "semantic_case_id": "tv1_parity_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_1_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_parity_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_1_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_parity_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_2_routing_p0_o0_0",
+      "semantic_case_id": "tv1_parity_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_2_routing_p1_o0_0",
+      "semantic_case_id": "tv1_parity_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_2_routing_p0_o1_0",
+      "semantic_case_id": "tv1_parity_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_2_routing_p1_o1_0",
+      "semantic_case_id": "tv1_parity_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_2_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_parity_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_2_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_parity_2_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_2_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_parity_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_3_routing_p1_o0_0",
+      "semantic_case_id": "tv1_parity_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_parity_3_routing_p1_o1_0",
+      "semantic_case_id": "tv1_parity_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_3_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_parity_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_parity_3_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_parity_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_0_routing_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_0_routing_p1_o0_0",
+      "semantic_case_id": "tv1_precedence_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_0_routing_p0_o1_0",
+      "semantic_case_id": "tv1_precedence_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_0_routing_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_0_allocation_p1_o0_1",
+      "semantic_case_id": "tv1_precedence_0_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_0_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_0_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_1_routing_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_1_routing_p1_o0_0",
+      "semantic_case_id": "tv1_precedence_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_1_routing_p0_o1_0",
+      "semantic_case_id": "tv1_precedence_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_1_routing_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_1_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_1_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_2_routing_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_2_routing_p1_o0_0",
+      "semantic_case_id": "tv1_precedence_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_2_routing_p0_o1_0",
+      "semantic_case_id": "tv1_precedence_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_2_routing_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_2_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_2_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_3_storage_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_3_storage_p1_o0_0",
+      "semantic_case_id": "tv1_precedence_3_storage_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_precedence_3_storage_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_3_notification_p0_o0_0",
+      "semantic_case_id": "tv1_precedence_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_precedence_3_notification_p1_o1_0",
+      "semantic_case_id": "tv1_precedence_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_0_routing_p0_o0_0",
+      "semantic_case_id": "tv1_link_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_0_routing_p1_o0_0",
+      "semantic_case_id": "tv1_link_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_0_routing_p0_o1_0",
+      "semantic_case_id": "tv1_link_0_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_0_routing_p1_o1_0",
+      "semantic_case_id": "tv1_link_0_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_0_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_link_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_0_allocation_p1_o0_0",
+      "semantic_case_id": "tv1_link_0_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_0_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_link_0_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_0_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_link_0_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_1_routing_p0_o1_1",
+      "semantic_case_id": "tv1_link_1_routing_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_1_routing_p0_o0_0",
+      "semantic_case_id": "tv1_link_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_1_routing_p1_o0_0",
+      "semantic_case_id": "tv1_link_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_1_routing_p0_o1_0",
+      "semantic_case_id": "tv1_link_1_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_1_routing_p1_o1_0",
+      "semantic_case_id": "tv1_link_1_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_1_allocation_p0_o1_1",
+      "semantic_case_id": "tv1_link_1_allocation_1",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_1_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_link_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_1_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_link_1_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_1_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_link_1_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_2_routing_p0_o0_0",
+      "semantic_case_id": "tv1_link_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_2_routing_p1_o0_0",
+      "semantic_case_id": "tv1_link_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_2_routing_p0_o1_0",
+      "semantic_case_id": "tv1_link_2_routing_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_2_routing_p1_o1_0",
+      "semantic_case_id": "tv1_link_2_routing_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_2_allocation_p0_o0_0",
+      "semantic_case_id": "tv1_link_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_2_allocation_p1_o0_0",
+      "semantic_case_id": "tv1_link_2_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_2_allocation_p0_o1_0",
+      "semantic_case_id": "tv1_link_2_allocation_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_2_allocation_p1_o1_0",
+      "semantic_case_id": "tv1_link_2_allocation_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_3_storage_p0_o0_0",
+      "semantic_case_id": "tv1_link_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_3_storage_p1_o1_0",
+      "semantic_case_id": "tv1_link_3_storage_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_3_notification_p0_o0_0",
+      "semantic_case_id": "tv1_link_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    },
+    {
+      "id": "tv3_link_3_notification_p1_o0_0",
+      "semantic_case_id": "tv1_link_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_3_notification_p0_o1_0",
+      "semantic_case_id": "tv1_link_3_notification_0",
+      "first_policy_letter": "B",
+      "actual_letter": "A"
+    },
+    {
+      "id": "tv3_link_3_notification_p1_o1_0",
+      "semantic_case_id": "tv1_link_3_notification_0",
+      "first_policy_letter": "A",
+      "actual_letter": "B"
+    }
+  ]
+}

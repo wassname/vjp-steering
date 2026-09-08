@@ -143,3 +143,20 @@ Interpretation: my read is that directed unit transfer is very likely the correc
 The public comparison retains this as a labelled DEV overlay rather than an all-cohort table result.
 
 <!-- PI/OpenAI Codex: journal entry written 2026-09-05. -->
+
+## 2026-09-08 -- Frozen task-validity source gate blocked
+
+This entry records the bounded source-stage result and the stop before any benchmark work.
+
+Evidence: [job 705's full saved output](slop/logs/20260908_j_lens_task_validity_source_stage/generation.json) records `"decision": "CLEAN_GATE_BLOCKED_NO_INTERVENTION"`, 384 clean records, zero intervention modes, and `"benchmark_released": false`. The complete pueue log reports:
+
+> CLEAN_GATE {"pass": false, "minimum_accuracy": 0.425, "strict_semantic_cases": {"passed": 1, "total": 96}, ...}
+> TASK_VALIDITY_SOURCE_DOWNLOADED slop/logs/20260908_j_lens_task_validity_source_stage/generation.json
+
+Source: [pueue-705-clean.log](slop/logs/20260908_j_lens_task_validity_source_stage/pueue-705-clean.log). The mounted-input receipt records the frozen corpus hash, 384 rows, pinned model revision, and tokenizer hash in [mounted-preflight.json](slop/logs/20260908_j_lens_task_validity_source_stage/mounted-preflight.json). The host preservation receipt in the generated artifact is true. The independent source-gate review returned `SOURCE_GATE_BLOCKED` after it withdrew an overstrong first-policy explanation. The data check found 248/384 first-policy matches, or 64.58 percent, in [first-policy-check.json](slop/logs/20260908_j_lens_task_validity_source_stage/first-policy-check.json).
+
+Interpretation: my read is that it is almost certain the frozen source task failed its predeclared clean validity gate for this model and prompt. This blocks the planned causal test but is not evidence for or against the J-lens intervention because the intervention loop did not run. The output pattern has no established mechanism because the simple first-policy account was not supported by the saved records.
+
+The source stage ends without transfer or benchmark work.
+
+<!-- PI/OpenAI Codex: journal entry written 2026-09-08. -->

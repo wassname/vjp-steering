@@ -1,0 +1,429 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-obvcLJSqNatyyblyseqPK5
+✓ Created objects.
+├── 🔨 Created mount 
+│   /workspace/2026/jspace/j-steer_pub/scripts/scratch/j_lens_task_validity_sour
+│   ce_stage.py
+├── 🔨 Created mount 
+│   slop/logs/20260908_j_lens_task_validity_source_stage/preflight.json
+├── 🔨 Created mount 
+│   slop/logs/20260908_j_lens_task_validity_corpus/v3/freeze.json
+├── 🔨 Created mount 
+│   slop/logs/20260908_j_lens_task_validity_corpus/v3/corpus.jsonl
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function remote_mounted_preflight.
+└── 🔨 Created function remote.
+TASK_VALIDITY_MOUNTED_PREFLIGHT_PASS {"corpus_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e", "freeze_sha256": "69b963675e5878559f1b24fdccda42b00c9e2dd7ba1821d21faadb984f147e58", "preflight_sha256": "4a1d5bc8d83264df0897cff40873ae6622b543cafbfc32c42c7e28f187fc39c0", "runner_sha256": "132b9212f9b229519498e1ef48b917cc5019ad2ea614fffb8a3f1a6902ee0984", "rows": 384, "model": "Qwen/Qwen3.5-4B", "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a", "source_tokenizer_sha256": "0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4"}
+TASK_VALIDITY_MOUNTED_PREFLIGHT_PASS {"corpus_sha256": "b4ef9920b02959e1204c0baa681fc5d402909af65ee676d120145468324f527e", "freeze_sha256": "69b963675e5878559f1b24fdccda42b00c9e2dd7ba1821d21faadb984f147e58", "preflight_sha256": "4a1d5bc8d83264df0897cff40873ae6622b543cafbfc32c42c7e28f187fc39c0", "runner_sha256": "132b9212f9b229519498e1ef48b917cc5019ad2ea614fffb8a3f1a6902ee0984", "rows": 384, "model": "Qwen/Qwen3.5-4B", "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a", "source_tokenizer_sha256": "0ef9d0923a6d6d8342cae2674ade04c07f12fd060a55f170b8cc9b89f9a822d4"}
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 994.13it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   6%|▌         | 25/426 [00:00<00:01, 243.88it/s]
+[1ALoading weights:  12%|█▏        | 50/426 [00:00<00:01, 216.63it/s]
+[1ALoading weights:  17%|█▋        | 72/426 [00:00<00:01, 216.22it/s]
+[1ALoading weights:  23%|██▎       | 100/426 [00:00<00:01, 228.86it/s]
+[1ALoading weights:  29%|██▉       | 123/426 [00:00<00:01, 214.28it/s]
+[1ALoading weights:  35%|███▌      | 151/426 [00:00<00:01, 225.27it/s]
+[1ALoading weights:  42%|████▏     | 179/426 [00:00<00:01, 236.00it/s]
+[1ALoading weights:  48%|████▊     | 204/426 [00:00<00:00, 235.73it/s]
+[1ALoading weights:  54%|█████▍    | 229/426 [00:00<00:00, 237.62it/s]
+[1ALoading weights:  60%|█████▉    | 254/426 [00:01<00:00, 238.72it/s]
+[1ALoading weights:  65%|██████▌   | 279/426 [00:01<00:00, 232.13it/s]
+[1ALoading weights:  72%|███████▏  | 307/426 [00:01<00:00, 244.35it/s]
+[1ALoading weights:  78%|███████▊  | 332/426 [00:01<00:00, 230.98it/s]
+[1ALoading weights:  84%|████████▍ | 357/426 [00:01<00:00, 236.25it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:01<00:00, 272.12it/s]
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_0_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_1_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_2_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_storage_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_seal_match_3_notification_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_0_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_1_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_2_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_storage_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_capacity_3_notification_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_0_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_routing_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p0_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p1_o0_1", "split": "train", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p0_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p1_o1_1", "split": "train", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p0_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p1_o0_0", "split": "train", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p0_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_1_allocation_p1_o1_0", "split": "train", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_2_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_storage_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_roster_3_notification_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_0_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_1_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_2_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_routing_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p0_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p1_o0_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p0_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p1_o1_1", "split": "source_calibration", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p0_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p1_o0_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p0_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_parity_3_allocation_p1_o1_0", "split": "source_calibration", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_0_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_1_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_2_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_storage_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_precedence_3_notification_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_0_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_1_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_routing_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_2_allocation_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_storage_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p0_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p1_o0_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p0_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p1_o1_1", "split": "withheld_source", "expected_semantic_action": "valid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p0_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p1_o0_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p0_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "A"}
+CLEAN_RESPONSE {"id": "tv3_link_3_notification_p1_o1_0", "split": "withheld_source", "expected_semantic_action": "invalid", "text": "B"}
+CLEAN_GATE {"pass": false, "minimum_accuracy": 0.425, "strict_semantic_cases": {"passed": 1, "total": 96}, "cells": {"split": {"train": 0.5104166666666666, "source_calibration": 0.5178571428571429, "withheld_source": 0.48295454545454547}, "split_consumer": {"('train', 'routing')": 0.4583333333333333, "('train', 'allocation')": 0.5625, "('source_calibration', 'routing')": 0.44642857142857145, "('source_calibration', 'allocation')": 0.5892857142857143, "('withheld_source', 'storage')": 0.425, "('withheld_source', 'notification')": 0.5, "('withheld_source', 'routing')": 0.4791666666666667, "('withheld_source', 'allocation')": 0.5208333333333334}, "split_cue": {"('train', 'seal_match')": 0.4375, "('source_calibration', 'seal_match')": 0.5625, "('withheld_source', 'seal_match')": 0.5, "('train', 'capacity')": 0.5, "('source_calibration', 'capacity')": 0.5625, "('withheld_source', 'capacity')": 0.4375, "('train', 'roster')": 0.59375, "('source_calibration', 'roster')": 0.625, "('withheld_source', 'roster')": 0.4375, "('source_calibration', 'parity')": 0.46875, "('withheld_source', 'precedence')": 0.5, "('withheld_source', 'link')": 0.484375}}, "strict_case_failures": ["tv1_seal_match_0_routing_1", "tv1_seal_match_0_routing_0", "tv1_seal_match_0_allocation_1", "tv1_seal_match_0_allocation_0", "tv1_seal_match_1_routing_1", "tv1_seal_match_1_routing_0", "tv1_seal_match_1_allocation_1", "tv1_seal_match_1_allocation_0", "tv1_seal_match_2_routing_1", "tv1_seal_match_2_routing_0", "tv1_seal_match_2_allocation_1", "tv1_seal_match_2_allocation_0", "tv1_seal_match_3_storage_1", "tv1_seal_match_3_storage_0", "tv1_seal_match_3_notification_1", "tv1_seal_match_3_notification_0", "tv1_capacity_0_routing_1", "tv1_capacity_0_routing_0", "tv1_capacity_0_allocation_1", "tv1_capacity_0_allocation_0", "tv1_capacity_1_routing_1", "tv1_capacity_1_routing_0", "tv1_capacity_1_allocation_1", "tv1_capacity_1_allocation_0", "tv1_capacity_2_routing_1", "tv1_capacity_2_routing_0", "tv1_capacity_2_allocation_1", "tv1_capacity_2_allocation_0", "tv1_capacity_3_storage_1", "tv1_capacity_3_storage_0", "tv1_capacity_3_notification_1", "tv1_capacity_3_notification_0", "tv1_roster_0_routing_1", "tv1_roster_0_routing_0", "tv1_roster_0_allocation_1", "tv1_roster_0_allocation_0", "tv1_roster_1_routing_1", "tv1_roster_1_routing_0", "tv1_roster_1_allocation_1", "tv1_roster_2_routing_1", "tv1_roster_2_routing_0", "tv1_roster_2_allocation_1", "tv1_roster_2_allocation_0", "tv1_roster_3_storage_1", "tv1_roster_3_storage_0", "tv1_roster_3_notification_1", "tv1_roster_3_notification_0", "tv1_parity_0_routing_1", "tv1_parity_0_routing_0", "tv1_parity_0_allocation_1", "tv1_parity_0_allocation_0", "tv1_parity_1_routing_1", "tv1_parity_1_routing_0", "tv1_parity_1_allocation_1", "tv1_parity_1_allocation_0", "tv1_parity_2_routing_1", "tv1_parity_2_routing_0", "tv1_parity_2_allocation_1", "tv1_parity_2_allocation_0", "tv1_parity_3_storage_1", "tv1_parity_3_storage_0", "tv1_parity_3_notification_1", "tv1_parity_3_notification_0", "tv1_precedence_0_routing_1", "tv1_precedence_0_routing_0", "tv1_precedence_0_allocation_1", "tv1_precedence_0_allocation_0", "tv1_precedence_1_routing_1", "tv1_precedence_1_routing_0", "tv1_precedence_1_allocation_1", "tv1_precedence_1_allocation_0", "tv1_precedence_2_routing_1", "tv1_precedence_2_routing_0", "tv1_precedence_2_allocation_1", "tv1_precedence_2_allocation_0", "tv1_precedence_3_storage_1", "tv1_precedence_3_storage_0", "tv1_precedence_3_notification_1", "tv1_precedence_3_notification_0", "tv1_link_0_routing_1", "tv1_link_0_routing_0", "tv1_link_0_allocation_1", "tv1_link_0_allocation_0", "tv1_link_1_routing_1", "tv1_link_1_routing_0", "tv1_link_1_allocation_1", "tv1_link_1_allocation_0", "tv1_link_2_routing_1", "tv1_link_2_routing_0", "tv1_link_2_allocation_1", "tv1_link_2_allocation_0", "tv1_link_3_storage_1", "tv1_link_3_storage_0", "tv1_link_3_notification_1", "tv1_link_3_notification_0"]}
+TASK_VALIDITY_SOURCE_DOWNLOADED slop/logs/20260908_j_lens_task_validity_source_stage/generation.json
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-obvcLJSqNatyyblyseqPK5
