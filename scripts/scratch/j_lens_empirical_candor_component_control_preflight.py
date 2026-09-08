@@ -20,6 +20,7 @@ from vjp_steering.j_lens_concept import (
     implementation_hash,
     mask_metadata,
     random_gram_matched_component_vector,
+    select_concept_layers,
 )
 
 
@@ -70,6 +71,9 @@ def run(output: Path) -> None:
         raise ValueError("frozen source operator changed")
     if vector_sha256(source) != SOURCE_SHA256:
         raise ValueError("frozen source hash changed")
+    selected_source = select_concept_layers(source, LAYERS)
+    if vector_sha256(selected_source) != SOURCE_SHA256:
+        raise ValueError("component layer selection changed the frozen full-layer source")
     if any(int(source.shared[layer]["target_index"].item()) != 0 for layer in LAYERS):
         raise ValueError("frozen +C source no longer selects target index zero")
 

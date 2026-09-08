@@ -115,10 +115,14 @@ def select_concept_layers(vector: Vector, layers: tuple[int, ...]) -> Vector:
         raise ValueError(f"invalid concept application layers={layers}; available={available}")
     cfg = type(vector.cfg)(layers=layers)
     cfg.dtype = vector.cfg.dtype
+    stacked = (
+        {} if vector.cfg.method == COMPONENT_PAIR_METHOD
+        else {layer: vector.stacked[layer] for layer in layers}
+    )
     return Vector(
         cfg,
-        {layer: vector.shared.get(layer, {}) for layer in layers},
-        {layer: vector.stacked[layer] for layer in layers},
+        {layer: vector.shared[layer] for layer in layers},
+        stacked,
     )
 
 
