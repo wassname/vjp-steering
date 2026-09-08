@@ -20,16 +20,18 @@
   "prior_external_review_reserve_usd": "3.00",
   "prior_external_review_reserve_basis": "three completed non-Claude review requests at a conservative accounting bound of $1.00 each; provider emitted no dollar receipt, so this is retained as a reserve rather than claimed spend",
   "prior_external_review_spend_usd": null,
-  "known_modal_plus_external_reserve_usd": "3.35640264",
-  "maximum_remaining_before_reservations_usd": "36.64359736",
+  "completed_dev_judging_cost_usd": "0.01622446",
+  "completed_dev_judging_cost_source": "judging-cost-reconciliation.json: saved provider usage records for 66 C=.125 calls and 40 C=.25 calls; not an invoice",
+  "known_modal_external_reserve_and_judging_usd": "3.37262710",
+  "maximum_remaining_before_reservations_usd": "36.62737290",
   "reservations_usd": {
-    "c0125_dev_judging_unreceipted": "8.00",
-    "c025_dev_judging_unreceipted": "8.00",
+    "next_final_prompt_dev_repair": "3.00",
     "conditional_full_endpoint": "18.00",
-    "unallocated_contingency": "2.64359736"
+    "unallocated_contingency": "15.62737290"
   },
   "reservation_basis": {
-    "judging": "Each completed DEV run used up to 120 existing-rubric pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus) x AB/BA. AB/BA remains one scenario-arm sample. The judge provider emitted no dollar receipt, so both $8.00 bounds remain reserved.",
+    "completed_judging": "The former $16.00 conservative judge reserve is reconciled to saved provider usage: $0.00995914 for 66 C=.125 records plus $0.00626532 for 40 C=.25 records. Cached cells are not billed in this accounting.",
+    "next_final_prompt_dev_repair": "$2.00 Modal generation plus $1.00 unchanged-rubric AB/BA judgment reserve for one -C endpoint and its random-minus control. It is not a launch authorization.",
     "conditional_full_endpoint": "one selected endpoint only, including generation, unchanged-rubric full judging, raw-response audit, and rendering. It is reserved, not authorized.",
     "modal_reconciliation": "The C=.125 and C=.25 $2.00 Modal upper bounds were released after exact metered reports recorded actual costs."
   },
@@ -41,6 +43,6 @@
     "all100_plot_updates_require": "fresh all-100 generation and required judgments",
     "automatic_retries": 0
   },
-  "spend_status": "C=.125 and C=.25 endpoints both STOPPED before all-100. Their generation and unchanged-rubric AB/BA judging are complete. The full-endpoint reserve remains retained but is blocked by the two DEV review decisions. No further paid work is authorized by this reconciliation.",
+  "spend_status": "C=.125 and C=.25 endpoints both STOPPED before all-100. Their generation and unchanged-rubric AB/BA judging are complete. The next final-prompt application repair has a $3.00 reserve but is not launched. The $18.00 full-endpoint reserve remains retained and blocked by the two DEV review decisions.",
   "both_research_goals": "OPEN"
 }

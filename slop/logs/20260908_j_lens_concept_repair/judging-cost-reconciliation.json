@@ -1,0 +1,32 @@
+{
+  "author": "PI/OpenAI Codex",
+  "observed_at": "2026-09-08",
+  "source": "outputs/demo_judgments/judgments.jsonl",
+  "method": "sum cost_usd over records whose run equals the listed experiment; this counts new provider calls only, not content-keyed cache hits",
+  "provider_records": [
+    {
+      "experiment_id": "j-lens-concept-dev-repair-v1",
+      "required_ab_ba_cells": 120,
+      "new_provider_records": 66,
+      "cached_cells": 54,
+      "unique_cache_keys": 66,
+      "provider": "Parasail",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "positive_cost_records": 66,
+      "cost_usd": "0.00995914"
+    },
+    {
+      "experiment_id": "j-lens-concept-dev-repair-v2-upper-c025",
+      "required_ab_ba_cells": 120,
+      "new_provider_records": 40,
+      "cached_cells": 80,
+      "unique_cache_keys": 40,
+      "provider": "Parasail",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "positive_cost_records": 40,
+      "cost_usd": "0.00626532"
+    }
+  ],
+  "completed_dev_judging_cost_usd": "0.01622446",
+  "limits": "This is provider-reported per-response usage from the saved records, not an invoice. It does not claim a cost for cached cells or for unrelated historical judgments."
+}
