@@ -68,15 +68,16 @@ def main() -> None:
 
     renderer = (ROOT / "src/vjp_steering/results.py").read_text()
     assert "def render_experiment(experiment_id: str, profile_name: str)" in renderer
+    assert "def promote_selected_full(" in renderer
+    assert "--promote-selected-full" in renderer
     assert "data_dir(profile_, experiment_id) / \"results.csv\"" in renderer
     assert "results_dir(profile_, experiment_id)" in renderer
-    assert "data/results.csv" not in renderer
 
     print(
         "EMPIRICAL_CANDOR_FULL_PREFLIGHT_PASS "
         "cohort=100 orders=AB,BA passes=1 source_side=+C behavior_target=candidness "
         "C=0.5 layers=13-21 mask=all_attended_prefill_positions random_arm=absent "
-        "modal_timeout_seconds=900 renderer=formative_experiment_only primary_merge=not_implemented"
+        "modal_timeout_seconds=900 renderer=explicit_selected_full_promotion"
     )
 
 

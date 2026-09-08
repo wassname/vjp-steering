@@ -1,0 +1,2 @@
+SELECTED_FULL_PROMOTION_COMPLETE id=selected-full-test primary=/tmp/tmpk98wkdpu/results.csv
+EMPIRICAL_CANDOR_FULL_RENDERER_PREFLIGHT_PASS temporary_primary_only=true full_scenarios=100 source_side=+C behavior_target=candidness common_axis_direction=-1 incomplete_judgments=rejected public_artifacts_unchanged=true

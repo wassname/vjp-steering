@@ -41,7 +41,7 @@ Attach exactly one `pqf <task-id> 100000` follower after the returned task ID is
 2. Run unchanged candidness AB/BA judging with the existing FULL profile: 100 rows, orders `AB,BA`, one pass, 200 required cells. Preserve complete cache records and API usage.
 3. Export source rows with `scripts/export.py`; source `+C` remains provenance while `behavior_target=candidness` maps its common-axis sign.
 4. Report all 100 rows as fresh generation with 15 selection-exposed rows. Report the remaining 85 rows as a descriptive generalization readout, not an independent held-out confirmation.
-5. Obtain the required result audit and review before any primary public rendering.
+5. Obtain the required result audit and review before primary promotion. Then run `uv run python -m vjp_steering.results --promote-selected-full --experiment-id j-lens-components-empirical-candor-full-v1 --profile full`, followed by `uv run python -m vjp_steering.results` to render the primary table and plot.
 
 ## Offline preflight result
 
@@ -54,11 +54,13 @@ Current guards were checked explicitly:
 - the full route rejects a random arm;
 - behavior direction for source `+C` with `candidness` is `-1` on the common sycophancy axis.
 
-## Renderer finding: public update remains blocked
+## Renderer preflight: public update remains blocked until post-full review
 
-`src/vjp_steering/results.py::render_experiment` can render the full experiment's isolated formative artifacts from `data/formative/<experiment>/results.csv` to `results/formative/<experiment>/`.
+`results.py` now has an explicit `--promote-selected-full` path. It refuses DEV data, non-all-100 cohort rows, incomplete judged scenarios, wrong source side/behavior target, missing accepted `+C=.5`, duplicate selected method rows, and schema drift. It appends only the reviewed selected full row to `data/results.csv`; the main renderer dynamically includes that method only after promotion.
 
-It does not merge that result into `data/results.csv`, `results/index.md`, `results/index.html`, or `results/plot.png`. No existing primary-renderer promotion path was found. This is an explicit Goal 2 implementation item after full generation and review, not a reason to put DEV output on the primary plot.
+`empirical-candor-full-renderer-preflight.log` exercises promotion into a temporary primary CSV, verifies source `+C` plus `candidness` maps to common-axis direction `-1`, requires 100 scenario rows, rejects a 99-row source, constructs the primary plot in memory, and asserts the real `data/results.csv` bytes remain unchanged.
+
+Do not invoke promotion or the main renderer until the full run, full judging, audit, and review are complete.
 
 ## Budget and limits
 

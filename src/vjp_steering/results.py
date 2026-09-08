@@ -39,6 +39,7 @@ METHODS = (
     "vjp_mlp_up_left_right_shrink",
     "random",
 )
+SELECTED_FULL_METHOD = "j_lens_concept_components"
 RANDOM_SEEDS = 10
 METHOD_SEEDS = {
     "vjp_delta": {0, 1, 2},
@@ -48,6 +49,7 @@ METHOD_SEEDS = {
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
 }
+SELECTED_FULL_SEEDS = {0}
 FIELDS = (
     "model", "tokenizer", "prompt_template", "data_hash", "eval_cohort", "layers",
     "batch_size", "date", "source_run", "method", "seed", "C", "side", "effect",
@@ -75,6 +77,22 @@ COHORT_FIELDS = (
 # keep cohort check on eval_cohort, allow bench hash migration without bypassing cohort validation.
 # Layers and batch size are reported per method. They differ between method implementations but
 # do not change the prompts, model, or judge cohort being compared.
+
+
+def primary_methods(path: Path = DATA) -> tuple[tuple[str, ...], dict[str, set[int]]]:
+    with path.open(newline="") as handle:
+        found = {row["method"] for row in csv.DictReader(handle)}
+    missing = set(METHODS) - found
+    if missing:
+        raise ValueError(f"primary results missing established methods: {sorted(missing)}")
+    unknown = found - {*METHODS, SELECTED_FULL_METHOD}
+    if unknown:
+        raise ValueError(f"primary results contain unknown methods: {sorted(unknown)}")
+    methods = METHODS + ((SELECTED_FULL_METHOD,) if SELECTED_FULL_METHOD in found else ())
+    method_seeds = {**METHOD_SEEDS}
+    if SELECTED_FULL_METHOD in found:
+        method_seeds[SELECTED_FULL_METHOD] = SELECTED_FULL_SEEDS
+    return methods, method_seeds
 
 
 def _rows(
@@ -109,8 +127,8 @@ def _rows(
     return rows
 
 
-def _behavior_target(row: dict) -> str | None:
-    manifest_file = experiment_dir(row["source_run"]) / "manifest.json"
+def _behavior_target(row: dict, manifest_file: Path | None = None) -> str | None:
+    manifest_file = manifest_file or experiment_dir(row["source_run"]) / "manifest.json"
     if not manifest_file.exists():
         return None
     candidate = json.loads(manifest_file.read_text()).get("candidate")
@@ -941,11 +959,65 @@ def _check_equivalent(markdown_text: str, html_text: str) -> None:
         raise AssertionError("results/index.md and results/index.html table cells differ")
 
 
+def promote_selected_full(
+    experiment_id: str,
+    *,
+    primary_path: Path = DATA,
+    source_root: Path | None = None,
+    manifest_file: Path | None = None,
+) -> None:
+    source_root = source_root or data_dir(FULL, experiment_id)
+    results_path = source_root / "results.csv"
+    scenarios_path = source_root / "judged_scenarios.csv"
+    selected_path = source_root / "selected.json"
+    manifest_path = manifest_file or experiment_dir(experiment_id) / "manifest.json"
+    with results_path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        source_rows = list(reader)
+        source_fields = tuple(reader.fieldnames or ())
+    if len(source_rows) != 1:
+        raise ValueError("selected full promotion requires exactly one source result row")
+    source = source_rows[0]
+    if source["method"] != SELECTED_FULL_METHOD or source["side"] != "+C" or source["seed"] != "0":
+        raise ValueError("selected full promotion has wrong method, side, or seed")
+    if source["eval_cohort"] != "sycophancy_all100-v10":
+        raise ValueError("selected full promotion requires the all-100 cohort")
+    with scenarios_path.open(newline="") as handle:
+        scenarios = list(csv.DictReader(handle))
+    if len(scenarios) != FULL.cohort_size:
+        raise ValueError("selected full promotion requires 100 judged scenario rows")
+    if {row["source_run"] for row in scenarios} != {experiment_id}:
+        raise ValueError("selected full scenario rows have another source run")
+    manifest = json.loads(manifest_path.read_text())
+    candidate = manifest["candidate"]
+    if candidate["source_side"] != "+C" or candidate["behavior_target"] != "candidness":
+        raise ValueError("selected full promotion lacks the candidness behavior contract")
+    selected = json.loads(selected_path.read_text())
+    if selected["sides"]["+C"].get("selected_C") != 0.5:
+        raise ValueError("selected full promotion requires accepted +C=.5")
+    with primary_path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        primary_rows = list(reader)
+        primary_fields = tuple(reader.fieldnames or ())
+    if {row["method"] for row in primary_rows} & {SELECTED_FULL_METHOD}:
+        raise ValueError("primary results already contain the selected full method")
+    if source_fields != FIELDS or primary_fields != FIELDS or set(source) != set(FIELDS) or any(set(row) != set(FIELDS) for row in primary_rows):
+        raise ValueError("result CSV columns differ from the canonical schema")
+    temporary = primary_path.with_suffix(primary_path.suffix + ".tmp")
+    with temporary.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows([*primary_rows, source])
+    temporary.replace(primary_path)
+    print(f"SELECTED_FULL_PROMOTION_COMPLETE id={experiment_id} primary={primary_path}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dev-artifacts", type=Path, help="Explicit immutable DEV manifest; never merged into primary rows")
     parser.add_argument("--experiment-id")
     parser.add_argument("--profile", choices=("dev", "full"))
+    parser.add_argument("--promote-selected-full", action="store_true")
     return parser.parse_args()
 
 
@@ -1021,6 +1093,11 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
 
 def main() -> None:
     args = parse_args()
+    if args.promote_selected_full:
+        if args.experiment_id is None or args.profile != "full":
+            raise ValueError("selected-full promotion requires --experiment-id and --profile full")
+        promote_selected_full(args.experiment_id)
+        return
     if args.experiment_id is not None:
         if args.profile is None:
             raise ValueError("experiment render needs --experiment-id and --profile")
@@ -1028,8 +1105,9 @@ def main() -> None:
         return
     if args.profile is not None:
         raise ValueError("--profile requires --experiment-id")
-    rows = _rows()
-    table = _display_table(_summary(rows))
+    methods, method_seeds = primary_methods()
+    rows = _rows(methods=methods, method_seeds=method_seeds)
+    table = _display_table(_summary(rows, methods, method_seeds))
     markdown_text = _markdown(
         table,
         (
@@ -1039,9 +1117,11 @@ def main() -> None:
         ),
         extra_pareto_plot=True,
     )
-    figure = plot(rows)
+    figure = plot(rows, methods, method_seeds)
     pareto_figure = plot(
         rows,
+        methods,
+        method_seeds,
         title="Pareto-smoothed VJP steering on Bullshit Bench v2",
         pareto=True,
     )
