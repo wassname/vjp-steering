@@ -215,7 +215,10 @@ def run_j_lens_concept_repair(method: str, argv: list[str]) -> str:
 @app.local_entrypoint()
 def j_lens_concept_repair_dev(
     experiment_id: str = "j-lens-concept-dev-repair-v1",
+    coefficient: float = 0.125,
 ):
+    if coefficient <= 0:
+        raise ValueError("coefficient must be positive")
     argv = [
         "--dev",
         "--experiment-id", experiment_id,
@@ -226,12 +229,12 @@ def j_lens_concept_repair_dev(
         "--extract-batch-size", "8",
         "--max-length", "384",
         "--max-new-tokens", "512",
-        "--coefficients-plus", "0.125",
-        "--coefficients-minus", "0.125",
+        "--coefficients-plus", str(coefficient),
+        "--coefficients-minus", str(coefficient),
         "--concept-layers", "18,19,20,21,22,23,24",
         "--reuse-extraction-from", "j-lens-concept-dev-v1",
         "--random-control-seed", "20260908",
-        "--random-control-coefficient", "0.125",
+        "--random-control-coefficient", str(coefficient),
     ]
     manifest = json.loads(run_j_lens_concept_repair.remote("j_lens_concept", argv))
     output = pull_experiment(experiment_id)
