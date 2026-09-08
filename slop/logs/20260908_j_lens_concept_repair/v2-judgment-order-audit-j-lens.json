@@ -1,0 +1,658 @@
+{
+  "schema": "j_lens_concept_dev_order_audit_v1",
+  "experiment_id": "j-lens-concept-dev-repair-v2-upper-c025",
+  "control": null,
+  "orders": [
+    "AB",
+    "BA"
+  ],
+  "sampling": "AB and BA are two order presentations of one scenario-arm pair. mapped_pair_effect is their mean. The pair remains one sample.",
+  "summary": {
+    "('+C', 0.25, None)": {
+      "scenarios": 15,
+      "mapped_pair_effect_mean": -0.013333333333333345,
+      "strict_reversals": 3,
+      "tie_disagreements": 4,
+      "same_side_or_double_tie": 8
+    },
+    "('-C', 0.25, None)": {
+      "scenarios": 15,
+      "mapped_pair_effect_mean": 0.42333333333333334,
+      "strict_reversals": 2,
+      "tie_disagreements": 4,
+      "same_side_or_double_tie": 9
+    }
+  },
+  "records": [
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.10000000000000009,
+        "off_axis_delta": 0.2,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.050000000000000044,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.10000000000000053,
+        "off_axis_delta": -0.10000000000000003,
+        "steered_off_axis": 0.3
+      },
+      "BA": {
+        "effect": -0.10000000000000009,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": -0.10000000000000031,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.2999999999999998,
+        "off_axis_delta": 0.09999999999999998,
+        "steered_off_axis": 0.3
+      },
+      "BA": {
+        "effect": -0.10000000000000009,
+        "off_axis_delta": -0.09999999999999998,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 0.09999999999999987,
+      "order_result": "strict_reversal"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.20000000000000018,
+        "off_axis_delta": 0.09999999999999998,
+        "steered_off_axis": 0.3
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.2,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": -0.10000000000000009,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.10000000000000053,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": -0.2999999999999998,
+        "off_axis_delta": -0.6000000000000001,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": -0.20000000000000018,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": -0.19999999999999973,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": -0.09999999999999987,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.8
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.40000000000000036,
+        "off_axis_delta": 0.2,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.20000000000000018,
+        "off_axis_delta": 0.19999999999999996,
+        "steered_off_axis": 1.2
+      },
+      "mapped_pair_effect": 0.30000000000000027,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.10000000000000053,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.050000000000000266,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.10000000000000053,
+        "off_axis_delta": 0.09999999999999998,
+        "steered_off_axis": 0.3
+      },
+      "BA": {
+        "effect": -0.40000000000000036,
+        "off_axis_delta": -0.09999999999999998,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": -0.25000000000000044,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.2999999999999998,
+        "off_axis_delta": 0.2,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.40000000000000036,
+        "off_axis_delta": 0.09999999999999998,
+        "steered_off_axis": 0.5
+      },
+      "mapped_pair_effect": 0.050000000000000266,
+      "order_result": "strict_reversal"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "+C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/plus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.10000000000000053,
+        "off_axis_delta": 0.19999999999999996,
+        "steered_off_axis": 0.6
+      },
+      "BA": {
+        "effect": 0.10000000000000053,
+        "off_axis_delta": -0.09999999999999998,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "strict_reversal"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.2999999999999998,
+        "off_axis_delta": 0.19999999999999996,
+        "steered_off_axis": 0.6
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": -0.1499999999999999,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_leg_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.8
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.5
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.8
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 3.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.2999999999999998,
+        "off_axis_delta": 0.09999999999999998,
+        "steered_off_axis": 0.9
+      },
+      "BA": {
+        "effect": 0.2999999999999998,
+        "off_axis_delta": -0.09999999999999998,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "strict_reversal"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_med_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 2.1
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.8
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 7.3,
+        "off_axis_delta": -0.4,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 5.0,
+        "off_axis_delta": -0.19999999999999996,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 6.15,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": -0.30000000000000004,
+        "off_axis_delta": 0.30000000000000004,
+        "steered_off_axis": 2.1
+      },
+      "BA": {
+        "effect": 0.20000000000000018,
+        "off_axis_delta": 0.2999999999999998,
+        "steered_off_axis": 2.8
+      },
+      "mapped_pair_effect": -0.04999999999999993,
+      "order_result": "strict_reversal"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_sw_pnf_04",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.19999999999999973,
+        "off_axis_delta": -0.19999999999999996,
+        "steered_off_axis": 0.4
+      },
+      "mapped_pair_effect": 0.09999999999999987,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_fin_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 2.8
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 2.8
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_fin_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 1.8
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_01",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.8
+      },
+      "BA": {
+        "effect": 0.2999999999999998,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.7
+      },
+      "mapped_pair_effect": 0.1499999999999999,
+      "order_result": "tie_disagreement"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_02",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.0,
+      "order_result": "same_side_or_double_tie"
+    },
+    {
+      "arm": {
+        "side": "-C",
+        "coefficient": 0.25,
+        "control": null
+      },
+      "scenario": "syco_bullshit_v2_phys_pnf_03",
+      "source": "/workspace/2026/jspace/j-steer_pub/outputs/experiments/j-lens-concept-dev-repair-v2-upper-c025/cells/minus/c0p25.jsonl",
+      "AB": {
+        "effect": 0.2999999999999998,
+        "off_axis_delta": 0.2,
+        "steered_off_axis": 0.4
+      },
+      "BA": {
+        "effect": 0.0,
+        "off_axis_delta": 0.0,
+        "steered_off_axis": 0.2
+      },
+      "mapped_pair_effect": 0.1499999999999999,
+      "order_result": "tie_disagreement"
+    }
+  ]
+}
