@@ -61,3 +61,7 @@ The full controls manifest records the shared random seed, vector hashes, source
 ## Offline next-repair decision, 2026-09-08
 
 The actual C=.25 runner implementation hash is `ff42a271...0b62a`. Its signed contrast extracts at the final real chat-prompt token but patches only the user-turn positions. This excludes the source position. The copied extraction metadata instead says `all_valid_prefill_tokens_only`; it is stale metadata from the reused extraction artifact. [next-repair-decision.md](next-repair-decision.md) records the final-prompt application hypothesis and a no-launch DEV protocol. [judging-cost-reconciliation.json](judging-cost-reconciliation.json) reconciles 106 completed provider calls to `$0.01622446`; the full endpoint reserve remains retained.
+
+## Final-prompt endpoint completion, 2026-09-08
+
+Task `782` completed in dedicated group `modal`. It generated bare, J-lens-minus, and random-minus arms only. [final-prompt-generation-check.log](final-prompt-generation-check.log) verifies the active final-prompt mask selects one final non-padding token per 15-row arm and records distinct current execution provenance. The raw-response audit passed. Unchanged-rubric AB/BA judging added 11 provider calls and is complete. The independent endpoint audit returns STOP: raw J-lens `+0.2600` versus random-minus `+0.2267` is not clear control superiority, and the difference is measurement-sensitive. [final-prompt-review-decision.md](final-prompt-review-decision.md) blocks all-100 and public rendering. Both goals remain open.

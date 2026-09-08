@@ -25,8 +25,19 @@
       "model": "deepseek/deepseek-v4-flash-0731",
       "positive_cost_records": 40,
       "cost_usd": "0.00626532"
+    },
+    {
+      "experiment_id": "j-lens-concept-dev-repair-v3-final-prompt-c025",
+      "required_ab_ba_cells": 60,
+      "new_provider_records": 11,
+      "cached_cells": 49,
+      "unique_cache_keys": 11,
+      "provider": "Parasail",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "positive_cost_records": 11,
+      "cost_usd": "0.00177324"
     }
   ],
-  "completed_dev_judging_cost_usd": "0.01622446",
+  "completed_dev_judging_cost_usd": "0.01799770",
   "limits": "This is provider-reported per-response usage from the saved records, not an invoice. It does not claim a cost for cached cells or for unrelated historical judgments."
 }

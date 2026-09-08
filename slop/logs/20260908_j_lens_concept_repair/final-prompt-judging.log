@@ -1,0 +1,9 @@
+$ uv run python scripts/judge.py --experiment-id j-lens-concept-dev-repair-v3-final-prompt-c025 --profile dev --all-generated --orders AB,BA --refresh
+CACHE_CHECK required=30 cached=21 missing=9 API_calls=9
+JUDGE_COMPLETE required=30 missing=0
+
+$ uv run python scripts/judge.py --experiment-id j-lens-concept-dev-repair-v3-final-prompt-c025 --profile dev --control random_minus --orders AB,BA --refresh
+CACHE_CHECK required=30 cached=28 missing=2 API_calls=2
+JUDGE_COMPLETE required=30 missing=0
+
+Totals: 60 required AB/BA cells; 49 content-keyed cached cells; 11 new judge calls; all required cells complete.

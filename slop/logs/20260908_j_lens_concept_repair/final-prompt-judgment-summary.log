@@ -1,0 +1,8 @@
+Raw mapped effect is steered-minus-bare under the -C candidness target. Raw positive therefore means more candid. The common plot convention negates -C only after scoring.
+
+j-lens ('-C', 0.25, None) raw_mapped_effect 0.2600000000000000 mean_off_axis_delta -0.0333333333333333 mean_steered_off_axis 1.1700000000000002 strict_reversals 3 tie_disagreements 0
+random-minus ('-C', 0.25, 'random_minus') raw_mapped_effect 0.2266666666666667 mean_off_axis_delta -0.0266666666666667 mean_steered_off_axis 1.0433333333333334 strict_reversals 2 tie_disagreements 2
+
+J-lens minus minus random-minus difference is +0.0333333333333333 raw mapped effect. Nonzero J-lens pairs: leg_pnf_02 +0.20, sw_pnf_02 +3.15, sw_pnf_04 +0.05, phys_pnf_01 +0.50. Nonzero random-minus pairs: leg_pnf_02 +0.20, med_pnf_02 -0.15, sw_pnf_02 +3.15, sw_pnf_04 +0.05, phys_pnf_01 +0.15.
+
+Provider-reported cost for the 11 new judgment records is $0.00177324; see outputs/demo_judgments/judgments.jsonl and later reconciliation.
