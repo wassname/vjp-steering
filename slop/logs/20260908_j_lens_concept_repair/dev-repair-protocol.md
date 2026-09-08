@@ -15,7 +15,8 @@ The saved J-lens DEV evidence did not have a matched random behavioral direction
 - J-lens cells: `+C=.125` and `-C=.125`. This is the already measured low-dose range. The protocol does not repeat the completed lower-dose calibration.
 - Fresh arms in one actual runner call: bare, both J-lens cells, and a seeded random direction for each sign.
 - Random control: seed `20260908`; it has the same per-layer norm as the reused J-lens vector. The runner saves per-layer norm and cosine checks, vector hashes, raw responses, health, and realized prefill diagnostics.
-- Judge: existing `scripts/judge.py` rubric and DEV contract, once for each J-lens and matched random arm. It uses no new metric or rubric.
+- Judge: existing `scripts/judge.py` rubric, with both `AB` and `BA` order presentations for each J-lens and matched random arm. It uses no new metric or rubric.
+- Order accounting: map each judgment through its order back to the steered arm. Treat AB and BA as two order views of one scenario-arm pair, not two samples. Save strict sign reversals separately from disagreements where one order is a tie. Do not choose the favorable order.
 
 ## Intended command
 
@@ -23,4 +24,6 @@ The saved J-lens DEV evidence did not have a matched random behavioral direction
 uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev
 ```
 
-This dedicated entrypoint fixes the complete runner contract above. It limits the one H100 container to 900 seconds and has no retry loop. The $2.00 Modal reserve includes 900 H100 seconds plus startup, CPU, memory, storage, and late-billing allowance. After generation, review raw responses and the unchanged judge output. A zero exit code is only pipeline evidence. Do not generate the all-100 endpoint or edit the public plot before a reviewer finds a task-responsive J-lens arm that beats its same-sign random control without response damage.
+This dedicated entrypoint fixes the complete runner contract above. It limits the one H100 container to 900 seconds and has no retry loop. The $2.00 Modal reserve includes 900 H100 seconds plus startup, CPU, memory, storage, and late-billing allowance.
+
+After generation, run the unchanged judge for J-lens arms and each random control with `--orders AB,BA`. Then write one order audit with `scripts/scratch/j_lens_concept_dev_order_audit.py`. It saves each order's arm-mapped effect, the one-pair mean, strict reversals, and tie disagreements. A zero exit code is only pipeline evidence. Do not generate the all-100 endpoint or edit the public plot before a reviewer finds a task-responsive J-lens arm that beats its same-sign random control without response damage and has reviewed the order audit.

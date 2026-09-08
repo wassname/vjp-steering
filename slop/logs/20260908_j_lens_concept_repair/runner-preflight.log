@@ -10,3 +10,8 @@ Usage: modal run scripts/run_modal.py::j_lens_concept_repair_dev [OPTIONS]
 Options:
   --experiment-id TEXT
   -h, --help            Show this message and exit.
+
+$ uv run python -m py_compile scripts/judge.py scripts/scratch/j_lens_concept_dev_order_audit.py && uv run python scripts/scratch/j_lens_concept_dev_order_audit.py --self-test && uv run python scripts/judge.py --help | grep -- '--orders'
+J_LENS_DEV_ORDER_AUDIT_SELF_TEST_PASS reversal=true tie=true pair_mean=one_per_scenario
+                [--control {random_plus,random_minus}] [--orders ORDERS]
+  --orders ORDERS

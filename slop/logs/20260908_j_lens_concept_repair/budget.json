@@ -11,9 +11,9 @@
   "maximum_remaining_before_new_repair_reservations_usd": "36.78318961",
   "reservations_usd": {
     "dev_modal_generation": "2.00",
-    "dev_judging": "4.00",
+    "dev_judging": "8.00",
     "conditional_full_endpoint": "18.00",
-    "unallocated_contingency": "12.78318961"
+    "unallocated_contingency": "8.78318961"
   },
   "dev_modal_reservation_basis": {
     "max_container_timeout_seconds": 900,
@@ -22,7 +22,7 @@
     "H100_900_seconds_at_3_95_per_hour_usd": "0.98750",
     "startup_cpu_memory_storage_and_late_billing_allowance_usd": "1.01250"
   },
-  "dev_judging_reservation_basis": "up to 60 existing-rubric DEV pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus), one AB pass",
+  "dev_judging_reservation_basis": "up to 120 existing-rubric DEV pair judgments: 15 scenarios x (+C, -C, random-plus, random-minus) x both AB and BA order presentations. Each AB/BA pair remains one scenario-arm sample in selection.",
   "conditional_full_endpoint_reservation_basis": "one selected endpoint only, including its generation, existing-rubric full judging, raw-response audit, and rendering; it is not authorized by this reservation",
   "limits": {
     "synthetic_source_work": 0,

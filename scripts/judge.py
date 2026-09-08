@@ -95,6 +95,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--all-generated", action="store_true")
     parser.add_argument("--control", choices=("random_plus", "random_minus"))
+    parser.add_argument("--orders", default="")
     return parser.parse_args()
 
 
@@ -118,6 +119,15 @@ def cache_key(row: dict, order: str, pass_index: int) -> str:
         "order": order,
         "pass": pass_index,
     }, sort_keys=True))
+
+
+def requested_orders(value: str, profile_) -> tuple[str, ...]:
+    if not value:
+        return profile_.orders
+    orders = tuple(value.split(","))
+    if len(orders) != len(set(orders)) or set(orders) - {"AB", "BA"}:
+        raise ValueError("--orders must be a comma-separated subset of AB,BA without duplicates")
+    return orders
 
 
 def valid(judgment: dict) -> bool:
@@ -703,9 +713,12 @@ def main() -> None:
             all_generated=args.all_generated,
             control=args.control,
         )
-        cells = required_cells(rows, profile_.orders, profile_.passes)
+        cells = required_cells(rows, requested_orders(args.orders, profile_), profile_.passes)
     else:
-        if legacy_selection != 1 or args.profile is not None or args.side is not None or args.control is not None:
+        if (
+            legacy_selection != 1 or args.profile is not None or args.side is not None
+            or args.control is not None or args.orders
+        ):
             raise ValueError("select exactly one of --run, --walks, or --walk-id")
         rows = manifest(args.run, args.walks, args.walk_id)
         cells = required_cells(rows)
