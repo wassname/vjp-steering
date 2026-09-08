@@ -1,0 +1,1125 @@
+[
+  {
+    "id": 120,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T17:35:53.173577855+08:00",
+        "start": "2026-09-05T17:36:48.176382852+08:00",
+        "end": "2026-09-05T17:40:59.054491049+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test distributed concept representation instead of fixed lexical transfer; resolve: inspect bounded DEV-15 signed effects and damage, no full/public replacement",
+    "command": "bash slop/checks/20260905_run_j_lens_concept_dev.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 122,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T17:45:29.870825704+08:00",
+        "start": "2026-09-05T17:47:00.768033553+08:00",
+        "end": "2026-09-05T17:48:22.067896235+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: concept C1 damaged DEV; resolve: measure residual/patch ratios, BF16 realization and lower-dose raw outputs with fixed vector",
+    "command": "bash slop/checks/20260905_calibrate_j_lens_concept.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 131,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:14:11.462656646+08:00",
+        "start": "2026-09-05T19:14:11.478302821+08:00",
+        "end": "2026-09-05T19:16:48.376372965+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: concept-vector C1 damaged responses and nominal C is arbitrary after unit normalization; resolve: test the unchanged vector across DEV-15 at calibration-supported lower perturbations, saving realized ratios/KL and raw health before any representation change",
+    "command": "bash slop/checks/20260905_run_j_lens_concept_calibrated_dev.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 133,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:26:34.916621358+08:00",
+        "start": "2026-09-05T19:26:34.965517083+08:00",
+        "end": "2026-09-05T19:30:23.521877597+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: the unchanged all-layer concept contrast moves both signs toward criticality; resolve: localize whether lower, middle, or upper prompt layers yield a clean bipolar change at measured within-vector per-layer perturbation strength before changing representation",
+    "command": "bash slop/checks/20260905_localize_j_lens_concept_layers.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 134,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:33:03.612007520+08:00",
+        "start": "2026-09-05T19:33:03.695617681+08:00",
+        "end": "2026-09-05T19:37:08.499290080+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: job133 failed before generation because application-only code changes invalidated a known saved extraction hash; resolve: explicit exact-hash migration reuses only the original verified vector, then localizes lower/middle/upper bands at measured strength",
+    "command": "bash slop/checks/20260905_localize_j_lens_concept_layers.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 135,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:38:07.349824264+08:00",
+        "start": "2026-09-05T19:38:07.507790420+08:00",
+        "end": "2026-09-05T19:43:03.530151364+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: job134 proved explicit saved-vector reuse but failed before generation because serialization omits empty shared layer maps; resolve: recreate those empty maps, verify against the actual saved vector, then run lower/middle/upper localization",
+    "command": "bash slop/checks/20260905_localize_j_lens_concept_layers.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 137,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:48:19.680066473+08:00",
+        "start": "2026-09-05T19:48:19.974753932+08:00",
+        "end": "2026-09-05T19:50:34.273165273+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: topic-derived J-space contrast made both signs more skeptical; resolve: use matched sycophantic-versus-abrasive response contexts, projected into the same J-space, then test bipolar behavior at measured perturbation scales",
+    "command": "bash slop/checks/20260905_run_j_lens_persona_projection_dev.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 139,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T19:55:11.373946527+08:00",
+        "start": "2026-09-05T19:55:11.585670419+08:00",
+        "end": "2026-09-05T19:57:05.105917814+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: matched-persona J projection did not produce bipolar behavior; resolve: compare the full paired residual direction under identical source, patch scales, and DEV cohort to distinguish projection loss from source failure",
+    "command": "bash slop/checks/20260905_run_persona_full_residual_control.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 141,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T20:00:22.128937134+08:00",
+        "start": "2026-09-05T20:00:22.323041779+08:00",
+        "end": "2026-09-05T20:02:43.259353495+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: teacher-forced answer-state persona differences did not steer behavior even without J projection; resolve: form the same paired persona contrast at the exact final prompt position that steering later patches, then test GP16 J projection at measured scales",
+    "command": "bash slop/checks/20260905_run_j_lens_persona_prefill_dev.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 142,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T20:03:24.721918859+08:00",
+        "start": "2026-09-05T20:03:24.807197315+08:00",
+        "end": "2026-09-05T20:06:06.199247579+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: GP16 J projection of persona-prefill states remains non-bipolar and captures only cosine 0.18-0.28 with the full difference; resolve: test the full prefill difference under otherwise identical conditions to distinguish J projection loss from non-causal persona source",
+    "command": "bash slop/checks/20260905_run_persona_prefill_full_residual_control.sh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 151,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T21:17:44.675249938+08:00",
+        "start": "2026-09-05T21:18:24.187468975+08:00",
+        "end": "2026-09-05T21:18:56.414284814+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: prior J-lens experiments used directed additive/transfer operators rather than the vendored paper coordinate clamp; resolve: reproduce verbal-report with raw J rows, pseudoinverse coordinate swap, paper prompt set, and a predeclared mid-workspace Qwen band before adapting to sycophancy",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 154,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T21:28:38.610064547+08:00",
+        "start": "2026-09-05T21:30:46.343136905+08:00",
+        "end": "2026-09-05T21:31:26.991214781+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: prior J-lens experiments used directed additive/transfer operators rather than the vendored paper coordinate clamp; resolve: reproduce verbal-report with raw J rows, pseudoinverse coordinate swap, paper prompt set, and a predeclared mid-workspace Qwen band before adapting to sycophancy",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 158,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T21:44:19.456057513+08:00",
+        "start": "2026-09-05T21:44:19.584261502+08:00",
+        "end": "2026-09-05T21:44:59.029751848+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: prior J-lens experiments used directed additive/transfer operators rather than the vendored paper coordinate clamp; resolve: reproduce verbal-report with raw J rows, pseudoinverse coordinate swap, paper prompt set, and a predeclared mid-workspace Qwen band before adapting to sycophancy",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 161,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T21:55:44.001924526+08:00",
+        "start": "2026-09-05T21:58:20.652778382+08:00",
+        "end": "2026-09-05T22:02:40.232412660+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: prior J-lens experiments used directed additive/transfer operators rather than the vendored paper coordinate clamp; resolve: reproduce verbal-report with raw J rows, pseudoinverse coordinate swap, paper prompt set, and a predeclared mid-workspace Qwen band before adapting to sycophancy",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 164,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T22:16:22.968228014+08:00",
+        "start": "2026-09-05T22:17:08.023863793+08:00",
+        "end": "2026-09-05T22:18:23.299243579+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: paper-native Qwen swap used structural clean source tokens rather than category answers; resolve: choose a raw or Qwen-chat prefill only if its clean scored token is a listed category item before repeating the unchanged coordinate swap",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_prompt_diagnostic",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 174,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T22:29:53.323779209+08:00",
+        "start": "2026-09-05T22:29:53.451718692+08:00",
+        "end": "2026-09-05T22:30:53.381245874+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: task164 found eight Qwen-chat semantic category answer tokens only under no-space assistant tokenization; resolve: test the unchanged raw-J pseudoinverse coordinate swap on exactly those eligible rows before changing layer band, alpha, or representation",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report --prompt-mode chat --output experiments/paper-native-verbal-report-chat-v1/results.json",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 179,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T22:42:30.771951954+08:00",
+        "start": "2026-09-05T22:43:13.716708630+08:00",
+        "end": "2026-09-05T22:44:32.011367779+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: valid Qwen-chat alpha1 coordinate swaps improved 17 of 18 target ranks but no target reached rank1; resolve: test only alpha2 on the same eligible rows to distinguish insufficient clamp strength from rank redistribution",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_verbal_report --prompt-mode chat --coefficient 2 --output experiments/paper-native-verbal-report-chat-alpha2-v1/results.json",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 181,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-05T22:56:53.468886308+08:00",
+        "start": "2026-09-05T22:56:53.758370923+08:00",
+        "end": "2026-09-05T22:57:44.644349540+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: alpha2 paper-native swap redirects category answers; resolve: test whether the same operator switches constrained false-claim No answers to Yes without changing representation, layers, or prompt tokenization",
+    "command": "uv run modal run scripts/run_modal.py::paper_native_binary_agreement",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 272,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:07:50.636752117+08:00",
+        "start": "2026-09-06T12:07:50.798597107+08:00",
+        "end": "2026-09-06T12:07:51.705469862+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: paper-native J-lens operator now replaces old directed transfer; resolve: real Qwen smoke must complete with coordinate-swap vector serialization and generation before DEV calibration",
+    "command": "uv run modal run scripts/run_modal.py::smoke-j-lens-swap",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 273,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:08:12.936784710+08:00",
+        "start": "2026-09-06T12:08:13.088421746+08:00",
+        "end": "2026-09-06T12:08:50.129206208+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: task272 used the wrong Modal entrypoint spelling; resolve: real Qwen smoke must complete with paper-native coordinate-swap vector serialization and generation before DEV calibration",
+    "command": "uv run modal run scripts/run_modal.py::smoke_j_lens_swap",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 274,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:10:25.832108865+08:00",
+        "start": "2026-09-06T12:10:25.880859966+08:00",
+        "end": "2026-09-06T12:11:11.660858393+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: task273 isolated non-contiguous pseudoinverse persistence and commit40ee2aa packs it; resolve: real Qwen smoke must save/reload native coordinate vectors and finish generation before DEV",
+    "command": "uv run modal run scripts/run_modal.py::smoke_j_lens_swap",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 276,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:13:16.984342517+08:00",
+        "start": "2026-09-06T12:13:17.237147801+08:00",
+        "end": "2026-09-06T12:19:56.494823217+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: task274 proved serialization and logit intervention but old smoke duplicated the symmetric basis and rejected unchanged 2x8 greedy text; resolve: signed-alpha native smoke must persist all three generation sides and finish",
+    "command": "uv run modal run scripts/run_modal.py::smoke_j_lens_swap",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 277,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:21:32.300401097+08:00",
+        "start": "2026-09-06T12:21:32.560811593+08:00",
+        "end": "2026-09-06T12:28:34.706209037+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: task276 proved the paper coordinate exchange runs and alpha-1 negative is incoherent; resolve: calibrate signed alpha on DEV, judge intended effects, confirm accepted doses on all100, and render J-lens only if comparable",
+    "command": "uv run python scripts/experiment.py j_lens_swap --experiment-id j-lens-paper-native-sycophancy-v1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 278,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:34:14.415251953+08:00",
+        "start": "2026-09-06T12:34:14.660667461+08:00",
+        "end": "2026-09-06T12:41:02.001734943+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: task277 completed DEV but exposed renderer color, negative-axis sign, and full-selection bugs now fixed; resolve: reuse cached DEV, test accepted candidates on all100 AB+BA, then render final J-lens evidence",
+    "command": "uv run python scripts/experiment.py j_lens_swap --experiment-id j-lens-paper-native-sycophancy-v1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 279,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T12:44:50.541838904+08:00",
+        "start": "2026-09-06T12:44:50.824538464+08:00",
+        "end": "2026-09-06T13:20:50.377853971+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: task278 confirmed only the two DEV-selected endpoints, while AGENTS requires the calibrated all100 dose grid; resolve: extend all 22 DEV grid cells to 100, judge AB+BA, export full curve",
+    "command": "uv run python scripts/experiment.py j_lens_swap --experiment-id j-lens-paper-native-sycophancy-v1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 333,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T18:53:54.214845564+08:00",
+        "start": "2026-09-06T18:55:00.232375280+08:00",
+        "end": "2026-09-06T19:03:15.239891454+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: fixed-pair all100 stayed in random zone and used layers6-24, while the local paper reproduction succeeded at13-21; resolve: calibrate and judge the exact swap on13-21 DEV before changing representation",
+    "command": "uv run python scripts/experiment.py j_lens_swap --dev --experiment-id j-lens-paper-workspace-sycophancy-dev-v1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 334,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T18:56:10.637450305+08:00",
+        "start": "2026-09-06T18:56:10.719394290+08:00",
+        "end": "2026-09-06T18:56:51.984161550+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens repair comprehension pilot",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 20000 -m z-ai/glm-5.3-flash -t 2500 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md /tmp/jlens_repair_comprehension.md jlens_repair_comprehension",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 336,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T18:58:09.148643358+08:00",
+        "start": "2026-09-06T18:58:09.391785138+08:00",
+        "end": "2026-09-06T18:59:28.042625077+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens repair independent scientist GLM",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 30000 -m z-ai/glm-5.3-flash -t 5000 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md /tmp/jlens_repair_scientist.md jlens_repair_scientist_glm",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 337,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T18:58:09.272589327+08:00",
+        "start": "2026-09-06T18:58:09.400308033+08:00",
+        "end": "2026-09-06T19:00:28.905212170+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens repair independent scientist DeepSeek",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 30000 -m deepseek/deepseek-v4-pro-0813 -t 5000 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md /tmp/jlens_repair_scientist.md jlens_repair_scientist_deepseek",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 338,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:01:05.764282300+08:00",
+        "start": "2026-09-06T19:01:05.956988808+08:00",
+        "end": "2026-09-06T19:01:06.273054269+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "J-lens repair seminar GLM reads DeepSeek",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 30000 -m z-ai/glm-5.3-flash -t 3500 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md -f slop/reviews/2026-09-06_deepseek-v4-pro-0813_jlens_repair_scientist_deepseek.md /tmp/jlens_repair_seminar.md jlens_repair_seminar_glm",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 339,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:01:05.900085463+08:00",
+        "start": "2026-09-06T19:01:05.965419939+08:00",
+        "end": "2026-09-06T19:02:14.368826118+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens repair seminar DeepSeek reads GLM",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 30000 -m deepseek/deepseek-v4-pro-0813 -t 3500 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md -f slop/reviews/2026-09-06_glm-5.3-flash_jlens_repair_scientist_glm.md /tmp/jlens_repair_seminar.md jlens_repair_seminar_deepseek",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 340,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:01:40.148294446+08:00",
+        "start": "2026-09-06T19:01:40.326951888+08:00",
+        "end": "2026-09-06T19:02:43.898140758+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "retry seminar GLM after explicit 46k input-size failure",
+    "command": "/home/code/.agents/skills/moa/bin/pirev -q -b 50000 -m z-ai/glm-5.3-flash -t 3500 -f slop/pseudocode/20260906_j_lens_sycophancy_repair.py -f slop/research/20260906_j_lens_sycophancy_primary_evidence.md -f slop/reviews/2026-09-06_deepseek-v4-pro-0813_jlens_repair_scientist_deepseek.md /tmp/jlens_repair_seminar.md jlens_repair_seminar_glm",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 345,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:11:13.127848365+08:00",
+        "start": "2026-09-06T19:16:05.235201319+08:00",
+        "end": "2026-09-06T19:17:48.816322264+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: fixed J-lens pair still lies inside random cone on paper-reproduced layers; resolve: measure actual next-token ranks, J-lens ranks, swap coordinates, and pair geometry on all100 before choosing active-source vs concept components",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_activity_audit",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 348,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:32:19.345083069+08:00",
+        "start": "2026-09-06T19:32:19.353874695+08:00",
+        "end": "2026-09-06T19:35:54.356269842+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: all fixed and assessment tokens are absent from the model actual top25, so token swaps do not satisfy the paper active-source condition; resolve: DEV-test separate positive-dose sycophancy and abrasiveness GP16 J-space components on layers13-21 at C=.03125..1",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --dev --experiment-id j-lens-concept-components-dev-v1 --coefficients-plus 0.03125,0.0625,0.125,0.25,0.5,1.0 --coefficients-minus 0.03125,0.0625,0.125,0.25,0.5,1.0",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 351,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T19:45:23.855890570+08:00",
+        "start": "2026-09-06T19:50:55.336435982+08:00",
+        "end": "2026-09-06T19:53:31.939278171+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: task348 separate components used a gradient-pursuit routine that could reselect existing atoms and differed from the paper-oriented reference; resolve: re-extract with distinct-atom selection and repeat the same fixed DEV grid",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --dev --experiment-id j-lens-concept-components-dev-v2-correct-gp --coefficients-plus 0.03125,0.0625,0.125,0.25,0.5,1.0 --coefficients-minus 0.03125,0.0625,0.125,0.25,0.5,1.0",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 363,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:06:49.317535105+08:00",
+        "start": "2026-09-06T20:06:49.529536815+08:00",
+        "end": "2026-09-06T20:09:08.104768625+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens components user-turn tiny smoke; why: paper injects only over the user turn while prior local runs also changed the assistant-generation suffix; resolve: execute actual tiny model generation and full local judge/export path before DEV",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --concept-smoke --experiment-id j-lens-components-user-turn-tiny-smoke-v1 --model wassname/qwen3-5lyr-tiny-random --dtype float32 --device cpu",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 366,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:09:32.095676770+08:00",
+        "start": "2026-09-06T20:18:06.411791028+08:00",
+        "end": "2026-09-06T20:23:26.189797668+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens components DEV with paper user-turn mask; why: task351 patched seven assistant-generation suffix tokens beyond the paper intervention span; resolve: hold GP, concepts, layers, and dose grid fixed while injecting only through the user turn",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --dev --experiment-id j-lens-concept-components-dev-v3-user-turn --coefficients-plus 0.03125,0.0625,0.125,0.25,0.5,1.0 --coefficients-minus 0.03125,0.0625,0.125,0.25,0.5,1.0",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 372,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:27:59.770384028+08:00",
+        "start": "2026-09-06T20:28:00.037583308+08:00",
+        "end": "2026-09-06T20:31:35.487396062+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens behavioral components DEV; why: one-word sycophancy component consistently represented critique of the behavior and steered in the wrong direction; resolve: keep corrected GP16, layers, user-turn span, and fixed doses while extracting the pre-specified behavioral descriptions separately",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --dev --experiment-id j-lens-behavior-components-dev-v4 --coefficients-plus 0.03125,0.0625,0.125,0.25,0.5,1.0 --coefficients-minus 0.03125,0.0625,0.125,0.25,0.5,1.0",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 378,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:43:05.231018071+08:00",
+        "start": "2026-09-06T20:43:05.512593802+08:00",
+        "end": "2026-09-06T20:44:12.423159451+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "J-lens appendix projection tiny smoke; why: the paper appendix defines the intervention component as an orthogonal projection onto the GP-selected J-vector span, while prior DEV runs added the nonnegative reconstruction; resolve: actual lens extraction, projected component metadata, generation, judge, export, and unchanged public outputs",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --concept-smoke --experiment-id j-lens-components-appendix-projection-tiny-smoke-v1 --model wassname/qwen3-5lyr-tiny-random --dtype float32 --device cpu",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 380,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:45:46.002286768+08:00",
+        "start": "2026-09-06T20:49:39.270171044+08:00",
+        "end": "2026-09-06T20:52:00.223683111+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens appendix projection smoke retry; why: task378 extracted and generated correctly but reload validation retained the old representation-source literal; resolve: shared identity constant passes extraction reload, generation, judge, export, and leaves public outputs unchanged",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --concept-smoke --experiment-id j-lens-components-appendix-projection-tiny-smoke-v2 --model wassname/qwen3-5lyr-tiny-random --dtype float32 --device cpu",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 382,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T20:52:37.446968833+08:00",
+        "start": "2026-09-06T20:54:31.143529596+08:00",
+        "end": "2026-09-06T20:58:32.396851602+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens appendix-projection behavioral components DEV; why: paper appendix uses orthogonal projection onto the gradient-pursuit support, while task372 used nonnegative reconstruction and positive doses moved in the wrong direction; resolve: keep phrases, layers13-21, user-turn application, cohort, judges, and dose grid fixed, changing only the component vector",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --dev --experiment-id j-lens-behavior-components-appendix-projection-dev-v5 --coefficients-plus 0.03125,0.0625,0.125,0.25,0.5,1.0 --coefficients-minus 0.03125,0.0625,0.125,0.25,0.5,1.0",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 386,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T21:06:38.632960521+08:00",
+        "start": "2026-09-06T21:13:51.027679954+08:00",
+        "end": "2026-09-06T21:16:32.554724879+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens residual-norm-scaled component smoke; why: official paper experiment scales each unit J direction by its layer mean residual norm, while task382 used absolute unit additions; resolve: verify neutral-norm scaling in saved vectors, exact realized coefficients, generation, judge, export, and unchanged public outputs at dimensionless C=.01,.03,.1",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --concept-smoke --experiment-id j-lens-components-neutral-norm-scaled-tiny-smoke-v1 --model wassname/qwen3-5lyr-tiny-random --dtype float32 --device cpu --coefficients-plus 0.01,0.03,0.1 --coefficients-minus 0.01,0.03,0.1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 392,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T21:19:38.385543133+08:00",
+        "start": "2026-09-06T21:31:11.159204579+08:00",
+        "end": "2026-09-06T21:33:12.261306510+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "Calibrate both residual-norm-scaled J-lens directions; why: coefficient is now dimensionless and prior absolute-dose boundary is invalid; resolve: complete +C and -C one-prompt health/logit sweep from C=1 down to .0078125",
+    "command": "uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --experiment-id j-lens-behavior-components-neutral-norm-calibration-v6 --source-experiment j-lens-behavior-components-neutral-norm-scaled-source-v6",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 393,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T21:19:38.254546983+08:00",
+        "start": "2026-09-06T21:30:18.036633598+08:00",
+        "end": "2026-09-06T21:31:11.140392025+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "Extract residual-norm-scaled J-lens behavioral components; why: calibration must use the real Qwen vectors and profile-independent neutral residual norms; resolve: saved v6 extraction for layers13-21 with distinct direction hashes",
+    "command": "uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-behavior-components-neutral-norm-scaled-source-v6",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 400,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T21:37:32.637249396+08:00",
+        "start": "2026-09-06T21:37:32.858137549+08:00",
+        "end": "2026-09-06T21:47:51.580879416+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "Extend residual-norm J-lens calibration; why: +C remained coherent at C=1; resolve: locate +C failure at C=2 or C=4 while confirming -C boundary",
+    "command": "uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --experiment-id j-lens-behavior-components-neutral-norm-calibration-v6-extended --source-experiment j-lens-behavior-components-neutral-norm-scaled-source-v6",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 407,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T22:21:37.313716457+08:00",
+        "start": "2026-09-06T22:21:37.398431857+08:00",
+        "end": "2026-09-06T22:22:51.471854604+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens component swap v7 BF16 regression smoke",
+    "command": "uv run python scripts/experiment.py j_lens_concept_components --concept-smoke --experiment-id j-lens-components-coordinate-swap-tiny-smoke-v7b --model wassname/qwen3-5lyr-tiny-random --dtype float32 --device cpu --coefficients-plus 0.25,1 --coefficients-minus 0.25,1 2>&1 | tee slop/logs/20260906_j_lens_native/component-swap-v7b-smoke.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 408,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T22:25:04.377345406+08:00",
+        "start": "2026-09-06T22:25:04.564824134+08:00",
+        "end": "2026-09-06T22:25:52.149542399+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens paper concept-coordinate source v7b",
+    "command": "uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-behavior-components-coordinate-swap-source-v7b 2>&1 | tee slop/logs/20260906_j_lens_native/component-swap-v7b-source.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 410,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T22:26:54.850493751+08:00",
+        "start": "2026-09-06T22:27:15.271290914+08:00",
+        "end": "2026-09-06T22:28:52.845596159+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "J-lens paper concept-coordinate calibration v7b",
+    "command": "uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --source-experiment j-lens-behavior-components-coordinate-swap-source-v7b --experiment-id j-lens-behavior-components-coordinate-swap-calibration-v7b 2>&1 | tee slop/logs/20260906_j_lens_native/component-swap-v7b-calibration.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 412,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T22:32:15.251785699+08:00",
+        "start": "2026-09-06T22:32:15.514285831+08:00",
+        "end": "2026-09-06T22:33:08.804768997+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "Judge J-lens non-negative exchange DEV v7b",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-behavior-components-coordinate-swap-calibration-v7b --profile dev --refresh 2>&1 | tee slop/logs/20260906_j_lens_native/component-swap-v7b-judge.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 417,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T23:14:54.708024294+08:00",
+        "start": "2026-09-06T23:40:25.384316969+08:00",
+        "end": "2026-09-06T23:41:17.778505786+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: determine whether target-ordered J-lens vectors persist correctly on real Qwen BF16; resolve: proceed only if all layers have finite rank-two bases, distinct target hashes, and valid metadata",
+    "command": "sh -lc set -o pipefail; uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-behavior-components-target-ordered-source-v8 2>&1 | tee slop/logs/20260906_j_lens_native/component-target-ordered-v8-source.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 422,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T23:44:58.466344623+08:00",
+        "start": "2026-09-06T23:44:58.745031051+08:00",
+        "end": "2026-09-06T23:46:46.318247793+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test whether target ordering separates positive and critical J-lens behavior on real Qwen DEV; resolve: judge only if both directions alter attended positions with low coordinate residuals and coherent alpha grid",
+    "command": "sh -lc set -o pipefail; uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --source-experiment j-lens-behavior-components-target-ordered-source-v8 --experiment-id j-lens-behavior-components-target-ordered-calibration-v8 2>&1 | tee slop/logs/20260906_j_lens_native/component-target-ordered-v8-calibration.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 429,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-06T23:52:05.460606732+08:00",
+        "start": "2026-09-06T23:52:05.538170172+08:00",
+        "end": "2026-09-06T23:53:14.819303517+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: measure whether target-ordered J-lens moves both judged sycophancy directions outside random variation; resolve: export DEV only after complete two-order judgments for all 14 nonzero cells",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-behavior-components-target-ordered-calibration-v8 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 433,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T00:19:57.152425657+08:00",
+        "start": "2026-09-07T00:39:20.267277727+08:00",
+        "end": "2026-09-07T00:40:11.463914252+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: validate whether the standard judge responds to direct sycophantic and abrasive instructions before redesigning J-lens source components; resolve: continue only if both instructions produce intended nonzero DEV signs without incoherence",
+    "command": "uv run modal run scripts/run_modal.py::persona_prompt_control --experiment-id j-lens-persona-prompt-control-dev-v1",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 434,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T00:40:37.275566537+08:00",
+        "start": "2026-09-07T00:40:37.376166619+08:00",
+        "end": "2026-09-07T00:41:16.824228524+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: verify the sycophancy judge responds with opposite signs to direct sycophantic and abrasive instructions; resolve: proceed with representation redesign only if both 15-row controls receive intended signs",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-persona-prompt-control-dev-v1 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 437,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T00:54:15.041611026+08:00",
+        "start": "2026-09-07T01:02:36.777591504+08:00",
+        "end": "2026-09-07T01:03:30.693155392+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test whether an explicit non-insulting false-premise correction instruction provides the missing negative semantic control; resolve: use it for matched J-lens source components only if DEV median is negative, at least 10/15 scenarios have negative sign, outputs identify false premises without insults, and off-axis mean is below 1.5",
+    "command": "uv run modal run scripts/run_modal.py::persona_prompt_control --experiment-id j-lens-persona-prompt-control-truthful-dev-v2",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 439,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T01:04:06.580678908+08:00",
+        "start": "2026-09-07T01:04:06.605871447+08:00",
+        "end": "2026-09-07T01:04:35.265182694+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: measure whether the aligned candid-correction prompt gives a broad negative DEV effect with low off-axis change; resolve: extract matched J-lens behavior components only if median is negative, at least 10 of 15 scenarios are negative, and off-axis mean is below 1.5",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-persona-prompt-control-truthful-dev-v2 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 440,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T01:15:19.248954900+08:00",
+        "start": "2026-09-07T01:37:36.099701817+08:00",
+        "end": "2026-09-07T01:38:39.951116209+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test whether explicitly requiring nonexistence detection removes premise-preserving judge shortcuts from the negative source instruction; resolve: use this instruction for component extraction only if manual review finds at least 10 of 15 exact named-flaw corrections, no invented properties or insults, and numeric negative median/off-axis criteria still pass",
+    "command": "uv run modal run scripts/run_modal.py::persona_prompt_control --experiment-id j-lens-persona-prompt-control-exact-flaw-dev-v3",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 441,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T01:39:12.720117977+08:00",
+        "start": "2026-09-07T01:39:12.785040336+08:00",
+        "end": "2026-09-07T01:39:39.886598582+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: verify that the exact-flaw negative instruction preserves broad intended scores and low off-axis change after manual review found 12 of 15 exact named-flaw corrections; resolve: implement matched components only if median remains negative, at least 10 of 15 scores are negative, and off-axis mean is below 1.5",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-persona-prompt-control-exact-flaw-dev-v3 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 447,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T07:17:39.658410010+08:00",
+        "start": "2026-09-07T07:17:39.957817436+08:00",
+        "end": "2026-09-07T07:18:48.925444288+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: test whether validated matched-persona residuals yield stable distinct GP16 components on Qwen3.5-4B; resolve: calibrate only if layerwise split-half and held-out separation are stable, condition stays below 10, absolute component cosine stays below .98, and both target orders have nontrivial DEV eligibility",
+    "command": "sh -lc set -o pipefail; uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-persona-components-source-v13 --j-lens-source persona_components 2>&1 | tee slop/logs/20260907_j_lens_native/component-persona-v13-source.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 450,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T07:43:26.313976921+08:00",
+        "start": "2026-09-07T08:16:55.241452719+08:00",
+        "end": "2026-09-07T08:17:52.758844715+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: rerun matched-persona GP16 extraction on 65 unique rendered messages after task447 duplicate leakage; resolve: calibrate only if 52/13 split remains stable, held-out target ordering is broad, condition stays below 10, absolute component cosine stays below .98, both DEV target orders remain nontrivial, and artifacts download locally",
+    "command": "uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-persona-components-source-v15 --j-lens-source persona_components",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 458,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T08:28:43.353872244+08:00",
+        "start": "2026-09-07T11:57:00.494938290+08:00",
+        "end": "2026-09-07T11:59:18.707188027+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test whether the stable deduplicated GP16 components causally transfer to sycophancy/candid-correction behavior; resolve: judge only if non-negative alpha produces coherent generations with real patches, low coordinate residuals, and nontrivial output/logit changes in both fixed directions; reject rather than relabel if behavior is wrong-sign or remains in random variation",
+    "command": "uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --source-experiment j-lens-persona-components-source-v15 --experiment-id j-lens-persona-components-calibration-v15 --j-lens-source persona_components",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 459,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T12:04:39.309693981+08:00",
+        "start": "2026-09-07T12:04:39.359267030+08:00",
+        "end": "2026-09-07T12:06:54.891278497+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: measure whether deduplicated persona GP16 coordinate exchange moves the fixed sycophancy and exact-flaw targets across coherent DEV-15 generations; resolve: proceed to export only if at least one dose per fixed direction has the intended sign and mean steered off-axis score below 1.5; reject rather than relabel if a direction is null, wrong-sign, or within random variation",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-persona-components-calibration-v15 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 460,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T12:29:06.402957407+08:00",
+        "start": "2026-09-07T12:29:06.637814915+08:00",
+        "end": "2026-09-07T12:30:01.153102657+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: locate the GP16 information loss by extracting the complete matched positive-minus-baseline and negative-minus-baseline residuals with the fixed 65-source split; resolve: calibrate only if both full-residual basis vectors are nonzero, split-half stable, rank-2 and well-conditioned, separate all 13 held-out fixed-instruction sources in their fixed target order, and have nontrivial DEV target-order eligibility",
+    "command": "sh -lc set -o pipefail; uv run modal run scripts/run_modal.py::extract_experiment --method j_lens_concept_components --experiment-id j-lens-persona-full-components-source-v16 --j-lens-source persona_components --persona-direction full_residual 2>&1 | tee slop/logs/20260907_j_lens_full_residual/task-full-residual-source-v16.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 461,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T12:43:07.624553889+08:00",
+        "start": "2026-09-07T12:43:07.910797459+08:00",
+        "end": "2026-09-07T12:45:16.853602319+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: distinguish GP16 information loss from failure of the matched final-prefill source or target-order operator by changing only the basis to complete residuals; resolve: inspect all 240 generations and judge only if both fixed targets remain coherent, have low coordinate residuals, and produce nonzero treated-forward patches/logit changes; expect +C exposure above -C, and extend only -C dose if its alpha-2 exposure remains below v15 before interpreting a semantic failure",
+    "command": "bash -lc set -o pipefail; uv run modal run scripts/run_modal.py::calibrate_concept --method j_lens_concept_components --source-experiment j-lens-persona-full-components-source-v16 --experiment-id j-lens-persona-full-components-calibration-v16 --j-lens-source persona_components --persona-direction full_residual 2>&1 | tee slop/logs/20260907_j_lens_full_residual/task-full-residual-calibration-v16.log",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 462,
+    "group": "api",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T12:51:31.874088776+08:00",
+        "start": "2026-09-07T12:51:32.020038007+08:00",
+        "end": "2026-09-07T12:53:05.666439084+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: measure whether complete matched residuals restore broad fixed-label sycophancy and candid-correction effects after both directions exceeded v15 numerical exposure; resolve: stop this matched-source target-order design unless each direction has intended mean and median sign, at least 10 of 15 intended-sign scenarios, and mean steered off-axis score below 1.5; never relabel or sign-flip after results",
+    "command": "uv run python scripts/judge.py --experiment-id j-lens-persona-full-components-calibration-v16 --profile dev --refresh",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 463,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T13:40:54.378832680+08:00",
+        "start": "2026-09-07T13:40:54.468443502+08:00",
+        "end": "2026-09-07T14:41:47.179429561+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: validate the added rank-10, rank-25, coordinate-difference fields and immutable model revision on one Qwen request; resolve: commit and run DEV-15 only if the actual-lens smoke persists every required field and passes schema checks",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_prompt_span_activity --smoke --output audits/20260907_j_lens_prompt_span_activity/smoke-v4.json",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 464,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T14:46:48.569903717+08:00",
+        "start": "2026-09-07T14:46:48.579881309+08:00",
+        "end": "2026-09-07T14:47:26.525034561+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: verify that removing the redundant explicit Modal volume commit returns the valid N=1 prompt-span artifact without waiting one hour; resolve: accept the smoke only if the task exits successfully and the downloaded JSON passes required-field, coordinate, revision, and span assertions",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_prompt_span_activity --smoke --output audits/20260907_j_lens_prompt_span_activity/smoke-v5.json",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 465,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-07T14:51:46.547513852+08:00",
+        "start": "2026-09-07T14:51:46.668168619+08:00",
+        "end": "2026-09-07T14:52:42.980600473+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: test whether unchanged DEV-15 requests carry active fixed false/true-like J-lens labels across their request-token spans, using an explicit true/false context to validate the readout; resolve: authorize one frozen causal DEV run only if explicit false answers and explicit negative-source eligibility are each at least 10/15, original +C and -C eligibility are each at least 10/15, and each semantic coverage exceeds all 100 fixed random size-seven source sets; otherwise stop or debug exactly as the persisted decision states, without relabeling or threshold changes",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_prompt_span_activity --output audits/20260907_j_lens_prompt_span_activity/dev15-v1.json",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 704,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-08T10:20:23.053103679+08:00",
+        "start": "2026-09-08T10:20:23.323770792+08:00",
+        "end": "2026-09-08T10:21:05.812759296+08:00",
+        "result": {
+          "Failed": 1
+        }
+      }
+    },
+    "label": "why: test whether frozen v3 closed-rule source states support a specific GP rank-one causal handle; resolve: stop at source gate or save reviewed evidence before any benchmark transfer",
+    "command": "uv run modal run scripts/scratch/j_lens_task_validity_source_stage.py::launch",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 705,
+    "group": "default",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-08T10:33:55.213744315+08:00",
+        "start": "2026-09-08T10:33:55.236182904+08:00",
+        "end": "2026-09-08T10:37:33.717363508+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: job704 reached pinned weights but failed on a host-only preservation check; resolve: run the frozen source gate after CPU mounted-input proof, then stop for review before transfer",
+    "command": "uv run modal run scripts/scratch/j_lens_task_validity_source_stage.py::launch",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 777,
+    "group": "modal",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-08T15:02:10.841941194+08:00",
+        "start": "2026-09-08T15:02:11.102240371+08:00",
+        "end": "2026-09-08T15:03:26.780024893+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: old low-dose J-lens DEV lacked a matched behavioral placebo; resolve: select a task-responsive arm only if it exceeds same-sign norm-matched random control without damage",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 780,
+    "group": "modal",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-08T15:22:14.282452058+08:00",
+        "start": "2026-09-08T15:22:14.528543512+08:00",
+        "end": "2026-09-08T15:23:31.762199405+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: C=.125 upper-layer J-lens corrected one false premise but lacked broad control advantage; resolve: test only C=.25 with fresh matched controls before selecting any endpoint",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_concept_repair_dev --experiment-id j-lens-concept-dev-repair-v2-upper-c025 --coefficient 0.25",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 782,
+    "group": "modal",
+    "status": {
+      "Done": {
+        "enqueued_at": "2026-09-08T16:00:22.499355902+08:00",
+        "start": "2026-09-08T16:00:22.520179174+08:00",
+        "end": "2026-09-08T16:01:45.754765173+08:00",
+        "result": "Success"
+      }
+    },
+    "label": "why: source states are measured at the final chat-prompt token but prior repair patched user turns; resolve: test final-prompt-only J-lens -C=.25 against fresh norm-matched random-minus before any full endpoint",
+    "command": "uv run modal run scripts/run_modal.py::j_lens_concept_final_prompt_dev",
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  }
+]
