@@ -1,0 +1,110 @@
+timestamp=2026-09-09T12:24:45+08:00
+
+groups:
+Group "api" (4 parallel): running
+Group "default" (1 parallel): running
+Group "local_gpu" (1 parallel): running
+Group "modal" (1 parallel): running
+
+v14_tasks:
+[
+  {
+    "id": 816,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method j_lens_swap --experiment-id v14-dev-j-lens-swap",
+    "label": "why: v14 needs paired-order paper J-lens DEV point; resolve: generate every calibrated dose against frozen shared bare before judging",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.224093877+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 817,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method mean_diff --experiment-id v14-dev-mean-diff --seed 0 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 DEV plot needs mean_diff baseline on the frozen cohort; resolve: generate both sides and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.356870480+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 818,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method vjp_delta --experiment-id v14-dev-vjp-delta --seed 0 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 --target-layer 33",
+    "label": "why: v14 DEV plot needs vjp_delta baseline on the frozen cohort; resolve: generate both sides and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.485889561+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 819,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method random --experiment-id v14-dev-random-s0 --seed 0 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 needs random DEV region seed=0 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.610865140+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 820,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method random --experiment-id v14-dev-random-s1 --seed 1 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 needs random DEV region seed=1 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.754171174+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 821,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method random --experiment-id v14-dev-random-s2 --seed 2 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 needs random DEV region seed=2 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:56.876280678+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 822,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method random --experiment-id v14-dev-random-s3 --seed 3 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 needs random DEV region seed=3 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:57.020143610+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  },
+  {
+    "id": 823,
+    "group": "default",
+    "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method random --experiment-id v14-dev-random-s4 --seed 4 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+    "label": "why: v14 needs random DEV region seed=4 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T12:02:57.152848539+08:00"
+      }
+    },
+    "path": "/workspace/2026/jspace/j-steer_pub"
+  }
+]
+
+tracked_pids:
+3589122 Ss   bash /home/code/.local/bin/pqf 816 80

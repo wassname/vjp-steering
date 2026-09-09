@@ -1,0 +1,12 @@
+{
+  "id": 824,
+  "group": "default",
+  "label": "why: distinguish paper-native J-lens operator fidelity from fixed-token transfer; resolve: verify raw verbal-report alpha0 identity and swapped-candidate rank movement on a small vendored subset",
+  "command": "uv run python scripts/reproduce_paper_j_lens.py --source-revision fc30b122bfe28abfc1afa1fabc27a75623b8bc1b --prompt-mode raw --coefficient 2 --limit-categories 2 --limit-targets 1 --output outputs/experiments/v14-paper-native-verbal-smoke/results.json",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T12:26:30.478604274+08:00"
+    }
+  },
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
