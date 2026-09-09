@@ -462,6 +462,7 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         tuple(int(layer) for layer in args.layers.split(",") if layer)
         if args.layers else walk.resolve_layers(model, None)
     )
+    positive, negative = extraction_prompts(args, tokenizer)
     if args.method == "random":
         vector = Vector.train(
             model, tokenizer, positive, negative,
@@ -470,7 +471,6 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         )
         return {"+C": vector, "-C": vector}, {"source_layers": list(layers), "control": "seeded unit vector per source layer"}, 0, f"random_seed:{args.seed}"
 
-    positive, negative = extraction_prompts(args, tokenizer)
     if args.method == "vjp_delta":
         if args.target_layer is None:
             raise ValueError("vjp_delta requires --target-layer for reproducible DEV comparison")

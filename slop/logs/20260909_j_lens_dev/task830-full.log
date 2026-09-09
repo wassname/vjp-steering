@@ -1,0 +1,86 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-GYRiTlgJZtuzgnjF6X3Cit
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function j_lens_gap_clamp_remote.
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function run_j_lens_concept_repair.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function diagnose_j_lens_remote.
+└── 🔨 Created function j_lens_prompt_span_activity_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]
+[1AFetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 552.12it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]
+[1AFetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 346.87it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   4%|▍         | 19/426 [00:00<00:02, 182.35it/s]
+[1ALoading weights:   9%|▉         | 38/426 [00:00<00:02, 168.74it/s]
+[1ALoading weights:  13%|█▎        | 55/426 [00:00<00:02, 149.56it/s]
+[1ALoading weights:  17%|█▋        | 71/426 [00:00<00:02, 139.30it/s]
+[1ALoading weights:  21%|██        | 90/426 [00:00<00:02, 153.36it/s]
+[1ALoading weights:  28%|██▊       | 118/426 [00:00<00:01, 191.20it/s]
+[1ALoading weights:  32%|███▏      | 138/426 [00:00<00:01, 178.39it/s]
+[1ALoading weights:  37%|███▋      | 158/426 [00:00<00:01, 177.95it/s]
+[1ALoading weights:  42%|████▏     | 177/426 [00:01<00:01, 177.86it/s]
+[1ALoading weights:  46%|████▌     | 196/426 [00:01<00:01, 179.42it/s]
+[1ALoading weights:  50%|█████     | 215/426 [00:01<00:01, 178.06it/s]
+[1ALoading weights:  55%|█████▍    | 233/426 [00:01<00:01, 170.13it/s]
+[1ALoading weights:  60%|█████▉    | 255/426 [00:01<00:00, 181.51it/s]
+[1ALoading weights:  64%|██████▍   | 274/426 [00:01<00:00, 156.38it/s]
+[1ALoading weights:  70%|███████   | 300/426 [00:01<00:00, 169.76it/s]
+[1ALoading weights:  75%|███████▍  | 318/426 [00:01<00:00, 153.20it/s]
+[1ALoading weights:  80%|███████▉  | 340/426 [00:02<00:00, 168.78it/s]
+[1ALoading weights:  84%|████████▍ | 359/426 [00:02<00:00, 158.29it/s]
+[1ALoading weights: 100%|██████████| 426/426 [00:02<00:00, 192.61it/s]
+2026-09-09 05:03:08.396 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-09 05:03:08.506 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+/.uv/.venv/lib/python3.13/site-packages/torch/autograd/graph.py:979: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:408.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+2026-09-09 05:04:16.772 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:05:02.008 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:05:23.906 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:05:44.729 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:06:06.299 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:06:28.255 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:06:50.625 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:13.415 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:35.065 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:36.597 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:38.056 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:39.323 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:40.641 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:07:41.979 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:08:04.603 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:08:26.328 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:08:48.282 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:09:10.346 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:09:32.388 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:09:53.771 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:09:58.034 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:10:03.292 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:10:26.246 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:10:49.785 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:11:11.314 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:11:33.188 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:11:56.060 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:12:17.526 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:12:39.719 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:13:01.882 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 05:13:01.915 | INFO     | __main__:gpu_stage:1276 - GPU_STAGE_COMPLETE experiment=v14-dev-vjp-delta-r2 profile=dev cells=21
+EXPERIMENT_GPU_COMPLETE id=v14-dev-vjp-delta-r2 profile=dev cells=21
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-GYRiTlgJZtuzgnjF6X3Cit

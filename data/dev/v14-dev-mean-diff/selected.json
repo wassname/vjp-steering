@@ -1,0 +1,24 @@
+{
+  "experiment_id": "v14-dev-mean-diff",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 1.022378537935215,
+      "candidates_descending": [
+        1.022378537935215,
+        1.0
+      ],
+      "effect": 3.433333333333333,
+      "off_axis_perturbation": 0.6833333333333333
+    },
+    "-C": {
+      "selected_C": 0.8822620493957584,
+      "candidates_descending": [
+        0.8822620493957584,
+        0.7036772841102121
+      ],
+      "effect": -5.476666666666667,
+      "off_axis_perturbation": 0.91
+    }
+  }
+}

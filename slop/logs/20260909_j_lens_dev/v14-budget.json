@@ -25,12 +25,15 @@
     {"task": 825, "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2", "duration_seconds": 329, "status": "success"},
     {"task": 827, "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv", "duration_seconds": 411, "status": "success"},
     {"task": 829, "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71", "duration_seconds": 29, "status": "failed_before_extraction", "cause": "target layer 33 outside Qwen layers [0,25)"},
-    {"task": 830, "status": "running", "role": "one explicit corrected VJP-delta retry"},
-    {"tasks": [831, 832, 833, 834, 835], "status": "reserved", "role": "five serial random seeds after successful task830"}
+    {"task": 830, "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit", "duration_seconds": 631, "status": "success", "role": "one explicit corrected VJP-delta retry"},
+    {"task": 831, "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK", "duration_seconds": 42, "status": "failed_before_random_vector", "cause": "random branch used uninitialized extraction prompts"},
+    {"tasks": [832, 833, 834, 835], "status": "dependency_failed_no_remote_dispatch", "role": "the success dependency stopped the chain after task 831"},
+    {"role": "one explicit corrected random seed-0 retry then serial seeds 1-4", "status": "reserved_after_code_fix", "max_attempts": 5, "timeout_seconds_per_attempt": 900}
   ],
   "judging_attempts": [
     {"task": 826, "status": "success", "missing": 0, "api_calls": 403},
-    {"task": 828, "status": "running", "role": "mean_diff paired AB/BA"}
+    {"task": 828, "status": "success", "missing": 0, "api_calls": 626},
+    {"role": "VJP-delta and five random paired AB/BA judgments", "status": "reserved"}
   ],
-  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. $9.00 is a conservative ceiling for nine remote attempts: eight intended serial H100 generations plus the explicit corrected VJP retry, derived from task800's observed $0.09969626 for about 101 seconds and a 900-second maximum per attempt; it is not a receipt. $2.00 is reserved for paired AB/BA judging. Task825, task827, and failed task829 have no provider billing receipts available through the local Modal CLI, so these reserves remain retained rather than substituting estimates. These $11.00 v14 reserves use only the approved $20.00 v14 allocation; the carried $12.00 review reserve remains separate. Record each provider receipt if one becomes available. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "spend_status": "The local Modal CLI did not emit provider billing receipts for tasks 825, 827, 829, 830, or 831, so the $9.00 remote and $2.00 judging ceilings remain reserved rather than replaced with invented costs. Ten 900-second remote attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88; this covers the five completed remote attempts plus the corrected five-seed random sequence. Tasks 832-835 failed their dependency without remote dispatch. These $11.00 v14 reserves use only the approved $20.00 allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00."
 }
