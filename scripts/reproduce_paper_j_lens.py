@@ -10,7 +10,7 @@ import torch
 from loguru import logger
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from vjp_steering.vjp import j_lens_coordinate_prefill, j_lens_coordinate_swap
+from vjp_steering.vjp import J_WORD_LENS_FILE, J_WORD_LENS_REPO, J_WORD_LENS_REVISION, j_lens_coordinate_prefill, j_lens_coordinate_swap
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,17 +51,54 @@ def top_tokens(logits: torch.Tensor, tokenizer, k: int = 10) -> list[dict[str, f
     ]
 
 
-def next_logits(model, tokenizer, text: str, vector=None) -> tuple[torch.Tensor, dict[int, int]]:
+def next_logits(
+    model, tokenizer, text: str, vector=None, coordinate_diagnostics: dict[int, dict] | None = None,
+) -> tuple[torch.Tensor, dict[int, int]]:
     encoded = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(next(model.parameters()).device)
     final = encoded.attention_mask.sum(1) - 1
     context = nullcontext({}) if vector is None else j_lens_coordinate_prefill(
-        model, vector, encoded.attention_mask.bool()
+        model, vector, encoded.attention_mask.bool(), coordinate_diagnostics
     )
     with context as calls, torch.inference_mode():
         logits = model(**encoded, use_cache=False).logits[torch.arange(len(final), device=final.device), final][0].float()
     if vector is not None and not all(value == 1 for value in calls.values()):
         raise AssertionError(f"coordinate swap hook calls were {calls}")
     return logits.cpu(), calls
+
+
+def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids: list[int], checkpoint: dict) -> dict[str, dict]:
+    """Read fitted J-lens scores at the final prompt token for category candidates."""
+    encoded = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(next(model.parameters()).device)
+    final = int(encoded.attention_mask.sum().item() - 1)
+    captured, handles = {}, []
+    for layer in vector.cfg.layers:
+        def record(layer):
+            def hook(_module, _inputs, output):
+                hidden = output[0] if isinstance(output, tuple) else output
+                captured[layer] = hidden[0, final].float().detach().cpu()
+            return hook
+        handles.append(model.model.layers[layer].register_forward_hook(record(layer)))
+    try:
+        with torch.inference_mode():
+            model(**encoded, use_cache=False)
+    finally:
+        for handle in handles:
+            handle.remove()
+    candidate_rows = model.lm_head.weight[candidate_ids].float().detach().cpu()
+    readouts = {}
+    for layer, hidden in captured.items():
+        lens_rows = candidate_rows @ checkpoint["J"][layer].float()
+        scores = hidden @ lens_rows.T
+        source_index = candidate_ids.index(vector.cfg.source_token_id)
+        target_index = candidate_ids.index(vector.cfg.target_token_id)
+        source_score, target_score = scores[source_index], scores[target_index]
+        readouts[str(layer)] = {
+            "source_lens_readout": float(source_score),
+            "target_lens_readout": float(target_score),
+            "source_candidate_rank": int((scores > source_score).sum()) + 1,
+            "target_candidate_rank": int((scores > target_score).sum()) + 1,
+        }
+    return readouts
 
 
 def main() -> None:
@@ -76,6 +113,7 @@ def main() -> None:
     parser.add_argument("--prompt-mode", choices=("raw", "chat"), default="raw")
     parser.add_argument("--clean-only", action="store_true")
     parser.add_argument("--coefficient", type=float, default=1.0)
+    parser.add_argument("--coordinate-diagnostics", action="store_true")
     parser.add_argument("--source-revision", required=True)
     args = parser.parse_args()
 
@@ -127,7 +165,13 @@ def main() -> None:
             zero_logits, zero_calls = next_logits(model, tokenizer, text, zero)
             torch.testing.assert_close(zero_logits, clean_logits, rtol=0, atol=0)
             vector.cfg.coeff = args.coefficient
-            swapped_logits, calls = next_logits(model, tokenizer, text, vector)
+            coordinate_diagnostics = {} if args.coordinate_diagnostics else None
+            swapped_logits, calls = next_logits(model, tokenizer, text, vector, coordinate_diagnostics)
+            checkpoint = torch.load(metadata["lens_file"], map_location="cpu", weights_only=True, mmap=True)
+            layer_readouts = (
+                clean_layer_lens_readouts(model, tokenizer, text, vector, category_ids, checkpoint)
+                if args.coordinate_diagnostics else None
+            )
             trials.append({
                 "category": category, "prompt": text, "source_token_id": source_id,
                 "source_token": tokenizer.decode([source_id]), "target_token_id": target_id,
@@ -135,8 +179,14 @@ def main() -> None:
                 "swapped_target_rank": rank(swapped_logits, target_id),
                 "clean_top_token": tokenizer.decode([int(clean_logits.argmax())]),
                 "swapped_top_token": tokenizer.decode([int(swapped_logits.argmax())]),
+                "clean_source_logit": float(clean_logits[source_id]),
+                "clean_target_logit": float(clean_logits[target_id]),
+                "swapped_source_logit": float(swapped_logits[source_id]),
+                "swapped_target_logit": float(swapped_logits[target_id]),
                 "success_top1": int(swapped_logits.argmax()) == target_id,
                 "zero_hook_calls": zero_calls, "swap_hook_calls": calls,
+                "coordinate_diagnostics": coordinate_diagnostics,
+                "clean_layer_lens_readouts": layer_readouts,
                 "layer_condition_numbers": {layer: info["condition_number"] for layer, info in metadata["layers"].items()},
             })
     common = {
@@ -147,6 +197,12 @@ def main() -> None:
         "prompt_mode": args.prompt_mode,
         "candidate_prefix": candidate_prefix,
         "prompt_format":  "paper verbal-report colon prefill" if args.prompt_mode == "raw" else "Qwen chat template around the paper verbal-report colon prefill",
+        "coordinate_diagnostics_requested": args.coordinate_diagnostics,
+        "model_layers": model.config.num_hidden_layers,
+        "final_norm_module": type(model.model.norm).__name__,
+        "lens_repository": J_WORD_LENS_REPO,
+        "lens_repository_revision": J_WORD_LENS_REVISION,
+        "lens_repository_file": J_WORD_LENS_FILE,
         "clean_rows": clean_rows,
     }
     if args.clean_only:

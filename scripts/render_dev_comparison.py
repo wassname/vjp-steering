@@ -127,9 +127,13 @@ def main() -> None:
         writer.writerows(rows)
     markdown = _markdown(table, (
         "DEV15 comparison only. Every point passed exact scenario, shared-bare, generation-config, AB/BA judgment, and coherence provenance checks.",
-        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. The source rows are in `dev-comparison.csv`.",
+        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.",
     ), extra_pareto_plot=True)
-    markdown = markdown.replace("plot.png", "plot-dev.png").replace("plot_pareto.png", "plot-pareto-dev.png")
+    markdown = (
+        markdown.replace("plot.png", "plot-dev.png")
+        .replace("plot_pareto.png", "plot-pareto-dev.png")
+        .replace("rejected↓", "not eligible↓")
+    )
     (output / "index-dev.md").write_text(markdown)
     for filename, pareto, title in (
         ("plot-dev.png", False, "DEV15 steering comparison"),

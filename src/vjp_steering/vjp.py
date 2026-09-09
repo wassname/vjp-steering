@@ -525,7 +525,12 @@ def j_lens_coordinate_swap(
 
 
 @contextmanager
-def j_lens_coordinate_prefill(model, vector: Vector, mask: torch.Tensor):
+def j_lens_coordinate_prefill(
+    model,
+    vector: Vector,
+    mask: torch.Tensor,
+    coordinate_diagnostics: dict[int, dict[str, float | int]] | None = None,
+):
     """Apply a paper-native coordinate swap once during prompt prefill."""
     handles, handles_by_layer = [], {}
     calls = {layer: 0 for layer in vector.cfg.layers}
@@ -535,10 +540,25 @@ def j_lens_coordinate_prefill(model, vector: Vector, mask: torch.Tensor):
             calls[layer] += 1
             hidden = output[0] if isinstance(output, tuple) else output
             shared = vector.shared[layer]
-            swapped = _swap_lens_coordinates(
-                hidden, shared["basis"].to(hidden), shared["dual"].to(hidden), vector.cfg.coeff,
-            )
-            edited = torch.where(mask.to(device=hidden.device).unsqueeze(-1), swapped, hidden)
+            basis = shared["basis"].to(hidden)
+            dual = shared["dual"].to(hidden)
+            swapped = _swap_lens_coordinates(hidden, basis, dual, vector.cfg.coeff)
+            active = mask.to(device=hidden.device)
+            if coordinate_diagnostics is not None:
+                before = torch.einsum("bsd,kd->bsk", hidden.float(), dual.float())[active]
+                after = torch.einsum("bsd,kd->bsk", swapped.float(), dual.float())[active]
+                before_residual = hidden.float()[active] - torch.einsum("nk,kd->nd", before, basis.float())
+                after_residual = swapped.float()[active] - torch.einsum("nk,kd->nd", after, basis.float())
+                coordinate_diagnostics[layer] = {
+                    "selected_positions": int(active.sum()),
+                    "source_before_mean": float(before[:, 0].mean()),
+                    "target_before_mean": float(before[:, 1].mean()),
+                    "source_after_mean": float(after[:, 0].mean()),
+                    "target_after_mean": float(after[:, 1].mean()),
+                    "coordinate_exchange_max_abs_error": float((after - before.flip(-1)).abs().max()),
+                    "orthogonal_residual_max_abs_error": float((after_residual - before_residual).abs().max()),
+                }
+            edited = torch.where(active.unsqueeze(-1), swapped, hidden)
             handles_by_layer[layer].remove()
             return (edited, *output[1:]) if isinstance(output, tuple) else edited
         return apply

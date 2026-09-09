@@ -1,11 +1,11 @@
-2026-09-09 14:35:21.497 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
-2026-09-09 14:35:21.841 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-mean-diff profile=dev cells=24 demo_sides=360
-2026-09-09 14:35:22.171 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-vjp-delta-r2 profile=dev cells=21 demo_sides=315
-2026-09-09 14:35:22.480 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=26 demo_sides=390
-2026-09-09 14:35:22.927 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=24 demo_sides=360
-2026-09-09 14:35:23.323 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=23 demo_sides=345
-2026-09-09 14:35:23.665 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=26 demo_sides=390
-2026-09-09 14:35:24.056 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 15:01:24.304 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
+2026-09-09 15:01:24.619 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-mean-diff profile=dev cells=24 demo_sides=360
+2026-09-09 15:01:24.974 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-vjp-delta-r2 profile=dev cells=21 demo_sides=315
+2026-09-09 15:01:25.402 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 15:01:25.748 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=24 demo_sides=360
+2026-09-09 15:01:26.111 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=23 demo_sides=345
+2026-09-09 15:01:26.402 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 15:01:26.717 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=26 demo_sides=390
 /workspace/2026/jspace/j-steer_pub/scripts/render_dev_comparison.py:147: DeprecationWarning: 
 Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
 Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).

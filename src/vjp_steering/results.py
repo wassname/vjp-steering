@@ -811,7 +811,7 @@ def plot(
         )
     if random:
         figure.add_annotation(
-            x=1.8, y=0.55, text="null zone of<br>random directions", showarrow=False,
+            x=1.55, y=0.33, text="null zone of<br>random directions", showarrow=False,
             align="center", font={"color": "#666666", "size": 14},
         )
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})

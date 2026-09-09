@@ -1,0 +1,15 @@
+# DEV calibrated random-rung summary
+
+Command: `uv run python -` using `render_dev_comparison.verify_experiment` and `calibrated_random_rungs` on the frozen provenance IDs.
+
+| side | normalized rung | median effect | five-seed effect range | median damage |
+|---|---:|---:|---:|---:|
+| +C | 0 | +1.393 | +0.327 to +2.097 | 0.267 |
+| +C | 1 | +1.913 | +1.337 to +2.560 | 0.527 |
+| -C | none | — | no rung has five coherent seed measurements | — |
+
+The coherent J-lens points are: +C `(C=.795, effect=.080, damage=.040)`, `(C=.895, .023, .033)`, `(C=.996, .070, .030)`; -C `(C=.165, effect=-.247, damage=.087)`, `(C=.186, -.513, .130)`, `(C=.207, -.127, .170)`, `(C=.228, -.153, .187)`, `(C=.249, +.070, .160)`, `(C=.250, -.267, .163)`.
+
+Observation: the plot has two five-seed coherent +C random rungs but no five-seed coherent -C random rung. J-lens +C is below the five-seed random envelope. J-lens -C has individual random measured points for context, but no valid five-seed envelope under the frozen all-seeds-coherent rule. This is not evidence that J-lens beats random on -C.
+
+-- PI/OpenAI
