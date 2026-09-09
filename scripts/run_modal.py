@@ -115,7 +115,11 @@ def dev_abrasive_coords_remote(output: str, revision: str) -> str:
     destination = Path("/cache/outputs") / output
     if destination.exists():
         raise FileExistsError(destination)
-    subprocess.run([sys.executable, "scripts/dev_abrasive_coords.py", "--output", str(destination)], cwd="/repo", check=True)
+    result = subprocess.run([sys.executable, "scripts/dev_abrasive_coords.py", "--output", str(destination)], cwd="/repo", capture_output=True, text=True)
+    print(result.stdout)
+    print(result.stderr, file=sys.stderr)
+    if result.returncode != 0:
+        raise RuntimeError(f"dev_abrasive_coords.py failed with {result.returncode}: {result.stderr[:2000]}")
     cache.commit()
     return destination.read_text()
 
