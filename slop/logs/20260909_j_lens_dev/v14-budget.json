@@ -18,6 +18,7 @@
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
   "constraints": {"full_generation": 0, "full_judging": 0, "automatic_retries": 0, "new_gpu_queue": 0},
   "remote_attempts": [
+    {"task": 861, "modal_app": "not_recorded_by_cli", "duration_seconds": 55, "status": "success", "role": "one explicit paper-supported layer19 alpha-one diagnostic"},
     {"task": 825, "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2", "duration_seconds": 329, "status": "success"},
     {"task": 827, "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv", "duration_seconds": 411, "status": "success"},
     {"task": 829, "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71", "duration_seconds": 29, "status": "failed_before_extraction", "cause": "target layer 33 outside Qwen layers [0,25)"},

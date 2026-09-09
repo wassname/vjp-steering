@@ -26,4 +26,10 @@ A same-basis alpha-one algebra check is an involution (maximum absolute return e
 
 The evidence rejects the current hypothesis that the alpha-one failure is a missing hook or a transposed coordinate operation. It leaves two live explanations: (1) repeated full-band writes weaken or cancel the source/target change before the final answer; (2) the fitted lens coordinate is only a readout, or Qwen/prompt/producer differs materially from the paper setting. One bounded alpha-one layer-19 versus existing full-band diagnostic is justified to distinguish the first explanation. Do not sweep alpha or call the fixed-token DEV J-lens method repaired from this result.
 
+## Layer-19 result
+
+Task861 is the one-layer alpha-one comparison (`slop/logs/20260909_j_lens_dev/task861-paper-layer19-full.log`). It directly exchanges its layer-19 coordinates (maximum exchange error 0.00481, residual error 0.00747), but reproduces the full-band endpoint: Germany rank14/logit16.375 becomes rank16/logit15.6875; France remains top1 and rises from21.5 to22.0. The full-band diagnostic instead gave Germany15.5625 and France21.875. Thus the exact final result is not a layer-by-layer cancellation artifact; the one-layer intervention also moves Germany in the wrong direction.
+
+The retained paper-supported full-band procedure and the single-layer discriminator both fail on this Qwen checkpoint/prompt. The next work should identify a producer/model/prompt-compatible J-lens artifact, or explicitly report this Qwen adaptation as failing the paper's own verbal-report criterion. It should not use a behavior benchmark dose sweep to hide this failed mechanism check.
+
 -- PI/OpenAI
