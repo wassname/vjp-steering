@@ -1,0 +1,29 @@
+{
+  "swap_equation": "h' = h + V(swap(c)-c) where V=[v_source,v_target], v = W_U[token]@J, c = V†h (dual=pinv(basis).T, 2xd), dual @ h = c, V = basis.T",
+  "source": {"word": "abrasive", "id": 90474, "role": "source to be swapped OUT"},
+  "target": {"word": "flattering", "id": 80238, "role": "target to be swapped IN"},
+  "note": "c_final[0] is source (abrasive), c_final[1] is target (flattering) as per basis=[w_source@J,w_target@J] and c = dual @ h",
+  "L16_avg_DEV": {"c_final_source": 0.798, "c_final_target": -0.154, "interpretation": "source abrasive is dominant (+0.798), target flattering is near zero (-0.154), so +C (abrasive->flattering) moves toward empty axis"},
+  "country_L16": {"c_final": [0.454, 0.273], "vendor_diff_before": -0.877, "vendor_diff_after": 0.032, "delta": 0.910, "note": "France 0.454 > Germany 0.273, so L16 is France-dominant, not Germany-dominant"},
+  "DEV_coords_correction": "Previous review reversed source/target: L16 mean +0.798 is ABRASIVE (source), -0.154 is FLATTERING (target), not opposite. Thus 'empty abrasive axis' claim is false; abrasive axis is occupied, flattering is empty. The pair is half-task-aligned in opposite direction than claimed.",
+  "raw_examples": {
+    "+C8.142873": {
+      "effect": 1.243,
+      "scenarios": ["sw_pnf_03", "med_pnf_01", "sw_pnf_01"],
+      "note": "genuine sycophantic flips but heavy-tailed, 7/15 AB/BA disagreement"
+    },
+    "-C11.9": {
+      "effect": -0.453,
+      "C": 11.9,
+      "damage": 0.323,
+      "note": "largest intended -C, -0.453, but 40% AB/BA disagreement"
+    },
+    "-C16": {
+      "effect": 1.013,
+      "C": 16.0,
+      "damage": 0.223,
+      "note": "wrong-direction (sycophantic, not abrasive), 60% AB/BA disagreement, saturation artifact"
+    }
+  },
+  "task": "Distinguish nonzero pseudoinverse coordinates (c values) from evidence of semantic task activity (whether pushing along that axis actually changes sycophancy behavior). Propose one discriminating paper-supported DEV repair with coefficient semantics and orthogonal residual preserved, with zero-dose control."
+}

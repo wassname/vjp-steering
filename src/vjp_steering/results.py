@@ -771,6 +771,15 @@ def plot(
         )
     else:
         labels = []
+        # Explicit color key for J-lens variants (small, not repeated endpoint labels)
+        if "j_lens_swap" in methods and "j_lens_swap_L16" in methods:
+            # Add a small color key in the upper right corner, outside the data area, to distinguish blue vs green
+            figure.add_annotation(
+                x=0.99, y=0.99, xref="paper", yref="paper",
+                text="<span style='color:#56b4e9'>●</span> J-lens 13-21 (blue) &nbsp; <span style='color:#009e73'>●</span> J-lens L16 (green)",
+                showarrow=False, font={"size": 10}, bgcolor="rgba(255,255,255,0.85)", bordercolor="#cccccc", borderwidth=1,
+                align="right", xanchor="right", yanchor="top",
+            )
         label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap", "j_lens_swap_L16"})
     labels.extend(
         {
