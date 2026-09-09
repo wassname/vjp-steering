@@ -6,3 +6,8 @@ To https://github.com/wassname/vjp-steering.git
 git ls-remote origin dev3: 3d49a8e4a1bfec2638df0b227d57ed4832351628 refs/heads/dev3
 git status --short --branch: ## dev3...origin/dev3 (up to date, no ahead, no changed files after rebase audit commit)
 git log origin/dev3 -1 --oneline: 3d49a8e Fix J-lens readout to vendor-normalized norm+lm_head; keep raw only for comparison
+
+# Second push 2026-09-09T16:37+08:00 after hidden-capture commit
+To https://github.com/wassname/vjp-steering.git
+   3d49a8e..1236969  dev3 -> dev3
+ls-remote: 12369696f31d9fb9890fad4ac14f11a4d85e2421	refs/heads/dev3
