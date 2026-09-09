@@ -17,7 +17,7 @@ from types import SimpleNamespace
 
 import torch
 from loguru import logger
-from steering_lite import Vector
+from steering_lite import MeanDiffC, RandomC, Vector
 from steering_lite.data import make_persona_pairs
 from steering_lite.data.personas import load_suffixes
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -52,6 +52,7 @@ from vjp_steering.vjp import (
     _swap_lens_coordinates,
     _transfer_lens_coordinate,
     j_lens_swap,
+    vjp_delta,
     vjp_mlp_up_left_right_shrink,
     vjp_mlp_up_shared_eb,
     vjp_mlp_up_shared_last_token_eb,
@@ -90,9 +91,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--selected-empirical-candor-full", action="store_true")
     parser.add_argument("--behavior-target", choices=("", "candidness"), default="")
     parser.add_argument("--lens-file", type=Path)
+    parser.add_argument("--layers", default="")
+    parser.add_argument("--target-layer", type=int)
+    parser.add_argument("--reuse-bare-from", default="")
     parser.add_argument("--local", action="store_true")
     parser.add_argument("--experiment-id", default="")
     parser.add_argument("--model", default="Qwen/Qwen3.5-4B")
+    parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--dtype", choices=("float32", "bfloat16"), default="bfloat16")
     parser.add_argument("--n-pairs", type=int, default=200)
@@ -156,7 +161,11 @@ def parse_args() -> argparse.Namespace:
             raise ValueError("selected empirical candidness full has no random arm")
     elif args.reuse_component_extraction_from:
         raise ValueError("component extraction reuse requires the empirical-candor route")
+    if not args.experiment_id and args.method not in DEFAULT_EXPERIMENT_IDS:
+        raise ValueError(f"{args.method} requires --experiment-id")
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
+    if args.reuse_bare_from and not args.dev:
+        raise ValueError("reused bare generations are DEV-only")
     return args
 
 
@@ -449,16 +458,45 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
             "coefficient_semantics": "+C exchanges abrasive/flattering coordinates; -C extrapolates away from exchange",
         }, 0, f"paper_swap:{J_LENS_SWAP_SOURCE}<->{J_LENS_SWAP_TARGET}"
 
-    positive, negative = extraction_prompts(args, tokenizer)
-    vectors, metadata = EXTRACTORS[args.method](
-        model,
-        tokenizer,
-        positive,
-        negative,
-        batch_size=args.extract_batch_size,
-        max_length=args.max_length,
-        skip_first=16,
+    layers = (
+        tuple(int(layer) for layer in args.layers.split(",") if layer)
+        if args.layers else walk.resolve_layers(model, None)
     )
+    if args.method == "random":
+        vector = Vector.train(
+            model, tokenizer, positive, negative,
+            RandomC(layers=layers, dtype=getattr(torch, args.dtype), seed=args.seed),
+            batch_size=args.extract_batch_size, max_length=args.max_length,
+        )
+        return {"+C": vector, "-C": vector}, {"source_layers": list(layers), "control": "seeded unit vector per source layer"}, 0, f"random_seed:{args.seed}"
+
+    positive, negative = extraction_prompts(args, tokenizer)
+    if args.method == "vjp_delta":
+        if args.target_layer is None:
+            raise ValueError("vjp_delta requires --target-layer for reproducible DEV comparison")
+        vector = vjp_delta(
+            model, tokenizer, positive, negative, layers,
+            target_layer=args.target_layer, batch_size=args.extract_batch_size,
+            max_length=args.max_length, skip_first=16,
+        )
+        vectors, metadata = {"+C": vector, "-C": vector}, {"source_layers": list(layers), "target_layer": args.target_layer}
+    elif args.method == "mean_diff":
+        vector = Vector.train(
+            model, tokenizer, positive, negative,
+            MeanDiffC(layers=layers, dtype=getattr(torch, args.dtype), seed=args.seed),
+            batch_size=args.extract_batch_size, max_length=args.max_length,
+        )
+        vectors, metadata = {"+C": vector, "-C": vector}, {"source_layers": list(layers)}
+    else:
+        vectors, metadata = EXTRACTORS[args.method](
+            model,
+            tokenizer,
+            positive,
+            negative,
+            batch_size=args.extract_batch_size,
+            max_length=args.max_length,
+            skip_first=16,
+        )
     sample_id = "persona:" + hashlib.sha256(
         json.dumps([positive, negative], separators=(",", ":")).encode()
     ).hexdigest()[:16]
@@ -939,6 +977,28 @@ def concept_grid(args):
     return grid
 
 
+def reuse_dev_bare(args: argparse.Namespace, bare_path: Path, rows: list[dict]) -> list[dict] | None:
+    if not args.reuse_bare_from:
+        return None
+    source_root = experiment_dir(args.reuse_bare_from)
+    source_manifest = json.loads((source_root / "manifest.json").read_text())
+    source_bare = source_root / source_manifest["bare"]["path"]
+    source_rows = read_jsonl(source_bare)
+    wanted = [row["scenario"] for row in rows]
+    selected = [row for row in source_rows if row["scenario"] in set(wanted)]
+    if [row["scenario"] for row in selected] != wanted:
+        raise ValueError("reused bare artifact does not match the ordered DEV cohort")
+    if any(row["profile"] != "dev" or row["coefficient"] != 0.0 for row in selected):
+        raise ValueError("reused bare artifact is not DEV bare generation")
+    if bare_path.exists():
+        existing = read_jsonl(bare_path)
+        if existing != selected:
+            raise ValueError("local bare artifact differs from its declared shared source")
+    else:
+        atomic_jsonl(bare_path, selected)
+    return selected
+
+
 def gpu_stage(args: argparse.Namespace) -> None:
     if args.method in CONCEPT_METHODS and not args.dev and not args.selected_empirical_candor_full:
         raise ValueError("concept intervention is DEV-only")
@@ -1024,18 +1084,20 @@ def gpu_stage(args: argparse.Namespace) -> None:
         }
     prompts = walk.generation_inputs(tokenizer, rows)
     bare_path = root / "bare.jsonl"
-    bare = extend_generation(
-        bare_path,
-        rows,
-        prompts,
-        model,
-        tokenizer,
-        args,
-        profile_name=profile_name,
-        side="",
-        coefficient=0.0,
-        vector=None,
-    )
+    bare = reuse_dev_bare(args, bare_path, rows)
+    if bare is None:
+        bare = extend_generation(
+            bare_path,
+            rows,
+            prompts,
+            model,
+            tokenizer,
+            args,
+            profile_name=profile_name,
+            side="",
+            coefficient=0.0,
+            vector=None,
+        )
     if "grid" not in manifest:
         if not args.dev and not args.selected_empirical_candor_full:
             raise RuntimeError("full mode requires its automatic dev stage first")
@@ -1203,7 +1265,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
         "cohort_size": limit,
         "generated": True,
     }
-    manifest["bare"] = {"path": str(bare_path.relative_to(root)), "rows": len(bare)}
+    manifest["bare"] = {
+        "path": str(bare_path.relative_to(root)),
+        "rows": len(bare),
+        "reused_from": args.reuse_bare_from or None,
+        "sha256": hashlib.sha256(bare_path.read_bytes()).hexdigest(),
+    }
     atomic_json(manifest_path(args.experiment_id), manifest)
     logger.info("GPU_STAGE_COMPLETE experiment={} profile={} cells={}", args.experiment_id, profile_name, generated_cells)
 
@@ -1567,6 +1634,14 @@ def self_test() -> None:
             random_checks[str(layer)]["source_norm"], random_checks[str(layer)]["random_norm"], rel_tol=1e-2
         )
     print("J_LENS_CONCEPT_RANDOM_CONTROL_SELF_TEST_PASS seeded=true norm_matched=true")
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "random.safetensors"
+        vector = Vector(RandomC(layers=(1,), seed=4), {1: {}}, {1: {"v": torch.ones(1, 7)}})
+        vector.save(str(path))
+        loaded = Vector.load(str(path))
+        assert loaded.cfg.method == "random" and loaded.cfg.seed == 4
+    print("RANDOM_VECTOR_SELF_TEST_PASS save_load=exact")
 
     assert len(local_grid(1.0)) == GRID_POINTS
     assert math.isclose(local_grid(1.0)[0], GRID_LOW)

@@ -15,7 +15,7 @@ from pathlib import Path
 
 import torch
 from loguru import logger
-from steering_lite import MeanDiffC, PCAC, Vector
+from steering_lite import MeanDiffC, PCAC, RandomC, Vector
 from steering_lite.calibrate import _ngram_rep
 from steering_lite.data import make_persona_pairs
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -56,7 +56,7 @@ assert all(2.0 ** (n / 2) in GRID for n in range(-10, 29))
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("method", choices=("J_word", "j_lens_swap", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb", "mean_diff", "pca"))
+    parser.add_argument("method", choices=("J_word", "j_lens_swap", "vjp_delta", "vjp_mlp_up_shrink", "vjp_mlp_up_left_right_shrink", "vjp_mlp_up_shared_eb", "vjp_mlp_up_shared_last_token_eb", "mean_diff", "pca", "random"))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--coefficient", type=float)
     parser.add_argument("--walk", action="store_true")
@@ -424,9 +424,8 @@ def extract_vector(args, model, tokenizer, layers, positive, negative) -> tuple[
         )
         metadata = {}
     else:
-        config = (MeanDiffC if args.method == "mean_diff" else PCAC)(
-            layers=layers, dtype=getattr(torch, args.dtype), seed=args.seed
-        )
+        config_type = {"mean_diff": MeanDiffC, "pca": PCAC, "random": RandomC}[args.method]
+        config = config_type(layers=layers, dtype=getattr(torch, args.dtype), seed=args.seed)
         vector = Vector.train(
             model,
             tokenizer,

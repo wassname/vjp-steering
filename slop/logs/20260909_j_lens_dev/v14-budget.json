@@ -1,0 +1,22 @@
+{
+  "author": "PI/OpenAI",
+  "purpose": "v14 DEV comparison and J-lens repair allocation",
+  "whole_block_cap_usd": "40.00",
+  "carried_known_modal_spend_usd": "0.57794118",
+  "carried_dev_judging_spend_usd": "0.02379654",
+  "carried_full_judging_spend_usd": "0.02987468",
+  "carried_unknown_review_reserve_usd": "12.00",
+  "carried_known_and_reserve_usd": "12.63161240",
+  "remaining_before_v14_allocation_usd": "27.36838760",
+  "v14_dev_repair_allocation_usd": "20.00",
+  "v14_remaining_unallocated_usd": "7.36838760",
+  "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation/judging/review, and two DEV plots",
+  "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
+  "constraints": {
+    "full_generation": 0,
+    "full_judging": 0,
+    "automatic_retries": 0,
+    "new_gpu_queue": 0
+  },
+  "spend_status": "No v14 job has launched. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
+}

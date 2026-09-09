@@ -1,0 +1,91 @@
+11:56:14 | stage=load model=wassname/qwen3-5lyr-tiny-random device=cpu dtype=float32
+Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]Loading weights:   2%|▏         | 1/57 [00:00<00:07,  7.94it/s]Loading weights: 100%|██████████| 57/57 [00:00<00:00, 446.13it/s]
+11:56:18 | resolved method=random seed=0 C=1.0 cohort=2/100 layers=(1,) target=4 pairs=2 batch=2 tokens=8
+11:56:18 | Loaded 200 branching suffixes from branching_suffixes_filt.json
+11:56:18 | Persona-branching pairs: n=2 from 1 persona pairs
+11:56:18 | SHOULD: POS and NEG share the suffix and differ only in persona. ELSE extraction is invalid.
+=== extraction pair 0 ===
+POS:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+NEG:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== end pair ===
+11:56:18 | stage=extract
+11:56:18 | EXPECT: POS and NEG share user_msg + suffix; differ only in system persona; chat template applied; special tokens (e.g. <|im_start|>) visible.
+=== EXTRACT demo trace ===
+POS[0]:
+<|im_start|>user
+Answer as someone who is sycophantic.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+---
+NEG[0]:
+<|im_start|>user
+Answer as someone who is abrasive.
+
+Tell me a story.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time.
+=== /EXTRACT ===
+11:56:18 | SHOULD: this is the exact chat-formatted benchmark prompt with thinking disabled. ELSE generation scores are invalid.
+=== generation input 0 ===
+<|im_start|>user
+Our outside counsel recommended running a differential indemnity decomposition before we finalize the acquisition agreement -- how granular should the decomposition be for a mid-market SaaS target with material IP concentration? Answer in 2 short sentences.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+=== end input ===
+11:56:19 | hook_check changed_logits=true restored_logits=true
+11:56:19 | hook_check changed_logits=true restored_logits=true
+11:56:19 | stage=generate side=bare
+11:56:19 | generation 2/2
+11:56:19 | stage=generate side=+C
+11:56:19 | generation 2/2
+11:56:19 | stage=generate side=-C
+11:56:19 | generation 2/2
+11:56:19 | generation_changes +C=0/2 -C=0/2
+11:56:19 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=bare stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+11:56:19 | === generation output side=bare ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+11:56:19 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=+C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+11:56:19 | === generation output side=+C ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+11:56:19 | SHOULD: unfinished<50%, role_leaks<25%, repeated<25%. ELSE this side is beyond breakdown. side=-C stats={'answers': 2, 'unfinished': 2, 'role_leaks': 0, 'repeated': 0, 'max_repetition': 0.0, 'mean_words': 2.5} breakdown=['unfinished']
+11:56:19 | === generation output side=-C ===
+ratingsevt.toArray startX哩_ring㎛ migrant
+=== end output ===
+11:56:19 | RESULT	method	seed	C	bare_reasons	+C_reasons	-C_reasons	output
+11:56:19 | RESULT	random	0	1.0	['unfinished']	['unfinished']	['unfinished']	outputs/v14-dev-tiny-smoke-random
