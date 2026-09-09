@@ -1,0 +1,42 @@
+2026-09-09 22:07:36.469 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-injection-L16-doubt profile=dev cells=10 demo_sides=150
+2026-09-09 22:07:41.768 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap-L16 profile=dev cells=29 demo_sides=435
+2026-09-09 22:07:47.197 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:07:52.944 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 22:07:58.680 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=25 demo_sides=375
+2026-09-09 22:08:04.569 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:10.365 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:16.547 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:22.235 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 22:08:28.023 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=25 demo_sides=375
+2026-09-09 22:08:33.708 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:39.239 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:44.679 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:44.686 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:08:50.160 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 22:08:50.165 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 22:08:55.655 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=25 demo_sides=375
+2026-09-09 22:08:55.662 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=25 demo_sides=375
+2026-09-09 22:09:01.614 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:09:01.620 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:09:07.443 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 22:09:07.450 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=28 demo_sides=420
+cells loaded: doubt-C4, swapL16+C8.14, 5x-C-ext, 5x+C-ext, 5x+C-id0
+doubt-C4: mean_eff=-1.1600 mean_dmg=0.2833
+swapL16+C8.14: mean_eff=+1.2433 mean_dmg=0.1633
+--- (a) doubt -C4 vs -C id9 rung ---
+  vs s0: point margin=+1.3167 (seed mean +0.1567)
+  vs s1: point margin=+0.0167 (seed mean -1.1433)
+  vs s2: point margin=+2.1967 (seed mean +1.0367)
+  vs s3: point margin=+1.9467 (seed mean +0.7867)
+  vs s4: point margin=+1.3733 (seed mean +0.2133)
+  primary comparator: seed1 (strongest rung point)
+  MARGIN vs best seed1: point=+0.0167 95%CI=[-0.2400,+0.2733] perm p=0.9800
+  rung median context: +0.2133 (candidate -1.1600)
+--- (b) swapL16 +C8.14 vs +C id9 / id0 rungs ---
+  id9 seed means: s0=-0.260 s1=+0.340 s2=+0.540 s3=+0.037 s4=+0.837
+  MARGIN vs best (id9 seed4): point=+0.4067 95%CI=[-0.4067,+1.2200] perm p=0.4529
+  DAMAGE margin (cand - rung, negative = cleaner): point=+0.0336 95%CI=[-0.1367,+0.1967]
+  id0 seed means: s0=+0.327 s1=+2.097 s2=+1.340 s3=+1.393 s4=+2.023
+  MARGIN vs best (id0 seed1): point=-0.8533 95%CI=[-1.2633,-0.4333] perm p=0.0494
+  DAMAGE margin (cand - rung, negative = cleaner): point=+0.0067 95%CI=[-0.1067,+0.1067]
+BOOTSTRAP_DONE
