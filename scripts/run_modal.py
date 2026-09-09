@@ -82,9 +82,7 @@ def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.
 )
 def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str:
     """Run the bounded paper-native coordinate audit remotely and return its JSON."""
-    destination = Path("/cache/outputs") / output
-    if destination.exists():
-        raise FileExistsError(destination)
+    destination = Path("/tmp/paper-coordinate-diagnostic.json")
     try:
         subprocess.run(
             [
@@ -95,7 +93,7 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str
                 "--coordinate-diagnostics",
                 "--limit-categories", "1",
                 "--limit-targets", "1",
-                "--output", str(Path("outputs") / output),
+                "--output", str(destination),
             ],
             cwd="/repo",
             check=True,

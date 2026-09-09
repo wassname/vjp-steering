@@ -53,3 +53,17 @@ Task858 is queued behind another project’s running task855 and task857. It wil
   "label": "why: alpha1 paper-native verbal swap moved Germany rank 14 to 16; resolve: distinguish a mathematically inactive swap from an operator/hook error with per-layer coordinate and lens-readout evidence",
   "path": "/workspace/2026/jspace/j-steer_pub"
 }
+{
+  "id": 859,
+  "group": "modal",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T15:12:59.303445683+08:00"
+    }
+  },
+  "command": "uv run modal run scripts/run_modal.py::paper_coordinate_diagnostic",
+  "label": "why: task858 is behind unrelated local GPU work; resolve: run the identical paper-native alpha1 coordinate diagnostic remotely and distinguish lens/operator mismatch before any J-lens repair",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+## task 859 explicit retrieval retry reason
+Task 859 ran the frozen diagnostic successfully through `PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE`, then the new wrapper looked for the JSON under `/cache/outputs/...` and raised `FileNotFoundError`. The failure is result transport after the GPU diagnostic, not a model/operator failure. The replacement writes the JSON under `/tmp` and returns it to the local entrypoint. One explicit identical-contract retrieval retry is authorized; it is not automatic.
