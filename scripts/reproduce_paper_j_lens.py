@@ -134,29 +134,39 @@ def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids
             "target_vendor_candidate_rank": int((vendor_scores > vendor_target).sum()) + 1,
         }
     # Hidden capture for CPU regression (small, with hashes)
+    # Use already-known lens metadata (resolved file) and model revision, not checkpoint internal dict
+    from vjp_steering.vjp import _resolve_j_lens_file
+    try:
+        resolved_lens_file = str(_resolve_j_lens_file(None))
+    except Exception:
+        resolved_lens_file = str(checkpoint.get("_lens_file", "") or "")
+    # Prefer explicit checkpoint _lens_file if main set it, else resolved
+    lens_file = str(checkpoint.get("_lens_file", resolved_lens_file) or resolved_lens_file)
+    import hashlib
+    lens_sha = None
+    if lens_file and Path(lens_file).exists():
+        lens_sha = hashlib.sha256(Path(lens_file).read_bytes()).hexdigest()
+    # Model revision via config commit hash or snapshot
+    model_revision = getattr(getattr(model, "config", None), "_commit_hash", None) or getattr(getattr(model, "config", None), "_name_or_path", "")
     hidden_capture = {}
     for layer, hidden in captured.items():
-        hidden_vectors = hidden  # keep per-layer hidden for hash
         hidden_capture[str(layer)] = {
-            "hidden_sha256": __import__("hashlib").sha256(hidden.numpy().tobytes()).hexdigest(),
+            "hidden_sha256": hashlib.sha256(hidden.numpy().tobytes()).hexdigest(),
             "hidden_mean": float(hidden.mean()),
             "hidden_norm": float(hidden.norm()),
             "d_model": int(hidden.shape[0]),
         }
-    # Store vectors separately to keep main JSON small; caller saves to sidecar
     hidden_vectors_all = {str(l): h.tolist() for l, h in captured.items()}
-    # Attach lens/model hashes via checkpoint path if available
-    lens_file = str(checkpoint.get("_lens_file", "") or "")
-    lens_sha = None
-    if lens_file and Path(lens_file).exists():
-        import hashlib
-        lens_sha = hashlib.sha256(Path(lens_file).read_bytes()).hexdigest()
     hidden_meta = {
         "per_layer": hidden_capture,
         "hidden_vectors": hidden_vectors_all,
         "lens_file": lens_file,
         "lens_sha256": lens_sha,
-        "model": getattr(getattr(model, "config", None), "_name_or_path", str(getattr(model, "config", {}).get("name", ""))) if hasattr(model.config, "get") else str(getattr(model.config, "_name_or_path", "")),
+        "lens_n_prompts": int(checkpoint.get("n_prompts", 0)),
+        "d_model": int(checkpoint.get("d_model", 0)),
+        "model": str(getattr(getattr(model, "config", None), "_name_or_path", "Qwen/Qwen3.5-4B")),
+        "model_revision": str(model_revision),
+        "model_dtype": str(next(model.parameters()).dtype),
     }
     return readouts, hidden_meta
 

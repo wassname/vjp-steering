@@ -12,35 +12,186 @@
   "v14_remote_generation_reserve_usd": "9.00",
   "v14_paired_judging_reserve_usd": "2.00",
   "v14_available_after_remote_and_judging_reserve_usd": "9.00",
-  "v14_post_comparison_reserves_usd": {"fresh_eyes_review": "2.00", "remote_paper_coordinate_diagnostic_tasks859_860": "1.00", "single_layer_coordinate_diagnostic": "1.00", "common_lower_dose_extension_not_launched": "4.00", "corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21": "1.00", "contingency": "0.00"},
+  "v14_post_comparison_reserves_usd": {
+    "fresh_eyes_review": "2.00",
+    "remote_paper_coordinate_diagnostic_tasks859_860": "1.00",
+    "single_layer_coordinate_diagnostic": "1.00",
+    "common_lower_dose_extension_not_launched": "4.00",
+    "corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21": "1.00",
+    "contingency": "0.00"
+  },
   "v14_remaining_unallocated_usd": "7.36838760",
   "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
-  "constraints": {"full_generation": 0, "full_judging": 0, "automatic_retries": 0, "new_gpu_queue": 0},
+  "constraints": {
+    "full_generation": 0,
+    "full_judging": 0,
+    "automatic_retries": 0,
+    "new_gpu_queue": 0
+  },
   "remote_attempts": [
-    {"task": 861, "modal_app": "not_recorded_by_cli", "duration_seconds": 55, "status": "success", "role": "one explicit paper-supported layer19 alpha-one diagnostic"},
-    {"task": 825, "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2", "duration_seconds": 329, "status": "success"},
-    {"task": 827, "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv", "duration_seconds": 411, "status": "success"},
-    {"task": 829, "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71", "duration_seconds": 29, "status": "failed_before_extraction", "cause": "target layer 33 outside Qwen layers [0,25)"},
-    {"task": 830, "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit", "duration_seconds": 631, "status": "success", "role": "one explicit corrected VJP-delta retry"},
-    {"task": 831, "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK", "duration_seconds": 42, "status": "failed_before_random_vector", "cause": "random branch used uninitialized extraction prompts"},
-    {"tasks": [832, 833, 834, 835], "status": "dependency_failed_no_remote_dispatch", "role": "the success dependency stopped the chain after task 831"},
-    {"task": 836, "modal_app": "ap-DEZXkPAqSuaQ3yASnY1aWQ", "duration_seconds": 445, "status": "success", "role": "one explicit corrected random seed-0 retry"},
-    {"task": 839, "modal_app": "ap-wTGoL9sZ2qVYEuEEmYuHAP", "duration_seconds": 461, "status": "success", "role": "frozen random seed 1"},
-    {"task": 840, "modal_app": "ap-L8KHKJ0k6khgAIZtWoJF16", "duration_seconds": 527, "status": "success", "role": "frozen random seed 2"},
-    {"task": 841, "modal_app": "ap-XYk3mVZ4tul4txPxnR8hIg", "duration_seconds": 461, "status": "success", "role": "frozen random seed 3"},
-    {"task": 842, "modal_app": "ap-O5r46IVKdEJfZ8RcUKUpvS", "duration_seconds": 448, "status": "success", "role": "frozen random seed 4"}
+    {
+      "task": 861,
+      "modal_app": "not_recorded_by_cli",
+      "duration_seconds": 55,
+      "status": "success",
+      "role": "one explicit paper-supported layer19 alpha-one diagnostic"
+    },
+    {
+      "task": 825,
+      "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2",
+      "duration_seconds": 329,
+      "status": "success"
+    },
+    {
+      "task": 827,
+      "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv",
+      "duration_seconds": 411,
+      "status": "success"
+    },
+    {
+      "task": 829,
+      "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71",
+      "duration_seconds": 29,
+      "status": "failed_before_extraction",
+      "cause": "target layer 33 outside Qwen layers [0,25)"
+    },
+    {
+      "task": 830,
+      "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit",
+      "duration_seconds": 631,
+      "status": "success",
+      "role": "one explicit corrected VJP-delta retry"
+    },
+    {
+      "task": 831,
+      "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK",
+      "duration_seconds": 42,
+      "status": "failed_before_random_vector",
+      "cause": "random branch used uninitialized extraction prompts"
+    },
+    {
+      "tasks": [
+        832,
+        833,
+        834,
+        835
+      ],
+      "status": "dependency_failed_no_remote_dispatch",
+      "role": "the success dependency stopped the chain after task 831"
+    },
+    {
+      "task": 836,
+      "modal_app": "ap-DEZXkPAqSuaQ3yASnY1aWQ",
+      "duration_seconds": 445,
+      "status": "success",
+      "role": "one explicit corrected random seed-0 retry"
+    },
+    {
+      "task": 839,
+      "modal_app": "ap-wTGoL9sZ2qVYEuEEmYuHAP",
+      "duration_seconds": 461,
+      "status": "success",
+      "role": "frozen random seed 1"
+    },
+    {
+      "task": 840,
+      "modal_app": "ap-L8KHKJ0k6khgAIZtWoJF16",
+      "duration_seconds": 527,
+      "status": "success",
+      "role": "frozen random seed 2"
+    },
+    {
+      "task": 841,
+      "modal_app": "ap-XYk3mVZ4tul4txPxnR8hIg",
+      "duration_seconds": 461,
+      "status": "success",
+      "role": "frozen random seed 3"
+    },
+    {
+      "task": 842,
+      "modal_app": "ap-O5r46IVKdEJfZ8RcUKUpvS",
+      "duration_seconds": 448,
+      "status": "success",
+      "role": "frozen random seed 4"
+    },
+    {
+      "task": 864,
+      "modal_app": "ap-9yGlz7kSGLQDz2dlWC6fiM",
+      "duration_seconds": 40,
+      "status": "success",
+      "role": "corrected vendor-normalized France->Germany chat alpha1 layers13-21 with hidden capture (reallocated $1 within $20)",
+      "source_revision": "12369696f31d9fb9890fad4ac14f11a4d85e2421"
+    }
   ],
   "judging_attempts": [
-    {"task": 826, "status": "success", "missing": 0, "api_calls": 403},
-    {"task": 828, "status": "success", "missing": 0, "api_calls": 626},
-    {"task": 837, "status": "success", "missing": 0, "api_calls": 560},
-    {"task": 843, "status": "success", "missing": 0, "api_calls": 692, "role": "corrected random seed0 paired AB/BA"},
-    {"task": 847, "status": "success", "missing": 0, "api_calls": 686, "role": "random seed1 paired AB/BA"},
-    {"task": 851, "status": "success", "missing": 0, "api_calls": 642, "role": "random seed2 paired AB/BA"},
-    {"task": 853, "status": "success", "missing": 0, "api_calls": 720, "role": "random seed3 paired AB/BA"},
-    {"task": 854, "status": "failed_after_400_of_724", "api_calls_requested": 724, "cause": "provider returned 404 for the frozen judge model", "role": "random seed4 paired AB/BA; no export"},
-    {"task": 856, "status": "success", "cached": 499, "api_calls": 225, "missing": 0, "role": "one explicit same-contract seed4 judge recovery after task854 provider 404", "model": "deepseek/deepseek-v4-flash-0731", "orders": ["AB", "BA"], "automatic_retries": 0}
+    {
+      "task": 826,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 403
+    },
+    {
+      "task": 828,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 626
+    },
+    {
+      "task": 837,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 560
+    },
+    {
+      "task": 843,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 692,
+      "role": "corrected random seed0 paired AB/BA"
+    },
+    {
+      "task": 847,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 686,
+      "role": "random seed1 paired AB/BA"
+    },
+    {
+      "task": 851,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 642,
+      "role": "random seed2 paired AB/BA"
+    },
+    {
+      "task": 853,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 720,
+      "role": "random seed3 paired AB/BA"
+    },
+    {
+      "task": 854,
+      "status": "failed_after_400_of_724",
+      "api_calls_requested": 724,
+      "cause": "provider returned 404 for the frozen judge model",
+      "role": "random seed4 paired AB/BA; no export"
+    },
+    {
+      "task": 856,
+      "status": "success",
+      "cached": 499,
+      "api_calls": 225,
+      "missing": 0,
+      "role": "one explicit same-contract seed4 judge recovery after task854 provider 404",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "orders": [
+        "AB",
+        "BA"
+      ],
+      "automatic_retries": 0
+    }
   ],
-  "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, 853, and the one manual same-contract recovery 856. Tasks 832-835 failed their dependency without remote dispatch. Reallocation 2026-09-09T16:45+08:00: $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor-normalized ranks and captured hidden states; total v14 reserves still $9.00 within $20.00 allocation. These $20.00 v14 reserves use only the approved allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, 853, and the one manual same-contract recovery 856. Tasks 832-835 failed their dependency without remote dispatch. Reallocation 2026-09-09T16:45+08:00: $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor ranks and hidden capture (reallocated $1 within $20); task864 completed 2026-09-09T16:38:23+08:00 in 40s (~$0.04) well within reserve, total v14 reserves still $9.00 within $20.00 allocation. Task864  $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor-normalized ranks and captured hidden states; total v14 reserves still $9.00 within $20.00 allocation. These $20.00 v14 reserves use only the approved allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00. "
 }
