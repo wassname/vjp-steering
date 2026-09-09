@@ -16,9 +16,10 @@
     "fresh_eyes_review": "2.00",
     "remote_paper_coordinate_diagnostic_tasks859_860": "1.00",
     "single_layer_coordinate_diagnostic": "1.00",
-    "common_lower_dose_extension_not_launched": "3.00",
+    "common_lower_dose_extension_not_launched": "2.00",
     "corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21": "1.00",
     "layer16_alpha1_France_Germany_diagnostic": "1.00",
+    "dev_repair_iteration1_single_layer_or_band": "1.00",
     "contingency": "0.00"
   },
   "v14_remaining_unallocated_usd": "7.36838760",

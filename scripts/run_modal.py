@@ -104,6 +104,28 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str, layers
         cache.commit()
 
 
+@app.function(gpu="H100", volumes={"/cache": cache}, timeout=15 * 60)
+def dev_abrasive_coords_remote(output: str, revision: str) -> str:
+    destination = Path("/cache/outputs") / output
+    if destination.exists():
+        raise FileExistsError(destination)
+    subprocess.run([sys.executable, "slop/scripts/20260909_dev_abrasive_coords.py", "--output", str(destination)], cwd="/repo", check=True)
+    cache.commit()
+    return destination.read_text()
+
+
+@app.local_entrypoint()
+def dev_abrasive_coords(output: str = "logs/20260909_j_lens_dev/dev-abrasive-flattering-coords.json", revision: str = ""):
+    if not revision:
+        revision = source_revision()
+    destination = REPO / "outputs" / output
+    # Allow overwrite for dev probe
+    result = dev_abrasive_coords_remote.remote(output, revision)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(result)
+    print(f"DEV_ABRASIVE_COORDS_DOWNLOADED output={destination}")
+
+
 @app.local_entrypoint()
 def paper_coordinate_diagnostic(
     output: str = "experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",

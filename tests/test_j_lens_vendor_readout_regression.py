@@ -1,7 +1,7 @@
 """CPU regression for vendor-normalized J-lens readout.
 
-- Fast unit test: tiny mock model/tokenizer through actual clean_layer_lens_readouts
-  with real Qwen RMSNorm (1+weight, eps1e-6, bf16). Mutation with identity must fail.
+- Fast unit test: tiny mock through actual Qwen RMSNorm (1+weight, eps1e-6, bf16) via
+  shared helper; mutation with identity must fail.
 - Real-trial replay: exact IDs/revision/bf16 via small cache, reports measured max abs err.
 Saves output to slop/logs/20260909_j_lens_dev/vendor-regression.log
 """
