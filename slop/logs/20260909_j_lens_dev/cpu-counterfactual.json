@@ -1,0 +1,142 @@
+{
+  "trial": "France->Germany alpha1 layers13-21",
+  "layers": [
+    {
+      "layer": 13,
+      "c_before": [
+        0.115993931889534,
+        0.48291563987731934
+      ],
+      "delta_c": [
+        0.36692172288894653,
+        -0.36692172288894653
+      ],
+      "vendor_diff_before": 0.9028341770172119,
+      "vendor_diff_after": -1.221238613128662,
+      "vendor_delta": -2.124072790145874,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 14,
+      "c_before": [
+        0.18891799449920654,
+        0.43492019176483154
+      ],
+      "delta_c": [
+        0.246002197265625,
+        -0.246002197265625
+      ],
+      "vendor_diff_before": 0.42246317863464355,
+      "vendor_diff_after": -0.9767098426818848,
+      "vendor_delta": -1.3991730213165283,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 15,
+      "c_before": [
+        0.10220562666654587,
+        0.5131828784942627
+      ],
+      "delta_c": [
+        0.41097724437713623,
+        -0.41097724437713623
+      ],
+      "vendor_diff_before": 0.8014171123504639,
+      "vendor_diff_after": -1.4590787887573242,
+      "vendor_delta": -2.260495901107788,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 16,
+      "c_before": [
+        0.4540465772151947,
+        0.2733037769794464
+      ],
+      "delta_c": [
+        -0.1807428002357483,
+        0.1807428002357483
+      ],
+      "vendor_diff_before": -0.8760886192321777,
+      "vendor_diff_after": 0.0334324836730957,
+      "vendor_delta": 0.9095211029052734,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 17,
+      "c_before": [
+        0.5380428433418274,
+        0.37547096610069275
+      ],
+      "delta_c": [
+        -0.16257187724113464,
+        0.16257187724113464
+      ],
+      "vendor_diff_before": -0.7985410690307617,
+      "vendor_diff_after": -0.06946468353271484,
+      "vendor_delta": 0.7290763854980469,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 18,
+      "c_before": [
+        0.5628243684768677,
+        0.5555650591850281
+      ],
+      "delta_c": [
+        -0.0072593092918396,
+        0.0072593092918396
+      ],
+      "vendor_diff_before": -0.3980894088745117,
+      "vendor_diff_after": -0.36884403228759766,
+      "vendor_delta": 0.029245376586914062,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 19,
+      "c_before": [
+        0.8495490550994873,
+        1.2255215644836426
+      ],
+      "delta_c": [
+        0.3759725093841553,
+        -0.3759725093841553
+      ],
+      "vendor_diff_before": -0.02934741973876953,
+      "vendor_diff_after": -1.3551387786865234,
+      "vendor_delta": -1.325791358947754,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 20,
+      "c_before": [
+        1.0464940071105957,
+        1.4759129285812378
+      ],
+      "delta_c": [
+        0.4294189214706421,
+        -0.4294189214706421
+      ],
+      "vendor_diff_before": 0.130340576171875,
+      "vendor_diff_after": -1.1135835647583008,
+      "vendor_delta": -1.2439241409301758,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    },
+    {
+      "layer": 21,
+      "c_before": [
+        1.4593247175216675,
+        1.540792465209961
+      ],
+      "delta_c": [
+        0.08146774768829346,
+        -0.08146774768829346
+      ],
+      "vendor_diff_before": -0.3673515319824219,
+      "vendor_diff_after": -0.6063423156738281,
+      "vendor_delta": -0.23899078369140625,
+      "note": "Germany-minus-France vendor readout; coordinate swap inverts as expected but final logit rank14->16 still fails downstream"
+    }
+  ],
+  "final_logit_rank": "14->16",
+  "interpretation": "Vendor readout inversion tracks coordinate swap; failure is downstream of lens readout, not absent coordinate. Layer19 tie 9.25/9.25 shows clean winner not dominant at that layer."
+}

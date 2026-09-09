@@ -18,37 +18,33 @@ RESULT = pathlib.Path("outputs/experiments/v14-paper-native-verbal-chat-country-
 LOG = pathlib.Path("slop/logs/20260909_j_lens_dev/vendor-regression.log")
 SMALL_CACHE = pathlib.Path("slop/logs/20260909_j_lens_dev/qwen_norm_head_small.pt")
 
-def rmsnorm_qwen(x, weight, eps=1e-6):
-    # Exact Qwen3_5RMSNorm: x * rsqrt(mean(x^2)+eps) * (1 + weight), with float32 compute then cast to input dtype
-    import torch
-    # _norm: x * rsqrt(mean(x^2)+eps) in float32
-    normed = x.float() * torch.rsqrt(x.float().pow(2).mean(-1, keepdim=True) + eps)
-    # forward: normed * (1 + weight.float()) then type_as(x)
-    out = normed * (1.0 + weight.float())
-    return out.type_as(x)
-
 def test_production_readout_with_nonuniform_weight():
-    """Fast unit test: production readout vs direct norm+head on synthetic data."""
+    """Fast unit test: production readout via shared helper vs direct, with mutation check."""
     import torch
+    from vjp_steering.lens_readout import qwen_rmsnorm, vendor_lens_scores
     d_model, vocab = 8, 5
     torch.manual_seed(0)
     hidden = torch.randn(d_model)
     J = torch.eye(d_model) * 0.5 + torch.randn(d_model, d_model) * 0.01
     candidate_ids = [0, 1, 2]
     W_U = torch.randn(vocab, d_model)
-    norm_weight = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
+    norm_weight = torch.tensor([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])  # nonuniform (1+weight varies)
     eps = 1e-6
-    transported = J @ hidden
-    normed = rmsnorm_qwen(transported, norm_weight, eps)
-    vendor_logits_synthetic = W_U @ normed
-    vendor_scores_synthetic = vendor_logits_synthetic[candidate_ids]
-    transported2 = J @ hidden
-    normed2 = rmsnorm_qwen(transported2, norm_weight, eps)
-    vendor2 = W_U.float() @ normed2
-    assert torch.allclose(vendor_logits_synthetic.float(), vendor2.float(), atol=1e-5)
-    raw_scores = hidden @ (W_U[candidate_ids] @ J).T
-    assert not torch.allclose(raw_scores.float(), vendor_scores_synthetic.float(), atol=1e-3)
-    print("PASS synthetic nonuniform readout: production vs direct match, raw≠vendor as expected")
+    # Production path via shared helper (uses qwen_rmsnorm with 1+weight)
+    prod_scores = vendor_lens_scores(hidden, J, norm_weight, W_U, candidate_ids, eps, dtype=torch.float32)
+    # Direct replica should match
+    transported = (J @ hidden.float()).to(torch.float32)
+    normed = qwen_rmsnorm(torch.tensor(transported), norm_weight, eps)
+    direct_scores = (W_U[candidate_ids].float() @ normed.float())
+    assert torch.allclose(prod_scores.float(), direct_scores.float(), atol=1e-5), "production helper vs direct mismatch"
+    # Mutation check: replacing production normalization with identity (no norm) must FAIL
+    mutated_scores = hidden.float() @ (W_U[candidate_ids].float() @ J.float()).T  # raw, no norm
+    assert not torch.allclose(prod_scores.float(), mutated_scores.float(), atol=1e-3), "mutation with identity should differ"
+    # Also check uniform weight (weight=0 => 1+0=1) gives different vendor scores than nonuniform
+    uniform_weight = torch.zeros_like(norm_weight)
+    uniform_scores = vendor_lens_scores(hidden, J, uniform_weight, W_U, candidate_ids, eps, dtype=torch.float32)
+    assert not torch.allclose(prod_scores.float(), uniform_scores.float(), atol=1e-3), "nonuniform vs uniform should differ"
+    print("PASS synthetic: production helper matches direct, raw/identity and uniform mutations correctly FAIL")
     return True
 
 def test_real_trial_replay_exact_ids_bf16():
@@ -91,29 +87,30 @@ def test_real_trial_replay_exact_ids_bf16():
     expected_layers = [str(l) for l in [13,14,15,16,17,18,19,20,21]]
     assert set(readouts.keys()) == set(expected_layers), f"missing layers {set(expected_layers) - set(readouts.keys())}"
     assert set(hidden_vectors.keys()) == set(expected_layers)
+    from vjp_steering.lens_readout import qwen_rmsnorm
+    max_abs_err = 0.0
     for layer_str in expected_layers:
         hidden = torch.tensor(hidden_vectors[layer_str], dtype=torch.float32)
         layer = int(layer_str)
         J = ckpt["J"][layer].float()
-        # bf16 semantics: diagnostic used model dtype bfloat16, hidden float32 -> transported float32 -> cast to bf16 for norm
-        transported = (J @ hidden).to(torch.bfloat16).float()
-        # Use exact Qwen RMSNorm with (1+weight) semantics, matching model.model.norm
-        normed = rmsnorm_qwen(torch.tensor(transported), norm_weight, eps=1e-6)
-        # lm_head: use candidate rows via direct matmul (W_U[cand] @ normed)
-        # candidate_lm_rows corresponds to candidate_ids in same order
-        vendor_scores = candidate_lm_rows.float() @ normed.float()  # [11]
+        # Production vendor readout: W_U[cands] @ norm(J@h) with Qwen 1+weight and bf16 roundtrip
+        transported = (J @ hidden.float()).to(torch.bfloat16).float()
+        normed = qwen_rmsnorm(torch.tensor(transported, dtype=torch.bfloat16), norm_weight, eps=1e-6)
+        vendor_scores_direct = candidate_lm_rows.float() @ normed.float()
         stored = readouts[layer_str]
         src_idx = candidate_ids.index(trial["source_token_id"])
         tgt_idx = candidate_ids.index(trial["target_token_id"])
-        # Compare stored vendor readout (tolerance for bf16 rounding)
-        assert abs(stored["source_vendor_lens_readout"] - float(vendor_scores[src_idx])) < 0.6, f"L{layer_str} source vendor mismatch {stored['source_vendor_lens_readout']} vs {float(vendor_scores[src_idx])}"
-        assert abs(stored["target_vendor_lens_readout"] - float(vendor_scores[tgt_idx])) < 0.6, f"L{layer_str} target vendor mismatch"
+        err_src = abs(stored["source_vendor_lens_readout"] - float(vendor_scores_direct[src_idx]))
+        err_tgt = abs(stored["target_vendor_lens_readout"] - float(vendor_scores_direct[tgt_idx]))
+        max_abs_err = max(max_abs_err, err_src, err_tgt)
+        assert err_src < 0.15 and err_tgt < 0.15, f"L{layer_str} vendor mismatch src {err_src:.3f} tgt {err_tgt:.3f} (stored vs direct)"
         # Also verify raw readout matches direct (no norm) with same J
-        W_U_cands = candidate_lm_rows.float()  # same as W_U[candidate_ids]
+        W_U_cands = candidate_lm_rows.float()
         lens_rows = W_U_cands @ J
         raw_scores = hidden.float() @ lens_rows.T
         assert abs(stored["source_lens_readout"] - float(raw_scores[src_idx])) < 1e-3
         assert abs(stored["target_lens_readout"] - float(raw_scores[tgt_idx])) < 1e-3
+    print(f"measured max vendor abs err {max_abs_err:.4f} across 9 layers (bf16 rounding, Qwen 1+weight)")
     differing = any(
         readouts[l]["source_candidate_rank"] != readouts[l]["source_vendor_candidate_rank"]
         for l in expected_layers

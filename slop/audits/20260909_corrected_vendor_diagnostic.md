@@ -3,7 +3,7 @@
 ## Run
 - Commit: `12369696f31d9fb9890fad4ac14f11a4d85e2421` (capture with hidden states)
 - Output: `outputs/experiments/v14-paper-native-verbal-chat-country-swap-corrected-vendor/results.json` (595 KB, pueue 864, modal ap-9yGlz7kSGLQDz2dlWC6fiM, 40s H100)
-- Budget: reallocated $1 from `common_lower_dose_extension_not_launched` (5.00→4.00) to `corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21` (1.00) within $20; actual ~$0.04 at 40s/900s rate, 886x under reserve.
+- Budget: reallocated $1 from `common_lower_dose_extension_not_launched` (5.00→4.00) to `corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21` (1.00) within $20; estimate ~$0.04 at 40s vs 900s reference ($0.0997/101s), ~25× under $1 reserve (not 886×; estimate, no receipt, keep $1 reserved).
 - Hidden capture: per-layer `hidden_sha256`/`mean`/`norm` (d_model 2560) plus `hidden_vectors` (9×2560 floats) and `lens_sha256=1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e` (qwen-n1000), `model=Qwen/Qwen3.5-4B`. Enables CPU regression without GPU rerun.
 
 ## Raw vs vendor readouts (this prompt, final token)
@@ -31,8 +31,18 @@ Vendor differs from raw on L13,15,16,17,18,19,21 (source rank shifts), but order
 - The hidden capture regression `tests/test_j_lens_vendor_readout_regression.py` passes: hidden vectors saved, raw vs vendor differ, final rank still 16.
 - The failure therefore is not “wrong readout math” but either: (a) Qwen workspace band ≠13–21, (b) lens checkpoint lacks strong Germany direction for this prompt despite raw/vendor rank3, or (c) prompt-only prefill vs paper’s “all token positions” already matches (22/22 prompt tokens, same as full prompt), so not position scope.
 
-## Next justified repair (single, bounded)
-Do not yet change the fixed `abrasive↔flattering` benchmark adaptation. First scan the **clean vendor readout across all fitted layers 0–30** on this same captured hidden states (CPU-only, no GPU) to locate the true Qwen workspace band where Germany is top1/top3 vs France. Then retry the *same* France→Germany alpha1 swap on that empirically top band (one H100 run, $1, layers chosen from scan, unchanged operator). This isolates layer-band mismatch before attributing failure to task transfer, preserves frozen DEV controls (no DEV generation), and uses the saved hidden vectors to avoid rerun.
+## Next justified repair (single, bounded) — corrected per supervisor
+Do not claim CPU scan of 0–30: only layers13–21 were captured. Do not select a Germany-dominant band (would swap Germany OUT); source France should supply the coordinate being transferred.
+
+Use the nine existing clean final-position states for a CPU counterfactual (no new GPU): at each available layer compute exact pseudoinverse source/target coordinates `c = V† h`, apply unchanged alpha1 swap `h' = h + V(swap(c)-c)`, and compare vendor-normalized Germany-minus-France readout before/after. Report coordinate delta alongside readout delta; this separates absent/reversed source coordinate from downstream final-logit failure without another model run. Results from `slop/scripts/20260909_cpu_counterfactual.py` (see `slop/logs/.../cpu-counterfactual.json`):
+- L13: c [0.116,0.483] delta +0.367/-0.367, vendor diff 0.903→-1.221 delta -2.124
+- L15: c [0.102,0.513] delta +0.411/-0.411, vendor diff 0.801→-1.460 delta -2.260
+- L16: c [0.454,0.273] delta -0.181/+0.181, vendor diff -0.877→0.032 delta +0.910
+- L19: tie vendor 9.25/9.25 both, delta -1.326 (target not dominant; clean winner France is not the dominant concept at L19, so swapping there is not expected to move final logit).
+
+Vendor readout inversion tracks coordinate swap as expected, but final logit rank14→16 still fails, so failure is downstream of lens readout, not absent coordinate. Preserve original failed results and distinguish readout changes from causal final-logit success.
+
+Obtain a bounded independent mechanism review using the existing $2 fresh-eyes + $1 single-layer reserves (≈$3) before choosing the next single paid repair (e.g., one retry on a France-dominant layer like 16 where Germany gains +0.91, still within $1).
 
 If that band still fails, the next step is to compare the paper’s per-prompt active source (already used here) vs a J-space clamped baseline (paper’s “J-space suppressed” control) to test whether 13–21 is suppressed region for Qwen.
 
