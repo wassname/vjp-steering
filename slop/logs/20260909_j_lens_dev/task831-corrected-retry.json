@@ -1,0 +1,11 @@
+{
+  "failed_task_id": 831,
+  "retry_task_id": 836,
+  "group": "modal",
+  "reason": "Task 831 never constructed a random vector because extract_vectors initialized its paired extraction prompts after the random branch. Commit 488f7fa initializes the prompts before that branch and tests the exact Vector.train inputs. This is one explicit corrected retry, not automatic retry behavior.",
+  "timeout_seconds": 900,
+  "automatic_retries": 0,
+  "experiment_id": "v14-dev-random-s0-r2",
+  "seed": 0,
+  "shared_bare_source": "j-lens-paper-native-sycophancy-v1"
+}
