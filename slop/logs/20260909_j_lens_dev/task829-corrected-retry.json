@@ -1,0 +1,8 @@
+{
+  "failed_task_id": 829,
+  "retry_task_id": 830,
+  "group": "modal",
+  "reason": "The explicit target-layer validation now shows Qwen layers [0,25), so source layers 6-21 and target layer 22 satisfy the VJP ordering requirement. This is one corrected retry, not an automatic retry.",
+  "timeout_seconds": 900,
+  "automatic_retries": 0
+}

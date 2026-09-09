@@ -10,11 +10,11 @@
 |---|---|---|
 | 816 → 825 | fixed-token J-lens adaptation, paired DEV generation | task 816 is stashed; task 825 is its one-at-a-time remote-dispatch replacement in existing `modal` group; pull artifact, validate exact shared bare and AB/BA cells, then judge/export |
 | 817 → 827 | mean_diff baseline, paired DEV generation | task 817 is stashed; task 827 is its one-at-a-time remote-dispatch replacement after task825 completed in 329 seconds and passed provenance checks |
-| 818 → 829 | vjp_delta baseline, paired DEV generation | task 818 is stashed; task 829 is its one-at-a-time remote-dispatch replacement after mean_diff generation completed |
+| 818 → 829 → 830 | vjp_delta baseline, paired DEV generation | task 818 is stashed; task829 failed before extraction because target layer33 is outside this 25-layer Qwen model. Task830 is one explicit corrected retry with layers6-21 and target22; it is not automatic retry behavior. |
 | 819–823 | five seeded random baseline generations | stashed until task 825 runtime/output/cost is inspected; all five are required before the random region renders |
 | 824 | vendored paper verbal-report smoke, raw prefill, two categories and one target each | remains queued on local `default`; inspect α=0 equality and rank movement; do not call it benchmark success |
 
-Original commands/statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`. Migration snapshots and task-ID mappings: `slop/logs/20260909_j_lens_dev/v14-modal-migration-{before,stashed,map,817-map}.json`.
+Original commands/statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`. Migration snapshots and task-ID mappings: `slop/logs/20260909_j_lens_dev/v14-modal-migration-{before,stashed,map,817-map,818-map}.json`. Task829 failure and its one corrected retry: `slop/logs/20260909_j_lens_dev/task829-full.log`, `task829-final-status.json`, and `task829-corrected-retry.json`.
 Paper command/status: `slop/logs/20260909_j_lens_dev/v14-paper-reproduction-queue.json`.
 
 ## Monitoring
