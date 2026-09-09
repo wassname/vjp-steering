@@ -15,12 +15,7 @@
   "v14_remaining_unallocated_usd": "7.36838760",
   "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
-  "constraints": {
-    "full_generation": 0,
-    "full_judging": 0,
-    "automatic_retries": 0,
-    "new_gpu_queue": 0
-  },
+  "constraints": {"full_generation": 0, "full_judging": 0, "automatic_retries": 0, "new_gpu_queue": 0},
   "remote_attempts": [
     {"task": 825, "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2", "duration_seconds": 329, "status": "success"},
     {"task": 827, "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv", "duration_seconds": 411, "status": "success"},
@@ -28,12 +23,15 @@
     {"task": 830, "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit", "duration_seconds": 631, "status": "success", "role": "one explicit corrected VJP-delta retry"},
     {"task": 831, "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK", "duration_seconds": 42, "status": "failed_before_random_vector", "cause": "random branch used uninitialized extraction prompts"},
     {"tasks": [832, 833, 834, 835], "status": "dependency_failed_no_remote_dispatch", "role": "the success dependency stopped the chain after task 831"},
-    {"role": "one explicit corrected random seed-0 retry then serial seeds 1-4", "status": "reserved_after_code_fix", "max_attempts": 5, "timeout_seconds_per_attempt": 900}
+    {"task": 836, "modal_app": "ap-DEZXkPAqSuaQ3yASnY1aWQ", "duration_seconds": 445, "status": "success", "role": "one explicit corrected random seed-0 retry"},
+    {"tasks": [839, 840, 841, 842], "status": "queued_serially_after_verified_seed0", "role": "frozen random seeds 1-4", "timeout_seconds_per_attempt": 900, "automatic_retries": 0}
   ],
   "judging_attempts": [
     {"task": 826, "status": "success", "missing": 0, "api_calls": 403},
     {"task": 828, "status": "success", "missing": 0, "api_calls": 626},
-    {"role": "VJP-delta and five random paired AB/BA judgments", "status": "reserved"}
+    {"task": 837, "status": "success", "missing": 0, "api_calls": 560},
+    {"task": 843, "status": "running", "role": "corrected random seed0 paired AB/BA"},
+    {"role": "random seeds1-4 paired AB/BA judgments", "status": "reserved"}
   ],
-  "spend_status": "The local Modal CLI did not emit provider billing receipts for tasks 825, 827, 829, 830, or 831, so the $9.00 remote and $2.00 judging ceilings remain reserved rather than replaced with invented costs. Ten 900-second remote attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88; this covers the five completed remote attempts plus the corrected five-seed random sequence. Tasks 832-835 failed their dependency without remote dispatch. These $11.00 v14 reserves use only the approved $20.00 allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "spend_status": "The local Modal CLI did not emit provider billing receipts for tasks 825, 827, 829, 830, 831, or 836, so the $9.00 remote and $2.00 judging ceilings remain retained rather than replaced with invented costs. Ten 900-second remote attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88; this covers the five completed remote attempts plus the corrected five-seed random sequence. Tasks 832-835 failed their dependency without remote dispatch. These $11.00 v14 reserves use only the approved $20.00 allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00."
 }

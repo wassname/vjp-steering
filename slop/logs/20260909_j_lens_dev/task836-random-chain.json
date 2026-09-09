@@ -1,0 +1,12 @@
+{
+  "seed0_verified_task": 836,
+  "replacements": [
+    {"seed": 1, "task": 839, "experiment_id": "v14-dev-random-s1-r2", "after": 836},
+    {"seed": 2, "task": 840, "experiment_id": "v14-dev-random-s2-r2", "after": 839},
+    {"seed": 3, "task": 841, "experiment_id": "v14-dev-random-s3-r2", "after": 840},
+    {"seed": 4, "task": 842, "experiment_id": "v14-dev-random-s4-r2", "after": 841}
+  ],
+  "group": "modal",
+  "timeout_seconds": 900,
+  "automatic_retries": 0
+}

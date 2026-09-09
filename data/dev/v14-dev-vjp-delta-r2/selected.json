@@ -1,0 +1,18 @@
+{
+  "experiment_id": "v14-dev-vjp-delta-r2",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "status": "no_accepted_endpoint"
+    },
+    "-C": {
+      "selected_C": 0.1859375,
+      "candidates_descending": [
+        0.1859375,
+        0.165
+      ],
+      "effect": -1.7966666666666666,
+      "off_axis_perturbation": 0.5366666666666667
+    }
+  }
+}
