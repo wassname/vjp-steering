@@ -1,7 +1,7 @@
 # Results
 
 DEV15 comparison only. Every point passed exact scenario, shared-bare, generation-config, AB/BA judgment, and coherence provenance checks.
-The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. This first comparison does not show J-lens outside the measured random points in either direction. `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.
+The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. This first comparison does not show J-lens outside the measured random points in either direction. Paired bootstrap over the 15 scenarios with AB/BA resampling (B=20000, exact sign-flip p): doubt -C4 margin vs best -C rung seed +0.017, 95% CI [-0.24,+0.27], p=0.98; swap-L16 +C margin vs best +C rung seed +0.41, CI [-0.41,+1.22], p=0.45. Both margins sit inside judge noise: the frozen DEV15 cohort cannot statistically resolve the two-direction discriminator (see audit). `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.
 
 ## Measured dose paths
 
