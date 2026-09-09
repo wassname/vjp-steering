@@ -6,3 +6,6 @@ To https://github.com/wassname/vjp-steering.git
 --- git status --short --branch (clean):
 ## dev3...origin/dev3
 --- ordering note: the entries above verify 58ecdaa on origin/dev3 prior to the commit saving this file; that commit's own push output is appended below from the push terminal.
+--- own push output (this commit; appended post-push from terminal, hence uncovered by its own push):
+To https://github.com/wassname/vjp-steering.git
+   58ecdaa..16c038b  dev3 -> dev3
