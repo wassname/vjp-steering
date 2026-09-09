@@ -466,12 +466,13 @@ def plot(
                 if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
                 and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
             ]
-            if len(coherent) < RANDOM_SEEDS // 2:
+            if len(coherent) < (len(random_seeds) + 1) // 2:
                 break
             points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
             effects = sorted(row["effect"] for row in points)
+            trim = max(1, len(effects) // 10)
             cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
-                         effects[len(effects) // 10], effects[-(len(effects) // 10) - 1]))
+                         effects[trim], effects[-trim - 1]))
         figure.add_trace(go.Scatter(
             x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
             y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
