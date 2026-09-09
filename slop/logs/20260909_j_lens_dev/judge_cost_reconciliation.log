@@ -1,0 +1,19 @@
+2026-09-09 20:42:24.482 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 20:42:24.862 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 20:42:25.248 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=25 demo_sides=375
+2026-09-09 20:42:25.610 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 20:42:26.074 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=28 demo_sides=420
+2026-09-09 20:42:26.449 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-mean-diff profile=dev cells=24 demo_sides=360
+2026-09-09 20:42:26.813 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-vjp-delta-r2 profile=dev cells=21 demo_sides=315
+2026-09-09 20:42:27.154 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
+2026-09-09 20:42:27.491 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap-L16 profile=dev cells=29 demo_sides=435
+2026-09-09 20:42:27.958 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-unit-L16-corrected profile=dev cells=29 demo_sides=435
+v14 keys wanted: 6622
+scanned lines: 245405; wanted keys found: 6622/6622
+wanted keys with no record: 0
+paid-known keys: 6622; zero-only (UNKNOWN, not free): 0
+v14 paid-known total: $0.9904 over 6622 keys
+extension: keys=286 paid-known=286 zero-only=0 missing=0
+extension paid-known total: $0.0437
+extension per-call paid-known: min=$0.000082 max=$0.000170
+RECONCILIATION_DONE

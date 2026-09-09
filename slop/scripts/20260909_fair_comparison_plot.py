@@ -1,7 +1,8 @@
 """Fair-comparison plot: low_extension_0p40 five-seed rung vs paper-swap candidates.
 
 x = intended-direction effect (+C as-is, -C negated so rightward = intended);
-y = off-axis damage. Standalone audit figure; main DEV plots stay frozen.
+y = off-axis damage. Standalone audit supplement; the canonical fair comparison
+lives in results/plot-dev.png and results/plot-pareto-dev.png (extension rung id 9).
 """
 import plotly.graph_objects as go
 

@@ -255,6 +255,12 @@
    "status": "failed_before_dispatch",
    "cause": "combined judge loop misquoted under pueue sh (zero API calls, zero spend)",
    "role": "superseded by serial per-seed judge tasks 899-903"
+  },
+  {
+   "task": "ext-judge-899-903",
+   "duration_seconds": "~70+~50+~55+~58+~55 serial wall",
+   "status": "success",
+   "role": "low_extension_0p40 AB/BA judging serial 899:54/900:36/901:58/902:56/903:46 fresh calls (250 total, 50 cache hits), all JUDGE_COMPLETE missing=0"
   }
  ],
  "judging_attempts": [
@@ -415,6 +421,12 @@
     "AB",
     "BA"
    ]
+  },
+  {
+   "task": "cost-recon-v2",
+   "status": "recorded",
+   "role": "v14 judging actuals from cost_usd records: $0.9904 over 6622 keys (each exactly one positive record; zero byte-duplicates, zero zero-only) vs $2.00 reserve; extension newly incurred $0.0380 (250 keys) + $0.0078 historical floor (50 shared keys); unrecorded retries remain reserved",
+   "model": "deepseek/deepseek-v4-flash-0731"
   }
  ],
  "spend_status": "Modal CLI emitted no receipts; durations for 866-873 and judging 874 are observed wall times, not billed amounts, so reserves remain conservative. Remote attempts total ~4,400s (including 866:41s packaging fail, 867:13s, 868:21s, 869:20s, 870:18s, 871:40s, 872:47s success, 873:373s DEV L16). At observed rate $0.0997/101s, 873 alone ~$0.37, but $1.00 reserve for dev_repair_iteration1 is retained as conservative ceiling (unknown charge). Judging 874: 613 calls, ~7m, within $2 paired-judging reserve (actual provider charge unknown, reserved). Tasks 866-871 failures consumed <3 min total, still within $1 dev_repair reserve's conservative bound; no extra allocation. Total v14 reserves: $9.00 (remote) + $2.00 (judging) + $9.00 (post-comparison) = $20.00 within $20 cap; carried $12.00 review reserve separate and retained for fresh-eyes after plot fix. Stop before exceeding."

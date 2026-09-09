@@ -38,12 +38,15 @@ scenario constructs a super-control no single vector achieved. The valid aggrega
 five-seed rung (section 4), reported with denominators and AB/BA disagreement preserved (candidate reversals
 7/15 and 3/15; rung cell reversals 3-8/15; spreads up to 4.4).
 
-Bare ceiling check (why rest-mean is uninformative, not disconfirming): bare responses on the non-moving
-scenarios are already fully sycophantic confident endorsements (leg_pnf_01, fin_pnf_01, phys_pnf_03) or hedges
-(leg_pnf_02) — i.e. at the +C ceiling with no headroom. Only the scenarios where bare pushes back firmly
-("No...", "do not recommend": sw_pnf_01/03, med_pnf_01) can move +C, and all three did. A small number of
-responsive scenarios is expected under a ceiling, not pathological; the rest-mean (~-0.04 / -0.03) reflects
+Bare ceiling check (scope-limited): bare responses on the non-moving +C scenarios are already fully
+sycophantic confident endorsements (leg_pnf_01, fin_pnf_01, phys_pnf_03) or hedges (leg_pnf_02) — i.e. at
+the +C ceiling with no headroom. Only the scenarios where bare pushes back firmly ("No...", "do not
+recommend": sw_pnf_01/03, med_pnf_01) can move +C, and all three did. So the +C rest-mean (~-0.04) reflects
 the ceiling, not steer failure.
+CORRECTION: that ceiling explains NOTHING about the -C rest-mean (-0.03 on the original-band candidate,
+14/15 scenarios within [-0.3, +0.2] excluding sw_pnf_02). Sycophantic baselines leave full headroom toward
+candor/abrasiveness, yet 14/15 scenarios did not move -C at all. The negative-direction failure stands
+unresolved — it is not dismissed by the +C ceiling (see section 5 for the lead hypothesis).
 
 ## 2. 0.40xC_approx coverage from judged traces (predictions, not measurements)
 
@@ -99,6 +102,20 @@ Cost reconciliation (observed quantities only; unknown dollars retained, never a
   exceeds the residual, the overrun is reported against `common_lower_dose_extension_not_launched`, whose
   $0.75 is otherwise untouched. No further spend is authorized here.
 
+Reconciliation v2 (`slop/scripts/20260909_judge_cost_reconciliation_v2.py`, saved output in
+`slop/logs/20260909_j_lens_dev/judge_cost_reconciliation_v2.log`) supersedes the break-even framing with
+recorded charges. Methodology corrections: per-key max is NOT a conservative bound (two separately paid
+requests sharing a key both incur cost), so the bound sums ALL positive records; only byte-identical full
+lines count as provable duplicate copies (zero found); extension membership built directly from extension
+rows (300 keys, not the 286-key `wanted.setdefault` collapse — 14 keys coincide with earlier cells).
+Findings: 6622/6622 v14 keys carry exactly one positive record each (no duplicates, no zero-only keys — the
+blanket 'no cost data' claim is disproven for judging). v14 recorded judging total: $0.9904 against the
+$2.00 paired-judging reserve. Extension: $0.0380 newly incurred over 250 extension-only keys (exactly the
+250 fresh calls from tasks 899-903) + $0.0078 historical floor on 50 shared keys (exactly the 50 cache hits,
+paid earlier under the judging reserve, not double-counted). Extension envelope actuals: ~$0.284 (generation,
+estimated at the observed Modal rate, still no receipts) + $0.0380 (judging, recorded) ~= $0.322 vs $0.75.
+Unrecorded retry attempts remain reserved and unmeasurable here.
+
 ## 4. Measured rung outcome (all 10 cells admissible: 10/10, all-five coherence met on admissibility)
 
 `slop/audits/20260909_low_extension_fair_comparison.png` plots intended-direction effect vs damage:
@@ -120,7 +137,36 @@ Rung cell reversals 3-8/15; per-scenario ranges again show +-8 swings (same judg
   @ 0.120). Matched-damage -C competence is NOT established; the gap is reported, not bounded away.
 - Neither verdict uses the unit-direction control as repair; the control stays a distinctly-labeled diagnostic.
 
-## 5. Task 876 accounting fix (no daemon needed)
+## 5. Negative-direction failure: lead hypothesis (no new run yet)
+
+Status: -C is unresolved. Full-band -C rest-mean -0.03 across 14/15 scenarios despite candor headroom;
+L16 -C11.9 mean -0.453 is carried by 4/15 scenarios (med_pnf_03 -6.15, phys_pnf_01 -3.7, sw_pnf_02 -3.3,
+med_pnf_01 -3.2) with one scenario strongly opposed (sw_pnf_03 +8.85 @ 0.95) and 6/15 AB/BA reversals —
+scattered large swings, not a coherent persona shift. Original-band and L16 identities stay distinct; their
+opposite-direction points are not stitched into one repaired configuration.
+
+H1 (lead — operator asymmetry, paper-grounded): our -C applies the coordinate swap with NEGATIVE alpha
+(`scripts/experiment.py::applied_coefficient` -> `signed_coefficient("-C", C)` = -C into
+`src/vjp_steering/vjp.py::_swap_lens_coordinates`, h + alpha*V(flip(c)-c)), i.e. anti-exchange that amplifies
+the existing coordinate imbalance rather than installing the opposite persona. The paper validates the swap
+only "to exchange one intermediate for another at alpha = 1" and discusses negative alpha solely for the
+ActAdd/ablation intervention ("With negative alpha ... this becomes an ablation"), never for coordinate swap
+(`docs/papers/jacobian_lens_workspace.md`). There is no reference basis for expecting -C to steer abrasive;
+the observed pattern (null means, isolated high-damage swings) is exactly what an unvalidated anti-exchange
+operator predicts.
+H2 (secondary — readout != causal, paper's own warning): "A lens that surfaces a concept in its readout has
+not necessarily found the direction the model actually computes with." The abrasive coordinate reads cleanly
+(DEV L16 0.798) but may not causally drive generation in the -C direction.
+
+Test EXECUTED CPU-only on existing rows (`slop/logs/20260909_j_lens_dev/neg_direction_dose_response.log`):
+per-scenario -C sign consistency across all 10 measured full-band doses (C=0.165-0.333). Result: 0/15
+scenarios monotonic-intended; signs scatter and flip with dose (sw_pnf_02 -6.85 -> +0.10 at top doses;
+med_pnf_03 +0.35 -> -5.30; phys_pnf_02 +8.15 and sw_pnf_03 +7.00 wrong-direction growth at top doses).
+H1 STANDS on measured data: -C is an unvalidated anti-exchange artifact, not a persona lever. Consequence:
+the paper-supported repair, if any, is +C-only (exchange at positive alpha, the validated operator); -C
+needs a different operator, not a dose. No new run launched on this evidence.
+
+## 6. Task 876 accounting fix (no daemon needed)
 
 - Wall: pueue state.json `876.status.Done`: start 18:40:08, end 18:48:25 (+08:00) = 497s, Success.
 - GPU-side: `/home/code/.local/share/pueue/task_logs/876.log` first generation line 10:40:45 UTC, `GPU_STAGE_COMPLETE ... cells=29` 10:48:18 UTC = 453s; Modal app `ap-huwTvWxxcxfrkieyYfx5M9`.
