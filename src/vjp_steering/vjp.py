@@ -1091,7 +1091,10 @@ def vjp_delta(
 ) -> Vector:
     """Extract one normalized VJP-delta direction per source layer."""
     model.requires_grad_(False)
-    target_layer = len(_blocks(model)) - 3 if target_layer is None else target_layer
+    block_count = len(_blocks(model))
+    target_layer = block_count - 3 if target_layer is None else target_layer
+    if not 0 <= target_layer < block_count:
+        raise ValueError(f"target layer {target_layer} is outside model layers [0, {block_count})")
     if max(layers) >= target_layer:
         raise ValueError("source layers must precede the target layer")
 

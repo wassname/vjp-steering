@@ -1,0 +1,17 @@
+{
+  "id": 829,
+  "group": "modal",
+  "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method vjp_delta --experiment-id v14-dev-vjp-delta --seed 0 --layers 6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24 --target-layer 33",
+  "label": "why: v14 DEV plot needs vjp_delta baseline on the frozen cohort; resolve: one bounded remote H100 generation after mean_diff completion",
+  "path": "/workspace/2026/jspace/j-steer_pub",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T12:59:31.236271477+08:00",
+      "start": "2026-09-09T12:59:31.413047933+08:00",
+      "end": "2026-09-09T13:00:00.929635813+08:00",
+      "result": {
+        "Failed": 1
+      }
+    }
+  }
+}
