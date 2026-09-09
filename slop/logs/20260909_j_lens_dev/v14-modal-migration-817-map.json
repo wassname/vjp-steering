@@ -1,0 +1,8 @@
+{
+  "old_task_id": 817,
+  "new_task_id": 827,
+  "group": "modal",
+  "reason": "Task825 completed within 329 seconds; no billing receipt is available, so the retained $8.00 generation reserve covers this one-at-a-time follow-up.",
+  "timeout_seconds": 900,
+  "automatic_retries": 0
+}

@@ -21,5 +21,11 @@
     "automatic_retries": 0,
     "new_gpu_queue": 0
   },
-  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. $8.00 is a conservative ceiling for eight serial remote H100 generation tasks, derived from task800's observed $0.09969626 for about 101 seconds and a 900-second maximum per task; it is not a receipt. Reserve $1.00 inside the v14 allocation for paired AB/BA judging before the first scored run. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "task825": {
+    "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2",
+    "terminal_duration_seconds": 329,
+    "status": "success",
+    "receipt": "No Modal CLI billing receipt is available. The $8.00 serial-generation reserve remains unchanged rather than inventing a charge."
+  },
+  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. $8.00 is a conservative ceiling for at-most-eight serial remote H100 generation tasks, derived from task800's observed $0.09969626 for about 101 seconds and a 900-second maximum per task; it is not a receipt. Task825 completed in 329 seconds; its provider charge is unavailable through the local Modal CLI, so the conservative reserve remains retained. Reserve $1.00 inside the v14 allocation for paired AB/BA judging before the first scored run. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
 }
