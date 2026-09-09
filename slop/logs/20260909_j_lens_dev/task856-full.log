@@ -1,0 +1,30 @@
+2026-09-09 14:14:03.809 | INFO     | __main__:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 14:14:07.265 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-09 14:14:10.249 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-09 14:14:12.310 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-09 14:14:14.161 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-09 14:14:16.643 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-09 14:14:18.272 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-09 14:14:20.501 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-09 14:14:22.804 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-09 14:14:24.580 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-09 14:14:25.547 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-09 14:14:27.855 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-09 14:14:29.348 | INFO     | __main__:cached_keys:427 - cache scan records=240000 valid_keys=169783
+2026-09-09 14:14:29.527 | INFO     | __main__:main:775 - CACHE_CHECK required=724 cached=499 missing=225 API_calls=225
+2026-09-09 14:15:51.318 | INFO     | __main__:run:733 - judge progress=100/225
+2026-09-09 14:17:03.864 | INFO     | __main__:run:733 - judge progress=200/225
+2026-09-09 14:17:19.473 | INFO     | __main__:run:733 - judge progress=225/225
+2026-09-09 14:17:19.953 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-09 14:17:20.484 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-09 14:17:21.117 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-09 14:17:21.857 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-09 14:17:22.339 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-09 14:17:22.800 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-09 14:17:23.280 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-09 14:17:23.811 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-09 14:17:24.193 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-09 14:17:24.543 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-09 14:17:24.890 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-09 14:17:25.250 | INFO     | __main__:cached_keys:427 - cache scan records=240000 valid_keys=169783
+2026-09-09 14:17:25.328 | INFO     | __main__:main:788 - JUDGE_COMPLETE required=724 missing=0

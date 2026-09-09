@@ -38,7 +38,7 @@
     {"task": 851, "status": "success", "missing": 0, "api_calls": 642, "role": "random seed2 paired AB/BA"},
     {"task": 853, "status": "success", "missing": 0, "api_calls": 720, "role": "random seed3 paired AB/BA"},
     {"task": 854, "status": "failed_after_400_of_724", "api_calls_requested": 724, "cause": "provider returned 404 for the frozen judge model", "role": "random seed4 paired AB/BA; no export"},
-    {"task": 856, "status": "running", "role": "one explicit same-contract seed4 judge recovery after task854 provider 404", "model": "deepseek/deepseek-v4-flash-0731", "orders": ["AB", "BA"], "automatic_retries": 0}
+    {"task": 856, "status": "success", "cached": 499, "api_calls": 225, "missing": 0, "role": "one explicit same-contract seed4 judge recovery after task854 provider 404", "model": "deepseek/deepseek-v4-flash-0731", "orders": ["AB", "BA"], "automatic_retries": 0}
   ],
   "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, and 853. Task 854 reached 400 of 724 cells then received a provider 404; one identical manual retry remains within the $2.00 judging reserve because it can reuse valid content-keyed cells. Tasks 832-835 failed their dependency without remote dispatch. These $11.00 v14 reserves use only the approved $20.00 allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00."
 }

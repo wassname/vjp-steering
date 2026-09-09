@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from vjp_steering.results import calibrated_random_rungs, plot
+from vjp_steering.results import _summary, calibrated_random_rungs, plot
 
 
 sys.path.insert(0, str(Path("scripts").resolve()))
@@ -53,9 +53,9 @@ class TestCalibratedRandomRegion(unittest.TestCase):
                         "method": "random", "seed": seed, "side": side, "C": coefficient,
                         "normalized_dose_id": normalized_dose_id,
                         "effect": (1 if side == "+C" else -1) * (normalized_dose_id + 1) / 10,
-                        "off_axis_perturbation": coefficient, "admissible": True,
+                        "off_axis_perturbation": coefficient, "admissible": True, "source_run": "no-manifest",
                     })
-        rows.append({"method": "random", "seed": 2, "side": "+C", "C": 0.99, "normalized_dose_id": None, "effect": 0.8, "off_axis_perturbation": 0.99, "admissible": True})
+        rows.append({"method": "random", "seed": 2, "side": "+C", "C": 0.99, "normalized_dose_id": None, "effect": 0.8, "off_axis_perturbation": 0.99, "admissible": True, "source_run": "no-manifest"})
         rungs = calibrated_random_rungs(rows, seeds)
         self.assertEqual([rung["rung"] for rung in rungs["+C"]], [0, 1])
         self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 1, 2])
@@ -70,6 +70,51 @@ class TestCalibratedRandomRegion(unittest.TestCase):
         self.assertTrue(any(trace.fill == "toself" and len(trace.x) > 2 for trace in figure.data))
         trace = next(trace for trace in figure.data if trace.name == "random measured DEV doses")
         self.assertEqual(len(trace.x), sum(row["admissible"] for row in rows))
+
+    def test_summary_uses_calibrated_rungs_not_exact_coefficients(self):
+        rows = []
+        for seed in range(5):
+            for side, sign in (("+C", 1), ("-C", -1)):
+                for rung in range(2):
+                    rows.append({
+                        "method": "random", "seed": seed, "side": side,
+                        "C": (seed + 1) * (rung + 1) / 10,
+                        "normalized_dose_id": rung,
+                        "effect": sign * (rung + 1) / 10,
+                        "off_axis_perturbation": (rung + 1) / 10,
+                        "admissible": True, "source_run": "no-manifest",
+                    })
+        summary = _summary(
+            rows, ("random",), {"random": set(range(5))},
+            include_rejected=True, random_region="calibrated_rung",
+        )
+        random_row = next(row for row in summary if row[0] == "random")
+        self.assertEqual(random_row[7], "4")
+
+    def test_summary_excludes_rejected_peaks_and_requires_direction(self):
+        def row(method, side, coefficient, effect, admissible):
+            return {
+                "method": method, "seed": 0, "side": side, "C": coefficient,
+                "effect": effect, "off_axis_perturbation": 0.1,
+                "admissible": admissible, "source_run": "no-manifest",
+            }
+        rows = [
+            row("j_lens_swap", "+C", 0.1, 0.1, True),
+            row("j_lens_swap", "+C", 0.2, 9.0, False),
+            row("j_lens_swap", "-C", 0.1, -0.2, True),
+            row("vjp_delta", "+C", 0.1, -0.2, True),
+            row("vjp_delta", "-C", 0.1, 0.2, True),
+        ]
+        table = _summary(
+            rows, ("j_lens_swap", "vjp_delta"),
+            {"j_lens_swap": {0}, "vjp_delta": {0}}, include_rejected=True,
+        )
+        j_lens = next(row for row in table if row[0] == "j_lens_swap")
+        vjp = next(row for row in table if row[0] == "vjp_delta")
+        self.assertEqual(j_lens[4], "0.100")
+        self.assertEqual(j_lens[8], "1")
+        self.assertEqual(vjp[2], "not confirmed")
+        self.assertEqual(vjp[4], "not confirmed")
 
 
 class TestDevComparisonProvenance(unittest.TestCase):

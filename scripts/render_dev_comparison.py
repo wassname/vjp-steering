@@ -112,13 +112,25 @@ def main() -> None:
     rows = [row for spec in specs for row in verify_experiment(*spec, provenance, cache)]
     methods = ("j_lens_swap", "mean_diff", "vjp_delta", "random")
     method_seeds = {"j_lens_swap": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
-    table = _display_table(_summary(rows, methods, method_seeds, include_rejected=True))
+    table = _display_table(
+        _summary(rows, methods, method_seeds, include_rejected=True, random_region="calibrated_rung")
+    )
     output = ROOT / "results"
     output.mkdir(exist_ok=True)
-    (output / "index-dev.md").write_text(_markdown(table, (
+    source_columns = (
+        "method", "seed", "C", "side", "effect", "off_axis_perturbation", "admissible",
+        "normalized_dose_id", "source_run", "eval_cohort", "data_hash",
+    )
+    with (output / "dev-comparison.csv").open("w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=source_columns, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+    markdown = _markdown(table, (
         "DEV15 comparison only. Every point passed exact scenario, shared-bare, generation-config, AB/BA judgment, and coherence provenance checks.",
-        "The gray region is five random vectors. It is a descriptive reference, not a confidence interval.",
-    )))
+        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. The source rows are in `dev-comparison.csv`.",
+    ), extra_pareto_plot=True)
+    markdown = markdown.replace("plot.png", "plot-dev.png").replace("plot_pareto.png", "plot-pareto-dev.png")
+    (output / "index-dev.md").write_text(markdown)
     for filename, pareto, title in (
         ("plot-dev.png", False, "DEV15 steering comparison"),
         ("plot-pareto-dev.png", True, "Pareto-smoothed DEV15 steering comparison"),
@@ -129,6 +141,7 @@ def main() -> None:
             method_seeds,
             title=title,
             pareto=pareto,
+            smooth=pareto,
             include_rejected=True,
             random_region="calibrated_rung",
         ).write_image(output / filename, width=1064, height=590, scale=2)

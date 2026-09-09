@@ -367,7 +367,7 @@ def _add_j_lens_dev_overlay(
         figure.add_trace(go.Scatter(
             x=curve_effect,
             y=curve_damage,
-            mode="lines", line=line, line_shape="spline", line_smoothing=1.3 if pareto else 0.45,
+            mode="lines", line=line, line_shape="spline" if pareto else "linear", line_smoothing=1.3 if pareto else 0,
             hoverinfo="skip", name=f"J-lens DEV {side} {'Pareto path' if pareto else 'measured path'}",
             showlegend=False,
         ))
@@ -417,7 +417,7 @@ def _add_j_lens_dev_overlay(
             text=f"J-lens {side} DEV",
             showarrow=True,
             ax=70 if side == "+C" else -72,
-            ay=-24 if side == "+C" else 28,
+            ay=48 if endpoint["off_axis_perturbation"] < 0.3 else (-24 if side == "+C" else 28),
             font={"color": J_LENS_COLOR, "size": 11},
             bgcolor="rgba(255,255,255,0.85)",
             arrowhead=0,
@@ -746,7 +746,7 @@ def plot(
         )
     else:
         labels = []
-        label_methods = tuple(method for method in methods if method != "random")
+        label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap"})
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
@@ -833,8 +833,18 @@ def _summary(
     method_seeds: dict[str, set[int]] = METHOD_SEEDS,
     endpoint_coefficients: dict[str, float | None] | None = None,
     include_rejected: bool = False,
+    random_region: str = "exact_C",
 ) -> list[list[str]]:
+    if random_region not in {"exact_C", "calibrated_rung"}:
+        raise ValueError(f"unknown random region construction: {random_region}")
     means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
+    random_rungs = (
+        calibrated_random_rungs(
+            [row for row in rows if row["method"] == "random"], method_seeds["random"]
+        )
+        if random_region == "calibrated_rung" and "random" in methods
+        else None
+    )
     scored_rows = []
     for method in methods:
         peaks = {}
@@ -842,29 +852,50 @@ def _summary(
         rejected = 0
         for side, sign in (("-C", -1), ("+C", 1)):
             group = [row for row in rows if row["method"] == method and row["side"] == side]
-            if method == "random":
-                live = [
+            if method == "random" and random_rungs is not None:
+                candidates = [
+                    {
+                        "C": rung["rung"],
+                        "effect": rung["effect"],
+                        "off_axis_perturbation": rung["off_axis_perturbation"],
+                        "admissible": True,
+                        "accepted": sign * rung["effect"] > 0,
+                    }
+                    for rung in random_rungs[side]
+                ]
+            elif method == "random":
+                candidates = [
                     {
                         "C": C,
                         "effect": mean(row["effect"] for row in rows_at_dose),
                         "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
+                        "admissible": True,
+                        "accepted": sign * mean(row["effect"] for row in rows_at_dose) > 0,
                     }
                     for C in sorted({row["C"] for row in group})
                     if (rows_at_dose := [row for row in group if row["C"] == C and row["admissible"]])
                 ]
             else:
-                live = [row for row in means if row["method"] == method and row["side"] == side]
+                candidates = [row for row in means if row["method"] == method and row["side"] == side]
+            live = [row for row in candidates if row["accepted"]]
             if not live or (endpoint_coefficients is not None and endpoint_coefficients[side] is None):
                 peaks[side] = None
             elif endpoint_coefficients is None:
                 peaks[side] = max(live, key=lambda row: sign * row["effect"])
             else:
                 peaks[side] = min(live, key=lambda row: abs(row["C"] - endpoint_coefficients[side]))
-            candidate_count += len(live)
-            rejected += (
-                sum(not row["accepted"] for row in live)
-                if include_rejected else sum(not row["admissible"] for row in group)
-            )
+            if method == "random" and random_rungs is not None:
+                candidate_count += len(candidates)
+                rejected += sum(not row["accepted"] for row in candidates)
+            else:
+                candidate_count += len(group)
+                rejected += sum(
+                    not (
+                        row["admissible"]
+                        and behavior_axis_direction(side, _behavior_target(row)) * row["effect"] > 0
+                    )
+                    for row in group
+                )
 
         if None in peaks.values():
             score = float("-inf")
@@ -882,7 +913,7 @@ def _summary(
             f"{peaks['-C']['off_axis_perturbation']:.3f}" if peaks["-C"] is not None else "—",
             f"{peaks['+C']['effect']:.3f}" if peaks["+C"] is not None else "not confirmed",
             f"{peaks['+C']['off_axis_perturbation']:.3f}" if peaks["+C"] is not None else "—",
-            str(RANDOM_SEEDS if method == "random" else len(method_seeds[method])),
+            str(len(method_seeds[method])),
             str(candidate_count),
             str(rejected),
         ]))
