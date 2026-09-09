@@ -77,10 +77,17 @@ def load_cell_orders(exp: str, side: str, coeff: float):
 
 
 def boot_margin(cand, rung, damage=False, b=B):
-    """Paired bootstrap mean difference (candidate wins positive)."""
+    """Paired TWO-LEVEL bootstrap mean difference (candidate wins positive).
+
+    Level 1 resamples scenarios with replacement (the dominant uncertainty);
+level 2 resamples the two order cells within each drawn scenario. (A prior
+draft averaged over all 15 scenarios every replicate — order noise only —
+which understated the CIs; fixed 2026-09-09.)
+    """
     scens = sorted(cand.keys())
     assert sorted(rung.keys()) == scens
-    diffs = np.zeros((b, len(scens)))
+    n = len(scens)
+    diffs = np.zeros((b, n))
     for i, sc in enumerate(scens):
         draws = RNG.integers(0, 2, size=(b, 2))  # order resample per replicate
         ce = np.array([cand[sc]["AB"][0], cand[sc]["BA"][0]])
@@ -94,7 +101,8 @@ def boot_margin(cand, rung, damage=False, b=B):
             diffs[:, i] = np.abs(cd[draws].mean(axis=1)) - np.abs(rd[draws].mean(axis=1))
         else:
             diffs[:, i] = ce[draws].mean(axis=1) - re_[draws].mean(axis=1)
-    means = diffs.mean(axis=1)
+    scen_idx = RNG.integers(0, n, size=(b, n))  # level-1 scenario resample
+    means = diffs[np.arange(b)[:, None], scen_idx].mean(axis=1)
     lo, hi = np.percentile(means, [2.5, 97.5])
     return float(means.mean()), float(lo), float(hi), diffs.mean(axis=0)
 

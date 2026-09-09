@@ -290,13 +290,27 @@ export.py/dev-comparison.csv — an earlier mean-of-abs draft was corrected); 95
 two-sided exact sign-flip permutation p over the 15 paired differences. Intended-direction margins signed
 positive-when-candidate-wins.
 
-Results:
-- (a) doubt -C4 vs -C id9 best (seed1 -1.143 @ 0.373): effect margin +0.0167, 95% CI [-0.2400, +0.2733],
+Results (CORRECTED 2026-09-09: the first run's bootstrap averaged over all 15 scenarios every
+replicate — order noise only — which understated the CIs RF1. The fixed two-level version resamples
+scenarios AND orders; numbers below are the corrected ones, permutation p-values unaffected):
+- (a) doubt -C4 vs -C id9 best (seed1 -1.143 @ 0.373): effect margin +0.0167, 95% CI [-1.8800, +1.8833],
   perm p=0.9800. At-boundary; indistinguishable from noise. (Rung median context +0.213 vs -1.160.)
 - (b) swap-L16 +C8.14 vs +C id9 best (seed4 +0.837 @ 0.120): effect margin +0.4067, 95% CI
-  [-0.4067, +1.2200], perm p=0.4529; damage margin +0.0336, CI [-0.1367, +0.1967]. Within noise.
-- (b2) swap-L16 +C8.14 vs +C id0 best (seed1 +2.097): effect margin -0.8533, 95% CI [-1.2633, -0.4333],
-  perm p=0.0494 (a clean loss, not a win); damage margin +0.0067, CI [-0.1067, +0.1067] (matched damage).
+  [-0.7134, +2.3067], perm p=0.4529; damage margin +0.0333, CI [-0.2601, +0.3333]. Within noise.
+- (b2) swap-L16 +C8.14 vs +C id0 best (seed1 +2.097): effect margin -0.8533, 95% CI [-2.2367, +0.2367]
+  (CROSSES ZERO under full uncertainty — the earlier 'clean loss' [-1.263,-0.433] was the order-only
+  artifact and is withdrawn), perm p=0.0494 (borderline sign asymmetry: leans loss, not robust to
+  scenario composition); damage margin +0.0068, CI [-0.1867, +0.2433] (matched damage).
+
+Power extrapolation for option 2 (LABELED EXTRAPOLATION, not measurement): from the per-scenario paired-
+difference SDs (+C: SD 1.5459 on margin +0.4067; -C: SD 3.8228 on margin +0.0167), normal approximation
+n ≈ (k·SD/margin)^2 for k-SE separation, ASSUMING per-scenario SD stays as observed, i.i.d. scenarios,
+same judge noise, and the point margin persisting (heavy-tailed outlier data makes this optimistic —
+true n likely larger, since added scenarios dilute rather than replicate the current outliers):
+- +C escape (+0.41): n ≈ 58 scenarios for 2 SE, n ≈ 130 for 3 SE (~4-9x the frozen DEV15).
+- -C escape (+0.017): n ≈ 210,000 for 2 SE, n ≈ 473,000 for 3 SE. No feasible cohort resolves this;
+  the -C margin needs a better repair, not more data (additionally, its sign is unstable: CI symmetric
+  around zero, p=0.98).
 
 Conclusion (both margins within noise for escape; the only significant comparison is a +C loss): the
 measured J-lens points sit at the boundary of the random region with margins inside judge noise
