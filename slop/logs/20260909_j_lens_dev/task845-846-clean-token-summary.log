@@ -1,0 +1,30 @@
+raw n_categories=14 n_semantic_clean_answers=0
+country 3437 ' What' False
+color 271 '\n\n' False
+fruit 198 '\n' False
+sport 198 '\n' False
+instrument 271 '\n\n' False
+planet 271 '\n\n' False
+tree 3437 ' What' False
+bird 198 '\n' False
+language 198 '\n' False
+profession 198 '\n' False
+beverage 198 '\n' False
+organ 271 '\n\n' False
+city 3437 ' What' False
+river 3437 ' What' False
+chat n_categories=14 n_semantic_clean_answers=8
+country 47358 'France' True
+color 10025 'Blue' True
+fruit 25719 'Apple' True
+sport 71146 'Basket' False
+instrument 47 'P' False
+planet 42373 'Earth' True
+tree 17656 'Branch' False
+bird 36 'E' False
+language 21874 'English' True
+profession 41309 'Doctor' True
+beverage 27336 'Water' True
+organ 43870 'Heart' True
+city 51076 'Tok' False
+river 18308 'Flow' False

@@ -1,0 +1,12 @@
+{
+  "clean_raw_task": 845,
+  "clean_chat_task": 846,
+  "raw_semantic_clean_answers": 0,
+  "chat_semantic_clean_answers": 8,
+  "selected_category": "country",
+  "selected_clean_token": "France",
+  "operator_diagnostic_task": 850,
+  "operator_diagnostic_output": "outputs/experiments/v14-paper-native-verbal-chat-country-swap/results.json",
+  "purpose": "one bounded alpha-zero identity and swapped-rank diagnostic; not a benchmark result",
+  "automatic_retries": 0
+}

@@ -33,8 +33,14 @@ The command used `--prompt-mode raw`, the paper’s colon prefill, categories `c
 - Action: defer that local-GPU diagnostic until it does not delay the remote five-seed DEV comparison; use any valid token/category pair only for paper-operator fidelity, never as benchmark evidence.
 - Interpretability: no conclusion about the J-lens equation or its benchmark transfer follows from task 824.
 
+## Follow-up clean-token scan
+
+Tasks 845 and 846 separated the leading prompt hypotheses. Their saved summaries report raw `0/14` and chat `8/14` listed clean answers. For example, chat `country` has token `47358`, decoded `France`, and `clean_is_listed_category_item=true`; raw `country` has token `3437`, decoded ` What`, and `false`. This is strong evidence that the raw prefill is incompatible with Qwen’s generation boundary, not evidence of a coordinate-swap failure.
+
+Task 850 is one queued chat `country` source/target diagnostic. Its script asserts exact alpha-zero logits before reporting the swapped target rank. It remains paper-operator evidence only.
+
 ## Decision
 
-Preserve task 824 as a failed candidate-selection diagnostic. Do not use it as evidence that J-lens fails or succeeds. The remote matched DEV comparison continues independently.
+Preserve task 824 as a failed raw-prompt candidate-selection diagnostic. Do not use it as evidence that J-lens fails or succeeds. The remote matched DEV comparison continues independently.
 
 -- PI/OpenAI
