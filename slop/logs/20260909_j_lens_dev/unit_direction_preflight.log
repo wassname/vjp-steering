@@ -1,7 +1,3 @@
-PASS unit direction basic: d_hat normalized
-PASS plane-residual invariance for both swap and unit
-PASS zero-dose identity
-PASS signed coefficient math
-PASS dtype/device/shape and multi-position (broadcast)
-PASS decode behavior (coordinate shift)
-ALL CPU preflight checks passed
+PASS JLensUnitDirection.apply: C=0,+1,-1 seq_len>1 dtype/shape/equation, seq_len=1 skip
+PASS extraction via patched _load_j_lens: production j_lens_unit_direction returns unit d_hat
+ALL TESTS PASS

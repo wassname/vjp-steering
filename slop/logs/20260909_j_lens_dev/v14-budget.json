@@ -1,288 +1,312 @@
 {
-  "author": "PI/OpenAI",
-  "purpose": "v14 DEV comparison and J-lens repair allocation",
-  "whole_block_cap_usd": "40.00",
-  "carried_known_modal_spend_usd": "0.57794118",
-  "carried_dev_judging_spend_usd": "0.02379654",
-  "carried_full_judging_spend_usd": "0.02987468",
-  "carried_unknown_review_reserve_usd": "12.00",
-  "carried_known_and_reserve_usd": "12.63161240",
-  "remaining_before_v14_allocation_usd": "27.36838760",
-  "v14_dev_repair_allocation_usd": "20.00",
-  "v14_remote_generation_reserve_usd": "9.00",
-  "v14_paired_judging_reserve_usd": "2.00",
-  "v14_available_after_remote_and_judging_reserve_usd": "9.00",
-  "v14_post_comparison_reserves_usd": {
-    "fresh_eyes_review": "2.00",
-    "remote_paper_coordinate_diagnostic_tasks859_860": "1.00",
-    "single_layer_coordinate_diagnostic": "1.00",
-    "common_lower_dose_extension_not_launched": "0.75",
-    "corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21": "1.00",
-    "layer16_alpha1_France_Germany_diagnostic": "1.00",
-    "dev_repair_iteration1_single_layer_or_band": "1.00",
-    "dev_raw_science_reanalysis_with_corrected_axis": "0.25",
-    "dev_repair_iteration2_unit_direction_L16": "1.00",
-    "contingency": "0.00"
+ "author": "PI/OpenAI",
+ "purpose": "v14 DEV comparison and J-lens repair allocation",
+ "whole_block_cap_usd": "40.00",
+ "carried_known_modal_spend_usd": "0.57794118",
+ "carried_dev_judging_spend_usd": "0.02379654",
+ "carried_full_judging_spend_usd": "0.02987468",
+ "carried_unknown_review_reserve_usd": "12.00",
+ "carried_known_and_reserve_usd": "12.63161240",
+ "remaining_before_v14_allocation_usd": "27.36838760",
+ "v14_dev_repair_allocation_usd": "20.00",
+ "v14_remote_generation_reserve_usd": "9.00",
+ "v14_paired_judging_reserve_usd": "2.00",
+ "v14_available_after_remote_and_judging_reserve_usd": "9.00",
+ "v14_post_comparison_reserves_usd": {
+  "fresh_eyes_review": "2.00",
+  "remote_paper_coordinate_diagnostic_tasks859_860": "1.00",
+  "single_layer_coordinate_diagnostic": "1.00",
+  "common_lower_dose_extension_not_launched": "0.75",
+  "corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21": "1.00",
+  "layer16_alpha1_France_Germany_diagnostic": "1.00",
+  "dev_repair_iteration1_single_layer_or_band": "1.00",
+  "dev_raw_science_reanalysis_with_corrected_axis": "0.25",
+  "dev_repair_iteration2_unit_direction_L16": "1.00",
+  "contingency": "0.00"
+ },
+ "v14_remaining_unallocated_usd": "7.36838760",
+ "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
+ "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
+ "constraints": {
+  "full_generation": 0,
+  "full_judging": 0,
+  "automatic_retries": 0,
+  "new_gpu_queue": 0
+ },
+ "remote_attempts": [
+  {
+   "task": 861,
+   "modal_app": "not_recorded_by_cli",
+   "duration_seconds": 55,
+   "status": "success",
+   "role": "one explicit paper-supported layer19 alpha-one diagnostic"
   },
-  "v14_remaining_unallocated_usd": "7.36838760",
-  "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
-  "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
-  "constraints": {
-    "full_generation": 0,
-    "full_judging": 0,
-    "automatic_retries": 0,
-    "new_gpu_queue": 0
+  {
+   "task": 825,
+   "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2",
+   "duration_seconds": 329,
+   "status": "success"
   },
-  "remote_attempts": [
-    {
-      "task": 861,
-      "modal_app": "not_recorded_by_cli",
-      "duration_seconds": 55,
-      "status": "success",
-      "role": "one explicit paper-supported layer19 alpha-one diagnostic"
-    },
-    {
-      "task": 825,
-      "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2",
-      "duration_seconds": 329,
-      "status": "success"
-    },
-    {
-      "task": 827,
-      "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv",
-      "duration_seconds": 411,
-      "status": "success"
-    },
-    {
-      "task": 829,
-      "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71",
-      "duration_seconds": 29,
-      "status": "failed_before_extraction",
-      "cause": "target layer 33 outside Qwen layers [0,25)"
-    },
-    {
-      "task": 830,
-      "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit",
-      "duration_seconds": 631,
-      "status": "success",
-      "role": "one explicit corrected VJP-delta retry"
-    },
-    {
-      "task": 831,
-      "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK",
-      "duration_seconds": 42,
-      "status": "failed_before_random_vector",
-      "cause": "random branch used uninitialized extraction prompts"
-    },
-    {
-      "tasks": [
-        832,
-        833,
-        834,
-        835
-      ],
-      "status": "dependency_failed_no_remote_dispatch",
-      "role": "the success dependency stopped the chain after task 831"
-    },
-    {
-      "task": 836,
-      "modal_app": "ap-DEZXkPAqSuaQ3yASnY1aWQ",
-      "duration_seconds": 445,
-      "status": "success",
-      "role": "one explicit corrected random seed-0 retry"
-    },
-    {
-      "task": 839,
-      "modal_app": "ap-wTGoL9sZ2qVYEuEEmYuHAP",
-      "duration_seconds": 461,
-      "status": "success",
-      "role": "frozen random seed 1"
-    },
-    {
-      "task": 840,
-      "modal_app": "ap-L8KHKJ0k6khgAIZtWoJF16",
-      "duration_seconds": 527,
-      "status": "success",
-      "role": "frozen random seed 2"
-    },
-    {
-      "task": 841,
-      "modal_app": "ap-XYk3mVZ4tul4txPxnR8hIg",
-      "duration_seconds": 461,
-      "status": "success",
-      "role": "frozen random seed 3"
-    },
-    {
-      "task": 842,
-      "modal_app": "ap-O5r46IVKdEJfZ8RcUKUpvS",
-      "duration_seconds": 448,
-      "status": "success",
-      "role": "frozen random seed 4"
-    },
-    {
-      "task": 864,
-      "modal_app": "ap-9yGlz7kSGLQDz2dlWC6fiM",
-      "duration_seconds": 40,
-      "status": "success",
-      "role": "corrected vendor-normalized France->Germany chat alpha1 layers13-21 with hidden capture (reallocated $1 within $20)",
-      "source_revision": "12369696f31d9fb9890fad4ac14f11a4d85e2421"
-    },
-    {
-      "task": 865,
-      "modal_app": "ap-ik0MRFBE3LvFvbYyUKXnFz",
-      "duration_seconds": 46,
-      "status": "success",
-      "role": "layer16 alpha1 France->Germany single-layer corrected (L16 France 0.454>Germany 0.273, vendor +0.91)",
-      "source_revision": "3a83149b8124c5d33df6b128270a4388fc8a14e4"
-    },
-    {
-      "task": 866,
-      "modal_app": "ap-...",
-      "duration_seconds": 41,
-      "status": "failed",
-      "cause": "slop/scripts not mounted (packaging), ModuleNotFoundError before measurement",
-      "role": "DEV abrasive/flattering coord capture attempt 1 (packaging failure, no coordinate result)"
-    },
-    {
-      "task": 867,
-      "modal_app": "ap-...",
-      "duration_seconds": 13,
-      "status": "failed",
-      "cause": "missing tokenizer arg, single-token assert",
-      "role": "DEV coord capture attempt 2 (script arg error, no measurement)"
-    },
-    {
-      "task": 868,
-      "modal_app": "ap-...",
-      "duration_seconds": 21,
-      "status": "failed",
-      "cause": "wrong import vjp_steering.walk, should be scripts.walk",
-      "role": "DEV coord capture attempt 3 (import error)"
-    },
-    {
-      "task": 869,
-      "modal_app": "ap-...",
-      "duration_seconds": 20,
-      "status": "failed",
-      "cause": "missing tokenizer arg in load_dev_prompts call",
-      "role": "DEV coord capture attempt 4 (missing arg)"
-    },
-    {
-      "task": 870,
-      "modal_app": "ap-...",
-      "duration_seconds": 18,
-      "status": "failed",
-      "cause": "ModuleNotFoundError vjp_steering (dev_abrasive_image missing src)",
-      "role": "DEV coord capture attempt 5 (image missing src)"
-    },
-    {
-      "task": 871,
-      "modal_app": "ap-...",
-      "duration_seconds": 40,
-      "status": "failed",
-      "cause": "ModuleNotFoundError scripts (scripts not on PYTHONPATH)",
-      "role": "DEV coord capture attempt 6 (PYTHONPATH)"
-    },
-    {
-      "task": 872,
-      "modal_app": "ap-rac26xoroBo1XIzvG08DGY",
-      "duration_seconds": 47,
-      "status": "success",
-      "role": "DEV abrasive/flattering clean coordinates for 15 DEV prompts (source-active all layers, e.g., L16 0.798>-0.154)"
-    },
-    {
-      "task": 873,
-      "modal_app": "ap-u734gaoiU4ktmyVJjQDran",
-      "duration_seconds": 373,
-      "status": "success",
-      "role": "DEV repair iteration 1: single source-active layer16 (DEV abrasive 0.798>-0.154) with unchanged paper swap, both +C/-C, frozen controls"
-    },
-    {
-      "task": 875,
-      "modal_app": "ap-fvh8RWaDmcJ0Muv8TyVCei",
-      "duration_seconds": 39,
-      "status": "failed",
-      "cause": "from vjp_steering.walk import... (nonexistent, should be scripts.walk) before any result",
-      "role": "DEV repair iteration 2 attempt 1: j_lens_unit_direction with wrong import, failed before result (packaging, no coordinate result)"
-    }
-  ],
-  "judging_attempts": [
-    {
-      "task": 826,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 403
-    },
-    {
-      "task": 828,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 626
-    },
-    {
-      "task": 837,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 560
-    },
-    {
-      "task": 843,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 692,
-      "role": "corrected random seed0 paired AB/BA"
-    },
-    {
-      "task": 847,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 686,
-      "role": "random seed1 paired AB/BA"
-    },
-    {
-      "task": 851,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 642,
-      "role": "random seed2 paired AB/BA"
-    },
-    {
-      "task": 853,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 720,
-      "role": "random seed3 paired AB/BA"
-    },
-    {
-      "task": 854,
-      "status": "failed_after_400_of_724",
-      "api_calls_requested": 724,
-      "cause": "provider returned 404 for the frozen judge model",
-      "role": "random seed4 paired AB/BA; no export"
-    },
-    {
-      "task": 856,
-      "status": "success",
-      "cached": 499,
-      "api_calls": 225,
-      "missing": 0,
-      "role": "one explicit same-contract seed4 judge recovery after task854 provider 404",
-      "model": "deepseek/deepseek-v4-flash-0731",
-      "orders": [
-        "AB",
-        "BA"
-      ],
-      "automatic_retries": 0
-    },
-    {
-      "task": 874,
-      "status": "success",
-      "missing": 0,
-      "api_calls": 613,
-      "role": "DEV repair L16 AB/BA judgments (29 cells, 435 demo sides, frozen rubric)",
-      "model": "deepseek/deepseek-v4-flash-0731",
-      "orders": ["AB", "BA"]
-    }
-  ],
-  "spend_status": "Modal CLI emitted no receipts; durations for 866-873 and judging 874 are observed wall times, not billed amounts, so reserves remain conservative. Remote attempts total ~4,400s (including 866:41s packaging fail, 867:13s, 868:21s, 869:20s, 870:18s, 871:40s, 872:47s success, 873:373s DEV L16). At observed rate $0.0997/101s, 873 alone ~$0.37, but $1.00 reserve for dev_repair_iteration1 is retained as conservative ceiling (unknown charge). Judging 874: 613 calls, ~7m, within $2 paired-judging reserve (actual provider charge unknown, reserved). Tasks 866-871 failures consumed <3 min total, still within $1 dev_repair reserve's conservative bound; no extra allocation. Total v14 reserves: $9.00 (remote) + $2.00 (judging) + $9.00 (post-comparison) = $20.00 within $20 cap; carried $12.00 review reserve separate and retained for fresh-eyes after plot fix. Stop before exceeding."
+  {
+   "task": 827,
+   "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv",
+   "duration_seconds": 411,
+   "status": "success"
+  },
+  {
+   "task": 829,
+   "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71",
+   "duration_seconds": 29,
+   "status": "failed_before_extraction",
+   "cause": "target layer 33 outside Qwen layers [0,25)"
+  },
+  {
+   "task": 830,
+   "modal_app": "ap-GYRiTlgJZtuzgnjF6X3Cit",
+   "duration_seconds": 631,
+   "status": "success",
+   "role": "one explicit corrected VJP-delta retry"
+  },
+  {
+   "task": 831,
+   "modal_app": "ap-TsafkMDRwqdkTTCfu7nGiK",
+   "duration_seconds": 42,
+   "status": "failed_before_random_vector",
+   "cause": "random branch used uninitialized extraction prompts"
+  },
+  {
+   "tasks": [
+    832,
+    833,
+    834,
+    835
+   ],
+   "status": "dependency_failed_no_remote_dispatch",
+   "role": "the success dependency stopped the chain after task 831"
+  },
+  {
+   "task": 836,
+   "modal_app": "ap-DEZXkPAqSuaQ3yASnY1aWQ",
+   "duration_seconds": 445,
+   "status": "success",
+   "role": "one explicit corrected random seed-0 retry"
+  },
+  {
+   "task": 839,
+   "modal_app": "ap-wTGoL9sZ2qVYEuEEmYuHAP",
+   "duration_seconds": 461,
+   "status": "success",
+   "role": "frozen random seed 1"
+  },
+  {
+   "task": 840,
+   "modal_app": "ap-L8KHKJ0k6khgAIZtWoJF16",
+   "duration_seconds": 527,
+   "status": "success",
+   "role": "frozen random seed 2"
+  },
+  {
+   "task": 841,
+   "modal_app": "ap-XYk3mVZ4tul4txPxnR8hIg",
+   "duration_seconds": 461,
+   "status": "success",
+   "role": "frozen random seed 3"
+  },
+  {
+   "task": 842,
+   "modal_app": "ap-O5r46IVKdEJfZ8RcUKUpvS",
+   "duration_seconds": 448,
+   "status": "success",
+   "role": "frozen random seed 4"
+  },
+  {
+   "task": 864,
+   "modal_app": "ap-9yGlz7kSGLQDz2dlWC6fiM",
+   "duration_seconds": 40,
+   "status": "success",
+   "role": "corrected vendor-normalized France->Germany chat alpha1 layers13-21 with hidden capture (reallocated $1 within $20)",
+   "source_revision": "12369696f31d9fb9890fad4ac14f11a4d85e2421"
+  },
+  {
+   "task": 865,
+   "modal_app": "ap-ik0MRFBE3LvFvbYyUKXnFz",
+   "duration_seconds": 46,
+   "status": "success",
+   "role": "layer16 alpha1 France->Germany single-layer corrected (L16 France 0.454>Germany 0.273, vendor +0.91)",
+   "source_revision": "3a83149b8124c5d33df6b128270a4388fc8a14e4"
+  },
+  {
+   "task": 866,
+   "modal_app": "ap-...",
+   "duration_seconds": 41,
+   "status": "failed",
+   "cause": "slop/scripts not mounted (packaging), ModuleNotFoundError before measurement",
+   "role": "DEV abrasive/flattering coord capture attempt 1 (packaging failure, no coordinate result)"
+  },
+  {
+   "task": 867,
+   "modal_app": "ap-...",
+   "duration_seconds": 13,
+   "status": "failed",
+   "cause": "missing tokenizer arg, single-token assert",
+   "role": "DEV coord capture attempt 2 (script arg error, no measurement)"
+  },
+  {
+   "task": 868,
+   "modal_app": "ap-...",
+   "duration_seconds": 21,
+   "status": "failed",
+   "cause": "wrong import vjp_steering.walk, should be scripts.walk",
+   "role": "DEV coord capture attempt 3 (import error)"
+  },
+  {
+   "task": 869,
+   "modal_app": "ap-...",
+   "duration_seconds": 20,
+   "status": "failed",
+   "cause": "missing tokenizer arg in load_dev_prompts call",
+   "role": "DEV coord capture attempt 4 (missing arg)"
+  },
+  {
+   "task": 870,
+   "modal_app": "ap-...",
+   "duration_seconds": 18,
+   "status": "failed",
+   "cause": "ModuleNotFoundError vjp_steering (dev_abrasive_image missing src)",
+   "role": "DEV coord capture attempt 5 (image missing src)"
+  },
+  {
+   "task": 871,
+   "modal_app": "ap-...",
+   "duration_seconds": 40,
+   "status": "failed",
+   "cause": "ModuleNotFoundError scripts (scripts not on PYTHONPATH)",
+   "role": "DEV coord capture attempt 6 (PYTHONPATH)"
+  },
+  {
+   "task": 872,
+   "modal_app": "ap-rac26xoroBo1XIzvG08DGY",
+   "duration_seconds": 47,
+   "status": "success",
+   "role": "DEV abrasive/flattering clean coordinates for 15 DEV prompts (source-active all layers, e.g., L16 0.798>-0.154)"
+  },
+  {
+   "task": 873,
+   "modal_app": "ap-u734gaoiU4ktmyVJjQDran",
+   "duration_seconds": 373,
+   "status": "success",
+   "role": "DEV repair iteration 1: single source-active layer16 (DEV abrasive 0.798>-0.154) with unchanged paper swap, both +C/-C, frozen controls"
+  },
+  {
+   "task": 875,
+   "modal_app": "ap-fvh8RWaDmcJ0Muv8TyVCei",
+   "duration_seconds": 39,
+   "status": "failed",
+   "cause": "from vjp_steering.walk import... (nonexistent, should be scripts.walk) before any result",
+   "role": "DEV repair iteration 2 attempt 1: j_lens_unit_direction with wrong import, failed before result (packaging, no coordinate result)"
+  },
+  {
+   "task": 876,
+   "modal_app": "not_captured_pueue_unavailable",
+   "duration_seconds": "not_captured",
+   "status": "success",
+   "role": "DEV unit-direction L16 control: 29 calibrated cells (14 +C, 15 -C) + reused shared bare; requested {0,.25,.5,1,2,4,8} grid silently ignored by DEV search_boundary/dev_grid (no C=0 hooked cell); see slop/audits/20260909_task876_actual_scope.md"
+  }
+ ],
+ "judging_attempts": [
+  {
+   "task": 826,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 403
+  },
+  {
+   "task": 828,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 626
+  },
+  {
+   "task": 837,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 560
+  },
+  {
+   "task": 843,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 692,
+   "role": "corrected random seed0 paired AB/BA"
+  },
+  {
+   "task": 847,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 686,
+   "role": "random seed1 paired AB/BA"
+  },
+  {
+   "task": 851,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 642,
+   "role": "random seed2 paired AB/BA"
+  },
+  {
+   "task": 853,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 720,
+   "role": "random seed3 paired AB/BA"
+  },
+  {
+   "task": 854,
+   "status": "failed_after_400_of_724",
+   "api_calls_requested": 724,
+   "cause": "provider returned 404 for the frozen judge model",
+   "role": "random seed4 paired AB/BA; no export"
+  },
+  {
+   "task": 856,
+   "status": "success",
+   "cached": 499,
+   "api_calls": 225,
+   "missing": 0,
+   "role": "one explicit same-contract seed4 judge recovery after task854 provider 404",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ],
+   "automatic_retries": 0
+  },
+  {
+   "task": 874,
+   "status": "success",
+   "missing": 0,
+   "api_calls": 613,
+   "role": "DEV repair L16 AB/BA judgments (29 cells, 435 demo sides, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": 877,
+   "status": "success",
+   "cached": 50,
+   "api_calls": 668,
+   "missing": 0,
+   "role": "DEV unit-direction L16 control AB/BA judgments (29 cells, 435 demo sides, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ],
+   "automatic_retries": 0
+  }
+ ],
+ "spend_status": "Modal CLI emitted no receipts; durations for 866-873 and judging 874 are observed wall times, not billed amounts, so reserves remain conservative. Remote attempts total ~4,400s (including 866:41s packaging fail, 867:13s, 868:21s, 869:20s, 870:18s, 871:40s, 872:47s success, 873:373s DEV L16). At observed rate $0.0997/101s, 873 alone ~$0.37, but $1.00 reserve for dev_repair_iteration1 is retained as conservative ceiling (unknown charge). Judging 874: 613 calls, ~7m, within $2 paired-judging reserve (actual provider charge unknown, reserved). Tasks 866-871 failures consumed <3 min total, still within $1 dev_repair reserve's conservative bound; no extra allocation. Total v14 reserves: $9.00 (remote) + $2.00 (judging) + $9.00 (post-comparison) = $20.00 within $20 cap; carried $12.00 review reserve separate and retained for fresh-eyes after plot fix. Stop before exceeding."
 }

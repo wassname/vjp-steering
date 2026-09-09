@@ -68,6 +68,7 @@ LABELS = {
     "J_word": "J-word",
     "j_lens_swap": "J-lens coordinate swap",
     "j_lens_swap_L16": "J-lens L16 (single source-active)",
+    "j_lens_unit_L16": "J-lens unit-direction L16 (ActAdd control, not paper swap)",
     "j_lens_concept_components": "J-lens empirical-candor",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
@@ -590,6 +591,7 @@ def plot(
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
         "j_lens_swap": J_LENS_COLOR,
         "j_lens_swap_L16": "#009e73",  # same family, distinct for single-layer L16 (source-active)
+        "j_lens_unit_L16": "#6f4aa8",  # distinct control: fixed ActAdd, not the paper swap
         "j_lens_concept_components": J_LENS_COLOR,
     }
     displayed_endpoints = {}
@@ -618,14 +620,14 @@ def plot(
                     # For j_lens methods, use coherent accepted (admissible and correct sign) to avoid marking wrong-direction
                     sign = 1 if side == "+C" else -1
                     # For j_lens, use accepted (admissible and correct sign) to match table; for others, use admissible
-                    if method in ("j_lens_swap", "j_lens_swap_L16"):
+                    if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16"):
                         coherent = [p for p in points if p["accepted" if "accepted" in p else "admissible"] and sign * p["effect"] > 0]
                         # Fallback to admissible if no coherent (should not happen for L16, but for safety)
                         candidates = coherent if coherent else [p for p in points if p["admissible"]]
                     else:
                         candidates = [p for p in points if p["admissible"]]
                     if candidates:
-                        if method in ("j_lens_swap", "j_lens_swap_L16"):
+                        if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16"):
                             endpoint = max(candidates, key=lambda row: sign * row["effect"])
                             max_eff = sign * endpoint["effect"]
                             tied = [r for r in candidates if abs(sign * r["effect"] - max_eff) < 1e-9]
@@ -672,7 +674,7 @@ def plot(
                     line={
                         "color": colors[method],
                         "width": 2.2 if pareto else 3,
-                        "dash": "dot" if method in ("j_lens_swap", "j_lens_swap_L16") and side == "-C" else "solid",
+                        "dash": "dot" if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16") and side == "-C" else "solid",
                     },
                     line_shape="spline" if smooth else "linear",
                     line_smoothing=1.3 if pareto else 0.6 if smooth else 0,
@@ -773,14 +775,17 @@ def plot(
         labels = []
         # Explicit color key for J-lens variants (small, not repeated endpoint labels)
         if "j_lens_swap" in methods and "j_lens_swap_L16" in methods:
-            # Add a small color key in the upper right corner, outside the data area, to distinguish blue vs green
+            # Add a small color key in the upper right corner, outside the data area, to distinguish blue vs green vs purple
+            key_text = "<span style='color:#56b4e9'>●</span> J-lens 13-21 (blue) &nbsp; <span style='color:#009e73'>●</span> J-lens L16 (green)"
+            if "j_lens_unit_L16" in methods:
+                key_text += " &nbsp; <span style='color:#6f4aa8'>●</span> unit L16 (purple, control)"
             figure.add_annotation(
-                x=0.99, y=0.99, xref="paper", yref="paper",
-                text="<span style='color:#56b4e9'>●</span> J-lens 13-21 (blue) &nbsp; <span style='color:#009e73'>●</span> J-lens L16 (green)",
+                x=0.99, y=0.955, xref="paper", yref="paper",
+                text=key_text,
                 showarrow=False, font={"size": 10}, bgcolor="rgba(255,255,255,0.85)", bordercolor="#cccccc", borderwidth=1,
                 align="right", xanchor="right", yanchor="top",
             )
-        label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap", "j_lens_swap_L16"})
+        label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16"})
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
@@ -827,7 +832,7 @@ def plot(
             x=0.01, y=y, xref="paper", yref="paper", text=text,
             showarrow=False, xanchor="left", font={"color": "#777777", "size": 10.5},
         )
-    if any(row["method"] in ("j_lens_swap", "j_lens_swap_L16") for row in rows):
+    if any(row["method"] in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16") for row in rows):
         figure.add_annotation(
             x=0.01,
             y=0.93,
@@ -835,9 +840,9 @@ def plot(
             yref="paper",
             xanchor="left",
             text=(
-                "J-lens coordinate swap: solid +C · dotted -C · ○ doses through selected/final"
+                "J-lens swap / unit control: solid +C · dotted -C · ○ doses through selected/final"
                 if pareto else
-                "J-lens coordinate swap: solid +C · dotted -C · ○ all doses · △ high damage"
+                "J-lens swap / unit control: solid +C · dotted -C · ○ all doses · △ high damage"
             ),
             showarrow=False,
             font={"color": J_LENS_COLOR, "size": 12},

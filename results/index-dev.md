@@ -14,6 +14,7 @@ The gray region and measured gray dots are five random vectors. It is a descript
 | method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | not eligible↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | mean_diff | **+2.750** | **5.477** | 0.910 | **3.433** | 0.683 | 1 | 24 | 20 |
+| j_lens_unit_L16 | +0.423 | 0.603 | 0.180 | 1.480 | 0.283 | 1 | 29 | 17 |
 | j_lens_swap_L16 | +0.130 | 0.453 | 0.323 | 1.787 | 0.367 | 1 | 29 | 15 |
 | j_lens_swap | +0.040 | 0.513 | **0.130** | 0.080 | **0.040** | 1 | 21 | 13 |
 | vjp_delta | — | 2.217 | 0.423 | not confirmed | — | 1 | 21 | 19 |

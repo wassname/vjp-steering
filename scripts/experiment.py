@@ -75,6 +75,22 @@ J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
 CONCEPT_METHODS = {"j_lens_concept", COMPONENT_PAIR_METHOD}
 
 
+def reject_dev_supplied_grid(method: str, dev: bool, plus: str, minus: str) -> None:
+    """Fail fast when a caller supplies explicit DEV doses for a calibrated method.
+
+    Non-concept DEV grids come from search_boundary/dev_grid; --coefficients
+    args are full-profile only and would otherwise be silently ignored (as in
+    task 876, which ran 29 calibrated cells instead of the requested grid).
+    Concept DEV grids honor --coefficients via concept_grid, so they are exempt.
+    """
+    if dev and method not in CONCEPT_METHODS and ((plus or "").strip() or (minus or "").strip()):
+        raise ValueError(
+            "DEV grid is calibrated (search_boundary/dev_grid); --coefficients-plus/minus "
+            "are full-profile only and would be silently ignored in DEV. Omit them for DEV "
+            "or rerun with the full profile."
+        )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("method", choices=METHODS)
@@ -166,6 +182,7 @@ def parse_args() -> argparse.Namespace:
     args.experiment_id = args.experiment_id or DEFAULT_EXPERIMENT_IDS[args.method]
     if args.reuse_bare_from and not args.dev:
         raise ValueError("reused bare generations are DEV-only")
+    reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
     return args
 
 
@@ -1016,6 +1033,7 @@ def reuse_dev_bare(args: argparse.Namespace, bare_path: Path, rows: list[dict]) 
 
 
 def gpu_stage(args: argparse.Namespace) -> None:
+    reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
     if args.method in CONCEPT_METHODS and not args.dev and not args.selected_empirical_candor_full:
         raise ValueError("concept intervention is DEV-only")
     profile_name = "dev" if args.dev else "full"
@@ -1725,6 +1743,17 @@ def self_test() -> None:
             method="test", dev=True, coefficients_plus="", coefficients_minus="", concept_sides=("+C", "-C"),
         )
         assert completed_profile_cell_count(args, manifest, root, "dev", DEV.cohort_size) == GRID_POINTS * 2
+    # Regression: non-concept DEV must reject supplied dose args instead of silently ignoring them (task 876 ran
+    # 29 calibrated cells while the caller believed it had requested a {0,.25,.5,1,2,4,8} grid).
+    try:
+        reject_dev_supplied_grid("mean_diff", True, "0,0.25,0.5,1,2,4,8", "0,0.25,0.5,1,2,4,8")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("non-concept DEV with supplied coefficients must raise")
+    reject_dev_supplied_grid("mean_diff", True, "", "")
+    reject_dev_supplied_grid("mean_diff", False, "0,1", "0,1")
+    reject_dev_supplied_grid("j_lens_concept", True, "0,1", "")
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
 

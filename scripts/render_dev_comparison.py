@@ -47,8 +47,9 @@ def comparison_specs(provenance: dict) -> list[tuple[str, str, int, str | None]]
         *[(entry["experiment_id"], "random", entry["seed"], None) for entry in methods["random"]["selected_experiments"]],
     ]
     if "j_lens_swap_L16" in methods:
-        # Verify as j_lens_swap (actual manifest method) but display as j_lens_swap_L16
         specs.append((methods["j_lens_swap_L16"]["experiment_id"], "j_lens_swap", methods["j_lens_swap_L16"]["seed"], "j_lens_swap_L16"))
+    if "j_lens_unit_L16" in methods:
+        specs.append((methods["j_lens_unit_L16"]["experiment_id"], "j_lens_unit_direction", methods["j_lens_unit_L16"]["seed"], "j_lens_unit_L16"))
     return specs
 
 
@@ -122,8 +123,17 @@ def main() -> None:
             for r in verified_rows:
                 r["method"] = display_method
         rows.extend(verified_rows)
-    methods = ("j_lens_swap", "j_lens_swap_L16", "mean_diff", "vjp_delta", "random") if any(r["method"] == "j_lens_swap_L16" for r in rows) else ("j_lens_swap", "mean_diff", "vjp_delta", "random")
-    method_seeds = {"j_lens_swap": {0}, "j_lens_swap_L16": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
+    has_L16 = any(r["method"] == "j_lens_swap_L16" for r in rows)
+    has_unit = any(r["method"] == "j_lens_unit_L16" for r in rows)
+    if has_L16 and has_unit:
+        methods = ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16", "mean_diff", "vjp_delta", "random")
+    elif has_L16:
+        methods = ("j_lens_swap", "j_lens_swap_L16", "mean_diff", "vjp_delta", "random")
+    elif has_unit:
+        methods = ("j_lens_swap", "j_lens_unit_L16", "mean_diff", "vjp_delta", "random")
+    else:
+        methods = ("j_lens_swap", "mean_diff", "vjp_delta", "random")
+    method_seeds = {"j_lens_swap": {0}, "j_lens_swap_L16": {0}, "j_lens_unit_L16": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
     methods = tuple(m for m in methods if any(r["method"] == m for r in rows))
     method_seeds = {k: v for k, v in method_seeds.items() if k in methods}
     table = _display_table(

@@ -41,6 +41,7 @@
   },
   "methods": {
     "j_lens_swap": {"experiment_id": "v14-dev-j-lens-swap", "seed": 0, "source": "paper-native coordinate swap", "source_layers": [13,14,15,16,17,18,19,20,21], "note": "failed adaptation, retained for comparison"},
+    "j_lens_unit_L16": {"experiment_id": "v14-dev-j-lens-unit-L16-corrected", "seed": 0, "source": "fixed unit-direction ActAdd L16 (v_target-v_source)/||...||, C=0..8, h_orth preserved", "source_layers": [16]},
     "j_lens_swap_L16": {"experiment_id": "v14-dev-j-lens-swap-L16", "seed": 0, "source": "paper-native coordinate swap single source-active layer16 (DEV abrasive 0.798>-0.154, country L16 France 0.454>Germany 0.273, vendor +0.91)", "source_layers": [16]},
 
     "mean_diff": {"experiment_id": "v14-dev-mean-diff", "seed": 0, "source_layers": [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]},

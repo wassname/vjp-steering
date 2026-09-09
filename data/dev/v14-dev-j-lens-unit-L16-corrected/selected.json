@@ -1,0 +1,32 @@
+{
+  "experiment_id": "v14-dev-j-lens-unit-L16-corrected",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 9.00967065662452,
+      "candidates_descending": [
+        9.00967065662452,
+        8.181621364451894,
+        8.0,
+        7.353572072279271,
+        6.525522780106647,
+        4.0,
+        2.0,
+        1.0
+      ],
+      "effect": 1.2766666666666666,
+      "off_axis_perturbation": 0.7433333333333333
+    },
+    "-C": {
+      "selected_C": 8.0,
+      "candidates_descending": [
+        8.0,
+        4.0,
+        2.0,
+        1.0
+      ],
+      "effect": -0.04000000000000003,
+      "off_axis_perturbation": 0.41666666666666663
+    }
+  }
+}
