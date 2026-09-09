@@ -29,10 +29,16 @@ The coordinate-swap math and prompt-prefill hook match the reference description
 | final normalization | Vendor lens readout applies final norm before its lm head (`docs/vendor/jacobian-lens/jlens/hf.py:166-171`). | The real Qwen forward still applies `model.model.norm` after patched blocks. The swap basis is the linear `W_U @ J` row and has no local derivative of final norm. The source code read here does not establish whether the reference causal swap uses one. |
 | revision provenance | Vendor `from_pretrained` accepts a revision (`lens.py:87-110`). | Reproduction resolves the lens through `J_WORD_LENS_REVISION="qwen-n1000"`; CLI `--source-revision` is output metadata only, not a lens-load argument. This is a provenance limitation, not yet orientation evidence. |
 
-The paper says it measures a colon-position J-lens readout and applies the swap “at all token positions” (`docs/papers/jacobian_lens_workspace.md:195-203`). Task 858 adds per-layer category readouts and actual hook-coordinate diagnostics to separate a correct local exchange with an inactive/misaligned lens from a hook/math failure. It is queued behind existing local default work; it does not use a Modal or judge call.
+The paper says it measures a colon-position J-lens readout and applies the swap “at all token positions” (`docs/papers/jacobian_lens_workspace.md:195-203`). The local task858 was stashed behind unrelated default-queue work and task860 ran the identical alpha-one diagnostic remotely; no judge call was involved.
+
+## Coordinate diagnostic result
+
+`outputs/experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json` records task860's Qwen chat `country` trial: France→Germany at alpha 1 on layers13–21. All hooks ran exactly once. Layer coordinate exchange errors are 0.00223–0.00973 and orthogonal residual errors 0.00765–0.01781, consistent with bfloat16 implementation error. The literal operator therefore executed.
+
+The lens has category signal: Germany ranks above France in its candidate readout at layer13 (3 vs7) and layer19 (4 vs5). Yet the final Germany token worsened from rank14/logit16.375 to rank16/logit15.5625 while France stayed top1 and rose from21.5 to21.875. Alpha zero was exactly identical to clean. This rejects a missing-hook or transposed-coordinate explanation for this trial, while it does not identify the remaining source/target/producers mismatch.
 
 ## Next discriminating test
 
-Task 858 is the bounded diagnostic. Its α=1 record must show per-layer source/target coordinate exchange and unchanged orthogonal residual to the measured dtype error, clean candidate-lens ranks on layers 13–21, and clean/swapped final source/target logits. If coordinate exchange fails, fix the operator/hook. If it passes but lens ranks and final logits remain inactive, inspect lens checkpoint/producer and final-normalization treatment before any new behavior repair. If it produces a paper-like rank shift, compare a prompt-active source-token adaptation against the fixed-token adaptation on the frozen DEV cohort.
+Do not sweep alpha. Compare the paper's prompt-active source-token choice and producer/checkpoint/final-norm treatment with the fixed `abrasive`→`flattering` benchmark adaptation. A repair test is justified only when that comparison states one concrete changed component and preserves the frozen DEV cohort and matched controls.
 
 -- PI/OpenAI

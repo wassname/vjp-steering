@@ -67,3 +67,76 @@ Task858 is queued behind another project’s running task855 and task857. It wil
 }
 ## task 859 explicit retrieval retry reason
 Task 859 ran the frozen diagnostic successfully through `PAPER_NATIVE_J_LENS_VERBAL_REPORT_COMPLETE`, then the new wrapper looked for the JSON under `/cache/outputs/...` and raised `FileNotFoundError`. The failure is result transport after the GPU diagnostic, not a model/operator failure. The replacement writes the JSON under `/tmp` and returns it to the local entrypoint. One explicit identical-contract retrieval retry is authorized; it is not automatic.
+{
+  "id": 859,
+  "group": "modal",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T15:12:59.303445683+08:00",
+      "start": "2026-09-09T15:12:59.497008771+08:00",
+      "end": "2026-09-09T15:13:33.526547073+08:00",
+      "result": {
+        "Failed": 1
+      }
+    }
+  },
+  "command": "uv run modal run scripts/run_modal.py::paper_coordinate_diagnostic",
+  "label": "why: task858 is behind unrelated local GPU work; resolve: run the identical paper-native alpha1 coordinate diagnostic remotely and distinguish lens/operator mismatch before any J-lens repair",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+{
+  "id": 860,
+  "group": "modal",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T15:14:49.554604137+08:00"
+    }
+  },
+  "command": "uv run modal run scripts/run_modal.py::paper_coordinate_diagnostic",
+  "label": "why: task859 completed the paper coordinate diagnostic but failed returning its JSON; resolve: one explicit identical-contract retrieval retry through the fixed temporary-file return path",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+{
+  "id": 858,
+  "group": "default",
+  "status": {
+    "Stashed": {
+      "enqueue_at": null
+    }
+  },
+  "command": "uv run python scripts/reproduce_paper_j_lens.py --source-revision fc30b122bfe28abfc1afa1fabc27a75623b8bc1b --prompt-mode chat --coefficient 1 --coordinate-diagnostics --limit-categories 1 --limit-targets 1 --output outputs/experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",
+  "label": "why: alpha1 paper-native verbal swap moved Germany rank 14 to 16; resolve: distinguish a mathematically inactive swap from an operator/hook error with per-layer coordinate and lens-readout evidence",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+{
+  "id": 859,
+  "group": "modal",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T15:12:59.303445683+08:00",
+      "start": "2026-09-09T15:12:59.497008771+08:00",
+      "end": "2026-09-09T15:13:33.526547073+08:00",
+      "result": {
+        "Failed": 1
+      }
+    }
+  },
+  "command": "uv run modal run scripts/run_modal.py::paper_coordinate_diagnostic",
+  "label": "why: task858 is behind unrelated local GPU work; resolve: run the identical paper-native alpha1 coordinate diagnostic remotely and distinguish lens/operator mismatch before any J-lens repair",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+{
+  "id": 860,
+  "group": "modal",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T15:14:49.554604137+08:00",
+      "start": "2026-09-09T15:14:49.714757700+08:00",
+      "end": "2026-09-09T15:15:19.532738047+08:00",
+      "result": "Success"
+    }
+  },
+  "command": "uv run modal run scripts/run_modal.py::paper_coordinate_diagnostic",
+  "label": "why: task859 completed the paper coordinate diagnostic but failed returning its JSON; resolve: one explicit identical-contract retrieval retry through the fixed temporary-file return path",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
