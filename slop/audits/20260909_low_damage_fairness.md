@@ -261,6 +261,18 @@ Spend: 918 gen ~$0.104 (105s est, no receipts) + 921 judging $0.0446 recorded (2
 record each) ~= $0.15 vs the authorized $0.50 ceiling from verified-unused remainder. No further paid runs
 authorized or launched.
 
+### Fresh-eyes image review adjudication (`slop/reviews/20260909_plot_fresh_eyes_v3.md`)
+
+Independent scout-lane review received with an honest limitation: no image vision this session, so pixel
+forensics only (text un-OCR'd). Bottom line ACCEPTED: neither plot overclaims a J-lens advantage; geometry
+supports the at-boundary conclusion in both interesting directions. Two specific artifact claims REJECTED
+after check against direct visual inspection and the generating code: the legend DOES key all five variants
+(blue/green/purple/amber/pink swatches present in both PNGs; `colors`/`LABELS` carry all five entries) and
+green L16 curves DO render (dotted paths + markers visible) — the vision-less pipeline missed small/thin
+features. The bottom 'blue bar' is capped-damage pinning of off-scale points, already annotated in-figure
+('high damage'); the pareto pink tail exclusion is by-construction Pareto anchors, captioned as such.
+No render changes triggered; wording-level label checks remain flagged for a human pass.
+
 ## 9. Task 876 accounting fix (no daemon needed)
 
 - Wall: pueue state.json `876.status.Done`: start 18:40:08, end 18:48:25 (+08:00) = 497s, Success.
