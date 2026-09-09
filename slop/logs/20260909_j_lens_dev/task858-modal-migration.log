@@ -1,0 +1,55 @@
+2026-09-09T15:12:22+08:00
+## task 858 before migration
+{
+  "id": 858,
+  "group": "default",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T14:55:33.456609983+08:00"
+    }
+  },
+  "command": "uv run python scripts/reproduce_paper_j_lens.py --source-revision fc30b122bfe28abfc1afa1fabc27a75623b8bc1b --prompt-mode chat --coefficient 1 --coordinate-diagnostics --limit-categories 1 --limit-targets 1 --output outputs/experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",
+  "label": "why: alpha1 paper-native verbal swap moved Germany rank 14 to 16; resolve: distinguish a mathematically inactive swap from an operator/hook error with per-layer coordinate and lens-readout evidence",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}
+## default predecessor state
+{
+  "id": 855,
+  "group": "default",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T14:07:59.921711814+08:00",
+      "start": "2026-09-09T14:08:07.710609662+08:00"
+    }
+  },
+  "command": "uv run python -m lucid3.train --output outputs/runs/20260909T061020Z_action_conditioned_seed0_retry --seed 0 --steps 6000 --learning-rate 1e-5 --eval-every 500",
+  "label": "why:849 exited143 after successful pairedcache extraction before training; resolve: complete authorized6000updates using persistedcache; terminationcauseunknown",
+  "path": "/workspace/2026/LUCID3_wikit"
+}
+{
+  "id": 857,
+  "group": "default",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T14:22:33.406242987+08:00"
+    }
+  },
+  "command": "timeout --kill-after=30s 40m env UV_NO_SYNC=1 OMP_NUM_THREADS=2 uv run python -m experiments.e56_flow_repair.run --stage operator --recovery-source experiments/e56_flow_repair/run_recovery_s43 --doses 0.15 0.21 0.49 0.5 --outdir experiments/e56_flow_repair/run_centered_s43",
+  "label": "why: direct repair may destroy clean activations; resolve: same-checkpoint centered recovery versus weaker plain steers with full512-token text and source replay",
+  "path": "/workspace/2026/mfv/manifold-steer"
+}
+## migration contract
+Task858 is queued behind another project’s running task855 and task857. It will be stashed before one remote H100 replacement is queued in existing modal group at concurrency 1. The replacement runs the same source revision, chat prompt mode, alpha=1, and coordinate diagnostics with a 900-second timeout; no retry.
+## task 858 after local withdrawal
+{
+  "id": 858,
+  "group": "default",
+  "status": {
+    "Stashed": {
+      "enqueue_at": null
+    }
+  },
+  "command": "uv run python scripts/reproduce_paper_j_lens.py --source-revision fc30b122bfe28abfc1afa1fabc27a75623b8bc1b --prompt-mode chat --coefficient 1 --coordinate-diagnostics --limit-categories 1 --limit-targets 1 --output outputs/experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",
+  "label": "why: alpha1 paper-native verbal swap moved Germany rank 14 to 16; resolve: distinguish a mathematically inactive swap from an operator/hook error with per-layer coordinate and lens-readout evidence",
+  "path": "/workspace/2026/jspace/j-steer_pub"
+}

@@ -75,6 +75,51 @@ def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.
 
 
 @app.function(
+    gpu="H100",
+    image=j_lens_diagnostic_image,
+    volumes={"/cache": cache},
+    timeout=15 * 60,
+)
+def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str:
+    """Run the bounded paper-native coordinate audit remotely and return its JSON."""
+    destination = Path("/cache/outputs") / output
+    if destination.exists():
+        raise FileExistsError(destination)
+    try:
+        subprocess.run(
+            [
+                sys.executable, "scripts/reproduce_paper_j_lens.py",
+                "--source-revision", source_revision,
+                "--prompt-mode", "chat",
+                "--coefficient", "1",
+                "--coordinate-diagnostics",
+                "--limit-categories", "1",
+                "--limit-targets", "1",
+                "--output", str(Path("outputs") / output),
+            ],
+            cwd="/repo",
+            check=True,
+        )
+        return destination.read_text()
+    finally:
+        cache.commit()
+
+
+@app.local_entrypoint()
+def paper_coordinate_diagnostic(
+    output: str = "experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",
+    source_revision: str = "fc30b122bfe28abfc1afa1fabc27a75623b8bc1b",
+):
+    destination = REPO / "outputs" / output
+    if destination.exists():
+        raise FileExistsError(destination)
+    result = paper_coordinate_diagnostic_remote.remote(output, source_revision)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(result)
+    print(f"PAPER_COORDINATE_DIAGNOSTIC_DOWNLOADED output={destination}")
+
+
+@app.function(
     gpu=os.environ.get("JSTEER_GPU", "H100"),
     volumes={"/cache": cache},
     timeout=24 * 60 * 60,
