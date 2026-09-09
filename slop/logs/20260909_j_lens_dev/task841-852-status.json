@@ -1,0 +1,45 @@
+{
+  "id": 841,
+  "group": "modal",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:29:46.459326190+08:00",
+      "start": "2026-09-09T13:46:14.456702469+08:00",
+      "end": "2026-09-09T13:53:55.054835425+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed3 after seed2; resolve: DEV15 generation succeeds before seed4 dispatch"
+}
+{
+  "id": 842,
+  "group": "modal",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T13:29:46.607760391+08:00",
+      "start": "2026-09-09T13:53:55.057917398+08:00"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed4 after seed3; resolve: all five seeds exist for the DEV envelope"
+}
+{
+  "id": 851,
+  "group": "api",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T13:49:47.179754521+08:00",
+      "start": "2026-09-09T13:49:47.408936686+08:00"
+    }
+  },
+  "label": "why: v14 random seed2 passed DEV provenance; resolve: paired AB/BA scores under unchanged rubric before its exported points enter the DEV region"
+}
+{
+  "id": 852,
+  "group": "default",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T13:49:59.393538367+08:00"
+    }
+  },
+  "label": "why: task850 used alpha2 extrapolation rather than a coordinate exchange; resolve: repeat one valid chat country pair at alpha1 with alpha0 identity assertion and target-rank result"
+}

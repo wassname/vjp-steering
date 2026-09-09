@@ -1,0 +1,5 @@
+operator= h + V(swap(V^dagger h) - V^dagger h)
+coefficient= 1.0
+source= France target= Germany
+ranks= 14 16 top1= France France
+hooks= {'13': 1, '14': 1, '15': 1, '16': 1, '17': 1, '18': 1, '19': 1, '20': 1, '21': 1} {'13': 1, '14': 1, '15': 1, '16': 1, '17': 1, '18': 1, '19': 1, '20': 1, '21': 1}

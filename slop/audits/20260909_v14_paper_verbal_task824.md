@@ -37,7 +37,9 @@ The command used `--prompt-mode raw`, the paper’s colon prefill, categories `c
 
 Tasks 845 and 846 separated the leading prompt hypotheses. Their saved summaries report raw `0/14` and chat `8/14` listed clean answers. For example, chat `country` has token `47358`, decoded `France`, and `clean_is_listed_category_item=true`; raw `country` has token `3437`, decoded ` What`, and `false`. This is strong evidence that the raw prefill is incompatible with Qwen’s generation boundary, not evidence of a coordinate-swap failure.
 
-Task 850 used chat `country`, source `France`, target `Germany`, and verified alpha-zero exact logits plus one hook call on every layer 13-21. At coefficient 2, Germany's rank changed from 14 to 248320 while France stayed top-1. This does not test the paper's literal coordinate exchange: coefficient 2 applies `h + 2(swap(h)-h)`, an extrapolation. Task 852 is a one-pair coefficient-1 exchange diagnostic with the same alpha-zero assertion. It remains paper-operator evidence only.
+Task 850 used chat `country`, source `France`, target `Germany`, and verified alpha-zero exact logits plus one hook call on every layer 13-21. At coefficient 2, Germany's rank changed from 14 to 248320 while France stayed top-1. This does not test the paper's literal coordinate exchange: coefficient 2 applies `h + 2(swap(h)-h)`, an extrapolation.
+
+Task 852 repeated that one pair at coefficient 1, the literal operator coefficient. `task852-full.log` records the alpha-zero assertion completed without error and one prefill hook call per layer 13–21. `task852-chat-country-swap-alpha1-results.json` records Germany rank `14 -> 16` while France remained top-1. This confirms the local hook and identity checks on one Qwen chat-formatted prompt; it does not reproduce a paper-style target-token promotion, and it is not benchmark evidence.
 
 ## Decision
 

@@ -1,0 +1,149 @@
+{
+  "model": "Qwen/Qwen3.5-4B",
+  "source_revision": "fc30b122bfe28abfc1afa1fabc27a75623b8bc1b",
+  "data": "/workspace/2026/jspace/j-steer_pub/data/vendor/jacobian-lens/verbal-report.json",
+  "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c",
+  "prompt_mode": "chat",
+  "candidate_prefix": "",
+  "prompt_format": "Qwen chat template around the paper verbal-report colon prefill",
+  "clean_rows": [
+    {
+      "category": "country",
+      "prompt": "<|im_start|>user\nThink of a country. Answer in one word:<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "clean_token_id": 47358,
+      "clean_token": "France",
+      "clean_is_listed_category_item": true,
+      "category_token_ids": [
+        47122,
+        47358,
+        64931,
+        21591,
+        32436,
+        71792,
+        68121,
+        48484,
+        34740,
+        66502,
+        82707
+      ],
+      "top_tokens": [
+        {
+          "token_id": 47358,
+          "token": "France",
+          "logit": 21.5
+        },
+        {
+          "token_id": 47122,
+          "token": "Japan",
+          "logit": 21.125
+        },
+        {
+          "token_id": 21591,
+          "token": "China",
+          "logit": 19.25
+        },
+        {
+          "token_id": 34740,
+          "token": "Canada",
+          "logit": 18.75
+        },
+        {
+          "token_id": 32436,
+          "token": "India",
+          "logit": 18.5
+        },
+        {
+          "token_id": 23580,
+          "token": "USA",
+          "logit": 18.25
+        },
+        {
+          "token_id": 64931,
+          "token": "Brazil",
+          "logit": 18.0
+        },
+        {
+          "token_id": 71792,
+          "token": "Spain",
+          "logit": 17.375
+        },
+        {
+          "token_id": 68121,
+          "token": "Italy",
+          "logit": 17.375
+        },
+        {
+          "token_id": 93527,
+          "token": "Sweden",
+          "logit": 16.875
+        }
+      ]
+    }
+  ],
+  "operator": "h + V(swap(V^dagger h) - V^dagger h)",
+  "coefficient": 1.0,
+  "layers": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "n_trials": 1,
+  "n_top1": 0,
+  "top1_rate": 0.0,
+  "median_clean_target_rank": 14.0,
+  "median_swapped_target_rank": 16.0,
+  "trials": [
+    {
+      "category": "country",
+      "prompt": "<|im_start|>user\nThink of a country. Answer in one word:<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+      "source_token_id": 47358,
+      "source_token": "France",
+      "target_token_id": 48484,
+      "target_token": "Germany",
+      "clean_target_rank": 14,
+      "swapped_target_rank": 16,
+      "clean_top_token": "France",
+      "swapped_top_token": "France",
+      "success_top1": false,
+      "zero_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "swap_hook_calls": {
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "20": 1,
+        "21": 1
+      },
+      "layer_condition_numbers": {
+        "13": 2.467318296432495,
+        "14": 2.4568464756011963,
+        "15": 2.468820810317993,
+        "16": 2.52065372467041,
+        "17": 2.56188702583313,
+        "18": 2.5849835872650146,
+        "19": 2.2445971965789795,
+        "20": 2.3346426486968994,
+        "21": 2.206082820892334
+      }
+    }
+  ]
+}

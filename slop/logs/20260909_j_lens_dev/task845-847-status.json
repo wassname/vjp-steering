@@ -1,0 +1,48 @@
+{
+  "id": 840,
+  "group": "modal",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T13:29:46.336544144+08:00",
+      "start": "2026-09-09T13:37:27.052324981+08:00"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed2 after seed1; resolve: DEV15 generation succeeds before seed3 dispatch"
+}
+{
+  "id": 845,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:36:54.306541609+08:00",
+      "start": "2026-09-09T13:36:54.509897394+08:00",
+      "end": "2026-09-09T13:39:27.229516407+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: task824 raw prefill had no valid verbal-report source token; resolve: record all raw clean token IDs, candidate membership, and top tokens before operator selection"
+}
+{
+  "id": 846,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:36:54.449838861+08:00",
+      "start": "2026-09-09T13:39:27.233582383+08:00",
+      "end": "2026-09-09T13:40:01.271601012+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: distinguish raw verbal-report prompt incompatibility from token selection; resolve: record all chat clean token IDs, candidate membership, and top tokens"
+}
+{
+  "id": 847,
+  "group": "api",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T13:38:22.742445704+08:00",
+      "start": "2026-09-09T13:38:22.777066338+08:00"
+    }
+  },
+  "label": "why: v14 random seed1 passed DEV provenance; resolve: paired AB/BA scores under unchanged rubric before its exported points enter the DEV region"
+}

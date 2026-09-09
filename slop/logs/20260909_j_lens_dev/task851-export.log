@@ -1,0 +1,2 @@
+2026-09-09 13:58:03.928 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=23 demo_sides=345
+EXPERIMENT_EXPORT_COMPLETE id=v14-dev-random-s2-r2 profile=dev arms=23 scenarios=345

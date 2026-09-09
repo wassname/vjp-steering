@@ -1,0 +1,122 @@
+{
+  "id": 840,
+  "group": "modal",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:29:46.336544144+08:00",
+      "start": "2026-09-09T13:37:27.052324981+08:00",
+      "end": "2026-09-09T13:46:14.439498551+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed2 after seed1; resolve: DEV15 generation succeeds before seed3 dispatch"
+}
+{
+  "id": 841,
+  "group": "modal",
+  "status": {
+    "Running": {
+      "enqueued_at": "2026-09-09T13:29:46.459326190+08:00",
+      "start": "2026-09-09T13:46:14.456702469+08:00"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed3 after seed2; resolve: DEV15 generation succeeds before seed4 dispatch"
+}
+{
+  "id": 842,
+  "group": "modal",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T13:29:46.607760391+08:00"
+    }
+  },
+  "label": "why: v14 random region requires frozen seed4 after seed3; resolve: all five seeds exist for the DEV envelope"
+}
+{
+  "id": 843,
+  "group": "api",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:29:55.485068211+08:00",
+      "start": "2026-09-09T13:29:55.490384694+08:00",
+      "end": "2026-09-09T13:38:55.603895047+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: v14 random seed0 passed DEV provenance; resolve: paired AB/BA scores under unchanged rubric before its exported points enter the DEV region"
+}
+{
+  "id": 845,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:36:54.306541609+08:00",
+      "start": "2026-09-09T13:36:54.509897394+08:00",
+      "end": "2026-09-09T13:39:27.229516407+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: task824 raw prefill had no valid verbal-report source token; resolve: record all raw clean token IDs, candidate membership, and top tokens before operator selection"
+}
+{
+  "id": 846,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:36:54.449838861+08:00",
+      "start": "2026-09-09T13:39:27.233582383+08:00",
+      "end": "2026-09-09T13:40:01.271601012+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: distinguish raw verbal-report prompt incompatibility from token selection; resolve: record all chat clean token IDs, candidate membership, and top tokens"
+}
+{
+  "id": 847,
+  "group": "api",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:38:22.742445704+08:00",
+      "start": "2026-09-09T13:38:22.777066338+08:00",
+      "end": "2026-09-09T13:47:30.356637092+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: v14 random seed1 passed DEV provenance; resolve: paired AB/BA scores under unchanged rubric before its exported points enter the DEV region"
+}
+{
+  "id": 848,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:38:27.798803609+08:00",
+      "start": "2026-09-09T13:40:01.275206981+08:00",
+      "end": "2026-09-09T13:44:39.866699264+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: repair838 paired-token report KeyError; resolve: complete actual paired extraction training and report pipeline"
+}
+{
+  "id": 849,
+  "group": "default",
+  "status": {
+    "Stashed": {
+      "enqueue_at": null
+    }
+  },
+  "label": "why: diverse documents and paired actions should remove token neglect; resolve: held-out decoded prediction and correct-token advantage; replaces unstarted844 after838 renderer failure; release after848 audit"
+}
+{
+  "id": 850,
+  "group": "default",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T13:40:54.915382795+08:00",
+      "start": "2026-09-09T13:44:39.878992496+08:00",
+      "end": "2026-09-09T13:45:50.641843454+08:00",
+      "result": "Success"
+    }
+  },
+  "label": "why: chat clean-token scan found country France as a listed answer; resolve: one bounded country candidate verifies alpha0 identity and swapped target-rank movement before any operator claim"
+}
