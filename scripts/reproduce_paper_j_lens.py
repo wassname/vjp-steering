@@ -74,7 +74,19 @@ def next_logits(
 
 
 def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids: list[int], checkpoint: dict) -> dict[str, dict]:
-    """Read fitted J-lens scores at the final prompt token for category candidates."""
+    """Read fitted J-lens scores at the final prompt token for category candidates.
+
+    Two scores are returned per layer:
+    - raw: hidden @ (W_U @ J).T  (no final norm). Kept for backward comparison only;
+      it is not the vendor lens readout and must not be cited as reference fidelity.
+    - vendor: W_U @ norm(J @ hidden) via the model's actual final RMSNorm and
+      lm_head. This matches JacobianLens.apply -> HFLensModel.unembed, i.e.
+      paper lens(h)=softmax(W_U norm(J h)) (Methods, Jacobian Lens).
+    The swap basis itself remains raw rows of W_U J (paper's V=[v_s v_t]), not
+    normed; the norm is a readout nonlinearity, not part of the residual-space
+    coordinate basis. Qwen3.5's final norm is Qwen3_5RMSNorm(eps=1e-6) with a
+    learned per-dim weight (mean ~2.19), included via model.model.norm.
+    """
     encoded = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(next(model.parameters()).device)
     final = int(encoded.attention_mask.sum().item() - 1)
     captured, handles = {}, []
@@ -92,18 +104,34 @@ def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids
         for handle in handles:
             handle.remove()
     candidate_rows = model.lm_head.weight[candidate_ids].float().detach().cpu()
+    device = next(model.parameters()).device
+    target_dtype = model.lm_head.weight.dtype
     readouts = {}
     for layer, hidden in captured.items():
+        # Raw score (no norm) - retained but not fidelity.
         lens_rows = candidate_rows @ checkpoint["J"][layer].float()
-        scores = hidden @ lens_rows.T
+        raw_scores = hidden @ lens_rows.T
+        # Vendor-normalized score: norm(J @ hidden) then W_U.
+        transported = checkpoint["J"][layer].float() @ hidden.float()  # [d_model] cpu
+        transported_dev = transported.to(device=device, dtype=target_dtype)
+        # Qwen3.5: model.model.norm is Qwen3_5RMSNorm; vendor HFLensModel.unembed applies this before lm_head.
+        # Handle Lite textual wrapper vs direct ForCausalLM: text decoder norm lives at model.model.norm for Qwen3.5.
+        normed = model.model.norm(transported_dev.unsqueeze(0)).squeeze(0)  # [d_model]
+        vendor_logits_full = model.lm_head(normed.unsqueeze(0)).float().squeeze(0).detach().cpu()  # [vocab]
+        vendor_scores = vendor_logits_full[candidate_ids]
         source_index = candidate_ids.index(vector.cfg.source_token_id)
         target_index = candidate_ids.index(vector.cfg.target_token_id)
-        source_score, target_score = scores[source_index], scores[target_index]
+        raw_source, raw_target = float(raw_scores[source_index]), float(raw_scores[target_index])
+        vendor_source, vendor_target = float(vendor_scores[source_index]), float(vendor_scores[target_index])
         readouts[str(layer)] = {
-            "source_lens_readout": float(source_score),
-            "target_lens_readout": float(target_score),
-            "source_candidate_rank": int((scores > source_score).sum()) + 1,
-            "target_candidate_rank": int((scores > target_score).sum()) + 1,
+            "source_lens_readout": raw_source,
+            "target_lens_readout": raw_target,
+            "source_candidate_rank": int((raw_scores > raw_source).sum()) + 1,
+            "target_candidate_rank": int((raw_scores > raw_target).sum()) + 1,
+            "source_vendor_lens_readout": vendor_source,
+            "target_vendor_lens_readout": vendor_target,
+            "source_vendor_candidate_rank": int((vendor_scores > vendor_source).sum()) + 1,
+            "target_vendor_candidate_rank": int((vendor_scores > vendor_target).sum()) + 1,
         }
     return readouts
 
