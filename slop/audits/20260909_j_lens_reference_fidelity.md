@@ -35,6 +35,8 @@ The paper says it measures a colon-position J-lens readout and applies the swap 
 
 `outputs/experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json` records task860's Qwen chat `country` trial: France→Germany at alpha 1 on layers13–21. All hooks ran exactly once. Layer coordinate exchange errors are 0.00223–0.00973 and orthogonal residual errors 0.00765–0.01781, consistent with bfloat16 implementation error. The literal operator therefore executed.
 
+The local lens checkpoint records 1,000 fitting prompts and source layers0–30 (`slop/logs/20260909_j_lens_dev/qwen_lens_checkpoint_metadata.log`); it does not record a Qwen workspace band. Layers13–21 were a compatible subset, not a producer-attested workspace selection. The paper supports full-band clamping for its models, but it defaults to Claude Sonnet4.5. This does not establish that 13–21 is the right Qwen band.
+
 The lens has category signal: Germany ranks above France in its candidate readout at layer13 (3 vs7) and layer19 (4 vs5). Yet the final Germany token worsened from rank14/logit16.375 to rank16/logit15.5625 while France stayed top1 and rose from21.5 to21.875. Alpha zero was exactly identical to clean. This rejects a missing-hook or transposed-coordinate explanation for this trial, while it does not identify the remaining source/target/producers mismatch.
 
 ## Next discriminating test
