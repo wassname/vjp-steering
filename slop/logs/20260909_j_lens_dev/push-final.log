@@ -1,2 +1,8 @@
 To https://github.com/wassname/vjp-steering.git
    73d4a8a..69f82d6  dev3 -> dev3
+=== closing ===
+--- git ls-remote origin dev3 (proves 58ecdaa on remote BEFORE this log commit):
+58ecdaa4272df2fe79d410a0ffd278220d504c68	refs/heads/dev3
+--- git status --short --branch (clean):
+## dev3...origin/dev3
+--- ordering note: the entries above verify 58ecdaa on origin/dev3 prior to the commit saving this file; that commit's own push output is appended below from the push terminal.
