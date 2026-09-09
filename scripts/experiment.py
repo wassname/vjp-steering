@@ -462,6 +462,17 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
             "semantic_directions": {"+C": swap_metadata, "-C": swap_metadata},
             "coefficient_semantics": "+C exchanges abrasive/flattering coordinates; -C extrapolates away from exchange",
         }, 0, f"paper_swap:{J_LENS_SWAP_SOURCE}<->{J_LENS_SWAP_TARGET}"
+    if args.method == "j_lens_unit_direction":
+        available = walk.resolve_layers(model, None)
+        if args.layers:
+            layers = tuple(int(layer) for layer in args.layers.split(",") if layer.strip() != "")
+            if not set(layers) <= set(available):
+                raise ValueError(f"j_lens_unit_direction requested layers {layers} not subset of available {available}")
+        else:
+            layers = (16,)  # default to single source-active L16 per evidence
+        from vjp_steering.vjp import j_lens_unit_direction
+        vector, meta = j_lens_unit_direction(model, tokenizer, layers)
+        return {"+C": vector, "-C": vector}, {"source_layers": list(layers), "semantic_directions": {"+C": meta, "-C": meta}, "coefficient_semantics": meta["coefficient_semantics"]}, 0, f"unit_direction:{meta['source_token']}<->{meta['target_token']}:L{','.join(map(str,layers))}"
 
     layers = (
         tuple(int(layer) for layer in args.layers.split(",") if layer)

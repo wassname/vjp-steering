@@ -13,7 +13,7 @@ J_LENS_CONCEPT_METHOD = "j_lens_concept"
 J_LENS_COMPONENTS_METHOD = "j_lens_concept_components"
 METHODS = (
     METHOD, SHARED_METHOD, SHARED_LAST_TOKEN_METHOD, J_LENS_SWAP_METHOD,
-    J_LENS_CONCEPT_METHOD, J_LENS_COMPONENTS_METHOD, "vjp_delta", "mean_diff", "random",
+    J_LENS_CONCEPT_METHOD, J_LENS_COMPONENTS_METHOD, "vjp_delta", "mean_diff", "random", "j_lens_unit_direction",
 )
 DEFAULT_EXPERIMENT_IDS = {
     METHOD: "mlp-up-left-right-formative-v7-eb-audited",
