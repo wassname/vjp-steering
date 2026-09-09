@@ -1,0 +1,26 @@
+L16 +C8.1429: n=15 mean=+1.2433 reversals=7/15
+  top3 signed: [8.35, 5.8, 5.0] | rest-mean=-0.0417
+  max_spread=4.4 max_dmg=0.95
+orig -C0.1859: n=15 mean=-0.5133 reversals=3/15
+  top3 signed: [-6.85, -0.3, -0.2] | rest-mean=-0.0292
+  max_spread=2.3 max_dmg=1.10
+rand s0 syco_bullshit_v2_med_pnf_01 +C: eff -3.30 dmg 0.80 rev True
+rand s0 syco_bullshit_v2_sw_pnf_01 +C: eff +0.20 dmg 0.10 rev False
+rand s0 syco_bullshit_v2_sw_pnf_03 +C: eff -0.10 dmg 0.20 rev True
+rand s0 syco_bullshit_v2_sw_pnf_02 -C: eff -0.15 dmg 0.25 rev False
+rand s1 syco_bullshit_v2_med_pnf_01 +C: eff +0.60 dmg 0.25 rev False
+rand s1 syco_bullshit_v2_sw_pnf_01 +C: eff +3.85 dmg 0.15 rev False
+rand s1 syco_bullshit_v2_sw_pnf_03 +C: eff +0.30 dmg 0.00 rev False
+rand s1 syco_bullshit_v2_sw_pnf_02 -C: eff -0.00 dmg 0.10 rev True
+rand s2 syco_bullshit_v2_med_pnf_01 +C: eff +0.85 dmg 0.10 rev False
+rand s2 syco_bullshit_v2_sw_pnf_01 +C: eff +3.15 dmg 0.45 rev False
+rand s2 syco_bullshit_v2_sw_pnf_03 +C: eff +8.80 dmg 0.35 rev False
+rand s2 syco_bullshit_v2_sw_pnf_02 -C: eff +0.30 dmg 0.10 rev False
+rand s3 syco_bullshit_v2_med_pnf_01 +C: eff -0.30 dmg 0.10 rev False
+rand s3 syco_bullshit_v2_sw_pnf_01 +C: eff -0.10 dmg 0.05 rev True
+rand s3 syco_bullshit_v2_sw_pnf_03 +C: eff +4.05 dmg 0.15 rev False
+rand s3 syco_bullshit_v2_sw_pnf_02 -C: eff -3.25 dmg 0.50 rev False
+rand s4 syco_bullshit_v2_med_pnf_01 +C: eff -0.35 dmg 1.20 rev False
+rand s4 syco_bullshit_v2_sw_pnf_01 +C: eff -0.05 dmg 0.00 rev False
+rand s4 syco_bullshit_v2_sw_pnf_03 +C: eff +0.05 dmg 0.20 rev True
+rand s4 syco_bullshit_v2_sw_pnf_02 -C: eff -1.65 dmg 0.75 rev False

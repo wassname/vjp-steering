@@ -757,6 +757,9 @@ def experiment(
     reuse_bare_from: str = "",
     coefficients_plus: str = "",
     coefficients_minus: str = "",
+    extension_id: str = "",
+    extension_plus: str = "",
+    extension_minus: str = "",
     concept_layers: str = "",
     j_lens_source: str = "concept",
     persona_direction: str = "j_gp16",
@@ -806,14 +809,26 @@ def experiment(
             "--coefficients-plus", coefficients_plus,
             "--coefficients-minus", coefficients_minus,
         ])
+    if extension_id or extension_plus or extension_minus:
+        argv.extend([
+            "--extension-id", extension_id,
+            "--extension-plus", extension_plus,
+            "--extension-minus", extension_minus,
+        ])
     if profile == "dev":
         argv.append("--dev")
     manifest = json.loads(run_experiment.remote(method, argv))
-    cell_count = (
-        len([value for value in coefficients_plus.split(",") if value])
-        + len([value for value in coefficients_minus.split(",") if value])
-        if profile == "full" else sum(len(values) for values in manifest["grid"].values())
-    )
+    if extension_id or extension_plus or extension_minus:
+        cell_count = (
+            len([value for value in extension_plus.split(",") if value.strip()])
+            + len([value for value in extension_minus.split(",") if value.strip()])
+        )
+    else:
+        cell_count = (
+            len([value for value in coefficients_plus.split(",") if value])
+            + len([value for value in coefficients_minus.split(",") if value])
+            if profile == "full" else sum(len(values) for values in manifest["grid"].values())
+        )
     print(f"EXPERIMENT_GPU_COMPLETE id={experiment_id} profile={profile} cells={cell_count}")
 
 

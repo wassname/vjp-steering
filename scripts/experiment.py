@@ -6,6 +6,7 @@ import json
 import math
 import os
 import random
+import re
 import subprocess
 import sys
 import tempfile
@@ -75,6 +76,66 @@ J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
 CONCEPT_METHODS = {"j_lens_concept", COMPONENT_PAIR_METHOD}
 
 
+def parse_extension_coeffs(text: str) -> list[float]:
+    return [float(value) for value in (text or "").split(",") if value.strip()]
+
+
+def validate_extension_args(method: str, dev: bool, ext_id: str, plus: str, minus: str) -> dict[str, list[float]] | None:
+    """Validate an explicit post-calibration extension (e.g. low_extension_0p40).
+
+    Unlike --coefficients-plus/minus (full-profile only, rejected in DEV by
+    reject_dev_supplied_grid), extension doses are deliberate additions to a frozen
+    calibrated experiment: they never touch grid/boundaries and are recorded under
+    manifest["extensions"][ext_id] with a stable identity. Returns the side map, or
+    None when no extension was requested.
+    """
+    if not (ext_id or (plus or "").strip() or (minus or "").strip()):
+        return None
+    if not ext_id or not re.match(r"^[A-Za-z0-9_]+$", ext_id):
+        raise ValueError("extension requires --extension-id matching ^[A-Za-z0-9_]+$")
+    if not dev:
+        raise ValueError("extension cells are DEV-only")
+    if method in CONCEPT_METHODS:
+        raise ValueError("extension cells currently support non-concept methods only")
+    coeffs = {"+C": parse_extension_coeffs(plus), "-C": parse_extension_coeffs(minus)}
+    if not any(coeffs.values()):
+        raise ValueError("extension id without extension coefficients")
+    if any(not math.isfinite(c) or c <= 0 for values in coeffs.values() for c in values):
+        raise ValueError("extension coefficients must be finite positive magnitudes")
+    return coeffs
+
+
+def record_extension_identity(manifest: dict, ext_id: str, side_coeffs: dict[str, list[float]]) -> dict[str, list[float]]:
+    """Merge requested doses into manifest["extensions"][ext_id] (monotonic union).
+
+    The rung identity is the union of all doses ever recorded under the id; doses are
+    never removed or renumbered, so a later partial run cannot redefine the rung.
+    """
+    ext = manifest.setdefault("extensions", {}).setdefault(ext_id, {"side_coeffs": {side: [] for side in ("+C", "-C")}})
+    for side in ("+C", "-C"):
+        have = list(ext["side_coeffs"].get(side, []))
+        for coeff in side_coeffs.get(side, []):
+            if not any(math.isclose(coeff, known, rel_tol=1e-12) for known in have):
+                have.append(coeff)
+        ext["side_coeffs"][side] = sorted(have)
+    return {side: list(ext["side_coeffs"][side]) for side in ("+C", "-C")}
+
+
+def extension_cells_complete(manifest: dict, root: Path, ext_id: str, side_coeffs: dict[str, list[float]], limit: int) -> bool:
+    cells = manifest.get("cells", {})
+    for side in ("+C", "-C"):
+        for coefficient in side_coeffs.get(side, []):
+            entry = cells.get(side, {}).get(f"{coefficient:.12g}")
+            if not entry or len(read_jsonl(root / entry["path"])) < limit:
+                return False
+    recorded = manifest.get("extensions", {}).get(ext_id, {}).get("side_coeffs", {})
+    for side in ("+C", "-C"):
+        for coefficient in side_coeffs.get(side, []):
+            if not any(math.isclose(coefficient, known, rel_tol=1e-12) for known in recorded.get(side, [])):
+                return False
+    return True
+
+
 def reject_dev_supplied_grid(method: str, dev: bool, plus: str, minus: str) -> None:
     """Fail fast when a caller supplies explicit DEV doses for a calibrated method.
 
@@ -123,6 +184,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--coefficients-plus", default="")
     parser.add_argument("--coefficients-minus", default="")
+    parser.add_argument("--extension-id", default="")
+    parser.add_argument("--extension-plus", default="")
+    parser.add_argument("--extension-minus", default="")
     parser.add_argument("--concept-layers", default="")
     parser.add_argument("--concept-application-mask", choices=("user_turn", "final_prompt"), default="user_turn")
     parser.add_argument("--concept-sides", default="+C,-C")
@@ -183,6 +247,7 @@ def parse_args() -> argparse.Namespace:
     if args.reuse_bare_from and not args.dev:
         raise ValueError("reused bare generations are DEV-only")
     reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
+    validate_extension_args(args.method, args.dev, args.extension_id, args.extension_plus, args.extension_minus)
     return args
 
 
@@ -1090,10 +1155,12 @@ def gpu_stage(args: argparse.Namespace) -> None:
         if manifest["grid"] != expanded_grid:
             manifest["grid"] = expanded_grid
             atomic_json(manifest_path(args.experiment_id), manifest)
+    extension = validate_extension_args(args.method, args.dev, args.extension_id, args.extension_plus, args.extension_minus)
     completed_cells = completed_profile_cell_count(args, manifest, root, profile_name, limit)
     if (
         completed_cells is not None
         and random_control_complete(manifest, root, args, limit)
+        and (extension is None or extension_cells_complete(manifest, root, args.extension_id, extension, limit))
         and not args.verify_extraction
     ):
         logger.info(
@@ -1238,6 +1305,59 @@ def gpu_stage(args: argparse.Namespace) -> None:
             manifest.setdefault("cells", {}).setdefault(side, {})[f"{coefficient:.12g}"] = cell
             atomic_json(manifest_path(args.experiment_id), manifest)
             generated_cells += 1
+    # Explicit post-calibration extension (e.g. low_extension_0p40). Cell body mirrors the
+    # grid loop above for non-concept methods; grid/boundaries are never touched, and the
+    # rung identity lives under manifest["extensions"][id] (monotonic union, never renumbered).
+    if extension is not None:
+        if "grid" not in manifest:
+            raise ValueError("extension requires the frozen calibrated grid first")
+        recorded_before = {
+            side: list(manifest.get("extensions", {}).get(args.extension_id, {}).get("side_coeffs", {}).get(side, []))
+            for side in ("+C", "-C")
+        }
+        for side in ("+C", "-C"):
+            for coefficient in extension[side]:
+                entry = manifest.get("cells", {}).get(side, {}).get(f"{coefficient:.12g}")
+                if entry is not None and len(read_jsonl(root / entry["path"])) >= limit and not any(
+                    math.isclose(coefficient, known, rel_tol=1e-12) for known in recorded_before[side]
+                ):
+                    raise ValueError(
+                        f"extension dose {side} C={coefficient:.12g} already measured outside {args.extension_id}; "
+                        "refusing to re-label a grid cell as extension rung"
+                    )
+        record_extension_identity(manifest, args.extension_id, extension)
+        atomic_json(manifest_path(args.experiment_id), manifest)
+        for side in ("+C", "-C"):
+            for coefficient in extension[side]:
+                key = f"{coefficient:.12g}"
+                entry = manifest.get("cells", {}).get(side, {}).get(key)
+                if entry is not None and len(read_jsonl(root / entry["path"])) >= limit:
+                    continue
+                records = extend_generation(
+                    cell_path(root, side, coefficient),
+                    rows,
+                    prompts,
+                    model,
+                    tokenizer,
+                    args,
+                    profile_name=profile_name,
+                    side=side,
+                    coefficient=coefficient,
+                    vector=vectors[side],
+                )
+                stats, reasons = generation_health(args, tokenizer, [record["text"] for record in records])
+                cell = {
+                    "coefficient": coefficient,
+                    "source_side": side,
+                    "behavior_target": args.behavior_target or None,
+                    "path": str(cell_path(root, side, coefficient).relative_to(root)),
+                    "rows": len(records),
+                    "health": stats,
+                    "breakdown_reasons": reasons,
+                }
+                manifest.setdefault("cells", {}).setdefault(side, {})[key] = cell
+                atomic_json(manifest_path(args.experiment_id), manifest)
+                generated_cells += 1
     if args.random_control_seed is not None:
         if args.method == COMPONENT_PAIR_METHOD:
             random_vector, layer_checks = random_gram_matched_component_vector(
@@ -1754,6 +1874,38 @@ def self_test() -> None:
     reject_dev_supplied_grid("mean_diff", True, "", "")
     reject_dev_supplied_grid("mean_diff", False, "0,1", "0,1")
     reject_dev_supplied_grid("j_lens_concept", True, "0,1", "")
+    # Extension mechanism: explicit DEV-only doses with stable rung identity (low_extension_0p40).
+    assert validate_extension_args("mean_diff", True, "", "", "") is None
+    assert validate_extension_args("mean_diff", True, "low_extension_0p40", "1.08", "0.86") == {"+C": [1.08], "-C": [0.86]}
+    for bad in [
+        ("mean_diff", True, "bad id", "1.0", ""),
+        ("mean_diff", False, "low_extension_0p40", "1.0", ""),
+        ("j_lens_concept", True, "low_extension_0p40", "1.0", ""),
+        ("mean_diff", True, "low_extension_0p40", "", ""),
+        ("mean_diff", True, "low_extension_0p40", "-1.0", ""),
+        ("mean_diff", True, "low_extension_0p40", "0", ""),
+    ]:
+        try:
+            validate_extension_args(*bad)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"extension validation must reject {bad}")
+    manifest = {}
+    first = record_extension_identity(manifest, "low_extension_0p40", {"+C": [1.08], "-C": [0.86]})
+    assert first == {"+C": [1.08], "-C": [0.86]}
+    second = record_extension_identity(manifest, "low_extension_0p40", {"+C": [1.08], "-C": [0.86]})
+    assert second == first  # re-run is idempotent, never renumbered
+    manifest["cells"] = {"+C": {"1.08": {"path": "cells/plus/c1p08.jsonl"}}, "-C": {}}
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "cells" / "plus").mkdir(parents=True)
+        (root / "cells" / "plus" / "c1p08.jsonl").write_text("{}\n" * DEV.cohort_size)
+        assert not extension_cells_complete(manifest, root, "low_extension_0p40", {"+C": [1.08], "-C": [0.86]}, DEV.cohort_size)
+        (root / "cells" / "minus").mkdir(parents=True)
+        (root / "cells" / "minus" / "c0p86.jsonl").write_text("{}\n" * DEV.cohort_size)
+        manifest["cells"]["-C"]["0.86"] = {"path": "cells/minus/c0p86.jsonl"}
+        assert extension_cells_complete(manifest, root, "low_extension_0p40", {"+C": [1.08], "-C": [0.86]}, DEV.cohort_size)
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
 
