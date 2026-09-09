@@ -1,0 +1,7 @@
+[
+  {"old_task_id": 819, "new_task_id": 831, "seed": 0, "after_success_of": 830, "timeout_seconds": 900, "automatic_retries": 0},
+  {"old_task_id": 820, "new_task_id": 832, "seed": 1, "after_success_of": 831, "timeout_seconds": 900, "automatic_retries": 0},
+  {"old_task_id": 821, "new_task_id": 833, "seed": 2, "after_success_of": 832, "timeout_seconds": 900, "automatic_retries": 0},
+  {"old_task_id": 822, "new_task_id": 834, "seed": 3, "after_success_of": 833, "timeout_seconds": 900, "automatic_retries": 0},
+  {"old_task_id": 823, "new_task_id": 835, "seed": 4, "after_success_of": 834, "timeout_seconds": 900, "automatic_retries": 0}
+]

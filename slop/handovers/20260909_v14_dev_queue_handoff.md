@@ -11,10 +11,10 @@
 | 816 → 825 | fixed-token J-lens adaptation, paired DEV generation | task 816 is stashed; task 825 is its one-at-a-time remote-dispatch replacement in existing `modal` group; pull artifact, validate exact shared bare and AB/BA cells, then judge/export |
 | 817 → 827 | mean_diff baseline, paired DEV generation | task 817 is stashed; task 827 is its one-at-a-time remote-dispatch replacement after task825 completed in 329 seconds and passed provenance checks |
 | 818 → 829 → 830 | vjp_delta baseline, paired DEV generation | task 818 is stashed; task829 failed before extraction because target layer33 is outside this 25-layer Qwen model. Task830 is one explicit corrected retry with layers6-21 and target22; it is not automatic retry behavior. |
-| 819–823 | five seeded random baseline generations | stashed until task 825 runtime/output/cost is inspected; all five are required before the random region renders |
+| 819–823 → 831–835 | five seeded random baseline generations | originals remain stashed. Replacement tasks are queued in existing one-slot `modal` group with success dependencies `830 → 831 → 832 → 833 → 834 → 835`; a predecessor failure stops the chain for inspection. |
 | 824 | vendored paper verbal-report smoke, raw prefill, two categories and one target each | remains queued on local `default`; inspect α=0 equality and rank movement; do not call it benchmark success |
 
-Original commands/statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`. Migration snapshots and task-ID mappings: `slop/logs/20260909_j_lens_dev/v14-modal-migration-{before,stashed,map,817-map,818-map}.json`. Task829 failure and its one corrected retry: `slop/logs/20260909_j_lens_dev/task829-full.log`, `task829-final-status.json`, and `task829-corrected-retry.json`.
+Original commands/statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`. Migration snapshots and task-ID mappings: `slop/logs/20260909_j_lens_dev/v14-modal-migration-{before,stashed,map,817-map,818-map,random-migration-map}.json`. Task829 failure and its one corrected retry: `slop/logs/20260909_j_lens_dev/task829-full.log`, `task829-final-status.json`, and `task829-corrected-retry.json`.
 Paper command/status: `slop/logs/20260909_j_lens_dev/v14-paper-reproduction-queue.json`.
 
 ## Monitoring
@@ -23,7 +23,7 @@ Process-managed `pqf` followers exist for 816–824. The first batch lost tracki
 
 ## Budget
 
-`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$8.00` conservatively reserved for at-most-eight 900-second serial H100 generations and `$1.00` for paired AB/BA judging; carried `$12.00` review reserve is separate. Tasks 825 and 827 completed in 329 and 411 seconds; no local Modal billing receipt exists, so the conservative reserve remains retained. J-lens task825 now has paired results; mean_diff task827 judging is task828.
+`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$9.00` conservatively reserves nine 900-second H100 attempts, including one corrected VJP retry, and `$2.00` reserves paired AB/BA judging. The carried `$12.00` review reserve remains separate. Tasks825 and827 completed in329 and411 seconds; task829 failed in29 seconds before extraction; local Modal CLI exposes no billing receipt, so reserves remain retained. J-lens task825 has paired results; mean_diff task827 judging is task828.
 
 ## Required provenance before rendering
 
@@ -31,6 +31,6 @@ Process-managed `pqf` followers exist for 816–824. The first batch lost tracki
 
 ## Next action
 
-When any generation task completes: save its full Pueue log; pull/inspect the experiment manifest and per-scenario records; use `scripts/judge.py --experiment-id ID --profile dev --refresh`, then `scripts/export.py --experiment-id ID --profile dev --all-generated`; record spending. When 816–823 all pass, run `scripts/render_dev_comparison.py`, inspect both PNGs, and request fresh-eyes image review.
+When any replacement generation task completes: save its full Pueue log; pull/inspect the experiment manifest and per-scenario records; use `scripts/judge.py --experiment-id ID --profile dev --refresh`, then `scripts/export.py --experiment-id ID --profile dev --all-generated`; record spending. When tasks825,827,830,831–835 all pass, run `scripts/render_dev_comparison.py`, inspect both PNGs, and request fresh-eyes image review. Task824 is separately blocked behind local default task802 and older queued work; `task824-scheduler-status.log` records that scheduler dependency.
 
 -- PI/OpenAI

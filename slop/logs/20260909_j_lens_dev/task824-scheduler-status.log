@@ -1,0 +1,162 @@
+2026-09-09T13:06:08+08:00
+group:
+Group "api" (4 parallel): running
+Group "default" (1 parallel): running
+Group "local_gpu" (1 parallel): running
+Group "modal" (1 parallel): running
+task824:
+{
+  "id": 824,
+  "group": "default",
+  "command": "uv run python scripts/reproduce_paper_j_lens.py --source-revision fc30b122bfe28abfc1afa1fabc27a75623b8bc1b --prompt-mode raw --coefficient 2 --limit-categories 2 --limit-targets 1 --output outputs/experiments/v14-paper-native-verbal-smoke/results.json",
+  "label": "why: distinguish paper-native J-lens operator fidelity from fixed-token transfer; resolve: verify raw verbal-report alpha0 identity and swapped-candidate rank movement on a small vendored subset",
+  "path": "/workspace/2026/jspace/j-steer_pub",
+  "status": {
+    "Queued": {
+      "enqueued_at": "2026-09-09T12:26:30.478604274+08:00"
+    }
+  }
+}
+default_running:
+[
+  {
+    "id": 802,
+    "path": "/workspace/2026/mfv/manifold-steer",
+    "label": "why: logit gain may only weaken effective steering; resolve: natural-choice behavior bounds and full512 coherence across finer paired doses",
+    "status": {
+      "Running": {
+        "enqueued_at": "2026-09-09T07:00:01.684753108+08:00",
+        "start": "2026-09-09T12:26:43.099678046+08:00"
+      }
+    }
+  }
+]
+default_queued_ahead_of_824:
+[
+  {
+    "id": 767,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: selected component may omit ant readout information; resolve: compare full-state J action without full matrix",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:36:14.349489250+08:00"
+      }
+    }
+  },
+  {
+    "id": 768,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on dog legs; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:57.301057325+08:00"
+      }
+    }
+  },
+  {
+    "id": 769,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on dog name; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:57.518018760+08:00"
+      }
+    }
+  },
+  {
+    "id": 770,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on dog property; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:57.740040876+08:00"
+      }
+    }
+  },
+  {
+    "id": 771,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on ant legs; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:57.987386109+08:00"
+      }
+    }
+  },
+  {
+    "id": 772,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on ant name; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:58.231236887+08:00"
+      }
+    }
+  },
+  {
+    "id": 773,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: validate common L22-24 C2 on ant property; resolve: correct clean controls and consistent transfer on plain questions",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:38:58.435527993+08:00"
+      }
+    }
+  },
+  {
+    "id": 775,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: selected dog band may just cause generic changes; resolve: eight random spans matched per-token edit magnitude",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:41:03.538541658+08:00"
+      }
+    }
+  },
+  {
+    "id": 776,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: selected ant band may just cause generic changes; resolve: eight random spans matched per-token edit magnitude",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T13:41:04.114346905+08:00"
+      }
+    }
+  },
+  {
+    "id": 778,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: dog clean controls may fail from assistant-prefilled questions; resolve: user-role and generation-boundary repair must give correct clean answers before assessing fixed L22-24 C2 transfer",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T15:16:24.724372591+08:00"
+      }
+    }
+  },
+  {
+    "id": 779,
+    "path": "/workspace/2026/suppressed-activations",
+    "label": "why: ant clean controls may fail from assistant-prefilled questions; resolve: user-role and generation-boundary repair must give correct clean answers before assessing fixed L22-24 C2 transfer",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-08T15:16:24.923827832+08:00"
+      }
+    }
+  },
+  {
+    "id": 805,
+    "path": "/workspace/2026/mfv/manifold-steer",
+    "label": "why: learned flow recovery may erase steering or miss fixed-direction corruption; resolve: held-out recovery, clean drift and full512-token flow/AE/PCA comparisons before the tradeoff test",
+    "status": {
+      "Queued": {
+        "enqueued_at": "2026-09-09T07:43:26.914477428+08:00"
+      }
+    }
+  }
+]
+task824_log_bytes:
+0 /tmp/j-lens-task824-raw.log
+0 /tmp/j-lens-task824-log-stderr.log
+0 total
+resumption_mechanism:
+default is running at parallelism 1. Task824 has no log because it has not started; it waits behind running task802 and queued default tasks with lower IDs. No queue pause or pueue fault was observed. It will start automatically only after preceding non-stashed default tasks complete; no task was moved or force-started.

@@ -9,9 +9,9 @@
   "carried_known_and_reserve_usd": "12.63161240",
   "remaining_before_v14_allocation_usd": "27.36838760",
   "v14_dev_repair_allocation_usd": "20.00",
-  "v14_remote_generation_reserve_usd": "8.00",
-  "v14_paired_judging_reserve_usd": "1.00",
-  "v14_available_after_remote_and_judging_reserve_usd": "11.00",
+  "v14_remote_generation_reserve_usd": "9.00",
+  "v14_paired_judging_reserve_usd": "2.00",
+  "v14_available_after_remote_and_judging_reserve_usd": "9.00",
   "v14_remaining_unallocated_usd": "7.36838760",
   "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
@@ -21,11 +21,16 @@
     "automatic_retries": 0,
     "new_gpu_queue": 0
   },
-  "task825": {
-    "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2",
-    "terminal_duration_seconds": 329,
-    "status": "success",
-    "receipt": "No Modal CLI billing receipt is available. The $8.00 serial-generation reserve remains unchanged rather than inventing a charge."
-  },
-  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. $8.00 is a conservative ceiling for at-most-eight serial remote H100 generation tasks, derived from task800's observed $0.09969626 for about 101 seconds and a 900-second maximum per task; it is not a receipt. Task825 completed in 329 seconds; its provider charge is unavailable through the local Modal CLI, so the conservative reserve remains retained. Reserve $1.00 inside the v14 allocation for paired AB/BA judging before the first scored run. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "remote_attempts": [
+    {"task": 825, "modal_app": "ap-pbDY4v9jQ4WE7alm2sz7S2", "duration_seconds": 329, "status": "success"},
+    {"task": 827, "modal_app": "ap-fsfAJ1gVgQsFWqwrbRQDuv", "duration_seconds": 411, "status": "success"},
+    {"task": 829, "modal_app": "ap-UW9LhYxTxQ3o9bjRbwBy71", "duration_seconds": 29, "status": "failed_before_extraction", "cause": "target layer 33 outside Qwen layers [0,25)"},
+    {"task": 830, "status": "running", "role": "one explicit corrected VJP-delta retry"},
+    {"tasks": [831, 832, 833, 834, 835], "status": "reserved", "role": "five serial random seeds after successful task830"}
+  ],
+  "judging_attempts": [
+    {"task": 826, "status": "success", "missing": 0, "api_calls": 403},
+    {"task": 828, "status": "running", "role": "mean_diff paired AB/BA"}
+  ],
+  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. $9.00 is a conservative ceiling for nine remote attempts: eight intended serial H100 generations plus the explicit corrected VJP retry, derived from task800's observed $0.09969626 for about 101 seconds and a 900-second maximum per attempt; it is not a receipt. $2.00 is reserved for paired AB/BA judging. Task825, task827, and failed task829 have no provider billing receipts available through the local Modal CLI, so these reserves remain retained rather than substituting estimates. These $11.00 v14 reserves use only the approved $20.00 v14 allocation; the carried $12.00 review reserve remains separate. Record each provider receipt if one becomes available. Stop before total v14 committed cost and reserve exceeds $20.00."
 }
