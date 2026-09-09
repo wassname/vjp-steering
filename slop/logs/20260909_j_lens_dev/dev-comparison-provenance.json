@@ -16,7 +16,8 @@
     "source_experiment": "j-lens-paper-native-sycophancy-v1",
     "path": "outputs/experiments/j-lens-paper-native-sycophancy-v1/bare.jsonl",
     "sha256": "2c2e2fa1efa51290841877adbb1b02edb053cc99e911d9e06e973193442fdbeb",
-    "selection": "ordered first 15 records after exact scenario-ID match",
+    "selection": "ordered scenario-ID match; each selected record has profile=dev, status=DEV, side='', and coefficient=0.0",
+    "selected_records_canonical_sha256": "da588b04d6a15488c9e6734ae0174400a4c7d8286bed7266a9ee5850b81d5460",
     "source_manifest_sha256": "562fcc44ffb473453f5985a96ec479af0a7e9718419e830f90414a933aec8b3e"
   },
   "generation": {
