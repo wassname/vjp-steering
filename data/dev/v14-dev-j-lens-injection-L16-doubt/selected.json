@@ -1,0 +1,27 @@
+{
+  "experiment_id": "v14-dev-j-lens-injection-L16-doubt",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 8.0,
+      "candidates_descending": [
+        8.0,
+        4.0,
+        2.0,
+        1.0
+      ],
+      "effect": 0.7433333333333333,
+      "off_axis_perturbation": 0.39999999999999997
+    },
+    "-C": {
+      "selected_C": 4.0,
+      "candidates_descending": [
+        4.0,
+        2.0,
+        1.0
+      ],
+      "effect": -1.16,
+      "off_axis_perturbation": 0.2833333333333333
+    }
+  }
+}

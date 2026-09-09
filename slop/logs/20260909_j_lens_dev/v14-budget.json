@@ -268,6 +268,13 @@
    "duration_seconds": 126,
    "status": "success",
    "role": "paper injection L16: explicit grid 1,2,4,8,16 per side (10 cells) + reused bare, per-side vectors flattering/abrasive, no calibration search"
+  },
+  {
+   "task": 918,
+   "modal_app": "ap-4XcDphHs13pDlsWPOTKbIt",
+   "duration_seconds": 105,
+   "status": "success",
+   "role": "paper injection L16 doubtful/trusting: explicit grid 1,2,4,8,16 per side (10 cells) + reused bare, per-side vectors trusting/doubtful, no search"
   }
  ],
  "judging_attempts": [
@@ -452,6 +459,25 @@
    "task": "cost-query-inj",
    "status": "recorded",
    "role": "injection judging actual <=$0.0497 over 294 keys (each exactly one positive record); diagnostic total ~$0.17 vs $0.75 ceiling",
+   "model": "deepseek/deepseek-v4-flash-0731"
+  },
+  {
+   "task": 921,
+   "status": "success",
+   "cached": 19,
+   "api_calls": 275,
+   "missing": 0,
+   "role": "injection doubtful/trusting AB/BA judgments (10 cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": "cost-query-doubt",
+   "status": "recorded",
+   "role": "doubt judging actual $0.0446 over 294 keys (each one positive record); diagnostic total ~$0.15 vs $0.50 authorized ceiling",
    "model": "deepseek/deepseek-v4-flash-0731"
   }
  ],

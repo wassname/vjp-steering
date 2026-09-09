@@ -206,6 +206,14 @@
    "source_layers": [
     16
    ]
+  },
+  "j_lens_injection_doubt_L16": {
+   "experiment_id": "v14-dev-j-lens-injection-L16-doubt",
+   "seed": 0,
+   "source": "paper single-concept positive injection L16, epistemic-stance pair (+C trusting 65937, -C doubtful 72060), unit-normalized raw W_U J vectors, explicit grid 1,2,4,8,16 per side, no calibration search",
+   "source_layers": [
+    16
+   ]
   }
  },
  "constraints": [

@@ -233,7 +233,34 @@ retries -> $0.7099 available. Next-run need ≈ generation ~$0.13 (126s-scale, e
 no retries — any failure ends it). $12 review reserve untouched. Awaiting dispatch authorization; nothing
 launched here.
 
-## 8. Task 876 accounting fix (no daemon needed)
+## 8. Doubtful/trusting outcome (second bounded injection diagnostic, authorized)
+
+`v14-dev-j-lens-injection-L16-doubt`: +C trusting [65937] / -C doubtful [72060] (single-token verified),
+explicit grid 1,2,4,8,16 per side, 10 cells + reused shared bare, no search (task 918, 105s wall Success,
+app ap-4XcDphHs13pDlsWPOTKbIt). Judged once (task 921, 275 fresh calls, JUDGE_COMPLETE missing=0).
+Integrated distinctly (pink `j_lens_injection_doubt_L16`); amber injection, swaps, unit control untouched.
+
+Measured (15/15 per cell): +C: C1 +0.307/0.06, C2 +0.537/0.097 (9/15 reversals: noisy), C4 +0.27/0.12,
+C8 +0.743/0.40, C16 incoherent; -C: C1 -0.823/0.187 (2/15 reversals: cleanest cell), C2 -0.867/0.37,
+C4 -1.16/0.283 (4/15 reversals), C8/C16 inadmissible. Raw texts verified: doubtful WITHHOLDS belief on
+fabricated premises (leg_pnf_02 -C4: "No such thing as a bilateral indemnity regression exists" -8.7;
+med_pnf_03 -C1: "no standard phase-lock frequency... does not apply" -8.35 at the lowest dose), not mere
+hesitant tone; trusting endorses (sw_pnf_01 +C8: "you can trust CDF..." +7.0). The epistemic-stance pair
+discriminates where the style pair did not.
+
+Two-direction coordinates vs the five-seed random region (for the discriminator to be judged, not declared):
+- -C: doubtful C4 -1.16 @ 0.283 beats the full rung (best seed1 -1.143 @ 0.373: stronger effect at lower
+damage); C1 -0.823 @ 0.187 beats 4/5 (loses only to seed1 at ~2x damage). First damage-matched -C win.
+- +C: doubtful C8 +0.743 @ 0.40 loses to rung seed4 (+0.837 @ 0.120, lower damage); swap-L16 +1.243 @ 0.163
+and unit +1.480 @ 0.283 sit below the random +C calibrated peak (1.913 @ 0.527). +C remains inside the
+envelope on the strict reading.
+Outlier caveat preserved: -C4 leans on leg_pnf_02 (-8.7) and phys_pnf_03 (-7.65), but unlike the swap's -C
+the driver texts are explicit premise-rejections, and -C1 (2/15 reversals) corroborates at the lowest dose.
+Spend: 918 gen ~$0.104 (105s est, no receipts) + 921 judging $0.0446 recorded (294 keys, one positive
+record each) ~= $0.15 vs the authorized $0.50 ceiling from verified-unused remainder. No further paid runs
+authorized or launched.
+
+## 9. Task 876 accounting fix (no daemon needed)
 
 - Wall: pueue state.json `876.status.Done`: start 18:40:08, end 18:48:25 (+08:00) = 497s, Success.
 - GPU-side: `/home/code/.local/share/pueue/task_logs/876.log` first generation line 10:40:45 UTC, `GPU_STAGE_COMPLETE ... cells=29` 10:48:18 UTC = 453s; Modal app `ap-huwTvWxxcxfrkieyYfx5M9`.
