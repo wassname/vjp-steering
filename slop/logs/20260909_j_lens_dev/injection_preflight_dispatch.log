@@ -1,0 +1,12 @@
+PREFLIGHT grid: magnitudes 1,2,4,8,16 per semantic side (10 nonzero cells)
+PREFLIGHT frozen cohort: c0b64ebf1713 (15/15 scenarios)
+PREFLIGHT generation model: Qwen/Qwen3.5-4B
+PREFLIGHT generation dtype: bfloat16
+PREFLIGHT generation max_length: 384
+PREFLIGHT generation max_new_tokens: 512
+PREFLIGHT manifest: explicit grid recorded verbatim, no search trace, refresh-stable
+PREFLIGHT argv: exact dispatch command accepted (parse_args, no side effects)
+PREFLIGHT budget: generation bound 390s -> $0.38; judging bound 300 keys -> $0.06; total bound $0.44
+PREFLIGHT ceiling: $0.75 <= $1.0096 verified-unused judging reserve - $0.25 retained for unknown retries = $0.7596; $12 review reserve untouched
+PREFLIGHT ALL CHECKS PASS
+DISPATCH-CMD: uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method j_lens_injection --layers 16 --seed 0 --experiment-id v14-dev-j-lens-injection-L16 --explicit-grid-plus 1,2,4,8,16 --explicit-grid-minus 1,2,4,8,16

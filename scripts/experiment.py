@@ -80,6 +80,30 @@ def parse_extension_coeffs(text: str) -> list[float]:
     return [float(value) for value in (text or "").split(",") if value.strip()]
 
 
+def validate_explicit_grid(method: str, dev: bool, plus: str, minus: str) -> dict[str, list[float]] | None:
+    """Validate an explicit bounded DEV dose grid that skips calibration search.
+
+    For a small prespecified diagnostic (e.g. injection magnitudes 1,2,4,8,16),
+running search_boundary would spend many unneeded cells. Unlike the rejected
+--coefficients-plus/minus (full-profile semantics, silently ignored in DEV),
+the explicit grid is recorded verbatim in manifest["grid"] with boundaries
+marked as explicit (no C_approx search trace), so provenance stays honest.
+Returns the side map, or None when not requested.
+    """
+    if not ((plus or "").strip() or (minus or "").strip()):
+        return None
+    if not dev:
+        raise ValueError("explicit DEV grid is DEV-only")
+    if method in CONCEPT_METHODS:
+        raise ValueError("explicit grid currently supports non-concept methods only")
+    grid = {"+C": parse_extension_coeffs(plus), "-C": parse_extension_coeffs(minus)}
+    if not all(grid.values()):
+        raise ValueError("explicit grid requires at least one dose per side")
+    if any(not math.isfinite(c) or c <= 0 for values in grid.values() for c in values):
+        raise ValueError("explicit grid doses must be finite positive magnitudes")
+    return grid
+
+
 def validate_extension_args(method: str, dev: bool, ext_id: str, plus: str, minus: str) -> dict[str, list[float]] | None:
     """Validate an explicit post-calibration extension (e.g. low_extension_0p40).
 
@@ -187,6 +211,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extension-id", default="")
     parser.add_argument("--extension-plus", default="")
     parser.add_argument("--extension-minus", default="")
+    parser.add_argument("--explicit-grid-plus", default="")
+    parser.add_argument("--explicit-grid-minus", default="")
     parser.add_argument("--concept-layers", default="")
     parser.add_argument("--concept-application-mask", choices=("user_turn", "final_prompt"), default="user_turn")
     parser.add_argument("--concept-sides", default="+C,-C")
@@ -248,6 +274,7 @@ def parse_args() -> argparse.Namespace:
         raise ValueError("reused bare generations are DEV-only")
     reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
     validate_extension_args(args.method, args.dev, args.extension_id, args.extension_plus, args.extension_minus)
+    validate_explicit_grid(args.method, args.dev, args.explicit_grid_plus, args.explicit_grid_minus)
     return args
 
 
@@ -292,7 +319,9 @@ def signed_coefficient(side: str, coefficient: float) -> float:
 
 
 def applied_coefficient(method: str, side: str, coefficient: float) -> float:
-    if method == COMPONENT_PAIR_METHOD:
+    if method in (COMPONENT_PAIR_METHOD, "j_lens_injection"):
+        # Injection semantics live in WHICH concept vector is applied per side, so both
+        # sides use positive magnitudes (paper: positive alpha injects the concept).
         return coefficient
     return signed_coefficient(side, coefficient)
 
@@ -555,6 +584,24 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         from vjp_steering.vjp import j_lens_unit_direction
         vector, meta = j_lens_unit_direction(model, tokenizer, layers)
         return {"+C": vector, "-C": vector}, {"source_layers": list(layers), "semantic_directions": {"+C": meta, "-C": meta}, "coefficient_semantics": meta["coefficient_semantics"]}, 0, f"unit_direction:{meta['source_token']}<->{meta['target_token']}:L{','.join(map(str,layers))}"
+    if args.method == "j_lens_injection":
+        available = walk.resolve_layers(model, None)
+        if args.layers:
+            layers = tuple(int(layer) for layer in args.layers.split(",") if layer.strip() != "")
+            if not set(layers) <= set(available):
+                raise ValueError(f"j_lens_injection requested layers {layers} not subset of available {available}")
+        else:
+            layers = (16,)  # same single source-active L16 as the swap/unit comparisons
+        from vjp_steering.vjp import j_lens_injection
+        vectors, metas = {}, {}
+        for side, concept in (("+C", J_LENS_SWAP_TARGET), ("-C", J_LENS_SWAP_SOURCE)):
+            vector, meta = j_lens_injection(model, tokenizer, layers, concept_token=concept)
+            vectors[side], metas[side] = vector, meta
+        return vectors, {
+            "source_layers": list(layers),
+            "semantic_directions": metas,
+            "coefficient_semantics": "positive C injects the side concept (+C flattering, -C abrasive); persona choice is our adaptation, single-concept injection is paper behavior",
+        }, 0, f"paper_injection:+C={J_LENS_SWAP_TARGET}/-C={J_LENS_SWAP_SOURCE}:L{','.join(map(str,layers))}"
 
     layers = (
         tuple(int(layer) for layer in args.layers.split(",") if layer)
@@ -1150,6 +1197,8 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if args.dev and "boundaries" in manifest:
         if args.method in CONCEPT_METHODS:
             expanded_grid = concept_grid(args)
+        elif any("explicit_grid" in manifest["boundaries"][side] for side in ("+C", "-C")):
+            expanded_grid = {side: list(manifest["boundaries"][side]["explicit_grid"]) for side in ("+C", "-C")}
         else:
             expanded_grid = {side: dev_grid(manifest["boundaries"][side]) for side in ("+C", "-C")}
         if manifest["grid"] != expanded_grid:
@@ -1203,7 +1252,20 @@ def gpu_stage(args: argparse.Namespace) -> None:
     if "grid" not in manifest:
         if not args.dev and not args.selected_empirical_candor_full:
             raise RuntimeError("full mode requires its automatic dev stage first")
-        if args.method in CONCEPT_METHODS:
+        explicit = validate_explicit_grid(args.method, args.dev, args.explicit_grid_plus, args.explicit_grid_minus)
+        if explicit is not None:
+            boundaries = {
+                side: {
+                    "meaning": "explicit bounded diagnostic grid, no calibration search",
+                    "explicit_grid": sorted(values),
+                    "C_approx": max(values),
+                    "C_hi": max(values),
+                    "trace": [],
+                }
+                for side, values in explicit.items()
+            }
+            grid = {side: sorted(values) for side, values in explicit.items()}
+        elif args.method in CONCEPT_METHODS:
             meanings = (
                 {"+C": "order coordinates toward positive component", "-C": "order coordinates toward negative component"}
                 if args.method == COMPONENT_PAIR_METHOD
@@ -1906,6 +1968,27 @@ def self_test() -> None:
         (root / "cells" / "minus" / "c0p86.jsonl").write_text("{}\n" * DEV.cohort_size)
         manifest["cells"]["-C"]["0.86"] = {"path": "cells/minus/c0p86.jsonl"}
         assert extension_cells_complete(manifest, root, "low_extension_0p40", {"+C": [1.08], "-C": [0.86]}, DEV.cohort_size)
+    # Explicit bounded DEV grid: small prespecified diagnostics skip calibration search.
+    assert validate_explicit_grid("mean_diff", True, "", "") is None
+    assert validate_explicit_grid("mean_diff", True, "1,2,4,8,16", "1,2,4,8,16") == {
+        "+C": [1.0, 2.0, 4.0, 8.0, 16.0], "-C": [1.0, 2.0, 4.0, 8.0, 16.0]}
+    for bad in [
+        ("mean_diff", True, "1,2", ""),
+        ("mean_diff", True, "", "1"),
+        ("mean_diff", False, "1", "1"),
+        ("j_lens_concept", True, "1", "1"),
+        ("mean_diff", True, "0", "1"),
+        ("mean_diff", True, "-2", "1"),
+    ]:
+        try:
+            validate_explicit_grid(*bad)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"explicit grid validation must reject {bad}")
+    assert applied_coefficient("j_lens_injection", "-C", 2.0) == 2.0
+    assert applied_coefficient("j_lens_injection", "+C", 2.0) == 2.0
+    assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
 

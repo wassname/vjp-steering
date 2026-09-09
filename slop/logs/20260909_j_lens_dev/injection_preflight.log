@@ -1,0 +1,3 @@
+PASS extraction: production j_lens_injection returns distinct unit vectors per side
+PASS apply: grid 1,2,4,8,16 positive amplitudes, C=0 no-op, dtype/shape, seq_len=1 skip
+ALL TESTS PASS

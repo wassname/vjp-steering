@@ -120,6 +120,33 @@ class JLensUnitDirection:
 
 @register_config
 @dataclass
+class JLensInjectionC(SteeringConfig):
+    method: str = "j_lens_injection"
+    concept_token: str = "flattering"
+    concept_token_id: int = -1
+
+
+@register
+class JLensInjection:
+    """Paper single-concept injection: h + C * v_hat (positive C injects).
+
+    Same raw W_U J vectors as the swap basis, unit-normalized only so C has
+explicit dose units. Semantic direction comes from WHICH concept vector is
+injected (persona choice = our adaptation), not from the coefficient sign:
+both DEV sides use positive C. Same L16/all-prefill/decode-skip settings.
+    """
+    name = "j_lens_injection"
+
+    @staticmethod
+    def apply(_mod, _x, y, shared, _stacked, cfg: JLensInjectionC):
+        if y.shape[-2] == 1:
+            return y
+        v_hat = shared["v"].to(device=y.device, dtype=y.dtype)
+        return y + cfg.coeff * v_hat
+
+
+@register_config
+@dataclass
 class VjpMlpUpLeftRightShrinkC(VjpDeltaC):
     method: str = "vjp_mlp_up_left_right_shrink"
 
@@ -542,6 +569,44 @@ def j_lens_coordinate_swap(
         "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
         "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_metadata,
     }
+
+
+def j_lens_injection(
+    model,
+    tokenizer,
+    layers: tuple[int, ...],
+    *,
+    concept_token: str,
+    lens_file: Path | None = None,
+) -> tuple[Vector, dict[str, object]]:
+    """Paper single-concept injection vector: unit-normalized raw W_U J row.
+
+    Extraction reuses the coordinate-basis path (single-token assert, raw
+unembedding @ J, no cohort loading, no extra forwards). C is step size in
+residual units along the unit concept vector; C=0 is the bare no-op.
+    """
+    lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
+    unembedding = model.lm_head.weight.detach().float().cpu()
+    ids = tokenizer(" " + concept_token.strip(), add_special_tokens=False).input_ids
+    if len(ids) != 1:
+        raise ValueError(f"injection needs single token for {concept_token!r}")
+    concept_id = ids[0]
+    layer_state, layer_metadata = {}, {}
+    for layer in layers:
+        v = unembedding[concept_id] @ checkpoint["J"][layer].float()
+        v_hat = v / v.norm()
+        if not torch.isfinite(v_hat).all() or v_hat.norm() == 0:
+            raise ValueError(f"nonfinite injection vector at layer {layer}")
+        layer_state[layer] = {"v": v_hat}
+        layer_metadata[str(layer)] = {"v_norm": float(v.norm().item())}
+    vector = Vector(JLensInjectionC(layers=layers, concept_token=concept_token, concept_token_id=concept_id),
+                    layer_state, {layer: {} for layer in layers})
+    return vector, {"operator": "single_concept_positive_injection",
+                     "equation": "h + C * v_hat where v_hat = normalize(W_U[id] @ J) (paper: h <- h + alpha v_t, positive alpha injects)",
+                     "coefficient_semantics": "C is step size in residual units, always positive; semantic direction is the injected concept, not the coefficient sign",
+                     "source_layers": list(layers), "concept_token": concept_token, "concept_token_id": concept_id,
+                     "lens_file": str(lens_file), "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(),
+                     "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_metadata}
 
 
 def j_lens_unit_direction(

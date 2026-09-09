@@ -760,6 +760,8 @@ def experiment(
     extension_id: str = "",
     extension_plus: str = "",
     extension_minus: str = "",
+    explicit_grid_plus: str = "",
+    explicit_grid_minus: str = "",
     concept_layers: str = "",
     j_lens_source: str = "concept",
     persona_direction: str = "j_gp16",
@@ -815,10 +817,19 @@ def experiment(
             "--extension-plus", extension_plus,
             "--extension-minus", extension_minus,
         ])
+    if explicit_grid_plus or explicit_grid_minus:
+        argv.extend([
+            "--explicit-grid-plus", explicit_grid_plus,
+            "--explicit-grid-minus", explicit_grid_minus,
+        ])
     if profile == "dev":
         argv.append("--dev")
     manifest = json.loads(run_experiment.remote(method, argv))
-    if extension_id or extension_plus or extension_minus:
+    explicit = [value for value in explicit_grid_plus.split(",") if value.strip()] + [
+        value for value in explicit_grid_minus.split(",") if value.strip()]
+    if explicit:
+        cell_count = len(explicit)
+    elif extension_id or extension_plus or extension_minus:
         cell_count = (
             len([value for value in extension_plus.split(",") if value.strip()])
             + len([value for value in extension_minus.split(",") if value.strip()])
