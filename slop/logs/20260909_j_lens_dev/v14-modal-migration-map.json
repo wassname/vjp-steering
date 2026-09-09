@@ -1,0 +1,8 @@
+{
+  "old_task_id": 816,
+  "new_task_id": 825,
+  "group": "modal",
+  "reason": "Pueue cannot change a task group; old task is stashed before this identical remote-dispatch command was created.",
+  "timeout_seconds": 900,
+  "automatic_retries": 0
+}

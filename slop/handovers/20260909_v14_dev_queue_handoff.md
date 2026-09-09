@@ -2,19 +2,19 @@
 
 ## Current decision
 
-`default` resumed at parallelism 1 on 2026-09-09T12:18:23+08:00. Task 815 from `/workspace/2026/LUCID3_wikit` remained running. The queue serializes all later tasks. No task was force-started.
+`default` resumed at parallelism 1 on 2026-09-09T12:18:23+08:00. Task 815 from `/workspace/2026/LUCID3_wikit` remained running. It serializes only local work; the `modal run` commands for 816–823 dispatch H100 work through `run_experiment.remote` and do not allocate local CUDA. No task was force-started.
 
 ## Queued work
 
 | tasks | work | next action after success |
 |---|---|---|
-| 816 | fixed-token J-lens adaptation, paired DEV generation | pull artifact; validate exact shared bare and AB/BA cells; judge/export |
-| 817 | mean_diff baseline, paired DEV generation | same |
-| 818 | vjp_delta baseline, paired DEV generation | same |
-| 819–823 | five seeded random baseline generations | same; all five are required before the random region renders |
-| 824 | vendored paper verbal-report smoke, raw prefill, two categories and one target each | inspect α=0 equality and rank movement; do not call it benchmark success |
+| 816 → 825 | fixed-token J-lens adaptation, paired DEV generation | task 816 is stashed; task 825 is its one-at-a-time remote-dispatch replacement in existing `modal` group; pull artifact, validate exact shared bare and AB/BA cells, then judge/export |
+| 817 | mean_diff baseline, paired DEV generation | stashed until task 825 runtime/output/cost is inspected |
+| 818 | vjp_delta baseline, paired DEV generation | stashed until task 825 runtime/output/cost is inspected |
+| 819–823 | five seeded random baseline generations | stashed until task 825 runtime/output/cost is inspected; all five are required before the random region renders |
+| 824 | vendored paper verbal-report smoke, raw prefill, two categories and one target each | remains queued on local `default`; inspect α=0 equality and rank movement; do not call it benchmark success |
 
-Exact commands and queued statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`.
+Original commands/statuses for 816–823: `slop/logs/20260909_j_lens_dev/v14-reconcile-122445.log`. Migration snapshots and task-ID mapping: `slop/logs/20260909_j_lens_dev/v14-modal-migration-{before,stashed,map}.json`.
 Paper command/status: `slop/logs/20260909_j_lens_dev/v14-paper-reproduction-queue.json`.
 
 ## Monitoring
@@ -23,7 +23,7 @@ Process-managed `pqf` followers exist for 816–824. The first batch lost tracki
 
 ## Budget
 
-`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$1.00` reserved for paired AB/BA judging; carried `$12.00` review reserve is separate. No v14 scored result exists yet. Reconcile each Modal and judge cost before scheduling more work.
+`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$8.00` conservatively reserved for at-most-eight 900-second serial H100 generations and `$1.00` for paired AB/BA judging; carried `$12.00` review reserve is separate. No v14 scored result exists yet. Reconcile task 825's Modal cost before moving any later remote task.
 
 ## Required provenance before rendering
 
