@@ -1,0 +1,8 @@
+# git push origin dev3 - recorded 2026-09-09T16:50+08:00 after rebase drop of ac0fdd6
+# Command: git push origin dev3
+To https://github.com/wassname/vjp-steering.git
+   1494acc..3d49a8e  dev3 -> dev3
+# Verified:
+git ls-remote origin dev3: 3d49a8e4a1bfec2638df0b227d57ed4832351628 refs/heads/dev3
+git status --short --branch: ## dev3...origin/dev3 (up to date, no ahead, no changed files after rebase audit commit)
+git log origin/dev3 -1 --oneline: 3d49a8e Fix J-lens readout to vendor-normalized norm+lm_head; keep raw only for comparison
