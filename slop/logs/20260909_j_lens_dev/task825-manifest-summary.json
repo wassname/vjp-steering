@@ -1,0 +1,247 @@
+{
+  "experiment_id": "v14-dev-j-lens-swap",
+  "method": "j_lens_swap",
+  "profiles": {
+    "dev": {
+      "status": "DEV",
+      "cohort_size": 15,
+      "generated": true
+    }
+  },
+  "config": {
+    "model": "Qwen/Qwen3.5-4B",
+    "dtype": "bfloat16",
+    "n_pairs": 200,
+    "batch_size": 32,
+    "extract_batch_size": 8,
+    "max_length": 384,
+    "max_new_tokens": 512,
+    "j_lens_source": "concept",
+    "persona_direction": "j_gp16",
+    "component_empirical_candor": false,
+    "selected_empirical_candor_full": false,
+    "source_side": null,
+    "behavior_target": null
+  },
+  "grid": {
+    "+C": [
+      0.7946519804625046,
+      0.8954885007105876,
+      0.9963250209586706,
+      1.0,
+      1.0971615412067537,
+      1.1979980614548367,
+      1.2040181522159161,
+      1.2988345817029197,
+      1.3996711019510026,
+      1.5005076221990856,
+      1.6013441424471686
+    ],
+    "-C": [
+      0.165,
+      0.1859375,
+      0.206875,
+      0.22781250000000003,
+      0.24875000000000003,
+      0.25,
+      0.2696875,
+      0.290625,
+      0.3115625,
+      0.3325
+    ]
+  },
+  "boundaries": {
+    "+C": {
+      "C_approx": 1.2040181522159161,
+      "C_hi": 1.2886960124435034,
+      "trace": [
+        {
+          "coefficient": 1.0,
+          "health_margin": 0.25,
+          "health_clean": true,
+          "breakdown_reasons": [],
+          "stats": {
+            "answers": 15,
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0,
+            "max_repetition": 0.06451612903225812,
+            "mean_words": 46.53333333333333,
+            "lens_token_leaks": 0
+          },
+          "path": "probes/plus/c1.jsonl"
+        },
+        {
+          "coefficient": 2.0,
+          "health_margin": -0.6833333333333333,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "unfinished",
+            "repetition",
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 15,
+            "role_leaks": 0,
+            "repeated": 14,
+            "max_repetition": 0.9920634920634921,
+            "mean_words": 389.73333333333335,
+            "lens_token_leaks": 15
+          },
+          "path": "probes/plus/c2.jsonl"
+        },
+        {
+          "coefficient": 1.2040181522159161,
+          "health_margin": 0.25,
+          "health_clean": true,
+          "breakdown_reasons": [],
+          "stats": {
+            "answers": 15,
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0,
+            "max_repetition": 0.05882352941176472,
+            "mean_words": 48.46666666666667,
+            "lens_token_leaks": 0
+          },
+          "path": "probes/plus/c1p20401815222.jsonl"
+        },
+        {
+          "coefficient": 1.379329214789086,
+          "health_margin": 0.04999999999999999,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 3,
+            "role_leaks": 0,
+            "repeated": 3,
+            "max_repetition": 0.9920634920634921,
+            "mean_words": 144.06666666666666,
+            "lens_token_leaks": 14
+          },
+          "path": "probes/plus/c1p37932921479.jsonl"
+        },
+        {
+          "coefficient": 1.2886960124435034,
+          "health_margin": 0.25,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0,
+            "max_repetition": 0.021739130434782594,
+            "mean_words": 50.0,
+            "lens_token_leaks": 1
+          },
+          "path": "probes/plus/c1p28869601244.jsonl"
+        }
+      ]
+    },
+    "-C": {
+      "C_approx": 0.25,
+      "C_hi": 0.2726269331663144,
+      "trace": [
+        {
+          "coefficient": 1.0,
+          "health_margin": -0.75,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "unfinished",
+            "repetition",
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 15,
+            "role_leaks": 0,
+            "repeated": 15,
+            "max_repetition": 0.9920634920634921,
+            "mean_words": 512.0,
+            "lens_token_leaks": 15
+          },
+          "path": "probes/minus/c1.jsonl"
+        },
+        {
+          "coefficient": 0.5,
+          "health_margin": -0.75,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "unfinished",
+            "repetition",
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 15,
+            "role_leaks": 0,
+            "repeated": 15,
+            "max_repetition": 0.9920634920634921,
+            "mean_words": 512.0,
+            "lens_token_leaks": 15
+          },
+          "path": "probes/minus/c0p5.jsonl"
+        },
+        {
+          "coefficient": 0.25,
+          "health_margin": 0.25,
+          "health_clean": true,
+          "breakdown_reasons": [],
+          "stats": {
+            "answers": 15,
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0,
+            "max_repetition": 0.07272727272727275,
+            "mean_words": 52.53333333333333,
+            "lens_token_leaks": 0
+          },
+          "path": "probes/minus/c0p25.jsonl"
+        },
+        {
+          "coefficient": 0.2973017787506803,
+          "health_margin": 0.18333333333333335,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 1,
+            "role_leaks": 0,
+            "repeated": 1,
+            "max_repetition": 0.9920634920634921,
+            "mean_words": 83.66666666666667,
+            "lens_token_leaks": 2
+          },
+          "path": "probes/minus/c0p297301778751.jsonl"
+        },
+        {
+          "coefficient": 0.2726269331663144,
+          "health_margin": 0.25,
+          "health_clean": false,
+          "breakdown_reasons": [
+            "lens_token_leak"
+          ],
+          "stats": {
+            "answers": 15,
+            "unfinished": 0,
+            "role_leaks": 0,
+            "repeated": 0,
+            "max_repetition": 0.07999999999999996,
+            "mean_words": 52.333333333333336,
+            "lens_token_leaks": 1
+          },
+          "path": "probes/minus/c0p272626933166.jsonl"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "generation_task_id": 825,
+  "judging_task_id": 826,
+  "required_orders": ["AB", "BA"],
+  "passes": 1,
+  "expected_cells": 630,
+  "provenance_check": "task825-provenance-check.log"
+}

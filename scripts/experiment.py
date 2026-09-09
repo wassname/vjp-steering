@@ -1021,6 +1021,7 @@ def gpu_stage(args: argparse.Namespace) -> None:
             "extract_batch_size": args.extract_batch_size,
             "max_length": args.max_length,
             "max_new_tokens": args.max_new_tokens,
+            "seed": args.seed,
             "j_lens_source": args.j_lens_source,
             "persona_direction": args.persona_direction,
             "component_empirical_candor": args.component_empirical_candor,

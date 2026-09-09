@@ -248,6 +248,12 @@ def export(run_names: list[str], walk_id: str | None = None) -> None:
     print(f"added {len(result_rows)} result arms and {len(scenario_rows)} scenario scores")
 
 
+def recorded_extraction_seed(manifest: dict, experiment_id: str) -> int:
+    if "seed" not in manifest["config"]:
+        raise ValueError(f"experiment manifest lacks recorded extraction seed: {experiment_id}")
+    return int(manifest["config"]["seed"])
+
+
 def export_experiment(
     experiment_id: str,
     profile_name: str,
@@ -258,6 +264,7 @@ def export_experiment(
     profile_ = DEV if profile_name == "dev" else FULL
     root = experiment_dir(experiment_id)
     manifest = json.loads((root / "manifest.json").read_text())
+    extraction_seed = recorded_extraction_seed(manifest, experiment_id)
     rows = experiment_rows(
         experiment_id,
         profile_name,
@@ -296,7 +303,7 @@ def export_experiment(
                 cell_scenarios.append({
                     "source_run": experiment_id,
                     "method": manifest["method"],
-                    "seed": 0,
+                    "seed": extraction_seed,
                     "C": coefficient,
                     "side": side,
                     "scenario": row["vignette"],
@@ -329,7 +336,7 @@ def export_experiment(
                 "date": manifest["date"],
                 "source_run": experiment_id,
                 "method": manifest["method"],
-                "seed": 0,
+                "seed": extraction_seed,
                 "C": coefficient,
                 "side": side,
                 "effect": mean(row["effect"] for row in cell_scenarios),
@@ -425,6 +432,13 @@ def self_test() -> None:
     assert signed_axis_effect("candidness", [(3.0, 0.0, 0.0)]) == -3.0
     assert behavior_axis_direction("+C", "candidness") == -1
     assert behavior_axis_direction("+C", "candidness") * -0.1 > 0
+    assert [recorded_extraction_seed({"config": {"seed": seed}}, f"random-s{seed}") for seed in range(5)] == list(range(5))
+    try:
+        recorded_extraction_seed({"config": {}}, "missing-seed")
+    except ValueError as error:
+        assert "lacks recorded extraction seed" in str(error)
+    else:
+        raise AssertionError("missing extraction seed must fail")
     two_pass_reversal = [
         record("AB", 1, -1.0), record("BA", 0, 1.0),
         record("AB", 0, -2.0), record("BA", 1, 3.0),

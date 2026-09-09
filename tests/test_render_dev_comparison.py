@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from vjp_steering.results import calibrated_random_rungs, plot
+
 
 sys.path.insert(0, str(Path("scripts").resolve()))
 SPEC = importlib.util.spec_from_file_location("render_dev_comparison", Path("scripts/render_dev_comparison.py"))
@@ -30,6 +32,33 @@ def write_experiment(root: Path, bare: list[dict]) -> None:
         "config": {"model": "m", "dtype": "d", "max_length": 1, "max_new_tokens": 2}, "cohort_sha256": "cohort",
         "bare": {"path": "bare.jsonl", "reused_from": "shared"},
     }))
+
+
+class TestCalibratedRandomRegion(unittest.TestCase):
+    def test_uses_calibration_rank_without_relabeling_actual_coefficients(self):
+        seeds = set(range(5))
+        rows = []
+        for seed in seeds:
+            for side, coefficients in (("+C", [0.11 + seed / 100, 0.31 + seed / 100]), ("-C", [0.04 + seed / 100, 0.18 + seed / 100, 0.42 + seed / 100])):
+                for index, coefficient in enumerate(coefficients):
+                    rows.append({
+                        "method": "random", "seed": seed, "side": side, "C": coefficient,
+                        "effect": (1 if side == "+C" else -1) * (index + 1) / 10,
+                        "off_axis_perturbation": coefficient, "admissible": True,
+                    })
+        rungs = calibrated_random_rungs(rows, seeds)
+        self.assertEqual([rung["rung"] for rung in rungs["+C"]], [0, 1])
+        self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 1, 2])
+        self.assertEqual([point["C"] for point in rungs["+C"][0]["points"]], [0.11, 0.12, 0.13, 0.14, 0.15])
+        self.assertEqual({point["seed"] for point in rungs["-C"][2]["points"]}, seeds)
+        rows = [row for row in rows if not (row["seed"] == 4 and row["side"] == "+C" and row["C"] == 0.35)]
+        next(row for row in rows if row["seed"] == 3 and row["side"] == "-C" and round(row["C"], 6) == 0.45)["admissible"] = False
+        rungs = calibrated_random_rungs(rows, seeds)
+        self.assertEqual([rung["rung"] for rung in rungs["+C"]], [0])
+        self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 1])
+        figure = plot(rows, ("random",), {"random": seeds}, random_region="calibrated_rung")
+        trace = next(trace for trace in figure.data if trace.name == "random measured DEV doses")
+        self.assertEqual(len(trace.x), sum(row["admissible"] for row in rows))
 
 
 class TestDevComparisonProvenance(unittest.TestCase):

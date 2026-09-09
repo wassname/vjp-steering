@@ -436,6 +436,37 @@ def _add_j_lens_dev_overlay(
                 )
 
 
+def calibrated_random_rungs(random: list[dict], seeds: set[int]) -> dict[str, list[dict]]:
+    """Group each side's actual random doses by their per-seed calibration rank."""
+    rungs: dict[str, list[dict]] = {}
+    for side in ("+C", "-C"):
+        by_seed = {
+            seed: sorted(
+                (row for row in random if row["seed"] == seed and row["side"] == side),
+                key=lambda row: row["C"],
+            )
+            for seed in seeds
+        }
+        max_rungs = max((len(points) for points in by_seed.values()), default=0)
+        side_rungs = []
+        for index in range(max_rungs):
+            measured = [points[index] for points in by_seed.values() if len(points) > index]
+            coherent = len(measured) == len(seeds) and all(point["admissible"] for point in measured)
+            if not coherent:
+                continue
+            effects = sorted(point["effect"] for point in measured)
+            trim = len(effects) // 10
+            side_rungs.append({
+                "rung": index,
+                "points": measured,
+                "effect_low": effects[trim],
+                "effect_high": effects[-trim - 1],
+                "off_axis_perturbation": median(point["off_axis_perturbation"] for point in measured),
+            })
+        rungs[side] = side_rungs
+    return rungs
+
+
 def plot(
     rows: list[dict],
     methods: tuple[str, ...] = METHODS,
@@ -445,6 +476,7 @@ def plot(
     smooth: bool = True,
     pareto: bool = False,
     include_rejected: bool = False,
+    random_region: str = "exact_C",
 ) -> go.Figure:
     figure = go.Figure()
     means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
@@ -457,29 +489,58 @@ def plot(
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     if random:
-        random_seeds = sorted({row["seed"] for row in random})
-        random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
-        cone = [(0.0, 0.0, 0.0, 0.0)]
-        for C in sorted({row["C"] for row in random}):
-            coherent = [
-                seed for seed in random_seeds
-                if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
-                and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
-            ]
-            if len(coherent) < (len(random_seeds) + 1) // 2:
-                break
-            points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
-            effects = sorted(row["effect"] for row in points)
-            trim = max(1, len(effects) // 10)
-            cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
-                         effects[trim], effects[-trim - 1]))
-        figure.add_trace(go.Scatter(
-            x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
-            y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
-            fill="toself", fillcolor="rgba(150,150,150,0.22)",
-            line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
-            hoverinfo="skip", showlegend=False,
-        ))
+        random_seeds = {row["seed"] for row in random}
+        if random_region not in {"exact_C", "calibrated_rung"}:
+            raise ValueError(f"unknown random region construction: {random_region}")
+        if random_region == "exact_C":
+            random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
+            cone = [(0.0, 0.0, 0.0, 0.0)]
+            for C in sorted({row["C"] for row in random}):
+                coherent = [
+                    seed for seed in random_seeds
+                    if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
+                    and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
+                ]
+                if len(coherent) < (len(random_seeds) + 1) // 2:
+                    break
+                points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
+                effects = sorted(row["effect"] for row in points)
+                trim = max(1, len(effects) // 10)
+                cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
+                             effects[trim], effects[-trim - 1]))
+            figure.add_trace(go.Scatter(
+                x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
+                y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
+                fill="toself", fillcolor="rgba(150,150,150,0.22)",
+                line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
+                hoverinfo="skip", showlegend=False,
+            ))
+        else:
+            for side, side_rungs in calibrated_random_rungs(random, random_seeds).items():
+                if not side_rungs:
+                    continue
+                cone = [(0.0, 0.0, 0.0, 0.0), *[
+                    (rung["off_axis_perturbation"], rung["effect_low"], rung["effect_high"])
+                    for rung in side_rungs
+                ]]
+                figure.add_trace(go.Scatter(
+                    x=[point[1] for point in cone] + [point[2] for point in reversed(cone)],
+                    y=[point[0] for point in cone] + [point[0] for point in reversed(cone)],
+                    fill="toself", fillcolor="rgba(150,150,150,0.22)",
+                    line={"color": "rgba(150,150,150,0)", "width": 0},
+                    hovertemplate=f"random {side} calibrated rung<extra></extra>", showlegend=False,
+                ))
+            figure.add_trace(go.Scatter(
+                x=[row["effect"] for row in random if row["admissible"]],
+                y=[row["off_axis_perturbation"] for row in random if row["admissible"]],
+                mode="markers", marker={"color": "#666666", "size": 4, "opacity": 0.65},
+                text=[
+                    f"random seed={row['seed']} side={row['side']} actual C={row['C']:g}"
+                    for row in random if row["admissible"]
+                ],
+                hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+                name="random measured DEV doses", showlegend=True,
+            ))
         random_peaks = []
         for side, sign in (("+C", 1), ("-C", -1)):
             candidates = [

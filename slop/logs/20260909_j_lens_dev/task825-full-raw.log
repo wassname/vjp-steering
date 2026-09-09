@@ -1,0 +1,80 @@
+✓ Initialized. View run at 
+https://modal.com/apps/wassname/main/ap-pbDY4v9jQ4WE7alm2sz7S2
+✓ Created objects.
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts/run_modal.py
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/src
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/scripts
+├── 🔨 Created mount /workspace/2026/jspace/j-steer_pub/data
+├── 🔨 Created function j_lens_gap_clamp_remote.
+├── 🔨 Created function run.
+├── 🔨 Created function extract_experiment_remote.
+├── 🔨 Created function run_experiment.
+├── 🔨 Created function run_j_lens_concept_repair.
+├── 🔨 Created function paper_native_verbal_report_remote.
+├── 🔨 Created function paper_native_prompt_diagnostic_remote.
+├── 🔨 Created function paper_native_binary_agreement_remote.
+├── 🔨 Created function j_lens_activity_audit_remote.
+├── 🔨 Created function diagnose_j_lens_remote.
+└── 🔨 Created function j_lens_prompt_span_activity_remote.
+
+[1AFetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 1390.98it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[1AFetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 805.82it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+[1ALoading weights:   0%|          | 0/426 [00:00<?, ?it/s]
+[1ALoading weights:   3%|▎         | 12/426 [00:00<00:16, 25.74it/s]
+[1ALoading weights:   6%|▌         | 26/426 [00:00<00:13, 29.83it/s]
+[1ALoading weights:   7%|▋         | 29/426 [00:01<00:25, 15.44it/s]
+[1ALoading weights:   8%|▊         | 35/426 [00:01<00:21, 18.26it/s]
+[1ALoading weights:  12%|█▏        | 51/426 [00:02<00:17, 21.60it/s]
+[1ALoading weights:  13%|█▎        | 54/426 [00:02<00:18, 19.58it/s]
+[1ALoading weights:  18%|█▊        | 75/426 [00:02<00:08, 39.58it/s]
+[1ALoading weights:  27%|██▋       | 113/426 [00:02<00:03, 83.71it/s]
+[1ALoading weights:  32%|███▏      | 137/426 [00:02<00:02, 106.83it/s]
+[1ALoading weights:  39%|███▊      | 165/426 [00:03<00:01, 137.96it/s]
+[1ALoading weights:  46%|████▌     | 194/426 [00:03<00:01, 168.96it/s]
+[1ALoading weights:  51%|█████     | 218/426 [00:03<00:01, 184.64it/s]
+[1ALoading weights:  59%|█████▉    | 252/426 [00:03<00:00, 214.16it/s]
+[1ALoading weights:  65%|██████▌   | 278/426 [00:03<00:00, 210.23it/s]
+[1ALoading weights:  72%|███████▏  | 308/426 [00:03<00:00, 229.32it/s]
+[1ALoading weights:  81%|████████  | 345/426 [00:03<00:00, 264.85it/s]
+[1ALoading weights:  88%|████████▊ | 374/426 [00:03<00:00, 242.70it/s]Loading weights: 100%|██████████| 426/426 [00:03<00:00, 109.54it/s]
+2026-09-09 04:34:11.675 | INFO     | vjp_steering.vjp:j_lens_swap:588 - j_lens_swap operator=paper_native_pseudoinverse_coordinate_swap source=abrasive id=90474 target=flattering id=80238 layers=(13, 14, 15, 16, 17, 18, 19, 20, 21)
+2026-09-09 04:34:23.732 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:34:55.281 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:34:58.233 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:35:14.624 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:35:17.841 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:35:34.188 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:35:51.685 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:35:54.588 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:10.560 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:13.494 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:16.074 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:18.645 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:21.098 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:23.607 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:26.182 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:28.851 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:31.608 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:34.454 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:36:50.010 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:05.349 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:20.610 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:23.188 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:25.879 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:28.975 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:32.026 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:35.114 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:38.033 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:41.199 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:37:57.169 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:38:14.227 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:38:30.878 | INFO     | walk:generate:500 - generation 15/15
+2026-09-09 04:38:30.900 | INFO     | __main__:gpu_stage:1275 - GPU_STAGE_COMPLETE experiment=v14-dev-j-lens-swap profile=dev cells=21
+EXPERIMENT_GPU_COMPLETE id=v14-dev-j-lens-swap profile=dev cells=21
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/wassname/main/ap-pbDY4v9jQ4WE7alm2sz7S2

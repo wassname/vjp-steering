@@ -1,0 +1,15 @@
+{
+  "id": 825,
+  "group": "modal",
+  "command": "uv run modal run scripts/run_modal.py::experiment --profile dev --model Qwen/Qwen3.5-4B --dtype bfloat16 --n-pairs 200 --batch-size 32 --extract-batch-size 8 --max-length 384 --max-new-tokens 512 --reuse-bare-from j-lens-paper-native-sycophancy-v1 --method j_lens_swap --experiment-id v14-dev-j-lens-swap",
+  "label": "why: v14 needs paired-order paper J-lens DEV point; resolve: one bounded remote H100 generation under the frozen shared bare",
+  "path": "/workspace/2026/jspace/j-steer_pub",
+  "status": {
+    "Done": {
+      "enqueued_at": "2026-09-09T12:33:05.951900765+08:00",
+      "start": "2026-09-09T12:33:06.202683976+08:00",
+      "end": "2026-09-09T12:38:35.407795782+08:00",
+      "result": "Success"
+    }
+  }
+}

@@ -1,0 +1,2 @@
+2026-09-09 12:47:20.280 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
+EXPERIMENT_EXPORT_COMPLETE id=v14-dev-j-lens-swap profile=dev arms=21 scenarios=315

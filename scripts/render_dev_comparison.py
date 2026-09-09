@@ -101,7 +101,15 @@ def main() -> None:
         ("plot-dev.png", False, "DEV15 steering comparison"),
         ("plot-pareto-dev.png", True, "Pareto-smoothed DEV15 steering comparison"),
     ):
-        plot(rows, methods, method_seeds, title=title, pareto=pareto, include_rejected=True).write_image(output / filename, width=1064, height=590, scale=2)
+        plot(
+            rows,
+            methods,
+            method_seeds,
+            title=title,
+            pareto=pareto,
+            include_rejected=True,
+            random_region="calibrated_rung",
+        ).write_image(output / filename, width=1064, height=590, scale=2)
     print(f"DEV_COMPARISON_RENDER_COMPLETE rows={len(rows)} output={output}")
 
 
