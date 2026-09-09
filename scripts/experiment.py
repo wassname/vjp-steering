@@ -443,8 +443,13 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         return vectors, metadata, 0, "concept:" + metadata["spec_sha256"]
     if args.method == "j_lens_swap":
         available = walk.resolve_layers(model, None)
-        paper_workspace = tuple(range(13, 22))
-        layers = paper_workspace if set(paper_workspace) <= set(available) else available
+        if args.layers:
+            layers = tuple(int(layer) for layer in args.layers.split(",") if layer.strip() != "")
+            if not set(layers) <= set(available):
+                raise ValueError(f"j_lens_swap requested layers {layers} not subset of available {available}")
+        else:
+            paper_workspace = tuple(range(13, 22))
+            layers = paper_workspace if set(paper_workspace) <= set(available) else available
         vector, swap_metadata = j_lens_swap(
             model, tokenizer, layers,
             source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
