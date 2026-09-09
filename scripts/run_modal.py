@@ -128,7 +128,7 @@ def extract_experiment_remote(method: str, argv: list[str]) -> str:
 @app.function(
     gpu=os.environ.get("JSTEER_GPU", "H100"),
     volumes={"/cache": cache},
-    timeout=24 * 60 * 60,
+    timeout=15 * 60,
 )
 def run_experiment(method: str, argv: list[str]) -> str:
     from huggingface_hub import snapshot_download
