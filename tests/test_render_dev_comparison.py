@@ -20,6 +20,14 @@ def provenance():
         "cohort": {"cohort_sha256": "cohort", "scenario_ids": ["s1"]},
         "generation": {"model": "m", "dtype": "d", "max_length": 1, "max_new_tokens": 2},
         "shared_bare": {"selected_records_canonical_sha256": "expected", "source_experiment": "shared"},
+        "methods": {
+            "j_lens_swap": {"experiment_id": "j-lens", "seed": 0},
+            "mean_diff": {"experiment_id": "mean", "seed": 0},
+            "vjp_delta": {"experiment_id": "vjp-r2", "seed": 0},
+            "random": {"selected_experiments": [
+                {"seed": seed, "experiment_id": f"random-s{seed}-r2"} for seed in range(5)
+            ]},
+        },
     }
 
 
@@ -65,6 +73,23 @@ class TestCalibratedRandomRegion(unittest.TestCase):
 
 
 class TestDevComparisonProvenance(unittest.TestCase):
+    def test_uses_only_explicit_corrected_experiment_ids(self):
+        specs = renderer.comparison_specs(provenance())
+        self.assertEqual(specs[2], ("vjp-r2", "vjp_delta", 0))
+        self.assertEqual(specs[3:], [(f"random-s{seed}-r2", "random", seed) for seed in range(5)])
+        self.assertNotIn(("v14-dev-vjp-delta", "vjp_delta", 0), specs)
+        self.assertNotIn(("v14-dev-random-s0", "random", 0), specs)
+
+    def test_rejects_stale_method_artifact(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(renderer, "ROOT", Path(directory)):
+            contract = provenance()
+            write_experiment(Path(directory), [{"scenario": "s1", "text": "bare"}])
+            contract["shared_bare"]["selected_records_canonical_sha256"] = renderer.canonical_sha256([
+                {"scenario": "s1", "text": "bare"}
+            ])
+            with self.assertRaisesRegex(ValueError, "experiment identity mismatch"):
+                renderer.verify_experiment("x", "vjp_delta", 0, contract, {})
+
     def test_rejects_mismatched_shared_bare(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(renderer, "ROOT", Path(directory)):
             write_experiment(Path(directory), [{"scenario": "s1", "text": "wrong"}])

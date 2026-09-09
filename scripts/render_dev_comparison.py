@@ -38,6 +38,16 @@ def raw_judgments() -> dict[str, dict]:
     return records
 
 
+def comparison_specs(provenance: dict) -> list[tuple[str, str, int]]:
+    methods = provenance["methods"]
+    return [
+        (methods["j_lens_swap"]["experiment_id"], "j_lens_swap", methods["j_lens_swap"]["seed"]),
+        (methods["mean_diff"]["experiment_id"], "mean_diff", methods["mean_diff"]["seed"]),
+        (methods["vjp_delta"]["experiment_id"], "vjp_delta", methods["vjp_delta"]["seed"]),
+        *[(entry["experiment_id"], "random", entry["seed"]) for entry in methods["random"]["selected_experiments"]],
+    ]
+
+
 def verify_experiment(experiment_id: str, method: str, seed: int, provenance: dict, cache: dict[str, dict]) -> list[dict]:
     expected_hash = provenance["cohort"]["cohort_sha256"]
     expected_ids = provenance["cohort"]["scenario_ids"]
@@ -98,12 +108,7 @@ def main() -> None:
     args = parser.parse_args()
     provenance = json.loads(args.provenance.read_text())
     cache = raw_judgments()
-    specs = [
-        ("v14-dev-j-lens-swap", "j_lens_swap", 0),
-        ("v14-dev-mean-diff", "mean_diff", 0),
-        ("v14-dev-vjp-delta", "vjp_delta", 0),
-        *[(f"v14-dev-random-s{seed}", "random", seed) for seed in range(5)],
-    ]
+    specs = comparison_specs(provenance)
     rows = [row for spec in specs for row in verify_experiment(*spec, provenance, cache)]
     methods = ("j_lens_swap", "mean_diff", "vjp_delta", "random")
     method_seeds = {"j_lens_swap": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
