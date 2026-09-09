@@ -127,7 +127,7 @@ def main() -> None:
         writer.writerows(rows)
     markdown = _markdown(table, (
         "DEV15 comparison only. Every point passed exact scenario, shared-bare, generation-config, AB/BA judgment, and coherence provenance checks.",
-        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.",
+        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. This first comparison does not show J-lens outside the measured random points in either direction. `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.",
     ), extra_pareto_plot=True)
     markdown = (
         markdown.replace("plot.png", "plot-dev.png")
@@ -148,6 +148,7 @@ def main() -> None:
             smooth=pareto,
             include_rejected=True,
             random_region="calibrated_rung",
+            damage_headroom=1.20,
         ).write_image(output / filename, width=1064, height=590, scale=2)
     print(f"DEV_COMPARISON_RENDER_COMPLETE rows={len(rows)} output={output}")
 

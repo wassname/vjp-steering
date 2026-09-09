@@ -1,12 +1,12 @@
-2026-09-09 15:01:24.304 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
-2026-09-09 15:01:24.619 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-mean-diff profile=dev cells=24 demo_sides=360
-2026-09-09 15:01:24.974 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-vjp-delta-r2 profile=dev cells=21 demo_sides=315
-2026-09-09 15:01:25.402 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=26 demo_sides=390
-2026-09-09 15:01:25.748 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=24 demo_sides=360
-2026-09-09 15:01:26.111 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=23 demo_sides=345
-2026-09-09 15:01:26.402 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=26 demo_sides=390
-2026-09-09 15:01:26.717 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=26 demo_sides=390
-/workspace/2026/jspace/j-steer_pub/scripts/render_dev_comparison.py:147: DeprecationWarning: 
+2026-09-09 15:24:49.132 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-j-lens-swap profile=dev cells=21 demo_sides=315
+2026-09-09 15:24:49.476 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-mean-diff profile=dev cells=24 demo_sides=360
+2026-09-09 15:24:49.825 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-vjp-delta-r2 profile=dev cells=21 demo_sides=315
+2026-09-09 15:24:50.189 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 15:24:50.584 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s1-r2 profile=dev cells=24 demo_sides=360
+2026-09-09 15:24:50.970 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s2-r2 profile=dev cells=23 demo_sides=345
+2026-09-09 15:24:51.358 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s3-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 15:24:51.740 | INFO     | judge:experiment_rows:394 - experiment manifest id=v14-dev-random-s4-r2 profile=dev cells=26 demo_sides=390
+/workspace/2026/jspace/j-steer_pub/scripts/render_dev_comparison.py:152: DeprecationWarning: 
 Support for Kaleido versions less than 1.0.0 is deprecated and will be removed after September 2025.
 Please upgrade Kaleido to version 1.0.0 or greater (`pip install 'kaleido>=1.0.0'` or `pip install 'plotly[kaleido]'`).
 

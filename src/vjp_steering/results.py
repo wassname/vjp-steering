@@ -479,14 +479,17 @@ def plot(
     pareto: bool = False,
     include_rejected: bool = False,
     random_region: str = "exact_C",
+    damage_headroom: float = 1.08,
 ) -> go.Figure:
     figure = go.Figure()
     means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
     admissible_means = _means(rows, methods, method_seeds)
     valid = admissible_means + [row for row in rows if row["method"] == "random" and row["admissible"]]
+    if damage_headroom < 1:
+        raise ValueError("damage_headroom must be at least one")
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
-    y_range = (1.08 * max(row["off_axis_perturbation"] for row in valid), -0.07)
-    damage_limit = y_range[0] / 1.08 * 1.005
+    y_range = (damage_headroom * max(row["off_axis_perturbation"] for row in valid), -0.07)
+    damage_limit = y_range[0] / damage_headroom * 1.005
     margin = {"l": 75, "r": 105, "t": 40, "b": 58}
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
