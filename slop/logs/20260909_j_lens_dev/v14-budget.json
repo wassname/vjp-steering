@@ -132,6 +132,68 @@
       "status": "success",
       "role": "layer16 alpha1 France->Germany single-layer corrected (L16 France 0.454>Germany 0.273, vendor +0.91)",
       "source_revision": "3a83149b8124c5d33df6b128270a4388fc8a14e4"
+    },
+    {
+      "task": 866,
+      "modal_app": "ap-...",
+      "duration_seconds": 41,
+      "status": "failed",
+      "cause": "slop/scripts not mounted (packaging), ModuleNotFoundError before measurement",
+      "role": "DEV abrasive/flattering coord capture attempt 1 (packaging failure, no coordinate result)"
+    },
+    {
+      "task": 867,
+      "modal_app": "ap-...",
+      "duration_seconds": 13,
+      "status": "failed",
+      "cause": "missing tokenizer arg, single-token assert",
+      "role": "DEV coord capture attempt 2 (script arg error, no measurement)"
+    },
+    {
+      "task": 868,
+      "modal_app": "ap-...",
+      "duration_seconds": 21,
+      "status": "failed",
+      "cause": "wrong import vjp_steering.walk, should be scripts.walk",
+      "role": "DEV coord capture attempt 3 (import error)"
+    },
+    {
+      "task": 869,
+      "modal_app": "ap-...",
+      "duration_seconds": 20,
+      "status": "failed",
+      "cause": "missing tokenizer arg in load_dev_prompts call",
+      "role": "DEV coord capture attempt 4 (missing arg)"
+    },
+    {
+      "task": 870,
+      "modal_app": "ap-...",
+      "duration_seconds": 18,
+      "status": "failed",
+      "cause": "ModuleNotFoundError vjp_steering (dev_abrasive_image missing src)",
+      "role": "DEV coord capture attempt 5 (image missing src)"
+    },
+    {
+      "task": 871,
+      "modal_app": "ap-...",
+      "duration_seconds": 40,
+      "status": "failed",
+      "cause": "ModuleNotFoundError scripts (scripts not on PYTHONPATH)",
+      "role": "DEV coord capture attempt 6 (PYTHONPATH)"
+    },
+    {
+      "task": 872,
+      "modal_app": "ap-rac26xoroBo1XIzvG08DGY",
+      "duration_seconds": 47,
+      "status": "success",
+      "role": "DEV abrasive/flattering clean coordinates for 15 DEV prompts (source-active all layers, e.g., L16 0.798>-0.154)"
+    },
+    {
+      "task": 873,
+      "modal_app": "ap-u734gaoiU4ktmyVJjQDran",
+      "duration_seconds": 373,
+      "status": "success",
+      "role": "DEV repair iteration 1: single source-active layer16 (DEV abrasive 0.798>-0.154) with unchanged paper swap, both +C/-C, frozen controls"
     }
   ],
   "judging_attempts": [
@@ -201,7 +263,16 @@
         "BA"
       ],
       "automatic_retries": 0
+    },
+    {
+      "task": 874,
+      "status": "success",
+      "missing": 0,
+      "api_calls": 613,
+      "role": "DEV repair L16 AB/BA judgments (29 cells, 435 demo sides, frozen rubric)",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "orders": ["AB", "BA"]
     }
   ],
-  "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, 853, and the one manual same-contract recovery 856. Tasks 832-835 failed their dependency without remote dispatch. Reallocation 2026-09-09T16:45+08:00: $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor ranks and hidden capture (reallocated $1 within $20); task864 completed 2026-09-09T16:38:23+08:00 in 40s (~$0.04) well within reserve, total v14 reserves still $9.00 within $20.00 allocation. Task865 layer16 completed 2026-09-09T17:08:03+08:00 in 46s (~$0.045) within $1 layer16 reserve. Task864  $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor-normalized ranks and captured hidden states; total v14 reserves still $9.00 within $20.00 allocation. Task865 layer16 completed 2026-09-09T17:08:03+08:00 in 46s (~$0.045) within $1 layer16 reserve. These $20.00 v14 reserves use only the approved allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00. "
+  "spend_status": "Modal CLI emitted no receipts; durations for 866-873 and judging 874 are observed wall times, not billed amounts, so reserves remain conservative. Remote attempts total ~4,400s (including 866:41s packaging fail, 867:13s, 868:21s, 869:20s, 870:18s, 871:40s, 872:47s success, 873:373s DEV L16). At observed rate $0.0997/101s, 873 alone ~$0.37, but $1.00 reserve for dev_repair_iteration1 is retained as conservative ceiling (unknown charge). Judging 874: 613 calls, ~7m, within $2 paired-judging reserve (actual provider charge unknown, reserved). Tasks 866-871 failures consumed <3 min total, still within $1 dev_repair reserve's conservative bound; no extra allocation. Total v14 reserves: $9.00 (remote) + $2.00 (judging) + $9.00 (post-comparison) = $20.00 within $20 cap; carried $12.00 review reserve separate and retained for fresh-eyes after plot fix. Stop before exceeding."
 }

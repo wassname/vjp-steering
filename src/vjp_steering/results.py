@@ -352,7 +352,8 @@ def _add_j_lens_dev_overlay(
         accepted = [row for row in side_points if row["accepted"]]
         if not accepted:
             raise ValueError(f"corrected J-lens DEV has no accepted {side} dose")
-        endpoint = max(accepted, key=lambda row: row["C"])
+        sign = 1 if side == "+C" else -1
+        endpoint = max(accepted, key=lambda row: sign * row["effect"])
         path_points = [row for row in side_points if row["C"] <= endpoint["C"]]
         frontier, _ = _pareto_curve_parts(path_points, side)
         anchors = _pareto_curve_anchors(path_points, side) if pareto else frontier
@@ -613,8 +614,27 @@ def plot(
                 if endpoint_coefficients is not None:
                     endpoint_C = endpoint_coefficients[side]
                 else:
-                    admissible_points = [point for point in points if point["admissible"]]
-                    endpoint_C = admissible_points[-1]["C"] if admissible_points else None
+                    # Use same intended-direction selector as _summary: max effect in correct sign direction
+                    # For j_lens methods, use coherent accepted (admissible and correct sign) to avoid marking wrong-direction
+                    sign = 1 if side == "+C" else -1
+                    # For j_lens, use accepted (admissible and correct sign) to match table; for others, use admissible
+                    if method in ("j_lens_swap", "j_lens_swap_L16"):
+                        coherent = [p for p in points if p["accepted" if "accepted" in p else "admissible"] and sign * p["effect"] > 0]
+                        # Fallback to admissible if no coherent (should not happen for L16, but for safety)
+                        candidates = coherent if coherent else [p for p in points if p["admissible"]]
+                    else:
+                        candidates = [p for p in points if p["admissible"]]
+                    if candidates:
+                        if method in ("j_lens_swap", "j_lens_swap_L16"):
+                            endpoint = max(candidates, key=lambda row: sign * row["effect"])
+                            max_eff = sign * endpoint["effect"]
+                            tied = [r for r in candidates if abs(sign * r["effect"] - max_eff) < 1e-9]
+                            endpoint = min(tied, key=lambda row: row["off_axis_perturbation"])
+                            endpoint_C = endpoint["C"]
+                        else:
+                            endpoint_C = candidates[-1]["C"]
+                    else:
+                        endpoint_C = None
                 endpoint_index = (
                     min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
                     if endpoint_C is not None else None
