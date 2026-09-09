@@ -762,6 +762,8 @@ def experiment(
     extension_minus: str = "",
     explicit_grid_plus: str = "",
     explicit_grid_minus: str = "",
+    injection_plus_concept: str = "",
+    injection_minus_concept: str = "",
     concept_layers: str = "",
     j_lens_source: str = "concept",
     persona_direction: str = "j_gp16",
@@ -821,6 +823,11 @@ def experiment(
         argv.extend([
             "--explicit-grid-plus", explicit_grid_plus,
             "--explicit-grid-minus", explicit_grid_minus,
+        ])
+    if injection_plus_concept or injection_minus_concept:
+        argv.extend([
+            "--injection-plus-concept", injection_plus_concept,
+            "--injection-minus-concept", injection_minus_concept,
         ])
     if profile == "dev":
         argv.append("--dev")
