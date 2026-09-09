@@ -1,0 +1,14 @@
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files: 100%|██████████| 2/2 [00:00<00:00, 1855.07it/s]
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/426 [00:00<?, ?it/s]Loading weights:  14%|█▎        | 58/426 [00:00<00:00, 551.70it/s]Loading weights: 100%|██████████| 426/426 [00:00<00:00, 3041.80it/s]
+2026-09-09 13:34:36.927 | WARNING  | __main__:main:113 - category=country clean token is not a listed category item:  What
+2026-09-09 13:34:37.072 | WARNING  | __main__:main:113 - category=color clean token is not a listed category item: 
+
+
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/scripts/reproduce_paper_j_lens.py", line 180, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/reproduce_paper_j_lens.py", line 160, in main
+    raise ValueError("no clean source token was a listed category item with a valid one-token target outside the clean top 10")
+ValueError: no clean source token was a listed category item with a valid one-token target outside the clean top 10
