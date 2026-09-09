@@ -40,23 +40,26 @@ class TestCalibratedRandomRegion(unittest.TestCase):
         rows = []
         for seed in seeds:
             for side, coefficients in (("+C", [0.11 + seed / 100, 0.31 + seed / 100]), ("-C", [0.04 + seed / 100, 0.18 + seed / 100, 0.42 + seed / 100])):
-                for index, coefficient in enumerate(coefficients):
+                for normalized_dose_id, coefficient in enumerate(coefficients):
                     rows.append({
                         "method": "random", "seed": seed, "side": side, "C": coefficient,
-                        "effect": (1 if side == "+C" else -1) * (index + 1) / 10,
+                        "normalized_dose_id": normalized_dose_id,
+                        "effect": (1 if side == "+C" else -1) * (normalized_dose_id + 1) / 10,
                         "off_axis_perturbation": coefficient, "admissible": True,
                     })
+        rows.append({"method": "random", "seed": 2, "side": "+C", "C": 0.99, "normalized_dose_id": None, "effect": 0.8, "off_axis_perturbation": 0.99, "admissible": True})
         rungs = calibrated_random_rungs(rows, seeds)
         self.assertEqual([rung["rung"] for rung in rungs["+C"]], [0, 1])
         self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 1, 2])
         self.assertEqual([point["C"] for point in rungs["+C"][0]["points"]], [0.11, 0.12, 0.13, 0.14, 0.15])
         self.assertEqual({point["seed"] for point in rungs["-C"][2]["points"]}, seeds)
-        rows = [row for row in rows if not (row["seed"] == 4 and row["side"] == "+C" and row["C"] == 0.35)]
-        next(row for row in rows if row["seed"] == 3 and row["side"] == "-C" and round(row["C"], 6) == 0.45)["admissible"] = False
+        rows = [row for row in rows if not (row["seed"] == 4 and row["side"] == "+C" and row.get("normalized_dose_id") == 1)]
+        next(row for row in rows if row["seed"] == 3 and row["side"] == "-C" and row.get("normalized_dose_id") == 1)["admissible"] = False
         rungs = calibrated_random_rungs(rows, seeds)
         self.assertEqual([rung["rung"] for rung in rungs["+C"]], [0])
-        self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 1])
+        self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 2])
         figure = plot(rows, ("random",), {"random": seeds}, random_region="calibrated_rung")
+        self.assertTrue(any(trace.fill == "toself" and len(trace.x) > 2 for trace in figure.data))
         trace = next(trace for trace in figure.data if trace.name == "random measured DEV doses")
         self.assertEqual(len(trace.x), sum(row["admissible"] for row in rows))
 

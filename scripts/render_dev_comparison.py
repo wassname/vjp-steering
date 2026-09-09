@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+from math import isclose
 from pathlib import Path
 
 from judge import CACHE, DEV, experiment_rows, required_cells, valid
@@ -15,6 +16,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def canonical_sha256(rows: list[dict]) -> str:
     return hashlib.sha256(json.dumps(rows, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+
+
+def normalized_calibration_dose_id(coefficient: float, c_approx: float, fractions: list[float]) -> int | None:
+    matches = [
+        index for index, fraction in enumerate(fractions)
+        if isclose(coefficient, c_approx * fraction, rel_tol=1e-10, abs_tol=1e-12)
+    ]
+    if len(matches) > 1:
+        raise ValueError(f"ambiguous normalized calibration dose: C={coefficient} C_approx={c_approx}")
+    return matches[0] if matches else None
 
 
 def raw_judgments() -> dict[str, dict]:
@@ -72,6 +83,12 @@ def verify_experiment(experiment_id: str, method: str, seed: int, provenance: di
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
         row["admissible"] = row["admissible"] == "True"
+        if method == "random":
+            row["normalized_dose_id"] = normalized_calibration_dose_id(
+                row["C"],
+                manifest["boundaries"][row["side"]]["C_approx"],
+                provenance["calibration_grid"]["fractions"],
+            )
     return rows
 
 

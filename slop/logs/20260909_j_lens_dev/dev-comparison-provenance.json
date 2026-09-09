@@ -28,6 +28,10 @@
     "max_new_tokens": 512,
     "coherence": "existing generation_health: unfinished, role leak, repetition, and lens-token leak"
   },
+  "calibration_grid": {
+    "fractions": [0.66, 0.74375, 0.8275, 0.91125, 0.995, 1.07875, 1.1625, 1.24625, 1.33],
+    "identity": "local_grid(C_approx) fraction index. Clean boundary-search probes, including C_approx and an inserted C=1, are measured points but are excluded from the random envelope unless they equal one listed fraction."
+  },
   "judging": {
     "profile": "dev",
     "orders": ["AB", "BA"],

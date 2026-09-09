@@ -437,28 +437,30 @@ def _add_j_lens_dev_overlay(
 
 
 def calibrated_random_rungs(random: list[dict], seeds: set[int]) -> dict[str, list[dict]]:
-    """Group each side's actual random doses by their per-seed calibration rank."""
+    """Group random controls by manifest-derived normalized calibration dose, never list rank."""
     rungs: dict[str, list[dict]] = {}
     for side in ("+C", "-C"):
-        by_seed = {
-            seed: sorted(
-                (row for row in random if row["seed"] == seed and row["side"] == side),
-                key=lambda row: row["C"],
-            )
-            for seed in seeds
-        }
-        max_rungs = max((len(points) for points in by_seed.values()), default=0)
+        supported_ids = sorted({
+            row.get("normalized_dose_id")
+            for row in random
+            if row["side"] == side and row.get("normalized_dose_id") is not None
+        })
         side_rungs = []
-        for index in range(max_rungs):
-            measured = [points[index] for points in by_seed.values() if len(points) > index]
-            coherent = len(measured) == len(seeds) and all(point["admissible"] for point in measured)
+        for dose_id in supported_ids:
+            measured = [
+                row for row in random
+                if row["side"] == side and row.get("normalized_dose_id") == dose_id
+            ]
+            measured_seeds = {row["seed"] for row in measured}
+            coherent = measured_seeds == seeds and len(measured) == len(seeds) and all(point["admissible"] for point in measured)
             if not coherent:
                 continue
             effects = sorted(point["effect"] for point in measured)
             trim = len(effects) // 10
             side_rungs.append({
-                "rung": index,
+                "rung": dose_id,
                 "points": measured,
+                "effect": median(effects),
                 "effect_low": effects[trim],
                 "effect_high": effects[-trim - 1],
                 "off_axis_perturbation": median(point["off_axis_perturbation"] for point in measured),
@@ -490,6 +492,7 @@ def plot(
     random = [row for row in rows if row["method"] == "random"]
     if random:
         random_seeds = {row["seed"] for row in random}
+        rung_controls: dict[str, list[dict]] | None = None
         if random_region not in {"exact_C", "calibrated_rung"}:
             raise ValueError(f"unknown random region construction: {random_region}")
         if random_region == "exact_C":
@@ -516,7 +519,8 @@ def plot(
                 hoverinfo="skip", showlegend=False,
             ))
         else:
-            for side, side_rungs in calibrated_random_rungs(random, random_seeds).items():
+            rung_controls = calibrated_random_rungs(random, random_seeds)
+            for side, side_rungs in rung_controls.items():
                 if not side_rungs:
                     continue
                 cone = [(0.0, 0.0, 0.0, 0.0), *[
@@ -542,27 +546,37 @@ def plot(
                 name="random measured DEV doses", showlegend=True,
             ))
         random_peaks = []
+        random_peak_labels = []
         for side, sign in (("+C", 1), ("-C", -1)):
-            candidates = [
-                {
-                    "effect": mean(row["effect"] for row in rows_at_dose),
-                    "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
-                }
-                for C in sorted({row["C"] for row in random})
-                if (rows_at_dose := [
-                    row for row in random
-                    if row["side"] == side and row["C"] == C and row["admissible"]
-                ])
-            ]
-            random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
-        figure.add_trace(go.Scatter(
-            x=[row["effect"] for row in random_peaks],
-            y=[row["off_axis_perturbation"] for row in random_peaks],
-            mode="markers", marker={"color": "#888888", "size": 8, "symbol": "circle-open"},
-            text=["random +C table peak", "random -C table peak"],
-            hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
-            showlegend=False,
-        ))
+            if rung_controls is not None:
+                candidates = [
+                    {"effect": rung["effect"], "off_axis_perturbation": rung["off_axis_perturbation"]}
+                    for rung in rung_controls[side]
+                ]
+            else:
+                candidates = [
+                    {
+                        "effect": mean(row["effect"] for row in rows_at_dose),
+                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
+                    }
+                    for C in sorted({row["C"] for row in random})
+                    if (rows_at_dose := [
+                        row for row in random
+                        if row["side"] == side and row["C"] == C and row["admissible"]
+                    ])
+                ]
+            if candidates:
+                random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
+                random_peak_labels.append(f"random {side} calibrated peak" if rung_controls is not None else f"random {side} table peak")
+        if random_peaks:
+            figure.add_trace(go.Scatter(
+                x=[row["effect"] for row in random_peaks],
+                y=[row["off_axis_perturbation"] for row in random_peaks],
+                mode="markers", marker={"color": "#888888", "size": 8, "symbol": "circle-open"},
+                text=random_peak_labels,
+                hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
+                showlegend=False,
+            ))
     colors = {
         "vjp_delta": "#0072b2", "mean_diff": "#d55e00", "pca": "#cc79a7",
         "J_word": "#009e73", "vjp_mlp_up_shrink": "#e69f00",
