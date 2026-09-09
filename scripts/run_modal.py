@@ -80,7 +80,7 @@ def j_lens_gap_clamp(output: str = "audits/20260907_j_lens_gap_clamp/results-v1.
     volumes={"/cache": cache},
     timeout=15 * 60,
 )
-def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str:
+def paper_coordinate_diagnostic_remote(output: str, source_revision: str, layers: str) -> str:
     """Run the bounded paper-native coordinate audit remotely and return its JSON."""
     destination = Path("/tmp/paper-coordinate-diagnostic.json")
     try:
@@ -90,6 +90,7 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str
                 "--source-revision", source_revision,
                 "--prompt-mode", "chat",
                 "--coefficient", "1",
+                "--layers", layers,
                 "--coordinate-diagnostics",
                 "--limit-categories", "1",
                 "--limit-targets", "1",
@@ -107,11 +108,12 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str) -> str
 def paper_coordinate_diagnostic(
     output: str = "experiments/v14-paper-native-verbal-chat-country-swap-coordinate-diagnostic/results.json",
     source_revision: str = "fc30b122bfe28abfc1afa1fabc27a75623b8bc1b",
+    layers: str = "13,14,15,16,17,18,19,20,21",
 ):
     destination = REPO / "outputs" / output
     if destination.exists():
         raise FileExistsError(destination)
-    result = paper_coordinate_diagnostic_remote.remote(output, source_revision)
+    result = paper_coordinate_diagnostic_remote.remote(output, source_revision, layers)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(result)
     print(f"PAPER_COORDINATE_DIAGNOSTIC_DOWNLOADED output={destination}")

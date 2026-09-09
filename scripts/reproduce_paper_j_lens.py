@@ -20,6 +20,13 @@ WORKSPACE_LAYERS = tuple(range(13, 22))
 PROMPT_TEMPLATE = "Think of a {category}. Answer in one word:"
 
 
+def parse_layers(value: str) -> tuple[int, ...]:
+    layers = tuple(int(layer) for layer in value.split(","))
+    if not layers or len(set(layers)) != len(layers):
+        raise ValueError("layers must be a nonempty comma-separated set")
+    return layers
+
+
 def token_id(tokenizer, word: str, prefix: str) -> int | None:
     ids = tokenizer(prefix + word, add_special_tokens=False).input_ids
     return ids[0] if len(ids) == 1 else None
@@ -113,9 +120,11 @@ def main() -> None:
     parser.add_argument("--prompt-mode", choices=("raw", "chat"), default="raw")
     parser.add_argument("--clean-only", action="store_true")
     parser.add_argument("--coefficient", type=float, default=1.0)
+    parser.add_argument("--layers", default=",".join(map(str, WORKSPACE_LAYERS)))
     parser.add_argument("--coordinate-diagnostics", action="store_true")
     parser.add_argument("--source-revision", required=True)
     args = parser.parse_args()
+    layers = parse_layers(args.layers)
 
     data = json.loads(args.data.read_text())
     tokenizer = AutoTokenizer.from_pretrained(args.model)
@@ -157,7 +166,7 @@ def main() -> None:
         logger.info("category={} clean={} source_id={} valid_targets={}", category, tokenizer.decode([source_id]), source_id, len(target_ids))
         for target_id in target_ids:
             vector, metadata = j_lens_coordinate_swap(
-                model, WORKSPACE_LAYERS, source_token_id=source_id,
+                model, layers, source_token_id=source_id,
                 target_token_id=target_id, lens_file=args.lens_file,
             )
             zero = vector
@@ -218,7 +227,7 @@ def main() -> None:
             **common,
             "operator": "h + V(swap(V^dagger h) - V^dagger h)",
             "coefficient": args.coefficient,
-            "layers":  list(WORKSPACE_LAYERS), "n_trials": len(trials),
+            "layers": list(layers), "n_trials": len(trials),
             "n_top1": sum(trial["success_top1"] for trial in trials),
             "top1_rate": sum(trial["success_top1"] for trial in trials) / len(trials),
             "median_clean_target_rank": float(torch.tensor([trial["clean_target_rank"] for trial in trials]).median()),

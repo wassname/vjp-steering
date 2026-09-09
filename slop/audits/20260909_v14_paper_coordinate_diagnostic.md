@@ -18,8 +18,12 @@ The final logits move away from the target: Germany is rank 14/logit 16.375 clea
 
 Vendor `JacobianLens.transport` uses `residual @ J.T` (`docs/vendor/jacobian-lens/jlens/lens.py:135-142`). Our basis row is `unembedding[token] @ J`, the same row-vector orientation for the coordinate definition. Vendor `HFLensModel.unembed` applies final RMS normalization before the lm head (`docs/vendor/jacobian-lens/jlens/hf.py:167-171`), whereas the causal swap basis is raw `W_U @ J`; producer/reference code read does not establish that the published causal intervention includes a derivative through this nonlinear normalization.
 
-## Decision
+## Layer-scope check and decision
 
-The evidence rejects the current hypothesis that the alpha-one failure is a missing hook or a transposed coordinate operation. It leaves two live explanations: (1) the fitted lens coordinate is only a readout, not a robust causal direction after Qwen's later computation/final normalization; (2) the paper's prompt-active intervention and its producer/checkpoint setup differ materially from this fixed configuration. Do not sweep alpha or call the fixed-token DEV J-lens method repaired from this result. The next repair must be chosen from the paper/reference mismatch, not from another blind dose grid.
+The paper supports the full-band assumption, rather than a single selected layer: it says “all swaps are applied at the full workspace layer range” (Figure 62 caption) and describes swaps at every token position “across a band of intermediate layers.” It also says its default model is Claude Sonnet 4.5; our artifact is Qwen/Qwen3.5-4B. The paper therefore does not establish exact model transfer.
+
+A same-basis alpha-one algebra check is an involution (maximum absolute return error `2.53e-07`; `slop/logs/20260909_j_lens_dev/j_lens_swap_involution.log`). It does not establish that swaps across different layer bases cancel. The alternating layer means in the real run are suggestive only.
+
+The evidence rejects the current hypothesis that the alpha-one failure is a missing hook or a transposed coordinate operation. It leaves two live explanations: (1) repeated full-band writes weaken or cancel the source/target change before the final answer; (2) the fitted lens coordinate is only a readout, or Qwen/prompt/producer differs materially from the paper setting. One bounded alpha-one layer-19 versus existing full-band diagnostic is justified to distinguish the first explanation. Do not sweep alpha or call the fixed-token DEV J-lens method repaired from this result.
 
 -- PI/OpenAI

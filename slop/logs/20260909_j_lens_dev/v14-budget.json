@@ -12,7 +12,7 @@
   "v14_remote_generation_reserve_usd": "9.00",
   "v14_paired_judging_reserve_usd": "2.00",
   "v14_available_after_remote_and_judging_reserve_usd": "9.00",
-  "v14_post_comparison_reserves_usd": {"fresh_eyes_review": "2.00", "remote_paper_coordinate_diagnostic_task859": "1.00", "common_lower_dose_extension_not_launched": "5.00", "contingency": "1.00"},
+  "v14_post_comparison_reserves_usd": {"fresh_eyes_review": "2.00", "remote_paper_coordinate_diagnostic_tasks859_860": "1.00", "single_layer_coordinate_diagnostic": "1.00", "common_lower_dose_extension_not_launched": "5.00", "contingency": "0.00"},
   "v14_remaining_unallocated_usd": "7.36838760",
   "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",

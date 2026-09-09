@@ -1,0 +1,4 @@
+PAPER_LAYER_SCOPE_SOURCE_CHECK_PASS
+paper: “all swaps are applied at the full workspace layer range” (Figure 62 caption).
+paper: “at every token position across a band of intermediate layers” (flexible-generalization protocol).
+paper: default model is Claude Sonnet 4.5; our artifact is Qwen/Qwen3.5-4B.
