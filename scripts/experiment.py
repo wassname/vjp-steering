@@ -80,6 +80,16 @@ def parse_extension_coeffs(text: str) -> list[float]:
     return [float(value) for value in (text or "").split(",") if value.strip()]
 
 
+def validate_injection_concepts(method: str, plus_concept: str, minus_concept: str) -> None:
+    """Injection concept overrides must name both sides together on j_lens_injection."""
+    if not (plus_concept or minus_concept):
+        return
+    if method != "j_lens_injection":
+        raise ValueError("injection concept flags require the j_lens_injection method")
+    if bool(plus_concept) != bool(minus_concept):
+        raise ValueError("injection concepts must be given for both sides together")
+
+
 def validate_explicit_grid(method: str, dev: bool, plus: str, minus: str) -> dict[str, list[float]] | None:
     """Validate an explicit bounded DEV dose grid that skips calibration search.
 
@@ -213,6 +223,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extension-minus", default="")
     parser.add_argument("--explicit-grid-plus", default="")
     parser.add_argument("--explicit-grid-minus", default="")
+    parser.add_argument("--injection-plus-concept", default="")
+    parser.add_argument("--injection-minus-concept", default="")
     parser.add_argument("--concept-layers", default="")
     parser.add_argument("--concept-application-mask", choices=("user_turn", "final_prompt"), default="user_turn")
     parser.add_argument("--concept-sides", default="+C,-C")
@@ -275,6 +287,7 @@ def parse_args() -> argparse.Namespace:
     reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
     validate_extension_args(args.method, args.dev, args.extension_id, args.extension_plus, args.extension_minus)
     validate_explicit_grid(args.method, args.dev, args.explicit_grid_plus, args.explicit_grid_minus)
+    validate_injection_concepts(args.method, args.injection_plus_concept, args.injection_minus_concept)
     return args
 
 
@@ -592,16 +605,18 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
                 raise ValueError(f"j_lens_injection requested layers {layers} not subset of available {available}")
         else:
             layers = (16,)  # same single source-active L16 as the swap/unit comparisons
+        plus_concept = args.injection_plus_concept or J_LENS_SWAP_TARGET
+        minus_concept = args.injection_minus_concept or J_LENS_SWAP_SOURCE
         from vjp_steering.vjp import j_lens_injection
         vectors, metas = {}, {}
-        for side, concept in (("+C", J_LENS_SWAP_TARGET), ("-C", J_LENS_SWAP_SOURCE)):
+        for side, concept in (("+C", plus_concept), ("-C", minus_concept)):
             vector, meta = j_lens_injection(model, tokenizer, layers, concept_token=concept)
             vectors[side], metas[side] = vector, meta
         return vectors, {
             "source_layers": list(layers),
             "semantic_directions": metas,
-            "coefficient_semantics": "positive C injects the side concept (+C flattering, -C abrasive); persona choice is our adaptation, single-concept injection is paper behavior",
-        }, 0, f"paper_injection:+C={J_LENS_SWAP_TARGET}/-C={J_LENS_SWAP_SOURCE}:L{','.join(map(str,layers))}"
+            "coefficient_semantics": f"positive C injects the side concept (+C {plus_concept}, -C {minus_concept}); persona choice is our adaptation, single-concept injection is paper behavior",
+        }, 0, f"paper_injection:+C={plus_concept}/-C={minus_concept}:L{','.join(map(str,layers))}"
 
     layers = (
         tuple(int(layer) for layer in args.layers.split(",") if layer)
@@ -1989,6 +2004,19 @@ def self_test() -> None:
     assert applied_coefficient("j_lens_injection", "-C", 2.0) == 2.0
     assert applied_coefficient("j_lens_injection", "+C", 2.0) == 2.0
     assert applied_coefficient("j_lens_swap", "-C", 2.0) == -2.0
+    validate_injection_concepts("j_lens_injection", "", "")
+    validate_injection_concepts("j_lens_injection", "trusting", "doubtful")
+    for bad in [
+        ("mean_diff", "trusting", "doubtful"),
+        ("j_lens_injection", "trusting", ""),
+        ("j_lens_injection", "", "doubtful"),
+    ]:
+        try:
+            validate_injection_concepts(*bad)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"injection concept validation must reject {bad}")
     print("EXPERIMENT_SELF_TEST_PASS quick_calls=270 full_calls=400 resume_cells=18")
 
 
