@@ -1,0 +1,129 @@
+2026-09-09T12:18:06+08:00
+Group "api" (4 parallel): running
+Group "default" (1 parallel): paused
+Group "local_gpu" (1 parallel): running
+Group "modal" (1 parallel): running
+{
+  "running": [
+    {
+      "id": 815,
+      "group": "default",
+      "path": "/workspace/2026/LUCID3_wikit",
+      "label": "why: larger paired MLP reader/writer needs a fitting check; resolve: batch-eight memory and complete local readouts before held-out training; args --resume outputs/runs/20260909T023532Z_persistent_fit_r1_d3/last.pt --steps 1000 --learning-rate 1e-5 --eval-every 100",
+      "status": {
+        "Running": {
+          "enqueued_at": "2026-09-09T11:40:40.142925759+08:00",
+          "start": "2026-09-09T11:40:40.668340805+08:00"
+        }
+      }
+    }
+  ],
+  "queued_default": [
+    {
+      "id": 767,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: selected component may omit ant readout information; resolve: compare full-state J action without full matrix"
+    },
+    {
+      "id": 768,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on dog legs; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 769,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on dog name; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 770,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on dog property; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 771,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on ant legs; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 772,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on ant name; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 773,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: validate common L22-24 C2 on ant property; resolve: correct clean controls and consistent transfer on plain questions"
+    },
+    {
+      "id": 775,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: selected dog band may just cause generic changes; resolve: eight random spans matched per-token edit magnitude"
+    },
+    {
+      "id": 776,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: selected ant band may just cause generic changes; resolve: eight random spans matched per-token edit magnitude"
+    },
+    {
+      "id": 778,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: dog clean controls may fail from assistant-prefilled questions; resolve: user-role and generation-boundary repair must give correct clean answers before assessing fixed L22-24 C2 transfer"
+    },
+    {
+      "id": 779,
+      "path": "/workspace/2026/suppressed-activations",
+      "label": "why: ant clean controls may fail from assistant-prefilled questions; resolve: user-role and generation-boundary repair must give correct clean answers before assessing fixed L22-24 C2 transfer"
+    },
+    {
+      "id": 802,
+      "path": "/workspace/2026/mfv/manifold-steer",
+      "label": "why: logit gain may only weaken effective steering; resolve: natural-choice behavior bounds and full512 coherence across finer paired doses"
+    },
+    {
+      "id": 805,
+      "path": "/workspace/2026/mfv/manifold-steer",
+      "label": "why: learned flow recovery may erase steering or miss fixed-direction corruption; resolve: held-out recovery, clean drift and full512-token flow/AE/PCA comparisons before the tradeoff test"
+    },
+    {
+      "id": 816,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs paired-order paper J-lens DEV point; resolve: generate every calibrated dose against frozen shared bare before judging"
+    },
+    {
+      "id": 817,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 DEV plot needs mean_diff baseline on the frozen cohort; resolve: generate both sides and calibrated doses using shared bare"
+    },
+    {
+      "id": 818,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 DEV plot needs vjp_delta baseline on the frozen cohort; resolve: generate both sides and calibrated doses using shared bare"
+    },
+    {
+      "id": 819,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs random DEV region seed=0 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare"
+    },
+    {
+      "id": 820,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs random DEV region seed=1 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare"
+    },
+    {
+      "id": 821,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs random DEV region seed=2 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare"
+    },
+    {
+      "id": 822,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs random DEV region seed=3 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare"
+    },
+    {
+      "id": 823,
+      "path": "/workspace/2026/jspace/j-steer_pub",
+      "label": "why: v14 needs random DEV region seed=4 on the frozen cohort; resolve: generate both signs and calibrated doses using shared bare"
+    }
+  ]
+}
+1486646, [Not Found], 19224 MiB
