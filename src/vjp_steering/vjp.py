@@ -114,7 +114,7 @@ class JLensUnitDirection:
     def apply(_mod, _x, y, shared, _stacked, cfg: JLensUnitDirectionC):
         if y.shape[-2] == 1:
             return y
-        d_hat = shared["d_hat"].to(y.device)
+        d_hat = shared["d_hat"].to(device=y.device, dtype=y.dtype)
         return y + cfg.coeff * d_hat
 
 
@@ -553,8 +553,15 @@ def j_lens_unit_direction(
     target_token: str = J_LENS_SWAP_TARGET,
     lens_file: Path | None = None,
 ) -> tuple[Vector, dict[str, object]]:
-    """Fixed unit-direction ActAdd from mean hidden state (paper-supported)."""
-    from vjp_steering.walk import read_cohort, generation_inputs
+    """Fixed unit-direction ActAdd: normalize(v_target - v_source) at L16.
+
+    Since every saved L16 mean source-target gap (c_source - c_target) is positive
+    (final-position mean 0.952, mean-over-positions mean 0.411, per-prompt min 0.071),
+    the mean-swap direction V(swap(c_bar)-c_bar) = (c_target-c_source)(v_source-v_target)
+    is exactly proportional to (v_target - v_source). Thus d_hat = normalize(v_target - v_source)
+    reuses existing coordinate-basis extraction with no cohort loading or extra forwards.
+    Coefficient C is step size in residual units, C=0 is bare in-pipeline control, h_orth preserved.
+    """
     lens_file, checkpoint = _load_j_lens(model, layers, lens_file)
     unembedding = model.lm_head.weight.detach().float().cpu()
     def single_id(word: str) -> int:
@@ -564,42 +571,18 @@ def j_lens_unit_direction(
         return ids[0]
     source_id = single_id(source_token)
     target_id = single_id(target_token)
-    rows, _ = read_cohort(15)
-    try:
-        cohort_ids = json.load(open("slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json"))["cohort"]["scenario_ids"]
-        rows = [r for r in rows if r["scenario"] in cohort_ids]
-        rows = sorted(rows, key=lambda r: cohort_ids.index(r["scenario"]))
-    except Exception:
-        pass
-    prompts = generation_inputs(tokenizer, rows)
-    layer_hbar = {layer: [] for layer in layers}
-    for prompt in prompts:
-        encoded = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(next(model.parameters()).device)
-        final = int(encoded.attention_mask.sum().item() - 1)
-        captured = {}
-        handles = [model.model.layers[l].register_forward_hook(lambda _m,_inp,out,l=l: captured.__setitem__(l, (out[0] if isinstance(out, tuple) else out)[0, final].float().detach().cpu())) for l in layers]
-        with torch.inference_mode():
-            model(**encoded, use_cache=False)
-        for h in handles:
-            h.remove()
-        for layer in layers:
-            layer_hbar[layer].append(captured[layer])
     layer_state, layer_metadata = {}, {}
     for layer in layers:
-        h_bar = torch.stack(layer_hbar[layer]).mean(dim=0)
-        basis = unembedding[[source_id, target_id]] @ checkpoint["J"][layer].float()
-        dual = torch.linalg.pinv(basis).T
-        c_bar = dual @ h_bar
-        c_swapped = c_bar.flip(0)
-        V = basis.T
-        d = V @ (c_swapped - c_bar)
+        basis = unembedding[[source_id, target_id]] @ checkpoint["J"][layer].float()  # 2 x d
+        v_source, v_target = basis[0], basis[1]
+        d = v_target - v_source  # fixed direction, proportional to mean-swap delta since gap >0
         d_hat = d / d.norm()
         if not torch.isfinite(d_hat).all() or d_hat.norm() == 0:
             raise ValueError(f"nonfinite d_hat at layer {layer}")
         layer_state[layer] = {"d_hat": d_hat}
-        layer_metadata[str(layer)] = {"d_norm": float(d.norm().item()), "d_hat_norm": float(d_hat.norm().item()), "c_bar": c_bar.tolist(), "c_swapped": c_swapped.tolist()}
-    vector = Vector(JLensUnitDirectionC(layers=layers, source_token=source_word, target_token=target_word), layer_state, {layer: {} for layer in layers})
-    return vector, {"operator": "fixed_unit_direction_ActAdd", "equation": "h + C * d_hat where d_hat = V(swap(c_bar)-c_bar)/||...|| at mean h_bar, h_orth preserved", "coefficient_semantics": "C is step size in residual units along unit swap direction, C=0 is bare in-pipeline control", "source_layers": list(layers), "source_token": source_word, "target_token": target_word, "source_token_id": source_id, "target_token_id": target_id, "lens_file": str(lens_file), "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_metadata}
+        layer_metadata[str(layer)] = {"d_norm": float(d.norm().item()), "d_hat_norm": float(d_hat.norm().item()), "v_source_norm": float(v_source.norm().item()), "v_target_norm": float(v_target.norm().item())}
+    vector = Vector(JLensUnitDirectionC(layers=layers, source_token=source_token, target_token=target_token), layer_state, {layer: {} for layer in layers})
+    return vector, {"operator": "fixed_unit_direction_ActAdd", "equation": "h + C * d_hat where d_hat = normalize(v_target - v_source) (mean gap >0 so proportional to V(swap(c_bar)-c_bar))", "coefficient_semantics": "C is step size in residual units along unit direction, C=0 is bare in-pipeline control", "source_layers": list(layers), "source_token": source_token, "target_token": target_token, "source_token_id": source_id, "target_token_id": target_id, "lens_file": str(lens_file), "lens_sha256": hashlib.sha256(lens_file.read_bytes()).hexdigest(), "lens_n_prompts": checkpoint["n_prompts"], "layers": layer_metadata}
 
 
 @contextmanager

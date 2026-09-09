@@ -1,0 +1,7 @@
+PASS unit direction basic: d_hat normalized
+PASS plane-residual invariance for both swap and unit
+PASS zero-dose identity
+PASS signed coefficient math
+PASS dtype/device/shape and multi-position (broadcast)
+PASS decode behavior (coordinate shift)
+ALL CPU preflight checks passed

@@ -196,6 +196,14 @@
       "duration_seconds": 373,
       "status": "success",
       "role": "DEV repair iteration 1: single source-active layer16 (DEV abrasive 0.798>-0.154) with unchanged paper swap, both +C/-C, frozen controls"
+    },
+    {
+      "task": 875,
+      "modal_app": "ap-fvh8RWaDmcJ0Muv8TyVCei",
+      "duration_seconds": 39,
+      "status": "failed",
+      "cause": "from vjp_steering.walk import... (nonexistent, should be scripts.walk) before any result",
+      "role": "DEV repair iteration 2 attempt 1: j_lens_unit_direction with wrong import, failed before result (packaging, no coordinate result)"
     }
   ],
   "judging_attempts": [
