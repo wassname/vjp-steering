@@ -198,6 +198,14 @@
     24
    ],
    "construction": "one seeded unit random vector per source layer; use the same vector with positive and negative coefficient"
+  },
+  "j_lens_injection_L16": {
+   "experiment_id": "v14-dev-j-lens-injection-L16",
+   "seed": 0,
+   "source": "paper single-concept positive injection L16 (+C flattering 80238, -C abrasive 90474), unit-normalized raw W_U J vectors, explicit grid 1,2,4,8,16 per side, no calibration search",
+   "source_layers": [
+    16
+   ]
   }
  },
  "constraints": [

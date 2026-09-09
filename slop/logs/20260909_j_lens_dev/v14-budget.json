@@ -261,6 +261,13 @@
    "duration_seconds": "~70+~50+~55+~58+~55 serial wall",
    "status": "success",
    "role": "low_extension_0p40 AB/BA judging serial 899:54/900:36/901:58/902:56/903:46 fresh calls (250 total, 50 cache hits), all JUDGE_COMPLETE missing=0"
+  },
+  {
+   "task": 913,
+   "modal_app": "ap-zoCxUvqiF7rn8bG4MdVsXE",
+   "duration_seconds": 126,
+   "status": "success",
+   "role": "paper injection L16: explicit grid 1,2,4,8,16 per side (10 cells) + reused bare, per-side vectors flattering/abrasive, no calibration search"
   }
  ],
  "judging_attempts": [
@@ -426,6 +433,25 @@
    "task": "cost-recon-v2",
    "status": "recorded",
    "role": "v14 judging actuals from cost_usd records: $0.9904 over 6622 keys (each exactly one positive record; zero byte-duplicates, zero zero-only) vs $2.00 reserve; extension newly incurred $0.0380 (250 keys) + $0.0078 historical floor (50 shared keys); unrecorded retries remain reserved",
+   "model": "deepseek/deepseek-v4-flash-0731"
+  },
+  {
+   "task": 914,
+   "status": "success",
+   "cached": 53,
+   "api_calls": 241,
+   "missing": 0,
+   "role": "injection L16 AB/BA judgments (10 cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": "cost-query-inj",
+   "status": "recorded",
+   "role": "injection judging actual <=$0.0497 over 294 keys (each exactly one positive record); diagnostic total ~$0.17 vs $0.75 ceiling",
    "model": "deepseek/deepseek-v4-flash-0731"
   }
  ],

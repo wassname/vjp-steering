@@ -1,0 +1,24 @@
+{
+  "experiment_id": "v14-dev-j-lens-injection-L16",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 8.0,
+      "candidates_descending": [
+        8.0,
+        1.0
+      ],
+      "effect": 0.5866666666666667,
+      "off_axis_perturbation": 0.7966666666666666
+    },
+    "-C": {
+      "selected_C": 2.0,
+      "candidates_descending": [
+        2.0,
+        1.0
+      ],
+      "effect": -0.22666666666666666,
+      "off_axis_perturbation": 0.18
+    }
+  }
+}

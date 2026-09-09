@@ -17,5 +17,6 @@ The gray region and measured gray dots are five random vectors. It is a descript
 | j_lens_unit_L16 | +0.423 | 0.603 | 0.180 | 1.480 | 0.283 | 1 | 29 | 17 |
 | j_lens_swap_L16 | +0.130 | 0.453 | 0.323 | 1.787 | 0.367 | 1 | 29 | 15 |
 | j_lens_swap | +0.040 | 0.513 | **0.130** | 0.080 | **0.040** | 1 | 21 | 13 |
+| j_lens_injection_L16 | -0.210 | 0.227 | 0.180 | 0.587 | 0.797 | 1 | 10 | 6 |
 | vjp_delta | — | 2.217 | 0.423 | not confirmed | — | 1 | 21 | 19 |
 | *random* | — | not confirmed | — | 1.913 | 0.527 | 5 | 4 | 1 |

@@ -160,13 +160,40 @@ not necessarily found the direction the model actually computes with." The abras
 
 Test EXECUTED CPU-only on existing rows (`slop/logs/20260909_j_lens_dev/neg_direction_dose_response.log`):
 per-scenario -C sign consistency across all 10 measured full-band doses (C=0.165-0.333). Result: 0/15
-scenarios monotonic-intended; signs scatter and flip with dose (sw_pnf_02 -6.85 -> +0.10 at top doses;
-med_pnf_03 +0.35 -> -5.30; phys_pnf_02 +8.15 and sw_pnf_03 +7.00 wrong-direction growth at top doses).
-H1 STANDS on measured data: -C is an unvalidated anti-exchange artifact, not a persona lever. Consequence:
-the paper-supported repair, if any, is +C-only (exchange at positive alpha, the validated operator); -C
-needs a different operator, not a dose. No new run launched on this evidence.
+scenarios perfectly monotonic-intended; signs scatter and flip with dose (sw_pnf_02 -6.85 -> +0.10 at top
+doses; med_pnf_03 +0.35 -> -5.30; phys_pnf_02 +8.15 and sw_pnf_03 +7.00 wrong-direction growth at top doses).
+WITHDRAWN AS PROOF: 0/15 perfect monotonicity over a grid that includes incoherent high-damage doses plus
+judge noise cannot identify the operator as the cause, nor rule out other paper operators. The scatter is
+CONSISTENT with H1 (anti-exchange is unvalidated extrapolation with no reason to install the opposite
+persona) but does not prove it. Likewise withdrawn: the conclusion that paper-supported repair, if any, is
++C-only — the paper's Writing section validates positive-alpha injection of EITHER concept
+(h <- h + alpha v_t; "positive steering to test introspective detection of an injected concept"), so
+semantic direction need not equal coefficient sign. The discriminating test is the injection diagnostic below.
 
-## 6. Task 876 accounting fix (no daemon needed)
+## 6. Injection diagnostic outcome (paper operator, bounded grid, both sides positive)
+
+`v14-dev-j-lens-injection-L16`: +C flattering (80238) / -C abrasive (90474), unit-normalized raw W_U J
+vectors, explicit grid 1,2,4,8,16 per side, 10 cells + reused shared bare, no calibration search (task 913,
+126s wall Success, app ap-zoCxUvqiF7rn8bG4MdVsXE). Judged once (task 914, 241 fresh calls, JUDGE_COMPLETE
+missing=0). Integrated in canonical CSV/plots as amber `j_lens_injection_L16`; swaps and unit control
+untouched and distinctly labeled.
+
+Measured (15/15 per cell): +C: C1 +0.24/0.207, C2 -0.04/0.063, C4 -0.27/0.13, C8 +0.587/0.797, C16 incoherent;
+-C: C1 -0.043/0.08, C2 -0.227/0.18, C4 +0.577/0.193 wrong-direction, C8/C16 incoherent. Best cells are
+again outlier-driven (+C8: med_pnf_01 +6.0 and sw_pnf_03 +7.5 vs two -3.9s, 3/15 reversals; -C2: leg_pnf_02
+-7.15 alone, 6/15 reversals). Raw-text anomaly noted: +C8 sw_pnf_03 (+7.5 @ 0.0) reads as premise REJECTION
+("most developers avoid..."), matching bare's skepticism — likely misjudged, making +C8 fragile.
+
+Verdict: largely null on both sides at low damage. Positive injection of the single concepts does NOT
+reproduce the swap's +C8.14 (+1.243) and does NOT beat the 0.40 rung. Caveat (not excuse): dose units differ
+between operators (swap C scales the coordinate delta, injection C is residual units), so magnitudes are
+not directly comparable — but at these magnitudes injection moves almost nothing coherent. The swap's +C
+effect is therefore NOT explained by adding flattering alone; the exchange (simultaneous state-dependent
+removal+addition) or another mechanism drives it. -C injection likewise fails to install abrasiveness.
+Spend: gen ~$0.124 (126s est, no receipts) + judging <=$0.0497 (294 keys each one positive record) ~= $0.17
+vs the $0.75 ceiling (sourced: $2.00 judging reserve - $0.9904 recorded - $0.25 retained = $0.7596).
+
+## 7. Task 876 accounting fix (no daemon needed)
 
 - Wall: pueue state.json `876.status.Done`: start 18:40:08, end 18:48:25 (+08:00) = 497s, Success.
 - GPU-side: `/home/code/.local/share/pueue/task_logs/876.log` first generation line 10:40:45 UTC, `GPU_STAGE_COMPLETE ... cells=29` 10:48:18 UTC = 453s; Modal app `ap-huwTvWxxcxfrkieyYfx5M9`.
