@@ -104,12 +104,18 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str, layers
         cache.commit()
 
 
-@app.function(gpu="H100", volumes={"/cache": cache}, timeout=15 * 60)
+dev_abrasive_image = (
+    base_image.add_local_dir(REPO / "scripts", "/repo/scripts")
+    .add_local_file(REPO / "slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json", "/repo/slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json")
+)
+
+
+@app.function(gpu="H100", image=dev_abrasive_image, volumes={"/cache": cache}, timeout=15 * 60)
 def dev_abrasive_coords_remote(output: str, revision: str) -> str:
     destination = Path("/cache/outputs") / output
     if destination.exists():
         raise FileExistsError(destination)
-    subprocess.run([sys.executable, "slop/scripts/20260909_dev_abrasive_coords.py", "--output", str(destination)], cwd="/repo", check=True)
+    subprocess.run([sys.executable, "scripts/dev_abrasive_coords.py", "--output", str(destination)], cwd="/repo", check=True)
     cache.commit()
     return destination.read_text()
 
