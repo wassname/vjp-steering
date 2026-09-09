@@ -207,10 +207,54 @@
   },
   {
    "task": 876,
-   "modal_app": "not_captured_pueue_unavailable",
-   "duration_seconds": "not_captured",
+   "modal_app": "ap-huwTvWxxcxfrkieyYfx5M9",
+   "duration_seconds": 497,
    "status": "success",
-   "role": "DEV unit-direction L16 control: 29 calibrated cells (14 +C, 15 -C) + reused shared bare; requested {0,.25,.5,1,2,4,8} grid silently ignored by DEV search_boundary/dev_grid (no C=0 hooked cell); see slop/audits/20260909_task876_actual_scope.md"
+   "role": "DEV unit-direction L16 control: 29 calibrated cells (14 +C, 15 -C) + reused shared bare + extraction; requested {0,.25,.5,1,2,4,8} grid silently ignored by DEV search_boundary/dev_grid (no C=0 hooked cell); wall 18:40:08-18:48:25+08, GPU-side 10:40:45-10:48:18Z; billing unknown, $1 iteration2 reserve retained as ceiling",
+   "gpu_side_generation_seconds": 453
+  },
+  {
+   "task": 882,
+   "modal_app": "ap-vt7oWGOlOKWs6XY378aYSs",
+   "duration_seconds": 70,
+   "status": "success",
+   "role": "low_extension_0p40 seed0: append 0.40xC_approx +C=1.0834/-C=0.8576 cells to frozen s0-r2 (saved vectors by hash, shared bare); grid/boundaries/cohort verified identical"
+  },
+  {
+   "task": 883,
+   "modal_app": "ap-22vpRnkfpDE2dqzlzEtRow",
+   "duration_seconds": 55,
+   "status": "success",
+   "role": "low_extension_0p40 seed1: append 0.40xC_approx +C=0.9632/-C=0.9514 cells to frozen s1-r2 (saved vectors by hash, shared bare); grid/boundaries/cohort verified identical"
+  },
+  {
+   "task": 884,
+   "modal_app": "ap-1AZft6SQnC76s6yjDC3KEg",
+   "duration_seconds": 58,
+   "status": "success",
+   "role": "low_extension_0p40 seed2: append 0.40xC_approx +C=0.8000/-C=1.1071 cells to frozen s2-r2 (saved vectors by hash, shared bare); grid/boundaries/cohort verified identical"
+  },
+  {
+   "task": 885,
+   "modal_app": "ap-qyR1GVocKX8FnULztx35xP",
+   "duration_seconds": 56,
+   "status": "success",
+   "role": "low_extension_0p40 seed3: append 0.40xC_approx +C=1.0834/-C=1.3157 cells to frozen s3-r2 (saved vectors by hash, shared bare); grid/boundaries/cohort verified identical"
+  },
+  {
+   "task": 886,
+   "modal_app": "ap-CFGbzljP0wxSxdIGrGLmQ7",
+   "duration_seconds": 49,
+   "status": "success",
+   "role": "low_extension_0p40 seed4: append 0.40xC_approx +C=1.1571/-C=0.9771 cells to frozen s4-r2 (saved vectors by hash, shared bare); grid/boundaries/cohort verified identical"
+  },
+  {
+   "task": 892,
+   "modal_app": "none_shell_quoting",
+   "duration_seconds": 1,
+   "status": "failed_before_dispatch",
+   "cause": "combined judge loop misquoted under pueue sh (zero API calls, zero spend)",
+   "role": "superseded by serial per-seed judge tasks 899-903"
   }
  ],
  "judging_attempts": [
@@ -306,6 +350,71 @@
     "BA"
    ],
    "automatic_retries": 0
+  },
+  {
+   "task": 899,
+   "status": "success",
+   "cached": "remainder",
+   "api_calls": 54,
+   "missing": 0,
+   "role": "low_extension_0p40 seed0 AB/BA judgments (2 new cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": 900,
+   "status": "success",
+   "cached": "remainder",
+   "api_calls": 36,
+   "missing": 0,
+   "role": "low_extension_0p40 seed1 AB/BA judgments (2 new cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": 901,
+   "status": "success",
+   "cached": "remainder",
+   "api_calls": 58,
+   "missing": 0,
+   "role": "low_extension_0p40 seed2 AB/BA judgments (2 new cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": 902,
+   "status": "success",
+   "cached": "remainder",
+   "api_calls": 56,
+   "missing": 0,
+   "role": "low_extension_0p40 seed3 AB/BA judgments (2 new cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
+  },
+  {
+   "task": 903,
+   "status": "success",
+   "cached": "remainder",
+   "api_calls": 46,
+   "missing": 0,
+   "role": "low_extension_0p40 seed4 AB/BA judgments (2 new cells, frozen rubric)",
+   "model": "deepseek/deepseek-v4-flash-0731",
+   "orders": [
+    "AB",
+    "BA"
+   ]
   }
  ],
  "spend_status": "Modal CLI emitted no receipts; durations for 866-873 and judging 874 are observed wall times, not billed amounts, so reserves remain conservative. Remote attempts total ~4,400s (including 866:41s packaging fail, 867:13s, 868:21s, 869:20s, 870:18s, 871:40s, 872:47s success, 873:373s DEV L16). At observed rate $0.0997/101s, 873 alone ~$0.37, but $1.00 reserve for dev_repair_iteration1 is retained as conservative ceiling (unknown charge). Judging 874: 613 calls, ~7m, within $2 paired-judging reserve (actual provider charge unknown, reserved). Tasks 866-871 failures consumed <3 min total, still within $1 dev_repair reserve's conservative bound; no extra allocation. Total v14 reserves: $9.00 (remote) + $2.00 (judging) + $9.00 (post-comparison) = $20.00 within $20 cap; carried $12.00 review reserve separate and retained for fresh-eyes after plot fix. Stop before exceeding."
