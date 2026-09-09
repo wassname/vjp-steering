@@ -1,0 +1,26 @@
+{
+  "experiment_id": "v14-dev-random-s0-r2",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 2.2412929301805575,
+      "candidates_descending": [
+        2.2412929301805575,
+        2.014455126068628,
+        2.0,
+        1.7876173219566984
+      ],
+      "effect": 1.74,
+      "off_axis_perturbation": 0.5733333333333334
+    },
+    "-C": {
+      "selected_C": 1.414996364356512,
+      "candidates_descending": [
+        1.414996364356512,
+        1.0
+      ],
+      "effect": -0.05666666666666663,
+      "off_axis_perturbation": 0.48333333333333334
+    }
+  }
+}

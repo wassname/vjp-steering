@@ -1,0 +1,1034 @@
+{
+  "model": "Qwen/Qwen3.5-4B",
+  "source_revision": "fc30b122bfe28abfc1afa1fabc27a75623b8bc1b",
+  "data": "/workspace/2026/jspace/j-steer_pub/data/vendor/jacobian-lens/verbal-report.json",
+  "data_sha256": "9a33b48074c4565413247bace11d37537a963774936740287f0fb7dff460652c",
+  "prompt_mode": "raw",
+  "candidate_prefix": " ",
+  "prompt_format": "paper verbal-report colon prefill",
+  "clean_rows": [
+    {
+      "category": "country",
+      "prompt": "Think of a country. Answer in one word:",
+      "clean_token_id": 3437,
+      "clean_token": " What",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        6124,
+        9338,
+        15477,
+        5440,
+        6535,
+        17163,
+        14898,
+        9564,
+        6650,
+        11920,
+        14437,
+        46157,
+        35453,
+        30466
+      ],
+      "top_tokens": [
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 13.75
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.5625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 13.5
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 13.4375
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.25
+        },
+        {
+          "token_id": 15451,
+          "token": " Which",
+          "logit": 12.875
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 12.4375
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 12.375
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 12.0625
+        }
+      ]
+    },
+    {
+      "category": "color",
+      "prompt": "Think of a color. Answer in one word:",
+      "clean_token_id": 271,
+      "clean_token": "\n\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        8432,
+        3605,
+        7592,
+        24655,
+        5068,
+        5626,
+        21281,
+        39052,
+        25285,
+        10158,
+        22641,
+        7186,
+        14563,
+        88966
+      ],
+      "top_tokens": [
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 14.4375
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 14.0625
+        },
+        {
+          "token_id": 3605,
+          "token": " Red",
+          "logit": 13.25
+        },
+        {
+          "token_id": 8432,
+          "token": " Blue",
+          "logit": 12.9375
+        },
+        {
+          "token_id": 2438,
+          "token": " red",
+          "logit": 12.875
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 653,
+          "token": " #",
+          "logit": 12.625
+        },
+        {
+          "token_id": 6105,
+          "token": " blue",
+          "logit": 12.25
+        },
+        {
+          "token_id": 498,
+          "token": " [",
+          "logit": 12.125
+        },
+        {
+          "token_id": 1088,
+          "token": " \\",
+          "logit": 11.9375
+        }
+      ]
+    },
+    {
+      "category": "fruit",
+      "prompt": "Think of a fruit. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        7905,
+        21281,
+        73233,
+        76790,
+        87735,
+        43222,
+        61447,
+        49488,
+        68115,
+        80436,
+        42143,
+        22374,
+        2544
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 15.0
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 14.5
+        },
+        {
+          "token_id": 7905,
+          "token": " Apple",
+          "logit": 14.125
+        },
+        {
+          "token_id": 22544,
+          "token": " apple",
+          "logit": 13.3125
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 13.0625
+        },
+        {
+          "token_id": 73233,
+          "token": " Banana",
+          "logit": 12.9375
+        },
+        {
+          "token_id": 1088,
+          "token": " \\",
+          "logit": 12.875
+        },
+        {
+          "token_id": 41674,
+          "token": " banana",
+          "logit": 12.8125
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 12.625
+        },
+        {
+          "token_id": 10838,
+          "token": " \ufffd",
+          "logit": 12.4375
+        }
+      ]
+    },
+    {
+      "category": "sport",
+      "prompt": "Think of a sport. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        44936,
+        36290,
+        55238,
+        20128,
+        35927,
+        26166,
+        38910,
+        49190,
+        55975,
+        45808,
+        69152,
+        72159,
+        27119,
+        57946
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.75
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.5
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.0625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 11.875
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 11.8125
+        },
+        {
+          "token_id": 359,
+          "token": " '",
+          "logit": 11.75
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 11.25
+        },
+        {
+          "token_id": 44936,
+          "token": " Basketball",
+          "logit": 11.0625
+        },
+        {
+          "token_id": 7018,
+          "token": " \\\"",
+          "logit": 10.9375
+        },
+        {
+          "token_id": 36290,
+          "token": " Soccer",
+          "logit": 10.75
+        }
+      ]
+    },
+    {
+      "category": "instrument",
+      "prompt": "Think of a instrument. Answer in one word:",
+      "clean_token_id": 271,
+      "clean_token": "\n\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        53531,
+        45099,
+        43891,
+        34761,
+        10446,
+        25280,
+        64666,
+        17349
+      ],
+      "top_tokens": [
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.3125
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 12.875
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 11.0625
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 11.0
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 10.9375
+        },
+        {
+          "token_id": 359,
+          "token": " '",
+          "logit": 10.6875
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 10.625
+        },
+        {
+          "token_id": 248046,
+          "token": "<|im_end|>",
+          "logit": 10.25
+        },
+        {
+          "token_id": 1088,
+          "token": " \\",
+          "logit": 10.125
+        },
+        {
+          "token_id": 264,
+          "token": " a",
+          "logit": 10.0
+        }
+      ]
+    },
+    {
+      "category": "planet",
+      "prompt": "Think of a planet. Answer in one word:",
+      "clean_token_id": 271,
+      "clean_token": "\n\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        76879,
+        47503,
+        48017,
+        20403,
+        47334,
+        42120,
+        8964,
+        74926,
+        16820,
+        26557,
+        7806
+      ],
+      "top_tokens": [
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 14.25
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 14.0625
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 13.875
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 13.5
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 13.5
+        },
+        {
+          "token_id": 15451,
+          "token": " Which",
+          "logit": 13.0625
+        },
+        {
+          "token_id": 8964,
+          "token": " Earth",
+          "logit": 12.75
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.75
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 12.5
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 12.3125
+        }
+      ]
+    },
+    {
+      "category": "tree",
+      "prompt": "Think of a tree. Answer in one word:",
+      "clean_token_id": 3437,
+      "clean_token": " What",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        17739,
+        40135,
+        42033,
+        83988,
+        54753,
+        62061,
+        62177,
+        43222,
+        31405,
+        14175,
+        76528
+      ],
+      "top_tokens": [
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 14.0625
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.625
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 13.5625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 13.4375
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.3125
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 12.625
+        },
+        {
+          "token_id": 12193,
+          "token": " Does",
+          "logit": 12.3125
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 12.125
+        }
+      ]
+    },
+    {
+      "category": "bird",
+      "prompt": "Think of a bird. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        16639,
+        34609,
+        26031,
+        71190,
+        53466,
+        85923,
+        44383,
+        41443,
+        41966,
+        44246,
+        78313,
+        43601,
+        91947
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.75
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.6875
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 13.125
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 13.0625
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 12.0
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.0
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 11.75
+        },
+        {
+          "token_id": 264,
+          "token": " a",
+          "logit": 11.3125
+        },
+        {
+          "token_id": 357,
+          "token": " A",
+          "logit": 11.25
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 10.875
+        }
+      ]
+    },
+    {
+      "category": "language",
+      "prompt": "Think of a language. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        10452,
+        14712,
+        8323,
+        6163,
+        5753,
+        8193,
+        8260,
+        32988,
+        15659,
+        14382,
+        42524,
+        22510,
+        17326,
+        18867
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 12.75
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 12.625
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.3125
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 11.9375
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 11.9375
+        },
+        {
+          "token_id": 359,
+          "token": " '",
+          "logit": 11.375
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 11.25
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 11.1875
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 10.9375
+        }
+      ]
+    },
+    {
+      "category": "profession",
+      "prompt": "Think of a profession. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        28120,
+        18074,
+        27458,
+        67836,
+        47144,
+        34783,
+        43021,
+        27436,
+        28444,
+        65186,
+        23940,
+        19594
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.75
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.75
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 12.625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 12.4375
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.3125
+        },
+        {
+          "token_id": 359,
+          "token": " '",
+          "logit": 11.875
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 11.8125
+        },
+        {
+          "token_id": 248046,
+          "token": "<|im_end|>",
+          "logit": 11.4375
+        },
+        {
+          "token_id": 1088,
+          "token": " \\",
+          "logit": 11.25
+        },
+        {
+          "token_id": 264,
+          "token": " a",
+          "logit": 11.0
+        }
+      ]
+    },
+    {
+      "category": "beverage",
+      "prompt": "Think of a beverage. Answer in one word:",
+      "clean_token_id": 198,
+      "clean_token": "\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        25245,
+        29042,
+        9664,
+        30782,
+        32279,
+        63535,
+        42374,
+        92749,
+        239897,
+        43723,
+        48880
+      ],
+      "top_tokens": [
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.3125
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.1875
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 11.875
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 11.625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 11.5
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 11.375
+        },
+        {
+          "token_id": 13671,
+          "token": " milk",
+          "logit": 11.0
+        },
+        {
+          "token_id": 92749,
+          "token": " Soda",
+          "logit": 10.9375
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 10.9375
+        },
+        {
+          "token_id": 2919,
+          "token": " water",
+          "logit": 10.875
+        }
+      ]
+    },
+    {
+      "category": "organ",
+      "prompt": "Think of a organ. Answer in one word:",
+      "clean_token_id": 271,
+      "clean_token": "\n\n",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        17429,
+        29329,
+        21187,
+        74594,
+        26087,
+        26925,
+        6595,
+        44084,
+        65055,
+        88947
+      ],
+      "top_tokens": [
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 14.1875
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 13.875
+        },
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 12.6875
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 12.4375
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 11.625
+        },
+        {
+          "token_id": 264,
+          "token": " a",
+          "logit": 11.25
+        },
+        {
+          "token_id": 4593,
+          "token": " heart",
+          "logit": 11.25
+        },
+        {
+          "token_id": 561,
+          "token": " The",
+          "logit": 11.25
+        },
+        {
+          "token_id": 279,
+          "token": " the",
+          "logit": 11.1875
+        },
+        {
+          "token_id": 220,
+          "token": " ",
+          "logit": 11.125
+        }
+      ]
+    },
+    {
+      "category": "city",
+      "prompt": "Think of a city. Answer in one word:",
+      "clean_token_id": 3437,
+      "clean_token": " What",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        25358,
+        11751,
+        6924,
+        21047,
+        19241,
+        23327,
+        21717,
+        25701,
+        50779,
+        20620,
+        59868,
+        31785,
+        44299,
+        48502
+      ],
+      "top_tokens": [
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 15.0625
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 14.625
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 14.125
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 14.0
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 13.875
+        },
+        {
+          "token_id": 15451,
+          "token": " Which",
+          "logit": 13.5
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 13.5
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 13.1875
+        },
+        {
+          "token_id": 12193,
+          "token": " Does",
+          "logit": 12.9375
+        },
+        {
+          "token_id": 328,
+          "token": " \"",
+          "logit": 12.9375
+        }
+      ]
+    },
+    {
+      "category": "river",
+      "prompt": "Think of a river. Answer in one word:",
+      "clean_token_id": 3437,
+      "clean_token": " What",
+      "clean_is_listed_category_item": false,
+      "category_token_ids": [
+        7919,
+        73583,
+        78389,
+        181474,
+        52026,
+        16586,
+        13940,
+        27509
+      ],
+      "top_tokens": [
+        {
+          "token_id": 3437,
+          "token": " What",
+          "logit": 16.375
+        },
+        {
+          "token_id": 2091,
+          "token": " Is",
+          "logit": 15.6875
+        },
+        {
+          "token_id": 1092,
+          "token": " what",
+          "logit": 15.4375
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "logit": 15.4375
+        },
+        {
+          "token_id": 271,
+          "token": "\n\n",
+          "logit": 15.0625
+        },
+        {
+          "token_id": 12193,
+          "token": " Does",
+          "logit": 14.875
+        },
+        {
+          "token_id": 2500,
+          "token": " How",
+          "logit": 14.6875
+        },
+        {
+          "token_id": 15451,
+          "token": " Which",
+          "logit": 14.5625
+        },
+        {
+          "token_id": 10646,
+          "token": " Where",
+          "logit": 14.3125
+        },
+        {
+          "token_id": 369,
+          "token": " is",
+          "logit": 14.3125
+        }
+      ]
+    }
+  ],
+  "n_categories": 14,
+  "n_semantic_clean_answers": 0
+}

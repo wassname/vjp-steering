@@ -1,0 +1,37 @@
+2026-09-09 13:29:57.324 | INFO     | __main__:experiment_rows:394 - experiment manifest id=v14-dev-random-s0-r2 profile=dev cells=26 demo_sides=390
+2026-09-09 13:29:58.734 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-09 13:29:59.801 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-09 13:30:01.234 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-09 13:30:02.510 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-09 13:30:03.730 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-09 13:30:04.810 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-09 13:30:06.675 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-09 13:30:08.268 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-09 13:30:09.681 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-09 13:30:11.479 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-09 13:30:12.889 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-09 13:30:14.787 | INFO     | __main__:cached_keys:427 - cache scan records=240000 valid_keys=169783
+2026-09-09 13:30:14.806 | INFO     | __main__:main:775 - CACHE_CHECK required=692 cached=0 missing=692 API_calls=692
+2026-09-09 13:30:42.162 | WARNING  | __main__:request_with_rate_limit:556 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-09 13:31:33.930 | INFO     | __main__:run:733 - judge progress=100/692
+2026-09-09 13:31:43.094 | WARNING  | __main__:request_with_rate_limit:556 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-09 13:32:06.395 | WARNING  | __main__:request_with_rate_limit:556 - rate limit response omitted retry_after_seconds; attempt=1 backoff_seconds=15
+2026-09-09 13:33:05.005 | INFO     | __main__:run:733 - judge progress=200/692
+2026-09-09 13:34:12.250 | INFO     | __main__:run:733 - judge progress=300/692
+2026-09-09 13:35:06.351 | INFO     | __main__:run:733 - judge progress=400/692
+2026-09-09 13:35:58.972 | INFO     | __main__:run:733 - judge progress=500/692
+2026-09-09 13:36:53.019 | INFO     | __main__:run:733 - judge progress=600/692
+2026-09-09 13:37:40.211 | INFO     | __main__:run:733 - judge progress=692/692
+2026-09-09 13:37:41.842 | INFO     | __main__:cached_keys:427 - cache scan records=20000 valid_keys=0
+2026-09-09 13:37:43.139 | INFO     | __main__:cached_keys:427 - cache scan records=40000 valid_keys=0
+2026-09-09 13:37:44.651 | INFO     | __main__:cached_keys:427 - cache scan records=60000 valid_keys=0
+2026-09-09 13:37:46.110 | INFO     | __main__:cached_keys:427 - cache scan records=80000 valid_keys=11699
+2026-09-09 13:37:47.542 | INFO     | __main__:cached_keys:427 - cache scan records=100000 valid_keys=31699
+2026-09-09 13:37:48.923 | INFO     | __main__:cached_keys:427 - cache scan records=120000 valid_keys=51368
+2026-09-09 13:37:50.059 | INFO     | __main__:cached_keys:427 - cache scan records=140000 valid_keys=71368
+2026-09-09 13:37:51.326 | INFO     | __main__:cached_keys:427 - cache scan records=160000 valid_keys=91368
+2026-09-09 13:37:52.182 | INFO     | __main__:cached_keys:427 - cache scan records=180000 valid_keys=111368
+2026-09-09 13:37:53.435 | INFO     | __main__:cached_keys:427 - cache scan records=200000 valid_keys=130444
+2026-09-09 13:37:54.249 | INFO     | __main__:cached_keys:427 - cache scan records=220000 valid_keys=150271
+2026-09-09 13:37:55.591 | INFO     | __main__:cached_keys:427 - cache scan records=240000 valid_keys=169783
+2026-09-09 13:37:55.627 | INFO     | __main__:main:788 - JUDGE_COMPLETE required=692 missing=0
