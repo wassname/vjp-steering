@@ -10,7 +10,6 @@ import torch
 from loguru import logger
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from vjp_steering.lens_readout import qwen_rmsnorm
 from vjp_steering.vjp import J_WORD_LENS_FILE, J_WORD_LENS_REPO, J_WORD_LENS_REVISION, j_lens_coordinate_prefill, j_lens_coordinate_swap
 
 
