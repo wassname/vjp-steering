@@ -10,7 +10,7 @@
 |---|---|---|
 | 816 → 825 | fixed-token J-lens adaptation, paired DEV generation | task 816 is stashed; task 825 is its one-at-a-time remote-dispatch replacement in existing `modal` group; pull artifact, validate exact shared bare and AB/BA cells, then judge/export |
 | 817 → 827 | mean_diff baseline, paired DEV generation | task 817 is stashed; task 827 is its one-at-a-time remote-dispatch replacement after task825 completed in 329 seconds and passed provenance checks |
-| 818 | vjp_delta baseline, paired DEV generation | stashed until task 825 runtime/output/cost is inspected |
+| 818 → 829 | vjp_delta baseline, paired DEV generation | task 818 is stashed; task 829 is its one-at-a-time remote-dispatch replacement after mean_diff generation completed |
 | 819–823 | five seeded random baseline generations | stashed until task 825 runtime/output/cost is inspected; all five are required before the random region renders |
 | 824 | vendored paper verbal-report smoke, raw prefill, two categories and one target each | remains queued on local `default`; inspect α=0 equality and rank movement; do not call it benchmark success |
 
@@ -23,7 +23,7 @@ Process-managed `pqf` followers exist for 816–824. The first batch lost tracki
 
 ## Budget
 
-`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$8.00` conservatively reserved for at-most-eight 900-second serial H100 generations and `$1.00` for paired AB/BA judging; carried `$12.00` review reserve is separate. No v14 scored result exists yet. Reconcile task 825's Modal cost before moving any later remote task.
+`slop/logs/20260909_j_lens_dev/v14-budget.json`: v14 allocation `$20.00`; `$8.00` conservatively reserved for at-most-eight 900-second serial H100 generations and `$1.00` for paired AB/BA judging; carried `$12.00` review reserve is separate. Tasks 825 and 827 completed in 329 and 411 seconds; no local Modal billing receipt exists, so the conservative reserve remains retained. J-lens task825 now has paired results; mean_diff task827 judging is task828.
 
 ## Required provenance before rendering
 

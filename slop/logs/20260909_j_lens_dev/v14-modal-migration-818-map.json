@@ -1,0 +1,8 @@
+{
+  "old_task_id": 818,
+  "new_task_id": 829,
+  "group": "modal",
+  "reason": "Task827 completed in 411 seconds; its provider charge is unavailable and remains inside the retained serial-generation reserve.",
+  "timeout_seconds": 900,
+  "automatic_retries": 0
+}
