@@ -15,8 +15,10 @@ DEFAULT_OUTPUT = Path("slop/logs/20260909_j_lens_dev/dev-abrasive-flattering-coo
 DEV_COHORT = Path("slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json")
 
 def load_dev_prompts(tokenizer):
-    # Use scripts/walk.py's real signatures, not guessed vjp_steering.walk
-    from scripts.walk import read_cohort, generation_inputs
+    # Use scripts/walk.py's real signatures (scripts/ is at /repo/scripts on Modal, not on PYTHONPATH)
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    from walk import read_cohort, generation_inputs
     cohort_ids = json.load(open(DEV_COHORT))["cohort"]["scenario_ids"]
     assert len(cohort_ids) == 15, f"expected 15, got {len(cohort_ids)}"
     rows_all, _ = read_cohort(100)
