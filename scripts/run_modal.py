@@ -105,8 +105,7 @@ def paper_coordinate_diagnostic_remote(output: str, source_revision: str, layers
 
 
 dev_abrasive_image = (
-    base_image.add_local_dir(REPO / "scripts", "/repo/scripts")
-    .add_local_file(REPO / "slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json", "/repo/slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json")
+    image.add_local_file(REPO / "slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json", "/repo/slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json")
 )
 
 
