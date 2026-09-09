@@ -1,0 +1,64 @@
+2026-09-09 11:48:20+08:00 
+2026-09-09 11:48:20+08:00 [1A2026-09-09 11:48:20+08:00 Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]2026-09-09 11:48:20+08:00 Fetching 12 files: 100%|██████████| 12/12 [00:00<00:00, 829.94it/s]
+2026-09-09 11:48:38+08:00 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-09-09 11:48:41+08:00 
+2026-09-09 11:48:41+08:00 [1A2026-09-09 11:48:41+08:00 Loading weights:   0%|          | 0/57 [00:00<?, ?it/s]
+2026-09-09 11:48:41+08:00 [1A2026-09-09 11:48:41+08:00 Loading weights: 100%|██████████| 57/57 [00:00<00:00, 573.56it/s]
+2026-09-09 11:48:45+08:00 2026-09-09 03:48:45.388 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:45+08:00 2026-09-09 03:48:45.832 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:45+08:00 2026-09-09 03:48:45.988 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.076 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.235 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.327 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.490 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.580 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.744 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:46+08:00 2026-09-09 03:48:46.833 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:46.999 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.088 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.252 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.343 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.510 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.602 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.761 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:47+08:00 2026-09-09 03:48:47.847 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:48+08:00 2026-09-09 03:48:48.007 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:48+08:00 2026-09-09 03:48:48.095 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:48+08:00 2026-09-09 03:48:48.264 | INFO     | walk:generate:501 - generation 10/15
+2026-09-09 11:48:48+08:00 2026-09-09 03:48:48.352 | INFO     | walk:generate:501 - generation 15/15
+2026-09-09 11:48:48+08:00 Traceback (most recent call last):
+2026-09-09 11:48:48+08:00   File "/repo/scripts/experiment.py", line 1739, in <module>
+2026-09-09 11:48:48+08:00     main()
+2026-09-09 11:48:48+08:00     ~~~~^^
+2026-09-09 11:48:48+08:00   File "/repo/scripts/experiment.py", line 1729, in main
+2026-09-09 11:48:48+08:00     gpu_stage(args)
+2026-09-09 11:48:48+08:00     ~~~~~~~~~^^^^^^
+2026-09-09 11:48:48+08:00   File "/repo/scripts/experiment.py", line 1116, in gpu_stage
+2026-09-09 11:48:48+08:00     side: search_boundary(side, root, rows, prompts, model, tokenizer, vectors[side], args)
+2026-09-09 11:48:48+08:00           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-09 11:48:48+08:00   File "/repo/scripts/experiment.py", line 893, in search_boundary
+2026-09-09 11:48:48+08:00     raise RuntimeError(f"{side} remains unhealthy through C={hi['coefficient']}")
+2026-09-09 11:48:48+08:00 RuntimeError: +C remains unhealthy through C=0.001953125
+2026-09-09 11:48:50+08:00 Traceback (most recent call last):
+2026-09-09 11:48:50+08:00   File "/pkg/modal/_runtime/container_io_manager.py", line 977, in handle_input_exception
+2026-09-09 11:48:50+08:00     yield
+2026-09-09 11:48:50+08:00   File "/pkg/modal/_container_entrypoint.py", line 187, in run_input_sync
+2026-09-09 11:48:50+08:00     values = io_context.call_function_sync()
+2026-09-09 11:48:50+08:00   File "/pkg/modal/_runtime/container_io_manager.py", line 265, in call_function_sync
+2026-09-09 11:48:50+08:00     expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+2026-09-09 11:48:50+08:00   File "/root/run_modal.py", line 142, in run_experiment
+2026-09-09 11:48:50+08:00     subprocess.run(
+2026-09-09 11:48:50+08:00     ~~~~~~~~~~~~~~^
+2026-09-09 11:48:50+08:00         [sys.executable, "scripts/experiment.py", method, "--gpu-stage", *argv],
+2026-09-09 11:48:50+08:00         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-09 11:48:50+08:00         cwd="/repo",
+2026-09-09 11:48:50+08:00         ^^^^^^^^^^^^
+2026-09-09 11:48:50+08:00         check=True,
+2026-09-09 11:48:50+08:00         ^^^^^^^^^^^
+2026-09-09 11:48:50+08:00     )
+2026-09-09 11:48:50+08:00     ^
+2026-09-09 11:48:50+08:00   File "/usr/local/lib/python3.13/subprocess.py", line 577, in run
+2026-09-09 11:48:50+08:00     raise CalledProcessError(retcode, process.args,
+2026-09-09 11:48:50+08:00                              output=stdout, stderr=stderr)
+2026-09-09 11:48:50+08:00 subprocess.CalledProcessError: Command '['/.uv/.venv/bin/python', 'scripts/experiment.py', 'random', '--gpu-stage', '--experiment-id', 'v14-dev-random-tiny-smoke', '--model', 'wassname/qwen3-5lyr-tiny-random', '--dtype', 'float32', '--n-pairs', '2', '--batch-size', '2', '--extract-batch-size', '2', '--max-length', '128', '--max-new-tokens', '8', '--dev']' returned non-zero exit status 1.
+2026-09-09 11:48:50+08:00 Stopping app - uncaught exception raised locally: CalledProcessError(1, ['/.uv/.venv/bin/python', 'scripts/experiment.py', 'random', '--gpu-stage', '--experiment-id', 'v14-dev-random-tiny-smoke', '--model', 'wassname/qwen3-5lyr-tiny-random', '--dtype', 'float32', '--n-pairs', '2', '--batch-size', '2', '--extract-batch-size', '2', '--max-length', '128', '--max-new-tokens', '8', '--dev']).

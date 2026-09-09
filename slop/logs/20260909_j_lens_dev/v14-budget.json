@@ -9,8 +9,10 @@
   "carried_known_and_reserve_usd": "12.63161240",
   "remaining_before_v14_allocation_usd": "27.36838760",
   "v14_dev_repair_allocation_usd": "20.00",
+  "v14_paired_judging_reserve_usd": "1.00",
+  "v14_available_after_paired_judging_reserve_usd": "19.00",
   "v14_remaining_unallocated_usd": "7.36838760",
-  "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation/judging/review, and two DEV plots",
+  "v14_scope": "five random seeds, mean_diff, vjp_delta, paper-based J-lens, both directions, DEV-only generation and paired AB/BA judging, review, and two DEV plots",
   "review_reserve_policy": "The carried $12.00 reserve remains retained: $9.00 for nine pre-full review requests and $3.00 for completed full generation, result, and plot reviews. It is not available for v14 work without a new explicit decision.",
   "constraints": {
     "full_generation": 0,
@@ -18,5 +20,5 @@
     "automatic_retries": 0,
     "new_gpu_queue": 0
   },
-  "spend_status": "No v14 job has launched. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
+  "spend_status": "The tiny random smoke made no scored judge calls and failed its random-model coherence check; it established runtime wiring only. Reserve $1.00 inside the v14 allocation for paired AB/BA judging before the first scored run. Record each v14 provider or Modal cost and any new unknown review reserve here before it is incurred. Stop before total v14 committed cost and reserve exceeds $20.00."
 }

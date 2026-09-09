@@ -1,0 +1,8 @@
+command=git add scripts/experiment.py scripts/walk.py src/vjp_steering/experiment.py slop/logs/20260909_j_lens_dev && git status --short
+exit=128
+stderr=fatal: Unable to create '/workspace/2026/jspace/j-steer_pub/.git/index.lock': File exists.
+stderr=Another git process seems to be running in this repository, e.g. an editor opened by 'git commit'.
+observation=stat showed an empty index.lock, owner code, modified 2026-09-09T10:04:41+08:00; ps found no git process.
+resolution=removed stale .git/index.lock, repeated git add, then committed 7dcb6a2 successfully.
+
+-- PI/OpenAI

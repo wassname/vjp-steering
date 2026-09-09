@@ -40,7 +40,7 @@ class ExperimentProfile:
 DEV = ExperimentProfile(
     name="dev",
     cohort_size=15,
-    orders=("AB",),
+    orders=("AB", "BA"),
     passes=1,
     status="DEV",
     data_subdir="dev",

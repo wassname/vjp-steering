@@ -675,6 +675,10 @@ def experiment(
     extract_batch_size: int = 8,
     max_length: int = 384,
     max_new_tokens: int = 512,
+    seed: int = 0,
+    layers: str = "",
+    target_layer: int | None = None,
+    reuse_bare_from: str = "",
     coefficients_plus: str = "",
     coefficients_minus: str = "",
     concept_layers: str = "",
@@ -696,7 +700,14 @@ def experiment(
         "--extract-batch-size", str(extract_batch_size),
         "--max-length", str(max_length),
         "--max-new-tokens", str(max_new_tokens),
+        "--seed", str(seed),
     ]
+    if layers:
+        argv.extend(["--layers", layers])
+    if target_layer is not None:
+        argv.extend(["--target-layer", str(target_layer)])
+    if reuse_bare_from:
+        argv.extend(["--reuse-bare-from", reuse_bare_from])
     if verify_extraction:
         argv.append("--verify-extraction")
     if reuse_extraction_from:

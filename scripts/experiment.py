@@ -1306,7 +1306,14 @@ def modal_stage(
         "--extract-batch-size", str(args.extract_batch_size),
         "--max-length", str(args.max_length),
         "--max-new-tokens", str(args.max_new_tokens),
+        "--seed", str(args.seed),
     ]
+    if args.layers:
+        command.extend(["--layers", args.layers])
+    if args.target_layer is not None:
+        command.extend(["--target-layer", str(args.target_layer)])
+    if args.reuse_bare_from:
+        command.extend(["--reuse-bare-from", args.reuse_bare_from])
     if args.verify_extraction:
         command.append("--verify-extraction")
     if args.reuse_extraction_from:
@@ -1681,7 +1688,7 @@ def self_test() -> None:
         for side in ("+C", "-C")
         for question in range(FULL.cohort_size)
     ]
-    assert len(required_cells(quick_rows, DEV.orders, DEV.passes)) == 270
+    assert len(required_cells(quick_rows, DEV.orders, DEV.passes)) == 540
     assert len(required_cells(full_rows, FULL.orders, FULL.passes)) == 400
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
