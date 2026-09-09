@@ -1,0 +1,28 @@
+{
+  "experiment_id": "v14-dev-j-lens-swap",
+  "profile": "dev",
+  "sides": {
+    "+C": {
+      "selected_C": 0.9963250209586706,
+      "candidates_descending": [
+        0.9963250209586706,
+        0.8954885007105876,
+        0.7946519804625046
+      ],
+      "effect": 0.06999999999999998,
+      "off_axis_perturbation": 0.030000000000000002
+    },
+    "-C": {
+      "selected_C": 0.25,
+      "candidates_descending": [
+        0.25,
+        0.22781250000000003,
+        0.206875,
+        0.1859375,
+        0.165
+      ],
+      "effect": -0.26666666666666666,
+      "off_axis_perturbation": 0.1633333333333333
+    }
+  }
+}
