@@ -40,9 +40,9 @@ Use the nine existing clean final-position states for a CPU counterfactual (no n
 - L16: c [0.454,0.273] delta -0.181/+0.181, vendor diff -0.877→0.032 delta +0.910
 - L19: tie vendor 9.25/9.25 both, delta -1.326 (target not dominant; clean winner France is not the dominant concept at L19, so swapping there is not expected to move final logit).
 
-Vendor readout inversion tracks coordinate swap as expected, but final logit rank14→16 still fails, so failure is downstream of lens readout, not absent coordinate. Preserve original failed results and distinguish readout changes from causal final-logit success.
+Layers13–15 and19–21 DECREASE Germany's coordinate/readout (e.g., L13 vendor diff 0.903→-1.221, L15 0.801→-1.460, L19 -0.031→-1.357) combined with final Germany rank14→16 (margin -5.125→-4.25 for L16 single-layer vs -5.125→-5.312 for full 13–21) does NOT establish 'failure downstream of lens readout' — it is also consistent with writing the wrong direction (Germany OUT). Only layer16's positive local change (L16 c 0.454>0.273, vendor diff -0.877→0.032 delta +0.910, France-dominant) followed by measured downstream response (single-layer L16: rank14→11, margin -5.125→-4.25, Germany logit 16.375→17.0) can test the downstream explanation. Preserve original failed full-band results and distinguish readout changes from causal final-logit success.
 
-Obtain a bounded independent mechanism review using the existing $2 fresh-eyes + $1 single-layer reserves (≈$3) before choosing the next single paid repair (e.g., one retry on a France-dominant layer like 16 where Germany gains +0.91, still within $1).
+Independent mechanism review `slop/reviews/20260909_cpu_counterfactual_mechanism.md` (pass, $0) verified the counterfactual math and L16 selection as France-dominant; next single paid repair remains bounded within the $1 layer16 reserve already allocated.
 
 If that band still fails, the next step is to compare the paper’s per-prompt active source (already used here) vs a J-space clamped baseline (paper’s “J-space suppressed” control) to test whether 13–21 is suppressed region for Qwen.
 

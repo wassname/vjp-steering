@@ -123,6 +123,14 @@
       "status": "success",
       "role": "corrected vendor-normalized France->Germany chat alpha1 layers13-21 with hidden capture (reallocated $1 within $20)",
       "source_revision": "12369696f31d9fb9890fad4ac14f11a4d85e2421"
+    },
+    {
+      "task": 865,
+      "modal_app": "ap-ik0MRFBE3LvFvbYyUKXnFz",
+      "duration_seconds": 46,
+      "status": "success",
+      "role": "layer16 alpha1 France->Germany single-layer corrected (L16 France 0.454>Germany 0.273, vendor +0.91)",
+      "source_revision": "3a83149b8124c5d33df6b128270a4388fc8a14e4"
     }
   ],
   "judging_attempts": [
@@ -194,5 +202,5 @@
       "automatic_retries": 0
     }
   ],
-  "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, 853, and the one manual same-contract recovery 856. Tasks 832-835 failed their dependency without remote dispatch. Reallocation 2026-09-09T16:45+08:00: $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor ranks and hidden capture (reallocated $1 within $20); task864 completed 2026-09-09T16:38:23+08:00 in 40s (~$0.04) well within reserve, total v14 reserves still $9.00 within $20.00 allocation. Task864  $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor-normalized ranks and captured hidden states; total v14 reserves still $9.00 within $20.00 allocation. These $20.00 v14 reserves use only the approved allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00. "
+  "spend_status": "The local Modal CLI did not emit provider billing receipts for the ten remote attempts. Their observed durations total 3,784 seconds; ten 900-second attempts at the task-800 observed rate ($0.09969626 / 101 seconds) bound to about $8.88, so the $9.00 remote ceiling remains retained instead of replaced with an invented receipt. Completed paired judging tasks are 826, 828, 837, 843, 847, 851, 853, and the one manual same-contract recovery 856. Tasks 832-835 failed their dependency without remote dispatch. Reallocation 2026-09-09T16:45+08:00: $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor ranks and hidden capture (reallocated $1 within $20); task864 completed 2026-09-09T16:38:23+08:00 in 40s (~$0.04) well within reserve, total v14 reserves still $9.00 within $20.00 allocation. Task865 layer16 completed 2026-09-09T17:08:03+08:00 in 46s (~$0.045) within $1 layer16 reserve. Task864  $1.00 moved from common_lower_dose_extension_not_launched (5.00->4.00) to corrected_vendor_normalized_coordinate_diagnostic_alpha1_layers13_21 (1.00) for the single France->Germany chat alpha1 layers13-21 diagnostic with raw vs vendor-normalized ranks and captured hidden states; total v14 reserves still $9.00 within $20.00 allocation. Task865 layer16 completed 2026-09-09T17:08:03+08:00 in 46s (~$0.045) within $1 layer16 reserve. These $20.00 v14 reserves use only the approved allocation; the carried $12.00 review reserve remains separate. Stop before total v14 committed cost and reserve exceeds $20.00. "
 }
