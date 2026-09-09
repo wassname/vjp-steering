@@ -73,7 +73,7 @@ def next_logits(
     return logits.cpu(), calls
 
 
-def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids: list[int], checkpoint: dict) -> dict[str, dict]:
+def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids: list[int], checkpoint: dict) -> tuple[dict[str, dict], dict[str, dict]]:
     """Read fitted J-lens scores at the final prompt token for category candidates.
 
     Two scores are returned per layer:
@@ -133,7 +133,32 @@ def clean_layer_lens_readouts(model, tokenizer, text: str, vector, candidate_ids
             "source_vendor_candidate_rank": int((vendor_scores > vendor_source).sum()) + 1,
             "target_vendor_candidate_rank": int((vendor_scores > vendor_target).sum()) + 1,
         }
-    return readouts
+    # Hidden capture for CPU regression (small, with hashes)
+    hidden_capture = {}
+    for layer, hidden in captured.items():
+        hidden_vectors = hidden  # keep per-layer hidden for hash
+        hidden_capture[str(layer)] = {
+            "hidden_sha256": __import__("hashlib").sha256(hidden.numpy().tobytes()).hexdigest(),
+            "hidden_mean": float(hidden.mean()),
+            "hidden_norm": float(hidden.norm()),
+            "d_model": int(hidden.shape[0]),
+        }
+    # Store vectors separately to keep main JSON small; caller saves to sidecar
+    hidden_vectors_all = {str(l): h.tolist() for l, h in captured.items()}
+    # Attach lens/model hashes via checkpoint path if available
+    lens_file = str(checkpoint.get("_lens_file", "") or "")
+    lens_sha = None
+    if lens_file and Path(lens_file).exists():
+        import hashlib
+        lens_sha = hashlib.sha256(Path(lens_file).read_bytes()).hexdigest()
+    hidden_meta = {
+        "per_layer": hidden_capture,
+        "hidden_vectors": hidden_vectors_all,
+        "lens_file": lens_file,
+        "lens_sha256": lens_sha,
+        "model": getattr(getattr(model, "config", None), "_name_or_path", str(getattr(model, "config", {}).get("name", ""))) if hasattr(model.config, "get") else str(getattr(model.config, "_name_or_path", "")),
+    }
+    return readouts, hidden_meta
 
 
 def main() -> None:
@@ -205,11 +230,13 @@ def main() -> None:
             coordinate_diagnostics = {} if args.coordinate_diagnostics else None
             swapped_logits, calls = next_logits(model, tokenizer, text, vector, coordinate_diagnostics)
             checkpoint = torch.load(metadata["lens_file"], map_location="cpu", weights_only=True, mmap=True)
-            layer_readouts = (
+            checkpoint["_lens_file"] = metadata["lens_file"]
+            layer_readouts, hidden_capture = (
                 clean_layer_lens_readouts(model, tokenizer, text, vector, category_ids, checkpoint)
-                if args.coordinate_diagnostics else None
+                if args.coordinate_diagnostics else (None, None)
             )
             trials.append({
+                "hidden_capture": hidden_capture,
                 "category": category, "prompt": text, "source_token_id": source_id,
                 "source_token": tokenizer.decode([source_id]), "target_token_id": target_id,
                 "target_token": tokenizer.decode([target_id]), "clean_target_rank": rank(clean_logits, target_id),
