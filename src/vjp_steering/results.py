@@ -67,6 +67,7 @@ LABELS = {
     "pca": "PCA",
     "J_word": "J-word",
     "j_lens_swap": "J-lens coordinate swap",
+    "j_lens_swap_L16": "J-lens L16 (single source-active)",
     "j_lens_concept_components": "J-lens empirical-candor",
     "vjp_mlp_up_shrink": "MLP-up VJP",
     "vjp_mlp_up_left_right_shrink": "per-side VJP",
@@ -587,6 +588,7 @@ def plot(
         "vjp_mlp_up_shared_eb": "#a64d79",
         "vjp_mlp_up_shared_last_token_eb": "#a64d79",
         "j_lens_swap": J_LENS_COLOR,
+        "j_lens_swap_L16": "#009e73",  # same family, distinct for single-layer L16 (source-active)
         "j_lens_concept_components": J_LENS_COLOR,
     }
     displayed_endpoints = {}
@@ -650,7 +652,7 @@ def plot(
                     line={
                         "color": colors[method],
                         "width": 2.2 if pareto else 3,
-                        "dash": "dot" if method == "j_lens_swap" and side == "-C" else "solid",
+                        "dash": "dot" if method in ("j_lens_swap", "j_lens_swap_L16") and side == "-C" else "solid",
                     },
                     line_shape="spline" if smooth else "linear",
                     line_smoothing=1.3 if pareto else 0.6 if smooth else 0,
@@ -749,7 +751,7 @@ def plot(
         )
     else:
         labels = []
-        label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap"})
+        label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap", "j_lens_swap_L16"})
     labels.extend(
         {
             "x": displayed_endpoints[method, side][0],
@@ -796,7 +798,7 @@ def plot(
             x=0.01, y=y, xref="paper", yref="paper", text=text,
             showarrow=False, xanchor="left", font={"color": "#777777", "size": 10.5},
         )
-    if any(row["method"] == "j_lens_swap" for row in rows):
+    if any(row["method"] in ("j_lens_swap", "j_lens_swap_L16") for row in rows):
         figure.add_annotation(
             x=0.01,
             y=0.93,

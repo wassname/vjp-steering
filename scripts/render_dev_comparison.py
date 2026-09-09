@@ -38,14 +38,18 @@ def raw_judgments() -> dict[str, dict]:
     return records
 
 
-def comparison_specs(provenance: dict) -> list[tuple[str, str, int]]:
+def comparison_specs(provenance: dict) -> list[tuple[str, str, int, str | None]]:
     methods = provenance["methods"]
-    return [
-        (methods["j_lens_swap"]["experiment_id"], "j_lens_swap", methods["j_lens_swap"]["seed"]),
-        (methods["mean_diff"]["experiment_id"], "mean_diff", methods["mean_diff"]["seed"]),
-        (methods["vjp_delta"]["experiment_id"], "vjp_delta", methods["vjp_delta"]["seed"]),
-        *[(entry["experiment_id"], "random", entry["seed"]) for entry in methods["random"]["selected_experiments"]],
+    specs = [
+        (methods["j_lens_swap"]["experiment_id"], "j_lens_swap", methods["j_lens_swap"]["seed"], None),
+        (methods["mean_diff"]["experiment_id"], "mean_diff", methods["mean_diff"]["seed"], None),
+        (methods["vjp_delta"]["experiment_id"], "vjp_delta", methods["vjp_delta"]["seed"], None),
+        *[(entry["experiment_id"], "random", entry["seed"], None) for entry in methods["random"]["selected_experiments"]],
     ]
+    if "j_lens_swap_L16" in methods:
+        # Verify as j_lens_swap (actual manifest method) but display as j_lens_swap_L16
+        specs.append((methods["j_lens_swap_L16"]["experiment_id"], "j_lens_swap", methods["j_lens_swap_L16"]["seed"], "j_lens_swap_L16"))
+    return specs
 
 
 def verify_experiment(experiment_id: str, method: str, seed: int, provenance: dict, cache: dict[str, dict]) -> list[dict]:
@@ -109,9 +113,19 @@ def main() -> None:
     provenance = json.loads(args.provenance.read_text())
     cache = raw_judgments()
     specs = comparison_specs(provenance)
-    rows = [row for spec in specs for row in verify_experiment(*spec, provenance, cache)]
-    methods = ("j_lens_swap", "mean_diff", "vjp_delta", "random")
-    method_seeds = {"j_lens_swap": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
+    # Handle display remapping for L16 (verified as j_lens_swap but displayed as j_lens_swap_L16)
+    rows = []
+    for spec in specs:
+        exp_id, verify_method, seed, display_method = spec
+        verified_rows = verify_experiment(exp_id, verify_method, seed, provenance, cache)
+        if display_method:
+            for r in verified_rows:
+                r["method"] = display_method
+        rows.extend(verified_rows)
+    methods = ("j_lens_swap", "j_lens_swap_L16", "mean_diff", "vjp_delta", "random") if any(r["method"] == "j_lens_swap_L16" for r in rows) else ("j_lens_swap", "mean_diff", "vjp_delta", "random")
+    method_seeds = {"j_lens_swap": {0}, "j_lens_swap_L16": {0}, "mean_diff": {0}, "vjp_delta": {0}, "random": set(range(5))}
+    methods = tuple(m for m in methods if any(r["method"] == m for r in rows))
+    method_seeds = {k: v for k, v in method_seeds.items() if k in methods}
     table = _display_table(
         _summary(rows, methods, method_seeds, include_rejected=True, random_region="calibrated_rung")
     )

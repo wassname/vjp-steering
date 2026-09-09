@@ -40,7 +40,8 @@
     "effect_direction": "side-aware on-axis steered minus bare"
   },
   "methods": {
-    "j_lens_swap": {"experiment_id": "v14-dev-j-lens-swap", "seed": 0, "source": "paper-native coordinate swap", "source_layers": [13,14,15,16,17,18,19,20,21]},
+    "j_lens_swap": {"experiment_id": "v14-dev-j-lens-swap", "seed": 0, "source": "paper-native coordinate swap", "source_layers": [13,14,15,16,17,18,19,20,21], "note": "failed adaptation, retained for comparison"},
+    "j_lens_swap_L16": {"experiment_id": "v14-dev-j-lens-swap-L16", "seed": 0, "source": "paper-native coordinate swap single source-active layer16 (DEV abrasive 0.798>-0.154, country L16 France 0.454>Germany 0.273, vendor +0.91)", "source_layers": [16]},
 
     "mean_diff": {"experiment_id": "v14-dev-mean-diff", "seed": 0, "source_layers": [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]},
     "vjp_delta": {"experiment_id": "v14-dev-vjp-delta-r2", "seed": 0, "source_layers": [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], "target_layer": 22, "correction": "task829 established Qwen3.5-4B has layers [0,25); the old target=33 and source layers through 24 were invalid."},
