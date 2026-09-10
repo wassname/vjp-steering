@@ -14,7 +14,9 @@ Anthropic's own reported numbers: coordinate-swap flips the target answer to the
 
 Here's a nice way of measuring if it works: sweep the doses and plot the Pareto frontier.
 
-![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results/plot.png)
+![Pareto-smoothed judged on-axis change against off-axis damage on the 15-question DEV set, all methods including the J-lens variants](results/plot-pareto-dev.png)
+
+The figure above is the 15-question DEV comparison ([measured doses](results/plot-dev.png), [source rows](results/dev-comparison.csv)); the full 100-question results stay in the table below and the [results page](https://wassname.github.io/vjp-steering/).
 
 We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
 
