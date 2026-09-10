@@ -172,3 +172,13 @@ Interpretation: my read is that it is almost certain the v3 gate does not measur
 The saved output now supports source-task revision rather than a causal claim.
 
 <!-- PI/OpenAI Codex: journal entry written 2026-09-08. -->
+
+## 2026-09-09 -- J-lens swap reliability as reported, and our persona-transfer null
+
+Evidence (paper): `docs/papers/jacobian_lens_workspace.md` reports systematic swap rates, not a single demo: two-hop answer flips 54% (Haiku) / 70% (Sonnet, Opus); function battery 76/192 at α=1, 101/192 at double strength; category swaps 88% top-5 for pure J-lens vectors vs 5% for non-J-space components; failures concentrate where source workspace loading is weak (countries load highest and swap best, number-words lowest and worst).
+
+Evidence (ours): six J-lens variants (full-band swap, L16 swap, unit-direction control, two injection pairs) vs five random vectors on the frozen DEV15 sycophancy bench: no variant outside the random region in either direction ([plot](results/plot-dev.png), [CSV](results/dev-comparison.csv)); paired bootstrap + exact permutation over the 15 scenarios puts both escape margins inside judge noise (per-scenario swings ±8).
+
+Interpretation: my read is the paper's rates are honest measurements with controls and failure analysis, and they bound expectations: a 40–88% single-token-flip effect, highly loading- and category-dependent. Our persona transfer (abstract style words, open-ended generation, ±5 judge scale) sat outside that envelope, so the null is roughly the predicted outcome — likely (~70%) the transfer hypothesis failed, not the lens. Remaining 'our bug' caveats: the Qwen L16 band is unattested (paper band is Sonnet 4.5) and the vendor-normalized readout was never rank-checked; the single France→Germany raw+vendor trial scoped in [the fairness audit](slop/audits/20260909_low_damage_fairness.md) would separate these.
+
+<!-- PI[Kimi K3]: journal entry written 2026-09-09. -->

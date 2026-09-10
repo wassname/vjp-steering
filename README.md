@@ -6,6 +6,10 @@ I'm turning Anthropic's [J-lens](https://github.com/anthropics/jacobian-lens) wo
 
 Try it out with [the notebook](nbs/demo.ipynb)!
 
+## How reliable is J-lens steering?
+
+Anthropic's own reported numbers: coordinate-swap flips the target answer to the top in 54–70% of two-hop trials and 40–53% of 192 function trials, with failures concentrated where the source concept loads the workspace weakly. Our DEV15 persona transfer ([plots](results/plot-dev.png)) finds no J-lens variant outside the five-random-vector region in either direction — consistent with a loading-dependent single-token effect not surviving the jump to open-ended persona steering. Details and uncertainty analysis in [the fairness audit](slop/audits/20260909_low_damage_fairness.md).
+
 ## Measuring it
 
 Here's a nice way of measuring if it works: sweep the doses and plot the Pareto frontier.
