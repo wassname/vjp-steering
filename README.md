@@ -14,7 +14,7 @@ Anthropic reports coordinate-swap flips the target answer to the top in 54–70%
 
 Here's a nice way of measuring if it works: sweep the doses and plot the Pareto frontier.
 
-![Judged on-axis change against off-axis damage, for VJP-delta, mean difference, PCA, and a random cone](results/plot.png)
+![Pareto-smoothed judged on-axis change against off-axis damage, all methods](results/plot_pareto.png)
 
 We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
 
