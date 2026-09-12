@@ -1,0 +1,49 @@
+test_explicit_missing_lens_reaches_production_extractor (test_steering_repairs.TestExtractionDispatch.test_explicit_missing_lens_reaches_production_extractor) ... 
+  test_explicit_missing_lens_reaches_production_extractor (test_steering_repairs.TestExtractionDispatch.test_explicit_missing_lens_reaches_production_extractor) (method='j_lens_swap') ... ERROR
+test_j_word_rejects_subtokens_and_zero_lens (test_steering_repairs.TestExtractionDispatch.test_j_word_rejects_subtokens_and_zero_lens) ... 2026-09-12 15:01:29.137 | INFO     | vjp_steering.vjp:j_word:526 - J_word lens=/tmp/tmpeb07gy2r/lens.pt n_prompts=1 words=sycophantic ids=[0] - abrasive ids=[0] cotangent_norm=0.000
+ok
+test_mlp_target_forwarded_and_incompatible_layers_rejected (test_steering_repairs.TestExtractionDispatch.test_mlp_target_forwarded_and_incompatible_layers_rejected) ... ok
+test_persona_source_uses_supported_nonthinking_and_seed (test_steering_repairs.TestExtractionDispatch.test_persona_source_uses_supported_nonthinking_and_seed) ... ok
+test_unsupported_flags_fail (test_steering_repairs.TestExtractionDispatch.test_unsupported_flags_fail) ... ok
+test_completed_profile_checks_identity_before_shortcut (test_steering_repairs.TestExtractionIdentity.test_completed_profile_checks_identity_before_shortcut) ... 2026-09-12 15:01:29.343 | INFO     | experiment:gpu_stage:1300 - GPU_STAGE_COMPLETE experiment=repair-test profile=dev cells=2 reused=true
+ok
+test_invalid_vectors_never_saved (test_steering_repairs.TestExtractionIdentity.test_invalid_vectors_never_saved) ... ok
+test_legacy_identity_fails_without_modifying_cache (test_steering_repairs.TestExtractionIdentity.test_legacy_identity_fails_without_modifying_cache) ... ok
+test_load_or_extract_rejects_one_changed_input_at_a_time (test_steering_repairs.TestExtractionIdentity.test_load_or_extract_rejects_one_changed_input_at_a_time) ... ok
+test_target_and_lens_and_concepts_are_in_identity (test_steering_repairs.TestExtractionIdentity.test_target_and_lens_and_concepts_are_in_identity) ... ok
+test_constant_jacobian_rejects_zero (test_steering_repairs.TestVjpRepairs.test_constant_jacobian_rejects_zero) ... ok
+test_nonfinite_raw_direction_rejected (test_steering_repairs.TestVjpRepairs.test_nonfinite_raw_direction_rejected) ... ok
+test_orthogonal_orientation_rejects_ambiguous_axis (test_steering_repairs.TestVjpRepairs.test_orthogonal_orientation_rejects_ambiguous_axis) ... ok
+test_production_label_reversal (test_steering_repairs.TestVjpRepairs.test_production_label_reversal) ... 2026-09-12 15:01:29.531 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=0.9871054887771606 flipped=False cosines={0: 0.9871054887771606}; heuristic, not behavioral validation
+2026-09-12 15:01:29.534 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=-0.9871054887771606 flipped=True cosines={0: -0.9871054887771606}; heuristic, not behavioral validation
+ok
+
+======================================================================
+ERROR: test_explicit_missing_lens_reaches_production_extractor (test_steering_repairs.TestExtractionDispatch.test_explicit_missing_lens_reaches_production_extractor) (method='j_lens_swap')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_steering_repairs.py", line 180, in test_explicit_missing_lens_reaches_production_extractor
+    experiment.extract_vectors(args, None, None)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/workspace/2026/jspace/j-steer_pub/scripts/experiment.py", line 622, in extract_vectors
+    vector, swap_metadata = j_lens_swap(
+                            ~~~~~~~~~~~^
+        model, tokenizer, layers,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        lens_file=args.lens_file,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/workspace/2026/jspace/j-steer_pub/src/vjp_steering/vjp.py", line 737, in j_lens_swap
+    source_id = single_token_id(source_token)
+  File "/workspace/2026/jspace/j-steer_pub/src/vjp_steering/vjp.py", line 732, in single_token_id
+    token_ids = tokenizer(" " + word, add_special_tokens=False).input_ids
+                ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not callable
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.724s
+
+FAILED (errors=1)

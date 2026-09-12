@@ -11,7 +11,9 @@ from statistics import mean
 
 from judge import (
     MODEL,
+    LEGACY_RUBRIC,
     RUBRIC,
+    RUBRICS,
     artifact_paths,
     cache_key,
     completed_walk_rungs,
@@ -45,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run", action="append", default=[])
     parser.add_argument("--walk-id")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--rubric", choices=RUBRICS, default=RUBRIC)
     parser.add_argument("--experiment-id")
     parser.add_argument("--profile", choices=("dev", "full"))
     parser.add_argument("--side", choices=("+C", "-C"))
@@ -53,19 +56,24 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def cache_records(keys: set[str]) -> dict[str, dict]:
+def cache_records(keys: set[str], *, rubric: str = RUBRIC) -> dict[str, dict]:
     records = {}
     with CACHE.open() as file:
         for line in file:
             record = json.loads(line)
-            if record["cache_key"] in keys and valid(record.get("judgment", {})):
+            if (
+                record["cache_key"] in keys
+                and record.get("model") == MODEL
+                and record.get("rubric_version") == rubric
+                and valid(record.get("judgment", {}))
+            ):
                 records.setdefault(record["cache_key"], record)
     missing = keys - records.keys()
     if missing:
-        # 14 degenerate repetitive demos (skipped after 3x empty choices, judge imitates
-        # repetition and never emits JSON). Don't block the 76k CSV for them; they are
-        # logged as degenerate and export will average over available cells.
-        print(f"cache_records: {len(missing)}/{len(keys)} degenerate cells missing, proceeding")
+        raise ValueError(
+            f"judge cache incomplete for rubric={rubric}: {len(missing)}/{len(keys)} "
+            f"required cells missing; example={min(missing)}; no export written"
+        )
     return records
 
 
@@ -128,9 +136,9 @@ def cohort_hash() -> str:
     return hashlib.sha256(json.dumps(sorted(prompts.items())).encode()).hexdigest()
 
 
-def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
+def random_rows(data_hash: str, *, rubric: str = RUBRIC) -> tuple[list[dict], list[dict]]:
     provenance = json.loads(RANDOM_PROVENANCE.read_text())
-    assert provenance["judge_model"] == MODEL and provenance["rubric"] == RUBRIC
+    assert provenance["judge_model"] == MODEL and provenance["rubric"] == rubric
     assert provenance["data_hash"] == data_hash
     assert provenance["results_sha256"] == hashlib.sha256(RANDOM_RESULTS.read_bytes()).hexdigest()
     assert provenance["scenarios_sha256"] == hashlib.sha256(RANDOM_SCENARIOS.read_bytes()).hexdigest()
@@ -154,7 +162,9 @@ def random_rows(data_hash: str) -> tuple[list[dict], list[dict]]:
     return rows, scenarios
 
 
-def export(run_names: list[str], walk_id: str | None = None) -> None:
+def export(run_names: list[str], walk_id: str | None = None, *, rubric: str = RUBRIC) -> None:
+    if rubric != LEGACY_RUBRIC:
+        raise ValueError("legacy aggregate export requires explicit v7 rubric; v8 needs a new full-cohort result schema")
     assert bool(run_names) != (walk_id is not None)
     validity_entries = completed_walk_rungs(walk_id) if walk_id else []
     paths = [path for path, _ in validity_entries] if validity_entries else artifact_paths(run_names)
@@ -163,13 +173,13 @@ def export(run_names: list[str], walk_id: str | None = None) -> None:
     rung_health = {path: rung for path, rung in validity_entries}
     demos = {path: demo_rows(path) for path in paths}
     keys = {
-        cache_key(row, order, pass_index)
+        cache_key(row, order, pass_index, rubric=rubric)
         for rows in demos.values()
         for row in rows
         for order in ("AB", "BA")
         for pass_index in range(2)
     }
-    cache = cache_records(keys)
+    cache = cache_records(keys, rubric=rubric)
     data_hash = cohort_hash()
     result_rows = []
     scenario_rows = []
@@ -178,16 +188,13 @@ def export(run_names: list[str], walk_id: str | None = None) -> None:
         run = artifact_path.parent
         for row in rows:
             avail = [
-                cache[cache_key(row, order, pass_index)]
+                cache[cache_key(row, order, pass_index, rubric=rubric)]
                 for order in ("AB", "BA")
                 for pass_index in range(2)
-                if cache_key(row, order, pass_index) in cache
             ]
-            if not avail:
-                continue
             cells = [score_cell(record) for record in avail]
             effect = signed_axis_effect(row["side"], cells)
-            order_reversal, score_spread = judge_diagnostics(cells)
+            order_reversal, score_spread = judge_diagnostics(avail)
             scenario_rows.append({
                 "source_run": run.name,
                 "method": artifact["method"],
@@ -260,11 +267,21 @@ def export_experiment(
     side_filter: str | None = None,
     coefficient_filter: float | None = None,
     all_generated: bool = False,
+    *,
+    rubric: str = RUBRIC,
 ) -> None:
     profile_ = DEV if profile_name == "dev" else FULL
     root = experiment_dir(experiment_id)
     manifest = json.loads((root / "manifest.json").read_text())
     extraction_seed = recorded_extraction_seed(manifest, experiment_id)
+    output = data_dir(profile_, experiment_id)
+    contract = {"rubric": rubric, "model": MODEL, "orders": list(profile_.orders), "passes": profile_.passes}
+    contract_path = output / "judge_contract.json"
+    if contract_path.exists():
+        if json.loads(contract_path.read_text()) != contract:
+            raise ValueError(f"judge contract mismatch: {contract_path}; use a separate experiment output")
+    elif rubric != LEGACY_RUBRIC and any((output / name).exists() for name in ("results.csv", "judged_scenarios.csv", "selected.json")):
+        raise ValueError(f"existing export lacks judge contract: {output}; only explicit v7 can read historical exports")
     rows = experiment_rows(
         experiment_id,
         profile_name,
@@ -273,14 +290,12 @@ def export_experiment(
         all_generated,
     )
     keys = {
-        cache_key(row, order, pass_index)
+        cache_key(row, order, pass_index, rubric=rubric)
         for row in rows
         for order in profile_.orders
         for pass_index in range(profile_.passes)
     }
-    cache = cache_records(keys)
-    if keys - cache.keys():
-        raise ValueError(f"experiment judge cache is incomplete: {len(keys - cache.keys())} cells")
+    cache = cache_records(keys, rubric=rubric)
     scenario_rows = []
     result_rows = []
     for side in ("+C", "-C"):
@@ -293,7 +308,7 @@ def export_experiment(
             cell_scenarios = []
             for row in cell_rows:
                 records = [
-                    cache[cache_key(row, order, pass_index)]
+                    cache[cache_key(row, order, pass_index, rubric=rubric)]
                     for order in profile_.orders
                     for pass_index in range(profile_.passes)
                 ]
@@ -343,7 +358,6 @@ def export_experiment(
                 "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in cell_scenarios),
                 "admissible": health_clean and steered_off_axis <= 1.5,
             })
-    output = data_dir(profile_, experiment_id)
     output.mkdir(parents=True, exist_ok=True)
     results_path = output / "results.csv"
     scenarios_path = output / "judged_scenarios.csv"
@@ -397,6 +411,7 @@ def export_experiment(
     atomic = output / "selected.json.tmp"
     atomic.write_text(json.dumps(selected, indent=2) + "\n")
     atomic.replace(output / "selected.json")
+    contract_path.write_text(json.dumps(contract, indent=2) + "\n")
     print(
         f"EXPERIMENT_EXPORT_COMPLETE id={experiment_id} profile={profile_name} "
         f"arms={len(result_rows)} scenarios={len(scenario_rows)}"
@@ -463,11 +478,12 @@ def main() -> None:
             args.side,
             args.coefficient,
             args.all_generated,
+            rubric=args.rubric,
         )
     else:
         if bool(args.run) == (args.walk_id is not None) or args.profile is not None or args.side is not None:
             raise ValueError("select exactly one of --run or --walk-id")
-        export(args.run, args.walk_id)
+        export(args.run, args.walk_id, rubric=args.rubric)
 
 
 if __name__ == "__main__":

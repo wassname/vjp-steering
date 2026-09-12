@@ -79,4 +79,7 @@ notebook-smoke:
 	VJP_STEER_BATCH_SIZE=2 VJP_STEER_MAX_LENGTH=128 VJP_STEER_TOKENS=8 VJP_STEER_RUNGS=11 \
 	uv run jupytext --to ipynb --execute -o outputs/demo_smoke.ipynb nbs/demo.py
 
+check-cpu:
+	CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 UV_OFFLINE=1 uv run --no-sync python -m unittest discover -s tests -v
+
 check: smoke results notebook-smoke notebook

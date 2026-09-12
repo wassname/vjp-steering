@@ -27,8 +27,19 @@ DATA = ROOT / "data" / "results.csv"
 J_LENS_COLOR = "#56b4e9"
 PLOT_NOTE = (
     "Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible "
-    "dose means in dose order. The additional figure shows measured dose means as small dots and smoothly connects "
-    "bare, the intended-side Pareto-efficient means, and each selected/final endpoint."
+    "dose means in dose order. Smooth curves are visual guides from bare through accepted Pareto control points "
+    "to the selected crosses, not measured or achievable intermediate doses. Crosses mark the last accepted dose "
+    "(J-lens: peak intended effect); the table selects peak intended effect, which can be a different dose."
+)
+SUMMARY_NOTE = (
+    "N/rejected count dose-side groups. Table values use peak effect; crosses show final coherent doses. "
+    "The gray region is descriptive; full random summaries use the same paired-coherent seeds (at least five of ten)."
+)
+INDEX_NOTE = (
+    "Random eligibility: full pairs both signs with at least 5/10 coherent seeds per C; DEV requires all 5 coherent "
+    "per side and calibration fraction. J-lens crosses mark peak accepted effect; baselines take the last accepted dose. "
+    "Score is the worse-direction intended effect minus off-axis change (unit weight). Smooth curves are visual guides "
+    "from bare to the selected cross, not achievable intermediate doses."
 )
 SELECTED_FULL_NOTE = (
     "J-lens empirical-candor is one selected all-100 run: its source +C is mapped to the candidness target, "
@@ -54,6 +65,7 @@ METHOD_SEEDS = {
     "J_word": {0},
     "vjp_mlp_up_shrink": {0, 1, 2},
     "vjp_mlp_up_left_right_shrink": {0},
+    "random": set(range(RANDOM_SEEDS)),
 }
 SELECTED_FULL_SEEDS = {0}
 FIELDS = (
@@ -128,9 +140,11 @@ def _rows(
         row["C"] = float(row["C"])
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
+        if row["admissible"].lower() not in {"true", "false"}:
+            raise ValueError("admissible must explicitly be True or False")
         row["admissible"] = row["admissible"].lower() == "true"
-    if "random" in methods and len({row["seed"] for row in rows if row["method"] == "random"}) != RANDOM_SEEDS:
-        raise ValueError(f"the random cone needs exactly {RANDOM_SEEDS} seeds")
+        if row["side"] not in {"+C", "-C"} or not all(math.isfinite(row[field]) for field in ("C", "effect", "off_axis_perturbation")):
+            raise ValueError("results need a valid side and finite measured values")
     for method, seeds in method_seeds.items():
         if {row["seed"] for row in rows if row["method"] == method} != seeds:
             raise ValueError(f"{method} needs exactly seeds {sorted(seeds)}")
@@ -162,17 +176,16 @@ def _means(
                 rows_at_dose = [
                     row for row in rows
                     if row["method"] == method and row["C"] == C and row["side"] == side
-                    and (include_rejected or row["admissible"])
                 ]
                 seeds = {row["seed"] for row in rows_at_dose}
                 complete = seeds == method_seeds[method]
-                if complete or (include_rejected and seeds):
+                admissible = complete and all(row["admissible"] for row in rows_at_dose)
+                if admissible or (include_rejected and seeds):
                     behavior_targets = {_behavior_target(row) for row in rows_at_dose}
                     if len(behavior_targets) != 1:
                         raise ValueError("a rendered point has mixed behavior targets")
                     behavior_target = behavior_targets.pop()
                     effect = mean(row["effect"] for row in rows_at_dose)
-                    admissible = complete and all(row["admissible"] for row in rows_at_dose)
                     points.append({"method": method, "C": C, "side": side,
                                    "behavior_target": behavior_target,
                                    "effect": effect,
@@ -192,15 +205,15 @@ def place_labels(
     fig_w: int = 1240,
     fig_h: int = 640,
     margin: dict | None = None,
-    char_w: float = 6.0,
-    line_h: float = 15.0,
+    char_w: float = 8.2,
+    line_h: float = 18.0,
     radii: tuple = (40, 62, 88, 118),
     angles: tuple = (90, 45, 135, 0, 180, -45, -135, -90),
     font: dict | None = None,
     bgcolor: str = "rgba(253,250,244,0.72)",
     arrowcolor: str = "rgba(45,24,16,0.35)",
     overlap_cost: float = 50.0,
-    overlap_cost_label: float = 1.0 / 50.0,
+    overlap_cost_label: float = 1.0,
     pad: float = 7.0,
     edge_pad: float = 4.0,
 ) -> list[dict]:
@@ -225,8 +238,8 @@ def place_labels(
         top = center_y - box_height / 2
         bottom = center_y + box_height / 2
         candidate_cost = 0.0
-        candidate_cost += max(0.0, edge_pad - left) + max(0.0, right - (fig_w - edge_pad))
-        candidate_cost += max(0.0, edge_pad - top) + max(0.0, bottom - (fig_h - edge_pad))
+        if left < margin["l"] or right > fig_w - edge_pad or top < margin["t"] or bottom > fig_h - margin["b"]:
+            return float("inf")
         for point_x, point_y in obstacle_pixels:
             if left - pad <= point_x <= right + pad and top - pad <= point_y <= bottom + pad:
                 candidate_cost += overlap_cost
@@ -244,8 +257,8 @@ def place_labels(
         best = None
         for radius in radii:
             for angle in point.get("angles", angles):
-                center_x = anchor_x + radius * math.cos(math.radians(angle))
-                center_y = anchor_y - radius * math.sin(math.radians(angle))
+                center_x = min(fig_w - edge_pad - box_width / 2, max(margin["l"] + box_width / 2, anchor_x + radius * math.cos(math.radians(angle))))
+                center_y = min(fig_h - margin["b"] - box_height / 2, max(margin["t"] + box_height / 2, anchor_y - radius * math.sin(math.radians(angle))))
                 candidate = (cost(center_x, center_y, box_width, box_height), center_x, center_y)
                 if best is None or candidate[0] < best[0]:
                     best = candidate
@@ -259,6 +272,7 @@ def place_labels(
             "x": point["x"], "y": point["y"], "text": point["text"], "showarrow": True,
             "ax": center_x - anchor_x, "ay": center_y - anchor_y, "axref": "pixel", "ayref": "pixel",
             "font": {**font, "color": point["color"]}, "align": "center", "bgcolor": bgcolor,
+            "xanchor": "center", "yanchor": "middle",
             "arrowhead": 0, "arrowwidth": 1, "arrowcolor": arrowcolor,
         })
     return annotations
@@ -272,11 +286,16 @@ def _clip_to_damage(start: dict, end: dict, damage: float) -> tuple[float, float
     return effect, damage
 
 
-def _pareto_curve_parts(points: list[dict], side: str) -> tuple[list[dict], list[dict]]:
+def _pareto_curve_parts(points: list[dict], side: str, endpoint: dict | None = None) -> tuple[list[dict], list[dict]]:
     origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
     if not points:
         return [origin], []
-    sign = 1 if side == "+C" else -1
+    if any(not point["accepted"] for point in points):
+        raise ValueError("Pareto controls must be accepted dose means")
+    endpoint = endpoint or points[-1]
+    if endpoint not in points:
+        raise ValueError("selected endpoint must be an accepted curve point")
+    sign = behavior_axis_direction(side, endpoint.get("behavior_target"))
     candidates = [origin, *points]
 
     def dominates(left: dict, right: dict) -> bool:
@@ -295,14 +314,13 @@ def _pareto_curve_parts(points: list[dict], side: str) -> tuple[list[dict], list
         if not any(dominates(other, point) for other in candidates if other is not point)
     ]
     frontier.sort(key=lambda point: (sign * point["effect"], point["off_axis_perturbation"]))
-    frontier_anchors = [origin, *frontier]
-    endpoint = points[-1]
-    endpoint_extension = [] if endpoint in frontier_anchors else [frontier_anchors[-1], endpoint]
+    frontier_anchors = [origin, *(point for point in frontier if point is not endpoint)]
+    endpoint_extension = [frontier_anchors[-1], endpoint]
     return frontier_anchors, endpoint_extension
 
 
-def _pareto_curve_anchors(points: list[dict], side: str) -> list[dict]:
-    frontier, endpoint_extension = _pareto_curve_parts(points, side)
+def _pareto_curve_anchors(points: list[dict], side: str, endpoint: dict | None = None) -> list[dict]:
+    frontier, endpoint_extension = _pareto_curve_parts(points, side, endpoint)
     return [*frontier, *endpoint_extension[1:]]
 
 
@@ -357,7 +375,7 @@ def _add_j_lens_dev_overlay(
             raise ValueError(f"corrected J-lens DEV has no accepted {side} dose")
         sign = 1 if side == "+C" else -1
         endpoint = max(accepted, key=lambda row: sign * row["effect"])
-        path_points = [row for row in side_points if row["C"] <= endpoint["C"]]
+        path_points = [row for row in accepted if row["C"] <= endpoint["C"]]
         frontier, _ = _pareto_curve_parts(path_points, side)
         anchors = _pareto_curve_anchors(path_points, side) if pareto else frontier
         displayed_points = path_points if pareto else side_points
@@ -460,18 +478,52 @@ def calibrated_random_rungs(random: list[dict], seeds: set[int]) -> dict[str, li
             coherent = measured_seeds == seeds and len(measured) == len(seeds) and all(point["admissible"] for point in measured)
             if not coherent:
                 continue
+            fractions = {point["normalized_dose_fraction"] for point in measured}
+            if len(fractions) != 1:
+                raise ValueError(f"random dose id {dose_id} has mixed calibration fractions")
             effects = sorted(point["effect"] for point in measured)
             trim = len(effects) // 10
             side_rungs.append({
                 "rung": dose_id,
-                "points": measured,
-                "effect": median(effects),
+                "dose_fraction": fractions.pop(),
+                "points": sorted(measured, key=lambda point: point["seed"]),
+                "effect": mean(effects),
                 "effect_low": effects[trim],
                 "effect_high": effects[-trim - 1],
-                "off_axis_perturbation": median(point["off_axis_perturbation"] for point in measured),
+                "off_axis_perturbation": mean(point["off_axis_perturbation"] for point in measured),
             })
-        rungs[side] = side_rungs
+        rungs[side] = sorted(side_rungs, key=lambda rung: rung["dose_fraction"])
     return rungs
+
+
+def random_controls(rows: list[dict], seeds: set[int], region: str) -> dict[str, list[dict]]:
+    random = [row for row in rows if row["method"] == "random"]
+    if {row["seed"] for row in random} != seeds:
+        raise ValueError(f"random controls require expected seeds {sorted(seeds)}")
+    if region == "calibrated_rung":
+        return calibrated_random_rungs(random, seeds)
+    if region != "exact_C":
+        raise ValueError(f"unknown random region construction: {region}")
+    indexed = {(row["seed"], row["C"], row["side"]): row for row in random}
+    if len(indexed) != len(random):
+        raise ValueError("duplicate random seed/dose/side rows")
+    controls: dict[str, list[dict]] = {"+C": [], "-C": []}
+    for coefficient in sorted({row["C"] for row in random}):
+        eligible = [
+            seed for seed in sorted(seeds)
+            if all((seed, coefficient, side) in indexed and indexed[seed, coefficient, side]["admissible"]
+                   for side in controls)
+        ]
+        if len(eligible) < (len(seeds) + 1) // 2:
+            break
+        for side in controls:
+            points = [indexed[seed, coefficient, side] for seed in eligible]
+            controls[side].append({
+                "rung": coefficient, "dose_fraction": coefficient, "points": points,
+                "effect": mean(point["effect"] for point in points),
+                "off_axis_perturbation": mean(point["off_axis_perturbation"] for point in points),
+            })
+    return controls
 
 
 def plot(
@@ -489,93 +541,55 @@ def plot(
     figure = go.Figure()
     means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
     admissible_means = _means(rows, methods, method_seeds)
-    valid = admissible_means + [row for row in rows if row["method"] == "random" and row["admissible"]]
+    controls = random_controls(rows, method_seeds["random"], random_region) if "random" in methods else {"+C": [], "-C": []}
+    eligible_random = [point for side_rungs in controls.values() for rung in side_rungs for point in rung["points"]]
+    valid = admissible_means + eligible_random
+    if not valid:
+        raise ValueError("no admissible complete dose means or eligible random controls")
     if damage_headroom < 1:
         raise ValueError("damage_headroom must be at least one")
     x_limit = 1.08 * max(abs(row["effect"]) for row in valid)
     y_range = (damage_headroom * max(row["off_axis_perturbation"] for row in valid), -0.07)
     damage_limit = y_range[0] / damage_headroom * 1.005
-    margin = {"l": 75, "r": 105, "t": 40, "b": 58}
+    margin = {"l": 75, "r": 35, "t": 55, "b": 170 if "j_lens_swap_L16" in methods else 105}
     obstacles = [(0.0, 0.0)]
     random = [row for row in rows if row["method"] == "random"]
     if random:
-        random_seeds = {row["seed"] for row in random}
-        rung_controls: dict[str, list[dict]] | None = None
-        if random_region not in {"exact_C", "calibrated_rung"}:
-            raise ValueError(f"unknown random region construction: {random_region}")
-        if random_region == "exact_C":
-            random_point = {(row["seed"], row["C"], row["side"]): row for row in random}
-            cone = [(0.0, 0.0, 0.0, 0.0)]
-            for C in sorted({row["C"] for row in random}):
-                coherent = [
-                    seed for seed in random_seeds
-                    if (seed, C, "+C") in random_point and (seed, C, "-C") in random_point
-                    and random_point[seed, C, "+C"]["admissible"] and random_point[seed, C, "-C"]["admissible"]
-                ]
-                if len(coherent) < (len(random_seeds) + 1) // 2:
-                    break
-                points = [random_point[seed, C, side] for seed in coherent for side in ("+C", "-C")]
-                effects = sorted(row["effect"] for row in points)
-                trim = max(1, len(effects) // 10)
-                cone.append((median(effects), median(row["off_axis_perturbation"] for row in points),
-                             effects[trim], effects[-trim - 1]))
+        rungs = [rung for side_rungs in controls.values() for rung in side_rungs]
+        cone = [(0.0, 0.0, 0.0)]
+        region_sources = []
+        for fraction in sorted({rung["dose_fraction"] for rung in rungs}):
+            dose_rungs = [rung for rung in rungs if rung["dose_fraction"] == fraction]
+            points = [point for rung in dose_rungs for point in rung["points"]]
+            effects = sorted(point["effect"] for point in points)
+            trim = len(effects) // 10
+            cone.append((median(point["off_axis_perturbation"] for point in points), effects[trim], effects[-trim - 1]))
+            region_sources.append({"dose": fraction, "seeds_per_side": [len(rung["points"]) for rung in dose_rungs]})
+        if rungs:
             figure.add_trace(go.Scatter(
-                x=[point[2] for point in cone] + [point[3] for point in reversed(cone)],
-                y=[point[1] for point in cone] + [point[1] for point in reversed(cone)],
+                x=[point[1] for point in cone] + [point[2] for point in reversed(cone)],
+                y=[point[0] for point in cone] + [point[0] for point in reversed(cone)],
                 fill="toself", fillcolor="rgba(150,150,150,0.22)",
-                line={"color": "rgba(150,150,150,0)", "width": 0}, line_shape="spline", line_smoothing=0.8,
+                line={"color": "rgba(150,150,150,0)", "width": 0},
+                name="random descriptive region", meta={"sources": region_sources},
                 hoverinfo="skip", showlegend=False,
             ))
-        else:
-            rung_controls = calibrated_random_rungs(random, random_seeds)
-            for side, side_rungs in rung_controls.items():
-                if not side_rungs:
-                    continue
-                cone = [(0.0, 0.0, 0.0, 0.0), *[
-                    (rung["off_axis_perturbation"], rung["effect_low"], rung["effect_high"])
-                    for rung in side_rungs
-                ]]
-                figure.add_trace(go.Scatter(
-                    x=[point[1] for point in cone] + [point[2] for point in reversed(cone)],
-                    y=[point[0] for point in cone] + [point[0] for point in reversed(cone)],
-                    fill="toself", fillcolor="rgba(150,150,150,0.22)",
-                    line={"color": "rgba(150,150,150,0)", "width": 0},
-                    hovertemplate=f"random {side} calibrated rung<extra></extra>", showlegend=False,
-                ))
             figure.add_trace(go.Scatter(
-                x=[row["effect"] for row in random if row["admissible"]],
-                y=[row["off_axis_perturbation"] for row in random if row["admissible"]],
-                mode="markers", marker={"color": "#666666", "size": 4, "opacity": 0.65},
-                text=[
-                    f"random seed={row['seed']} side={row['side']} actual C={row['C']:g}"
-                    for row in random if row["admissible"]
-                ],
-                hovertemplate="%{text}<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>",
-                name="random measured DEV doses", showlegend=True,
+                x=[row["effect"] for row in eligible_random],
+                y=[row["off_axis_perturbation"] for row in eligible_random],
+                mode="markers", marker={"color": "#888888", "size": 3, "opacity": 0.45},
+                text=[f"random seed={row['seed']} side={row['side']} actual C={row['C']:g}" for row in eligible_random],
+                hovertemplate="%{text}<br>effect=%{x:.3f}<br>change=%{y:.3f}<extra></extra>",
+                name="random eligible measured doses", showlegend=False,
             ))
         random_peaks = []
         random_peak_labels = []
         for side, sign in (("+C", 1), ("-C", -1)):
-            if rung_controls is not None:
-                candidates = [
-                    {"effect": rung["effect"], "off_axis_perturbation": rung["off_axis_perturbation"]}
-                    for rung in rung_controls[side]
-                ]
-            else:
-                candidates = [
-                    {
-                        "effect": mean(row["effect"] for row in rows_at_dose),
-                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
-                    }
-                    for C in sorted({row["C"] for row in random})
-                    if (rows_at_dose := [
-                        row for row in random
-                        if row["side"] == side and row["C"] == C and row["admissible"]
-                    ])
-                ]
+            candidates = [rung for rung in controls[side] if sign * rung["effect"] > 0]
             if candidates:
-                random_peaks.append(max(candidates, key=lambda row: sign * row["effect"]))
-                random_peak_labels.append(f"random {side} calibrated peak" if rung_controls is not None else f"random {side} table peak")
+                peak = max(candidates, key=lambda row: sign * row["effect"])
+                random_peaks.append(peak)
+                random_peak_labels.append(f"random {side} table peak ({len(peak['points'])}/{len(method_seeds['random'])} seeds)")
         if random_peaks:
             figure.add_trace(go.Scatter(
                 x=[row["effect"] for row in random_peaks],
@@ -600,53 +614,27 @@ def plot(
     }
     displayed_endpoints = {}
     unselected_sides = {}
+    dev_legend = False
     for method_index, method in enumerate(method for method in methods if method != "random"):
         method_rows = [row for row in means if row["method"] == method]
         if not method_rows:
             continue
         for side in ("+C", "-C"):
             points = sorted((row for row in method_rows if row["side"] == side), key=lambda row: row["C"])
-            if points and not pareto and len(points) > 16:
-                table_peak = max(
-                    range(len(points)),
-                    key=lambda index: (1 if side == "+C" else -1) * points[index]["effect"],
-                )
-                indexes = sorted(
-                    {round(index * (len(points) - 1) / 15) for index in range(16)}
-                    | {len(points) - 1, table_peak}
-                )
-                points = [points[index] for index in indexes]
             if points:
+                candidates = [point for point in points if point["accepted"]]
+                endpoint = None
                 if endpoint_coefficients is not None:
                     endpoint_C = endpoint_coefficients[side]
-                else:
-                    # Use same intended-direction selector as _summary: max effect in correct sign direction
-                    # For j_lens methods, use coherent accepted (admissible and correct sign) to avoid marking wrong-direction
-                    sign = 1 if side == "+C" else -1
-                    # For j_lens, use accepted (admissible and correct sign) to match table; for others, use admissible
-                    if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16", "j_lens_injection_L16", "j_lens_injection_doubt_L16"):
-                        coherent = [p for p in points if p["accepted" if "accepted" in p else "admissible"] and sign * p["effect"] > 0]
-                        # Fallback to admissible if no coherent (should not happen for L16, but for safety)
-                        candidates = coherent if coherent else [p for p in points if p["admissible"]]
-                    else:
-                        candidates = [p for p in points if p["admissible"]]
-                    if candidates:
-                        if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16", "j_lens_injection_L16", "j_lens_injection_doubt_L16"):
-                            endpoint = max(candidates, key=lambda row: sign * row["effect"])
-                            max_eff = sign * endpoint["effect"]
-                            tied = [r for r in candidates if abs(sign * r["effect"] - max_eff) < 1e-9]
-                            endpoint = min(tied, key=lambda row: row["off_axis_perturbation"])
-                            endpoint_C = endpoint["C"]
-                        else:
-                            endpoint_C = candidates[-1]["C"]
-                    else:
-                        endpoint_C = None
-                endpoint_index = (
-                    min(range(len(points)), key=lambda index: abs(points[index]["C"] - endpoint_C))
-                    if endpoint_C is not None else None
-                )
-                if endpoint_index is not None:
-                    endpoint = points[endpoint_index]
+                    if endpoint_C is not None:
+                        selected = [point for point in candidates if point["C"] == endpoint_C]
+                        if len(selected) != 1:
+                            raise ValueError(f"selected {method} {side} C={endpoint_C} is not one accepted measured mean")
+                        endpoint = selected[0]
+                elif candidates:
+                    sign = behavior_axis_direction(side, candidates[0]["behavior_target"])
+                    endpoint = max(candidates, key=lambda point: (sign * point["effect"], -point["off_axis_perturbation"])) if method.startswith("j_lens") else candidates[-1]
+                if endpoint is not None:
                     displayed_endpoints[method, side] = (
                         endpoint["effect"], min(endpoint["off_axis_perturbation"], damage_limit)
                     )
@@ -656,13 +644,10 @@ def plot(
                     )
                 origin = {"effect": 0.0, "off_axis_perturbation": 0.0}
                 if pareto:
-                    in_range_points = [
-                        point for point in points
-                        if point["complete"] and point["off_axis_perturbation"] <= damage_limit
-                    ]
-                    anchors = _pareto_curve_anchors(in_range_points, side)
+                    curve_points = [point for point in candidates if endpoint is not None and point["C"] <= endpoint["C"]]
+                    anchors = _pareto_curve_anchors(curve_points, side, endpoint)
                 else:
-                    anchors = [origin, *points]
+                    anchors = [origin, *(point for point in candidates if endpoint is not None and point["C"] <= endpoint["C"])]
                 curve_effect, curve_damage = (
                     _smooth_anchors(anchors)
                     if pareto else
@@ -680,8 +665,9 @@ def plot(
                         "width": 2.2 if pareto else 3,
                         "dash": "dot" if method in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16") and side == "-C" else "solid",
                     },
-                    line_shape="spline" if smooth else "linear",
-                    line_smoothing=1.3 if pareto else 0.6 if smooth else 0,
+                    line_shape="spline" if smooth and not pareto else "linear",
+                    meta={"controls": anchors, "endpoint": endpoint},
+                    line_smoothing=0.6 if smooth and not pareto else 0,
                     hoverinfo="skip",
                     name=f"{method} {side} {'Pareto path' if pareto else 'dose path'}",
                     showlegend=False,
@@ -729,14 +715,15 @@ def plot(
                     name=f"{method} {side} measured doses",
                     showlegend=False,
                 ))
-                if endpoint_index is not None:
+                if endpoint is not None:
                     figure.add_trace(go.Scatter(
                         x=[endpoint["effect"]], y=[min(endpoint["off_axis_perturbation"], damage_limit)],
                         mode="markers", marker={"color": colors[method], "size": 10, "symbol": "x"},
                         hovertemplate=(
-                            f"{LABELS[method]} final admissible dose<br>C={endpoint['C']:g}"
+                            f"{LABELS[method]} selected accepted dose<br>C={endpoint['C']:g}"
                             "<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>"
                         ),
+                        name=f"{method} {side} selected endpoint", meta={"source": endpoint},
                         showlegend=False,
                     ))
                 if pareto:
@@ -755,7 +742,7 @@ def plot(
 
     figure.add_trace(go.Scatter(x=[0], y=[0], mode="markers", marker={"color": "#333333", "size": 11, "symbol": "diamond"}, hoverinfo="skip", showlegend=False))
     figure.add_annotation(x=0, y=0, text="bare", showarrow=False, xshift=28, yshift=12, font={"color": "#333333", "size": 14})
-    if methods == METHODS:
+    if set(METHODS) <= set(methods):
         labels = [
             {"x": displayed_endpoints["pca", "+C"][0], "y": displayed_endpoints["pca", "+C"][1], "text": "PCA", "color": colors["pca"]},
             {
@@ -774,25 +761,20 @@ def plot(
             "vjp_mlp_up_left_right_shrink",
             "vjp_mlp_up_shared_eb",
             "vjp_mlp_up_shared_last_token_eb",
+            SELECTED_FULL_METHOD,
         )
     else:
         labels = []
-        # Explicit color key for J-lens variants (small, not repeated endpoint labels)
-        if "j_lens_swap" in methods and "j_lens_swap_L16" in methods:
-            # Add a small color key in the upper right corner, outside the data area, to distinguish blue vs green vs purple
-            key_text = "<span style='color:#56b4e9'>●</span> J-lens 13-21 (blue) &nbsp; <span style='color:#009e73'>●</span> J-lens L16 (green)"
-            if "j_lens_unit_L16" in methods:
-                key_text += " &nbsp; <span style='color:#6f4aa8'>●</span> unit L16 (purple, control)"
-            if "j_lens_injection_L16" in methods:
-                key_text += " &nbsp; <span style='color:#e69f00'>●</span> injection L16 (amber, +alpha/side)"
-            if "j_lens_injection_doubt_L16" in methods:
-                key_text += " &nbsp; <span style='color:#cc79a7'>●</span> doubt/trust L16 (pink)"
-            figure.add_annotation(
-                x=0.99, y=0.955, xref="paper", yref="paper",
-                text=key_text,
-                showarrow=False, font={"size": 10}, bgcolor="rgba(255,255,255,0.85)", bordercolor="#cccccc", borderwidth=1,
-                align="right", xanchor="right", yanchor="top",
-            )
+        if "j_lens_swap_L16" in methods:
+            for method, label in (
+                ("j_lens_swap", "J-lens 13–21"), ("j_lens_swap_L16", "swap L16"),
+                ("j_lens_unit_L16", "unit L16"), ("j_lens_injection_L16", "injection L16"),
+                ("j_lens_injection_doubt_L16", "doubt/trust L16"),
+            ):
+                if method in methods:
+                    figure.add_trace(go.Scatter(x=[None], y=[None], mode="lines", line={"color": colors[method]}, name=label, showlegend=True))
+            figure.update_layout(title={"text": title, "x": 0.01, "xanchor": "left"})
+            dev_legend = True
         label_methods = tuple(method for method in methods if method not in {"random", "j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16", "j_lens_injection_L16", "j_lens_injection_doubt_L16"})
     labels.extend(
         {
@@ -822,54 +804,49 @@ def plot(
         }
         for method in label_methods
         for side in ("+C", "-C")
-        if (method, side) in unselected_sides
+        if (method, side) in unselected_sides and not set(METHODS) <= set(methods)
     )
     for annotation in place_labels(
         labels, (-x_limit, x_limit), y_range, obstacles=obstacles,
-        fig_w=1064, fig_h=590, margin=margin, font={"size": 15},
+        fig_w=1064, fig_h=590, margin=margin, font={"size": 13}, char_w=7.4,
         bgcolor="rgba(255,255,255,0.9)", arrowcolor="rgba(45,24,16,0.6)",
     ):
         figure.add_annotation(**annotation)
     marker_note = (
-        "small dots: measured doses · curves: bare → Pareto means → final"
+        "dots: measured means · smooth lines: visual guides · × selected accepted dose"
         if pareto else
         "● measured doses · C increases from bare"
     )
-    for y, text in ((0.10, marker_note), (0.055, "× selected/final · gray ○ random peak")):
+    for shift, text in ((-70, marker_note), (-86, "gray: eligible random directions · ○ random table peak")):
         figure.add_annotation(
-            x=0.01, y=y, xref="paper", yref="paper", text=text,
+            x=0.01, y=0, yshift=shift, xref="paper", yref="paper", text=text,
             showarrow=False, xanchor="left", font={"color": "#777777", "size": 10.5},
         )
     if any(row["method"] in ("j_lens_swap", "j_lens_swap_L16", "j_lens_unit_L16", "j_lens_injection_L16", "j_lens_injection_doubt_L16") for row in rows):
         figure.add_annotation(
             x=0.01,
-            y=0.93,
+            y=0, yshift=-102,
             xref="paper",
             yref="paper",
             xanchor="left",
             text=(
-                "J-lens swap/unit: solid +C · dotted -C · ○ doses through selected/final · injection solid both"
-                if pareto else
-                "J-lens swap/unit: solid +C · dotted -C · ○ all doses · △ high damage · injection solid both"
+                "J-lens swap/unit: solid +C · dotted -C · open dots rejected · triangles off scale"
             ),
             showarrow=False,
-            font={"color": J_LENS_COLOR, "size": 12},
+            font={"color": "#777777", "size": 10.5},
             bgcolor="rgba(255,255,255,0.9)",
         )
-    if random:
-        figure.add_annotation(
-            x=1.55, y=0.33, text="null zone of<br>random directions", showarrow=False,
-            align="center", font={"color": "#666666", "size": 14},
-        )
+
     figure.add_annotation(x=0, y=1, xref="paper", yref="paper", text="clean steer -> abrasive", showarrow=False, xanchor="left", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=1, y=1, xref="paper", yref="paper", text="clean steer -> sycophantic", showarrow=False, xanchor="right", font={"color": "#287a4d", "size": 14})
     figure.add_annotation(x=0.58, y=0.10, xref="paper", yref="paper", text="mostly side effects", showarrow=False, font={"color": "#c44e52", "size": 14})
     figure.update_layout(
-        title={"text": title, "x": 0.5, "xanchor": "center"},
+        title={"text": title, "x": 0.01 if dev_legend else 0.5, "xanchor": "left" if dev_legend else "center"},
         height=590, margin=margin,
-        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=False,
+        font={"color": "#111", "size": 15}, plot_bgcolor="white", paper_bgcolor="white", showlegend=True,
+        legend={"orientation": "h", "x": 0.5, "xanchor": "center", "y": -0.36, "yanchor": "top", "font": {"size": 12}, "bgcolor": "rgba(255,255,255,0.9)"},
         xaxis={"title": "judge on-axis change", "range": [-x_limit, x_limit], "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
-        yaxis={"title": "off-axis damage (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
+        yaxis={"title": "off-axis change (lower is better)", "range": y_range, "showline": True, "linecolor": "#333333", "gridcolor": "#e5e5e5", "zeroline": False},
     )
     return figure
 
@@ -884,14 +861,8 @@ def _summary(
 ) -> list[list[str]]:
     if random_region not in {"exact_C", "calibrated_rung"}:
         raise ValueError(f"unknown random region construction: {random_region}")
-    means = _means(rows, methods, method_seeds, include_rejected=include_rejected)
-    random_rungs = (
-        calibrated_random_rungs(
-            [row for row in rows if row["method"] == "random"], method_seeds["random"]
-        )
-        if random_region == "calibrated_rung" and "random" in methods
-        else None
-    )
+    means = _means(rows, methods, method_seeds, include_rejected=True)
+    random_rungs = random_controls(rows, method_seeds["random"], random_region) if "random" in methods else None
     scored_rows = []
     for method in methods:
         peaks = {}
@@ -910,39 +881,26 @@ def _summary(
                     }
                     for rung in random_rungs[side]
                 ]
-            elif method == "random":
-                candidates = [
-                    {
-                        "C": C,
-                        "effect": mean(row["effect"] for row in rows_at_dose),
-                        "off_axis_perturbation": mean(row["off_axis_perturbation"] for row in rows_at_dose),
-                        "admissible": True,
-                        "accepted": sign * mean(row["effect"] for row in rows_at_dose) > 0,
-                    }
-                    for C in sorted({row["C"] for row in group})
-                    if (rows_at_dose := [row for row in group if row["C"] == C and row["admissible"]])
-                ]
             else:
                 candidates = [row for row in means if row["method"] == method and row["side"] == side]
-            live = [row for row in candidates if row["accepted"]]
-            if not live or (endpoint_coefficients is not None and endpoint_coefficients[side] is None):
+            accepted = [row for row in candidates if row["accepted"]]
+            if not accepted or (endpoint_coefficients is not None and endpoint_coefficients[side] is None):
                 peaks[side] = None
             elif endpoint_coefficients is None:
-                peaks[side] = max(live, key=lambda row: sign * row["effect"])
+                direction = behavior_axis_direction(side, accepted[0].get("behavior_target"))
+                peaks[side] = max(accepted, key=lambda row: (direction * row["effect"], -row["off_axis_perturbation"]))
             else:
-                peaks[side] = min(live, key=lambda row: abs(row["C"] - endpoint_coefficients[side]))
-            if method == "random" and random_rungs is not None:
-                candidate_count += len(candidates)
+                selected = [row for row in accepted if row["C"] == endpoint_coefficients[side]]
+                if len(selected) != 1:
+                    raise ValueError(f"selected {method} {side} is not one accepted measured mean")
+                peaks[side] = selected[0]
+            candidate_count += sum(row["admissible"] for row in candidates)
+            if method == "random":
+                dose_field = "normalized_dose_id" if random_region == "calibrated_rung" else "C"
+                measured_doses = {row[dose_field] for row in group if row[dose_field] is not None}
+                rejected += len(measured_doses) - len(accepted)
+            else:
                 rejected += sum(not row["accepted"] for row in candidates)
-            else:
-                candidate_count += len(group)
-                rejected += sum(
-                    not (
-                        row["admissible"]
-                        and behavior_axis_direction(side, _behavior_target(row)) * row["effect"] > 0
-                    )
-                    for row in group
-                )
 
         if None in peaks.values():
             score = float("-inf")
@@ -1013,7 +971,7 @@ def _markdown(
     table: list[list[str]],
     intro: tuple[str, ...] = (
         "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count.",
-        "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+        SUMMARY_NOTE,
     ),
     extra_pareto_plot: bool = False,
 ) -> str:
@@ -1047,7 +1005,7 @@ def _update_readme(table: list[list[str]]) -> None:
     text = path.read_text()
     start = text.index(README_TABLE_START)
     end = text.index(README_TABLE_END) + len(README_TABLE_END)
-    generated = f"{README_TABLE_START}\n{_markdown_table(table)}\n{README_TABLE_END}"
+    generated = f"{README_TABLE_START}\n{_markdown_table(table)}\n\n<sub>{SUMMARY_NOTE}</sub>\n{README_TABLE_END}"
     path.write_text(text[:start] + generated + text[end:])
 
 
@@ -1056,8 +1014,7 @@ def _html(
     figure_html: str,
     intro: str = (
         "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
-        "The figure shows both steering directions. The random cone shows ten vectors until fewer "
-        "than half have two coherent directions. The table reports rejected evaluations."
+        "The figure shows both steering directions. " + SUMMARY_NOTE
     ),
 ) -> str:
     def cell(cell: str) -> str:
@@ -1275,14 +1232,17 @@ def main() -> None:
         return
     if args.profile is not None:
         raise ValueError("--profile requires --experiment-id")
+    if args.dev_artifacts is not None:
+        raise ValueError("DEV cannot be overlaid on all-100 plots; use scripts/render_dev_comparison.py")
     methods, method_seeds = primary_methods()
     rows = _rows(methods=methods, method_seeds=method_seeds)
     table = _display_table(_summary(rows, methods, method_seeds))
     markdown_text = _markdown(
         table,
         (
-            "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort.",
-            "The random cone shows ten vectors until fewer than half have two coherent directions. The table reports rejected evaluations.",
+            "The primary table uses the all-100 evaluation cohort and reports each named method's seed count.",
+            SUMMARY_NOTE,
+            INDEX_NOTE,
             *((SELECTED_FULL_NOTE,) if SELECTED_FULL_METHOD in methods else ()),
             PLOT_NOTE,
         ),
@@ -1296,13 +1256,6 @@ def main() -> None:
         title="Pareto-smoothed VJP steering on Bullshit Bench v2",
         pareto=True,
     )
-    dev_section = None
-    if args.dev_artifacts:
-        from vjp_steering.results_dev import load_points, add_points, section
-        manifest, points = load_points(args.dev_artifacts)
-        add_points(figure, points)
-        add_points(pareto_figure, points)
-        dev_section = section(manifest, points)
     figure_html = (
         "<h2>Measured dose paths</h2>"
         + figure.to_html(
@@ -1324,15 +1277,11 @@ def main() -> None:
     html_text = _html(
         table,
         figure_html,
-        "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. Any appended DEV table uses its separately stated cohort. "
-        "The random cone shows ten vectors until fewer than half have two coherent directions. "
-        "The table reports rejected evaluations. "
+        "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. "
+        + SUMMARY_NOTE + " "
         + (SELECTED_FULL_NOTE + " " if SELECTED_FULL_METHOD in methods else "")
         + PLOT_NOTE,
     )
-    if dev_section:
-        markdown_text += dev_section[0]
-        html_text += dev_section[1]
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)
     output = ROOT / "results"

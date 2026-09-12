@@ -1,0 +1,37 @@
+test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes (test_judge_export_contract.TestExportCaller.test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes) ... 2026-09-12 15:01:44.251 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_duplicate_scenario_cannot_publish_all100 (test_judge_export_contract.TestExportCaller.test_experiment_duplicate_scenario_cannot_publish_all100) ... 2026-09-12 15:01:44.797 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_missing_judgments_cannot_create_output (test_judge_export_contract.TestExportCaller.test_experiment_missing_judgments_cannot_create_output) ... 2026-09-12 15:01:45.314 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:01:45.499 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_writes_current_contract_and_complete_cohort (test_judge_export_contract.TestExportCaller.test_experiment_writes_current_contract_and_complete_cohort) ... 2026-09-12 15:01:46.106 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:01:46.283 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_explicit_v7_can_reexport_unversioned_history_without_relabeling (test_judge_export_contract.TestExportCaller.test_explicit_v7_can_reexport_unversioned_history_without_relabeling) ... 2026-09-12 15:01:46.961 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:01:47.118 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_legacy_cli_writes_complete_scenarios_and_both_signed_effects (test_judge_export_contract.TestExportCaller.test_legacy_cli_writes_complete_scenarios_and_both_signed_effects) ... ok
+test_missing_generated_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_generated_scenario_stops_before_any_write) ... ok
+test_missing_order_pass_or_whole_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_order_pass_or_whole_scenario_stops_before_any_write) ... ok
+test_v8_cannot_append_to_historical_aggregate (test_judge_export_contract.TestExportCaller.test_v8_cannot_append_to_historical_aggregate) ... ok
+test_cache_versions_never_collide_or_fallback (test_judge_export_contract.TestJudgeCaller.test_cache_versions_never_collide_or_fallback) ... ok
+test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) ... ok
+test_http_exhaustion_counts_actual_client_requests (test_judge_export_contract.TestJudgeCaller.test_http_exhaustion_counts_actual_client_requests) ... 2026-09-12 15:01:50.835 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:01:50.835 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:01:50.835 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+test_legacy_prompt_hashes_are_unchanged (test_judge_export_contract.TestJudgeCaller.test_legacy_prompt_hashes_are_unchanged) ... ok
+test_transient_budget_is_separate_from_format_budget (test_judge_export_contract.TestJudgeCaller.test_transient_budget_is_separate_from_format_budget) ... 2026-09-12 15:01:50.838 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:01:50.838 | INFO     | judge:judge_one:712 - retry invalid JSON cell=1d14e0b253007d19eafd5a319cbd4cf9a2e1d472f935209028f2baff6440566d attempt=1/3
+2026-09-12 15:01:50.838 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:01:50.838 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 6.933s
+
+OK
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+added 2 result arms and 200 scenario scores

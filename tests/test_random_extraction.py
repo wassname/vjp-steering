@@ -16,6 +16,10 @@ class TestRandomExtraction(unittest.TestCase):
     def test_uses_persona_extraction_prompts_before_training_random_vector(self):
         args = SimpleNamespace(
             method="random",
+            lens_file=None,
+            target_layer=None,
+            injection_plus_concept="",
+            injection_minus_concept="",
             layers="6,7",
             dtype="float32",
             seed=3,

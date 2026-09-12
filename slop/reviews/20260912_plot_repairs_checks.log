@@ -1,0 +1,18 @@
+PASS no rejected anchor in any plotted line 71 rejected means exist
+PASS every selected line ends at its selected marker []
+PASS every line starts at bare 13 lines
+PASS random region vertices sorted by actual dose [1.0, 1.4142, 2.0]
+PASS random region reports seeds per side
+PASS input rows unchanged after render
+PASS DEV: no rejected anchor in plotted lines 93 rejected DEV means
+PASS DEV region sorted by calibration fraction, id-9 low dose first [0.4, 0.66, 0.7438]
+ALL_PLOT_SOURCE_CHECKS_PASS 
+Ran 7 tests in 0.048s
+
+OK
+RUNG_REGRESSION ALL CHECKS PASS
+PASS DEV region sorted by calibration fraction, id-9 low dose first [0.4, 0.66, 0.7438]
+ALL_PLOT_SOURCE_CHECKS_PASS 
+ca26d3079e7c088a954881babc6ffb4d7ff55756f763f01bce308cb44e524b55  data/results.csv
+6e487289f53941ba110f75dfa05bae280a346fd8a9ce166e2e7e2e8dcac12930  results/dev-comparison.csv
+1

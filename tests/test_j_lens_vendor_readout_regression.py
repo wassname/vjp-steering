@@ -15,45 +15,58 @@ LOG = pathlib.Path("slop/logs/20260909_j_lens_dev/vendor-regression.log")
 SMALL_CACHE = pathlib.Path("slop/logs/20260909_j_lens_dev/qwen_norm_head_small.pt")
 
 def test_production_readout_with_nonuniform_weight():
-    """Fast unit test: actual Qwen RMSNorm vs identity mutation."""
+    """Call production readout; compare independent RMSNorm arithmetic. -- PI/OpenAI"""
+    from types import SimpleNamespace
+    from unittest.mock import patch
     import torch
     import torch.nn as nn
+    from transformers import BatchEncoding
     from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5RMSNorm
-    d_model, vocab = 8, 5
+
+    sys.path.insert(0, str(pathlib.Path("scripts").resolve()))
+    from reproduce_paper_j_lens import clean_layer_lens_readouts
+
     torch.manual_seed(0)
-    hidden = torch.randn(d_model)
-    J = torch.eye(d_model) * 0.5 + torch.randn(d_model, d_model) * 0.01
+    d_model, vocab = 8, 5
+    hidden = torch.randn(d_model).to(torch.bfloat16)
+    J = torch.eye(d_model) * 0.5 + torch.randn(d_model, d_model) * 0.1
     candidate_ids = [0, 1, 2]
-    W_U = torch.randn(vocab, d_model)
-    # Real Qwen norm with nonuniform weight (1+weight = [1,2,3,4,5,6,7,8])
-    norm = Qwen3_5RMSNorm(d_model, eps=1e-6)
+
+    class Model(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.model = nn.Module()
+            self.model.layers = nn.ModuleList([nn.Identity()])
+            self.model.norm = Qwen3_5RMSNorm(d_model, eps=1e-6)
+            self.lm_head = nn.Linear(d_model, vocab, bias=False).to(torch.bfloat16)
+            with torch.no_grad():
+                self.model.norm.weight.copy_(torch.arange(d_model))
+
+        def forward(self, **kwargs):
+            return self.model.layers[0](hidden.view(1, 1, -1))
+
+    model = Model()
+    tokenizer = lambda *args, **kwargs: BatchEncoding(dict(input_ids=torch.ones(1, 1, dtype=torch.long), attention_mask=torch.ones(1, 1, dtype=torch.long)))
+    vector = SimpleNamespace(cfg=SimpleNamespace(layers=(0,), source_token_id=0, target_token_id=1))
+    checkpoint = {"J": {0: J}}
+
+    def production_scores():
+        with patch("vjp_steering.vjp._resolve_j_lens_file", return_value=pathlib.Path("/nonexistent/test-lens")):
+            readouts, capture = clean_layer_lens_readouts(model, tokenizer, "prompt", vector, candidate_ids, checkpoint)
+        assert capture["hidden_vectors"]["0"] == hidden.float().tolist()
+        return torch.tensor([readouts["0"][f"{side}_vendor_lens_readout"] for side in ("source", "target")])
+
+    transported = (J @ hidden.float()).to(torch.bfloat16)
+    normalized = transported.float() * torch.rsqrt(transported.float().square().mean() + 1e-6)
+    normalized = (normalized * (1 + torch.arange(d_model))).to(torch.bfloat16)
+    expected = (model.lm_head.weight.detach().float() @ normalized.float()).to(torch.bfloat16).float()[:2]
+    assert torch.allclose(production_scores(), expected, atol=1e-5), "production readout omitted or changed normalization"
+    with patch.object(model.model, "norm", nn.Identity()):
+        assert not torch.allclose(production_scores(), expected, atol=1e-3), "identity mutation escaped detection"
     with torch.no_grad():
-        norm.weight.copy_(torch.tensor([0.,1.,2.,3.,4.,5.,6.,7.]))
-    lm_head = nn.Linear(d_model, vocab, bias=False)
-    with torch.no_grad():
-        lm_head.weight.copy_(W_U)
-    # Production: W_U[cands] @ norm(J @ hidden) with bf16
-    transported = (J @ hidden).to(torch.bfloat16)
-    normed = norm(transported.unsqueeze(0)).squeeze(0)
-    prod_scores = lm_head.weight[candidate_ids].float() @ normed.float()
-    # Direct via same norm should match
-    transported2 = (J @ hidden).to(torch.bfloat16)
-    normed2 = norm(transported2.unsqueeze(0)).squeeze(0)
-    direct_scores = lm_head.weight[candidate_ids].float() @ normed2.float()
-    assert torch.allclose(prod_scores.float(), direct_scores.float(), atol=1e-5), "production vs direct mismatch"
-    # Mutation: replace norm with identity (no normalization) must FAIL
-    identity = nn.Identity()
-    normed_mut = identity(transported.unsqueeze(0)).squeeze(0)
-    mut_scores = lm_head.weight[candidate_ids].float() @ normed_mut.float()
-    assert not torch.allclose(prod_scores.float(), mut_scores.float(), atol=1e-3), "identity mutation should differ"
-    # Uniform weight (weight=0 => 1+0=1) vs nonuniform should also differ
-    norm_uniform = Qwen3_5RMSNorm(d_model, eps=1e-6)
-    with torch.no_grad():
-        norm_uniform.weight.zero_()
-    normed_uniform = norm_uniform(transported.unsqueeze(0)).squeeze(0)
-    uniform_scores = lm_head.weight[candidate_ids].float() @ normed_uniform.float()
-    assert not torch.allclose(prod_scores.float(), uniform_scores.float(), atol=1e-3), "nonuniform vs uniform should differ"
-    print("PASS synthetic: actual Qwen RMSNorm vs identity/uniform mutations correctly differ")
+        model.model.norm.weight.zero_()
+    assert not torch.allclose(production_scores(), expected, atol=1e-3), "uniform norm escaped detection"
+    print("PASS production readout: independent nonuniform RMSNorm arithmetic; identity/uniform mutations differ")
     return True
 
 def test_real_trial_replay_exact_ids_bf16():

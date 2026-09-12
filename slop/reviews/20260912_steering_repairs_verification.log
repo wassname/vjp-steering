@@ -1,0 +1,71 @@
+SHOULD: production cache, orientation, normalization and dispatch discriminators reject the reviewed defects
+test_explicit_missing_lens_reaches_production_extractor (test_steering_repairs.TestExtractionDispatch.test_explicit_missing_lens_reaches_production_extractor) ... ok
+test_j_word_rejects_subtokens_and_zero_lens (test_steering_repairs.TestExtractionDispatch.test_j_word_rejects_subtokens_and_zero_lens) ... 2026-09-12 15:03:34.185 | INFO     | vjp_steering.vjp:j_word:526 - J_word lens=/tmp/tmp05ls3th2/lens.pt n_prompts=1 words=sycophantic ids=[0] - abrasive ids=[0] cotangent_norm=0.000
+ok
+test_mlp_target_forwarded_and_incompatible_layers_rejected (test_steering_repairs.TestExtractionDispatch.test_mlp_target_forwarded_and_incompatible_layers_rejected) ... ok
+test_persona_source_uses_supported_nonthinking_and_seed (test_steering_repairs.TestExtractionDispatch.test_persona_source_uses_supported_nonthinking_and_seed) ... ok
+test_unsupported_flags_fail (test_steering_repairs.TestExtractionDispatch.test_unsupported_flags_fail) ... ok
+test_completed_profile_checks_identity_before_shortcut (test_steering_repairs.TestExtractionIdentity.test_completed_profile_checks_identity_before_shortcut) ... 2026-09-12 15:03:34.200 | INFO     | experiment:gpu_stage:1300 - GPU_STAGE_COMPLETE experiment=repair-test profile=dev cells=2 reused=true
+ok
+test_invalid_vectors_never_saved (test_steering_repairs.TestExtractionIdentity.test_invalid_vectors_never_saved) ... ok
+test_legacy_identity_fails_without_modifying_cache (test_steering_repairs.TestExtractionIdentity.test_legacy_identity_fails_without_modifying_cache) ... ok
+test_load_or_extract_rejects_one_changed_input_at_a_time (test_steering_repairs.TestExtractionIdentity.test_load_or_extract_rejects_one_changed_input_at_a_time) ... ok
+test_target_and_lens_and_concepts_are_in_identity (test_steering_repairs.TestExtractionIdentity.test_target_and_lens_and_concepts_are_in_identity) ... ok
+test_constant_jacobian_rejects_zero (test_steering_repairs.TestVjpRepairs.test_constant_jacobian_rejects_zero) ... ok
+test_nonfinite_raw_direction_rejected (test_steering_repairs.TestVjpRepairs.test_nonfinite_raw_direction_rejected) ... ok
+test_orthogonal_orientation_rejects_ambiguous_axis (test_steering_repairs.TestVjpRepairs.test_orthogonal_orientation_rejects_ambiguous_axis) ... ok
+test_production_label_reversal (test_steering_repairs.TestVjpRepairs.test_production_label_reversal) ... 2026-09-12 15:03:34.276 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=0.9871054887771606 flipped=False cosines={0: 0.9871054887771606}; heuristic, not behavioral validation
+2026-09-12 15:03:34.278 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=-0.9871054887771606 flipped=True cosines={0: -0.9871054887771606}; heuristic, not behavioral validation
+ok
+test_rejects_source_layer_at_or_after_target (test_vjp_delta_target_layer.TestVjpDeltaTargetLayer.test_rejects_source_layer_at_or_after_target) ... ok
+test_rejects_target_outside_actual_model_depth (test_vjp_delta_target_layer.TestVjpDeltaTargetLayer.test_rejects_target_outside_actual_model_depth) ... ok
+test_uses_persona_extraction_prompts_before_training_random_vector (test_random_extraction.TestRandomExtraction.test_uses_persona_extraction_prompts_before_training_random_vector) ... ok
+unittest.case.FunctionTestCase (test_injection_extraction_both_sides)
+test_j_lens_injection.test_injection_extraction_both_sides ... PASS extraction: production j_lens_injection returns distinct unit vectors per side
+ok
+unittest.case.FunctionTestCase (test_injection_apply)
+test_j_lens_injection.test_injection_apply ... PASS apply: grid 1,2,4,8,16 positive amplitudes, C=0 no-op, dtype/shape, seq_len=1 skip
+ok
+unittest.case.FunctionTestCase (test_side_dispatch_through_production_path)
+test_j_lens_injection.test_side_dispatch_through_production_path ... PASS dispatch: applied_coefficient unsigned both sides, hooked forward equals y + C*v_hat per side
+ok
+unittest.case.FunctionTestCase (test_jlens_unit_direction_apply)
+test_j_lens_unit_direction.test_jlens_unit_direction_apply ... PASS JLensUnitDirection.apply: C=0,+1,-1 seq_len>1 dtype/shape/equation, seq_len=1 skip
+ok
+unittest.case.FunctionTestCase (test_extraction_with_patched_tiny_checkpoint)
+test_j_lens_unit_direction.test_extraction_with_patched_tiny_checkpoint ... PASS extraction via patched _load_j_lens: production j_lens_unit_direction returns unit d_hat
+ok
+unittest.case.FunctionTestCase (test_production_readout_with_nonuniform_weight)
+Call production readout; compare independent RMSNorm arithmetic. -- PI/OpenAI ... PASS production readout: independent nonuniform RMSNorm arithmetic; identity/uniform mutations differ
+ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.510s
+
+OK
+SHOULD: supported thinking=False retains 200 source pairs while removing reopened thinking tags
+2026-09-12 15:03:35.453 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-12 15:03:35.505 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+2026-09-12 15:03:35.506 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+2026-09-12 15:03:35.543 | INFO     | steering_lite.data.personas:make_persona_pairs:320 - Persona-branching pairs: n=200 from 1 persona pairs
+2026-09-12 15:03:35.586 | INFO     | steering_lite.data.personas:load_suffixes:100 - Loaded 200 branching suffixes from branching_suffixes_filt.json
+source_pool_count 200 unique_user_messages 65
+before pairs 200 source_sha256 ab3adaa117116d2ba2f9db514470529670f78846aedc30c5d33712e5b6d6b332
+before positive full_prompt "<|im_start|>user\nAnswer as someone who is sycophantic.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+before positive token_ids [248045, 846, 198, 15666, 430, 4184, 852, 369, 274, 3228, 4964, 7902, 13, 271, 39113, 728, 264, 3255, 13, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 248068, 12162, 1017, 557, 264, 2545, 7914, 11, 852, 6273, 1546, 47967, 13, 1216, 995, 978, 8008, 12065, 660, 1834, 321, 780, 4627, 4674, 310, 24239, 1384, 685, 13, 1987, 781, 4439, 1384, 310, 708, 1432, 4732, 440, 1070, 13, 1216, 3105, 914, 2579, 1040, 424, 11, 748, 551, 19013, 4613, 13, 1921, 14413, 551, 6408, 780, 4627, 7842, 364, 1384, 13, 2302, 998, 4732, 3154, 30386, 321, 3322, 2384, 13, 561, 2545, 7914, 29547, 321, 6426, 310, 4973, 1070, 4732, 13, 1216, 1362, 6512, 1070, 30542, 321, 3322, 264, 1603, 854, 13]
+before positive decoded "<|im_start|>user\nAnswer as someone who is sycophantic.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+before positive thinking_counts 2 1
+before negative full_prompt "<|im_start|>user\nAnswer as someone who is abrasive.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+before negative token_ids [248045, 846, 198, 15666, 430, 4184, 852, 369, 90474, 13, 271, 39113, 728, 264, 3255, 13, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 248068, 12162, 1017, 557, 264, 2545, 7914, 11, 852, 6273, 1546, 47967, 13, 1216, 995, 978, 8008, 12065, 660, 1834, 321, 780, 4627, 4674, 310, 24239, 1384, 685, 13, 1987, 781, 4439, 1384, 310, 708, 1432, 4732, 440, 1070, 13, 1216, 3105, 914, 2579, 1040, 424, 11, 748, 551, 19013, 4613, 13, 1921, 14413, 551, 6408, 780, 4627, 7842, 364, 1384, 13, 2302, 998, 4732, 3154, 30386, 321, 3322, 2384, 13, 561, 2545, 7914, 29547, 321, 6426, 310, 4973, 1070, 4732, 13, 1216, 1362, 6512, 1070, 30542, 321, 3322, 264, 1603, 854, 13]
+before negative decoded "<|im_start|>user\nAnswer as someone who is abrasive.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n<think>Once there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+before negative thinking_counts 2 1
+after pairs 200 source_sha256 1521e0fbac69b51fd91efef6436adfa99cbefc5eaeceb7e805ad9056588955b8
+after positive full_prompt "<|im_start|>user\nAnswer as someone who is sycophantic.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nOnce there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+after positive token_ids [248045, 846, 198, 15666, 430, 4184, 852, 369, 274, 3228, 4964, 7902, 13, 271, 39113, 728, 264, 3255, 13, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 12162, 1017, 557, 264, 2545, 7914, 11, 852, 6273, 1546, 47967, 13, 1216, 995, 978, 8008, 12065, 660, 1834, 321, 780, 4627, 4674, 310, 24239, 1384, 685, 13, 1987, 781, 4439, 1384, 310, 708, 1432, 4732, 440, 1070, 13, 1216, 3105, 914, 2579, 1040, 424, 11, 748, 551, 19013, 4613, 13, 1921, 14413, 551, 6408, 780, 4627, 7842, 364, 1384, 13, 2302, 998, 4732, 3154, 30386, 321, 3322, 2384, 13, 561, 2545, 7914, 29547, 321, 6426, 310, 4973, 1070, 4732, 13, 1216, 1362, 6512, 1070, 30542, 321, 3322, 264, 1603, 854, 13]
+after positive decoded "<|im_start|>user\nAnswer as someone who is sycophantic.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nOnce there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+after positive thinking_counts 1 1
+after negative full_prompt "<|im_start|>user\nAnswer as someone who is abrasive.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nOnce there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+after negative token_ids [248045, 846, 198, 15666, 430, 4184, 852, 369, 90474, 13, 271, 39113, 728, 264, 3255, 13, 248046, 198, 248045, 74455, 198, 248068, 271, 248069, 271, 12162, 1017, 557, 264, 2545, 7914, 11, 852, 6273, 1546, 47967, 13, 1216, 995, 978, 8008, 12065, 660, 1834, 321, 780, 4627, 4674, 310, 24239, 1384, 685, 13, 1987, 781, 4439, 1384, 310, 708, 1432, 4732, 440, 1070, 13, 1216, 3105, 914, 2579, 1040, 424, 11, 748, 551, 19013, 4613, 13, 1921, 14413, 551, 6408, 780, 4627, 7842, 364, 1384, 13, 2302, 998, 4732, 3154, 30386, 321, 3322, 2384, 13, 561, 2545, 7914, 29547, 321, 6426, 310, 4973, 1070, 4732, 13, 1216, 1362, 6512, 1070, 30542, 321, 3322, 264, 1603, 854, 13]
+after negative decoded "<|im_start|>user\nAnswer as someone who is abrasive.\n\nTell me a story.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nOnce there was a little boy, who felt very miserable. He had been feeling sad all day and his friends wanted to cheer him up. So they asked him to go play outside with them. He didn't feel like it, so he stayed inside. But suddenly he heard his friends calling for him. They were outside making jokes and having fun. The little boy smiled and decided to join them outside. He could hear them laughing and having a good time."
+after negative thinking_counts 1 1
+PASS source-format repair changes recorded prompt identity; no model loaded or generation performed

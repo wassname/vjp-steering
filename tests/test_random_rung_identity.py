@@ -69,10 +69,12 @@ def main() -> None:
         manifest = json.loads((ROOT / "outputs/experiments" / r["source_run"] / "manifest.json").read_text())
         r["normalized_dose_id"] = normalized_calibration_dose_id(
             r["C"], manifest["boundaries"][r["side"]]["C_approx"], fractions)
+        r["normalized_dose_fraction"] = fractions[r["normalized_dose_id"]] if r["normalized_dose_id"] is not None else None
     rungs = calibrated_random_rungs(random_rows, {0, 1, 2, 3, 4})
     for side in ("+C", "-C"):
         ids = [rg["rung"] for rg in rungs[side]]
-        assert NEW_ID in ids, f"new rung missing from {side} region (ids {ids})"
+        assert ids[0] == NEW_ID, f"low-dose extension must come first in {side} region (ids {ids})"
+        assert [rg["dose_fraction"] for rg in rungs[side]] == sorted(rg["dose_fraction"] for rg in rungs[side])
         rung = next(rg for rg in rungs[side] if rg["rung"] == NEW_ID)
         assert len(rung["points"]) == 5, f"{side} rung has {len(rung['points'])} points, not 5"
     print(f"RUNG_REGRESSION region: +C rungs {[r['rung'] for r in rungs['+C']]}; -C rungs {[r['rung'] for r in rungs['-C']]}")

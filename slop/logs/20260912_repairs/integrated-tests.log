@@ -1,0 +1,71 @@
+test_damage_is_absolute_order_mean_not_mean_absolute (test_escape_bootstrap.EscapeBootstrapTests.test_damage_is_absolute_order_mean_not_mean_absolute) ... ok
+test_historical_loader_pins_rubric_and_handles_three_score_fields (test_escape_bootstrap.EscapeBootstrapTests.test_historical_loader_pins_rubric_and_handles_three_score_fields) ... ok
+test_observed_point_does_not_depend_on_bootstrap_draws (test_escape_bootstrap.EscapeBootstrapTests.test_observed_point_does_not_depend_on_bootstrap_draws) ... ok
+test_orders_are_averaged_before_sampling_scenarios (test_escape_bootstrap.EscapeBootstrapTests.test_orders_are_averaged_before_sampling_scenarios) ... ok
+test_scenario_keys_must_match (test_escape_bootstrap.EscapeBootstrapTests.test_scenario_keys_must_match) ... ok
+test_alpha_one_exchanges_coordinates_and_preserves_residual (test_j_lens_coordinate_diagnostics.TestJLensCoordinateDiagnostics.test_alpha_one_exchanges_coordinates_and_preserves_residual) ... ok
+test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes (test_judge_export_contract.TestExportCaller.test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes) ... 2026-09-12 15:15:24.292 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_duplicate_scenario_cannot_publish_all100 (test_judge_export_contract.TestExportCaller.test_experiment_duplicate_scenario_cannot_publish_all100) ... 2026-09-12 15:15:24.786 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_missing_judgments_cannot_create_output (test_judge_export_contract.TestExportCaller.test_experiment_missing_judgments_cannot_create_output) ... 2026-09-12 15:15:25.273 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:15:25.441 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_writes_current_contract_and_complete_cohort (test_judge_export_contract.TestExportCaller.test_experiment_writes_current_contract_and_complete_cohort) ... 2026-09-12 15:15:25.952 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:15:26.112 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_explicit_v7_can_reexport_unversioned_history_without_relabeling (test_judge_export_contract.TestExportCaller.test_explicit_v7_can_reexport_unversioned_history_without_relabeling) ... 2026-09-12 15:15:26.775 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:15:26.939 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_legacy_cli_writes_complete_scenarios_and_both_signed_effects (test_judge_export_contract.TestExportCaller.test_legacy_cli_writes_complete_scenarios_and_both_signed_effects) ... ok
+test_missing_generated_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_generated_scenario_stops_before_any_write) ... ok
+test_missing_order_pass_or_whole_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_order_pass_or_whole_scenario_stops_before_any_write) ... ok
+test_v8_cannot_append_to_historical_aggregate (test_judge_export_contract.TestExportCaller.test_v8_cannot_append_to_historical_aggregate) ... ok
+test_cache_versions_never_collide_or_fallback (test_judge_export_contract.TestJudgeCaller.test_cache_versions_never_collide_or_fallback) ... ok
+test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) ... ok
+test_http_exhaustion_counts_actual_client_requests (test_judge_export_contract.TestJudgeCaller.test_http_exhaustion_counts_actual_client_requests) ... 2026-09-12 15:15:30.435 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:15:30.435 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:15:30.435 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+test_legacy_prompt_hashes_are_unchanged (test_judge_export_contract.TestJudgeCaller.test_legacy_prompt_hashes_are_unchanged) ... ok
+test_transient_budget_is_separate_from_format_budget (test_judge_export_contract.TestJudgeCaller.test_transient_budget_is_separate_from_format_budget) ... 2026-09-12 15:15:30.438 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:15:30.439 | INFO     | judge:judge_one:712 - retry invalid JSON cell=1d14e0b253007d19eafd5a319cbd4cf9a2e1d472f935209028f2baff6440566d attempt=1/3
+2026-09-12 15:15:30.439 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:15:30.439 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+test_uses_persona_extraction_prompts_before_training_random_vector (test_random_extraction.TestRandomExtraction.test_uses_persona_extraction_prompts_before_training_random_vector) ... ok
+test_summary_excludes_rejected_peaks_and_requires_direction (test_render_dev_comparison.TestCalibratedRandomRegion.test_summary_excludes_rejected_peaks_and_requires_direction) ... ok
+test_summary_uses_calibrated_rungs_not_exact_coefficients (test_render_dev_comparison.TestCalibratedRandomRegion.test_summary_uses_calibrated_rungs_not_exact_coefficients) ... ok
+test_uses_calibration_rank_without_relabeling_actual_coefficients (test_render_dev_comparison.TestCalibratedRandomRegion.test_uses_calibration_rank_without_relabeling_actual_coefficients) ... ok
+test_rejects_mismatched_shared_bare (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_mismatched_shared_bare) ... ok
+test_rejects_missing_ba_order (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_missing_ba_order) ... ok
+test_rejects_stale_method_artifact (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_stale_method_artifact) ... ok
+test_uses_only_explicit_corrected_experiment_ids (test_render_dev_comparison.TestDevComparisonProvenance.test_uses_only_explicit_corrected_experiment_ids) ... ok
+test_explicit_missing_lens_reaches_production_extractor (test_steering_repairs.TestExtractionDispatch.test_explicit_missing_lens_reaches_production_extractor) ... ok
+test_j_word_rejects_subtokens_and_zero_lens (test_steering_repairs.TestExtractionDispatch.test_j_word_rejects_subtokens_and_zero_lens) ... 2026-09-12 15:15:30.518 | INFO     | vjp_steering.vjp:j_word:526 - J_word lens=/tmp/tmppflbqmds/lens.pt n_prompts=1 words=sycophantic ids=[0] - abrasive ids=[0] cotangent_norm=0.000
+ok
+test_mlp_target_forwarded_and_incompatible_layers_rejected (test_steering_repairs.TestExtractionDispatch.test_mlp_target_forwarded_and_incompatible_layers_rejected) ... ok
+test_persona_source_uses_supported_nonthinking_and_seed (test_steering_repairs.TestExtractionDispatch.test_persona_source_uses_supported_nonthinking_and_seed) ... ok
+test_unsupported_flags_fail (test_steering_repairs.TestExtractionDispatch.test_unsupported_flags_fail) ... ok
+test_completed_profile_checks_identity_before_shortcut (test_steering_repairs.TestExtractionIdentity.test_completed_profile_checks_identity_before_shortcut) ... 2026-09-12 15:15:30.537 | INFO     | experiment:gpu_stage:1300 - GPU_STAGE_COMPLETE experiment=repair-test profile=dev cells=2 reused=true
+ok
+test_invalid_vectors_never_saved (test_steering_repairs.TestExtractionIdentity.test_invalid_vectors_never_saved) ... ok
+test_legacy_identity_fails_without_modifying_cache (test_steering_repairs.TestExtractionIdentity.test_legacy_identity_fails_without_modifying_cache) ... ok
+test_load_or_extract_rejects_one_changed_input_at_a_time (test_steering_repairs.TestExtractionIdentity.test_load_or_extract_rejects_one_changed_input_at_a_time) ... ok
+test_target_and_lens_and_concepts_are_in_identity (test_steering_repairs.TestExtractionIdentity.test_target_and_lens_and_concepts_are_in_identity) ... ok
+test_constant_jacobian_rejects_zero (test_steering_repairs.TestVjpRepairs.test_constant_jacobian_rejects_zero) ... ok
+test_nonfinite_raw_direction_rejected (test_steering_repairs.TestVjpRepairs.test_nonfinite_raw_direction_rejected) ... ok
+test_orthogonal_orientation_rejects_ambiguous_axis (test_steering_repairs.TestVjpRepairs.test_orthogonal_orientation_rejects_ambiguous_axis) ... ok
+test_production_label_reversal (test_steering_repairs.TestVjpRepairs.test_production_label_reversal) ... 2026-09-12 15:15:30.606 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=0.9871054887771606 flipped=False cosines={0: 0.9871054887771606}; heuristic, not behavioral validation
+2026-09-12 15:15:30.608 | INFO     | vjp_steering.vjp:vjp_delta:1301 - VJP-delta global activation orientation score=-0.9871054887771606 flipped=True cosines={0: -0.9871054887771606}; heuristic, not behavioral validation
+ok
+test_rejects_source_layer_at_or_after_target (test_vjp_delta_target_layer.TestVjpDeltaTargetLayer.test_rejects_source_layer_at_or_after_target) ... ok
+test_rejects_target_outside_actual_model_depth (test_vjp_delta_target_layer.TestVjpDeltaTargetLayer.test_rejects_target_outside_actual_model_depth) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 6.787s
+
+OK
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+added 2 result arms and 200 scenario scores

@@ -74,6 +74,45 @@ GRID_HIGH = 1.33
 GRID_POINTS = 9
 J_LENS_CONCEPT_GRID = (1.0, 4.0, 16.0)
 CONCEPT_METHODS = {"j_lens_concept", COMPONENT_PAIR_METHOD}
+LENS_METHODS = CONCEPT_METHODS | {"j_lens_swap", "j_lens_unit_direction", "j_lens_injection"}
+EXTRACTION_CONTRACT = "nonthinking_persona_global_oriented_vjp_v1"
+
+
+def validate_extraction_args(args) -> None:
+    if args.lens_file is not None and args.method not in LENS_METHODS:
+        raise ValueError(f"--lens-file is not used by {args.method}")
+    if args.target_layer is not None and args.method not in {"vjp_delta", *EXTRACTORS}:
+        raise ValueError(f"--target-layer is not used by {args.method}")
+    if args.layers and args.method in CONCEPT_METHODS:
+        raise ValueError("concept extraction has fixed source layers; use --concept-layers for application")
+    validate_injection_concepts(args.method, args.injection_plus_concept, args.injection_minus_concept)
+
+
+def extraction_request(args) -> dict:
+    request = {key: getattr(args, key) for key in (
+        "method", "model", "dtype", "n_pairs", "seed", "max_length", "extract_batch_size",
+        "target_layer", "j_lens_source", "persona_direction",
+    )}
+    request.update(
+        contract=EXTRACTION_CONTRACT,
+        layers=[int(layer) for layer in args.layers.split(",")] if args.layers else None,
+        injection_plus_concept=args.injection_plus_concept or J_LENS_SWAP_TARGET,
+        injection_minus_concept=args.injection_minus_concept or J_LENS_SWAP_SOURCE,
+    )
+    if args.method in LENS_METHODS:
+        lens = _resolve_j_lens_file(args.lens_file).resolve()
+        request.update(lens_file=str(lens), lens_sha256=hashlib.sha256(lens.read_bytes()).hexdigest())
+    return request
+
+
+def validate_vector_values(vector: Vector) -> None:
+    for tree in (vector.shared, vector.stacked):
+        for layer, tensors in tree.items():
+            for name, value in tensors.items():
+                if not torch.isfinite(value).all():
+                    raise ValueError(f"nonfinite extraction tensor at layer {layer}: {name}")
+                if vector.cfg.method in {"mean_diff", "random", "vjp_delta", "J_word", "j_lens_injection", "j_lens_unit_direction"} and value.float().norm() == 0:
+                    raise ValueError(f"zero extraction direction at layer {layer}: {name}")
 
 
 def parse_extension_coeffs(text: str) -> list[float]:
@@ -287,7 +326,7 @@ def parse_args() -> argparse.Namespace:
     reject_dev_supplied_grid(args.method, args.dev, args.coefficients_plus, args.coefficients_minus)
     validate_extension_args(args.method, args.dev, args.extension_id, args.extension_plus, args.extension_minus)
     validate_explicit_grid(args.method, args.dev, args.explicit_grid_plus, args.explicit_grid_minus)
-    validate_injection_concepts(args.method, args.injection_plus_concept, args.injection_minus_concept)
+    validate_extraction_args(args)
     return args
 
 
@@ -404,13 +443,18 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
     positive, negative = make_persona_pairs(
         tokenizer,
         n_pairs=args.n_pairs,
-        thinking=True,
+        thinking=False,
         persona_pairs=walk.PERSONAS,
         template=walk.PERSONA_TEMPLATE,
-        seed=0,
+        seed=args.seed,
     )
     if len(positive) != len(negative) or not positive:
         raise ValueError("persona extraction pairs are empty or unpaired")
+    for prompt in positive + negative:
+        if prompt.count("<think>") > 1 or prompt.count("</think>") != prompt.count("<think>"):
+            raise ValueError("persona source has duplicated or unclosed thinking markers")
+        if "<think>" in prompt and prompt.split("<think>", 1)[1].split("</think>", 1)[0].strip():
+            raise ValueError("persona source must use a non-thinking assistant continuation")
     lengths = tokenizer(positive + negative, add_special_tokens=False)["input_ids"]
     if max(map(len, lengths)) > args.max_length:
         raise ValueError("extraction prompt truncation")
@@ -419,7 +463,7 @@ def extraction_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], 
 
 def persona_prefill_prompts(args: argparse.Namespace, tokenizer) -> tuple[list[str], list[str]]:
     entries = load_suffixes(thinking=True)
-    rng = random.Random(0)
+    rng = random.Random(args.seed)
     sampled = rng.sample(entries, min(args.n_pairs, len(entries)))
     positive, negative = [], []
     for entry in sampled:
@@ -507,6 +551,7 @@ def validate_persona_component_source_identity(args, metadata: dict, model, toke
 
 
 def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[str, Vector], dict, int, str]:
+    validate_extraction_args(args)
     if args.method == COMPONENT_PAIR_METHOD:
         available = walk.resolve_layers(model, None)
         paper_workspace = tuple(range(13, 22))
@@ -577,6 +622,7 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         vector, swap_metadata = j_lens_swap(
             model, tokenizer, layers,
             source_token=J_LENS_SWAP_SOURCE, target_token=J_LENS_SWAP_TARGET,
+            lens_file=args.lens_file,
         )
         return {
             "+C": vector,
@@ -595,7 +641,7 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         else:
             layers = (16,)  # default to single source-active L16 per evidence
         from vjp_steering.vjp import j_lens_unit_direction
-        vector, meta = j_lens_unit_direction(model, tokenizer, layers)
+        vector, meta = j_lens_unit_direction(model, tokenizer, layers, lens_file=args.lens_file)
         return {"+C": vector, "-C": vector}, {"source_layers": list(layers), "semantic_directions": {"+C": meta, "-C": meta}, "coefficient_semantics": meta["coefficient_semantics"]}, 0, f"unit_direction:{meta['source_token']}<->{meta['target_token']}:L{','.join(map(str,layers))}"
     if args.method == "j_lens_injection":
         available = walk.resolve_layers(model, None)
@@ -610,7 +656,7 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         from vjp_steering.vjp import j_lens_injection
         vectors, metas = {}, {}
         for side, concept in (("+C", plus_concept), ("-C", minus_concept)):
-            vector, meta = j_lens_injection(model, tokenizer, layers, concept_token=concept)
+            vector, meta = j_lens_injection(model, tokenizer, layers, concept_token=concept, lens_file=args.lens_file)
             vectors[side], metas[side] = vector, meta
         return vectors, {
             "source_layers": list(layers),
@@ -622,6 +668,10 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
         tuple(int(layer) for layer in args.layers.split(",") if layer)
         if args.layers else walk.resolve_layers(model, None)
     )
+    if args.method in EXTRACTORS:
+        target_layer = len(model.model.layers) - 3 if args.target_layer is None else args.target_layer
+        if args.layers and layers != tuple(range(target_layer)):
+            raise ValueError("MLP VJP extraction requires --layers to be all layers preceding --target-layer")
     positive, negative = extraction_prompts(args, tokenizer)
     if args.method == "random":
         vector = Vector.train(
@@ -653,6 +703,7 @@ def extract_vectors(args: argparse.Namespace, model, tokenizer) -> tuple[dict[st
             tokenizer,
             positive,
             negative,
+            target_layer=args.target_layer,
             batch_size=args.extract_batch_size,
             max_length=args.max_length,
             skip_first=16,
@@ -682,6 +733,13 @@ def validate_extraction_identity(
     args, metadata, *, allow_explicit_legacy_reuse: bool = False,
     allow_explicit_component_reuse: bool = False,
 ):
+    validate_extraction_args(args)
+    if "extraction_request" not in metadata:
+        raise ValueError("extraction cache lacks extraction_request identity; preserve it and use a new --experiment-id")
+    expected = extraction_request(args)
+    if metadata["extraction_request"] != expected:
+        changed = sorted(key for key in expected if metadata["extraction_request"].get(key) != expected[key])
+        raise ValueError(f"extraction cache request mismatch: {changed}; use a new --experiment-id")
     if (metadata["method"], metadata["model"], metadata["dtype"]) != (args.method, args.model, args.dtype):
         raise ValueError("extraction cache method/model/dtype mismatch")
     if args.method in CONCEPT_METHODS:
@@ -770,6 +828,7 @@ def load_or_extract(
             validate_persona_component_source_identity(args, metadata, model, tokenizer)
         vectors = {side: Vector.load(str(path)) for side, path in paths.items()}
         for side, vector in vectors.items():
+            validate_vector_values(vector)
             if vector.cfg.method != args.method or tuple(vector.cfg.layers) != tuple(metadata["source_layers"]):
                 raise ValueError(f"saved extraction vector config mismatch for {side}")
         actual = {side: vector_sha256(vector) for side, vector in vectors.items()}
@@ -784,6 +843,7 @@ def load_or_extract(
         source_path = source / "extraction/metadata.json"
         source_metadata = json.loads(source_path.read_text())
         validate_component_empirical_candor_source(args, source_metadata)
+        validate_extraction_identity(args, source_metadata, allow_explicit_component_reuse=True)
         vectors = {side: Vector.load(str(source / source_metadata["vector_files"][side])) for side in paths}
         validate_component_pair(vectors)
         if {side: vector_sha256(vector) for side, vector in vectors.items()} != source_metadata["vector_content_sha256"]:
@@ -831,8 +891,13 @@ def load_or_extract(
         logger.info("EXTRACTION_REUSED source={} hashes={}", args.reuse_extraction_from, metadata["vector_content_sha256"])
         return vectors, metadata
 
+    if metadata_path.exists() or any(path.exists() for path in paths.values()):
+        raise ValueError("incomplete extraction cache; preserve it and use a new --experiment-id")
+    request = extraction_request(args)
     started = time.monotonic()
     vectors, extraction_metadata, n_pairs, sample_id = extract_vectors(args, model, tokenizer)
+    for vector in vectors.values():
+        validate_vector_values(vector)
     paths["+C"].parent.mkdir(parents=True, exist_ok=True)
     for side, vector in vectors.items():
         vector.cfg.dtype = getattr(torch, args.dtype)
@@ -843,6 +908,7 @@ def load_or_extract(
         "dtype": args.dtype,
         "n_pairs": n_pairs,
         "sample_id": sample_id,
+        "extraction_request": request,
         "seconds": time.monotonic() - started,
         "vector_files": {side: str(path.relative_to(root)) for side, path in paths.items()},
         "vector_content_sha256": {side: vector_sha256(vector) for side, vector in vectors.items()},
@@ -1193,16 +1259,20 @@ def gpu_stage(args: argparse.Namespace) -> None:
     }
     if manifest["method"] != args.method:
         raise ValueError("experiment id belongs to another method")
-    if args.method == "j_lens_swap" and manifest["schema"] == "mlp_up_left_right_experiment_v1":
-        manifest["schema"] = "j_lens_swap_experiment_v1"
-        atomic_json(manifest_path(args.experiment_id), manifest)
-    if args.method in CONCEPT_METHODS and "extraction" in manifest:
+    if "extraction" in manifest:
         validate_extraction_identity(
             args,
             manifest["extraction"],
             allow_explicit_legacy_reuse=bool(args.reuse_extraction_from),
             allow_explicit_component_reuse=bool(args.reuse_component_extraction_from),
         )
+        cached = json.loads((root / "extraction/metadata.json").read_text())
+        validate_extraction_identity(args, cached)
+        if cached["vector_content_sha256"] != manifest["extraction"]["vector_content_sha256"]:
+            raise ValueError("manifest extraction differs from cached extraction")
+    elif manifest.get("profiles"):
+        raise ValueError("completed experiment lacks extraction identity; preserve it and use a new --experiment-id")
+    if args.method in CONCEPT_METHODS and "extraction" in manifest:
         requested_layers = concept_application_layers(args, manifest["extraction"]["source_layers"])
         saved_layers = tuple(manifest["extraction"].get("application_layers", manifest["extraction"]["source_layers"]))
         if requested_layers != saved_layers:

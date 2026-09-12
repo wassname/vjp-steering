@@ -1,0 +1,4 @@
+wrote 8 table rows and 2 plots from 801 measured evaluations
+DEV_COMPARISON_RENDER_COMPLETE rows=279 output=/workspace/2026/jspace/j-steer_pub/results
+PASS DEV region sorted by calibration fraction, id-9 low dose first [0.4, 0.66, 0.7438]
+ALL_PLOT_SOURCE_CHECKS_PASS 

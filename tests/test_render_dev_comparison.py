@@ -52,6 +52,7 @@ class TestCalibratedRandomRegion(unittest.TestCase):
                     rows.append({
                         "method": "random", "seed": seed, "side": side, "C": coefficient,
                         "normalized_dose_id": normalized_dose_id,
+                        "normalized_dose_fraction": (normalized_dose_id + 1) / 10,
                         "effect": (1 if side == "+C" else -1) * (normalized_dose_id + 1) / 10,
                         "off_axis_perturbation": coefficient, "admissible": True, "source_run": "no-manifest",
                     })
@@ -68,8 +69,9 @@ class TestCalibratedRandomRegion(unittest.TestCase):
         self.assertEqual([rung["rung"] for rung in rungs["-C"]], [0, 2])
         figure = plot(rows, ("random",), {"random": seeds}, random_region="calibrated_rung")
         self.assertTrue(any(trace.fill == "toself" and len(trace.x) > 2 for trace in figure.data))
-        trace = next(trace for trace in figure.data if trace.name == "random measured DEV doses")
-        self.assertEqual(len(trace.x), sum(row["admissible"] for row in rows))
+        trace = next(trace for trace in figure.data if trace.name == "random eligible measured doses")
+        self.assertEqual(len(trace.x), sum(len(rung["points"]) for values in rungs.values() for rung in values))
+        self.assertEqual(sum(trace.fill == "toself" for trace in figure.data), 1)
 
     def test_summary_uses_calibrated_rungs_not_exact_coefficients(self):
         rows = []
@@ -80,6 +82,7 @@ class TestCalibratedRandomRegion(unittest.TestCase):
                         "method": "random", "seed": seed, "side": side,
                         "C": (seed + 1) * (rung + 1) / 10,
                         "normalized_dose_id": rung,
+                        "normalized_dose_fraction": (rung + 1) / 10,
                         "effect": sign * (rung + 1) / 10,
                         "off_axis_perturbation": (rung + 1) / 10,
                         "admissible": True, "source_run": "no-manifest",
@@ -120,8 +123,8 @@ class TestCalibratedRandomRegion(unittest.TestCase):
 class TestDevComparisonProvenance(unittest.TestCase):
     def test_uses_only_explicit_corrected_experiment_ids(self):
         specs = renderer.comparison_specs(provenance())
-        self.assertEqual(specs[2], ("vjp-r2", "vjp_delta", 0))
-        self.assertEqual(specs[3:], [(f"random-s{seed}-r2", "random", seed) for seed in range(5)])
+        self.assertEqual(specs[2], ("vjp-r2", "vjp_delta", 0, None))
+        self.assertEqual(specs[3:], [(f"random-s{seed}-r2", "random", seed, None) for seed in range(5)])
         self.assertNotIn(("v14-dev-vjp-delta", "vjp_delta", 0), specs)
         self.assertNotIn(("v14-dev-random-s0", "random", 0), specs)
 

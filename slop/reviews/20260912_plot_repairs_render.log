@@ -1,0 +1,11 @@
+Ran 7 tests in 0.055s
+
+OK
+RUNG_REGRESSION region: +C rungs [9, 0, 1]; -C rungs [9]
+RUNG_REGRESSION ALL CHECKS PASS
+PASS DEV: no rejected anchor in plotted lines 93 rejected DEV means
+PASS DEV region sorted by calibration fraction, id-9 low dose first [0.4, 0.66, 0.7438]
+ALL_PLOT_SOURCE_CHECKS_PASS 
+wrote 8 table rows and 2 plots from 801 measured evaluations
+VERIFIED_FROZEN_DEV id=v14-dev-j-lens-injection-L16-doubt rows=10 rubric=results-demo-perresponse-syco-v7
+DEV_COMPARISON_RENDER_COMPLETE rows=279 output=/workspace/2026/jspace/j-steer_pub/results

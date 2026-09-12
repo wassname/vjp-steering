@@ -5,8 +5,10 @@ For a target layer T and source layer L:
     c = mean(h_T positive) - mean(h_T negative)
     v_L = mean_positive(J_L_to_T(x)^T c) - mean_negative(J_L_to_T(x)^T c)
 
-The target cotangent and source gradient are both pooled over valid prompt
-positions. Each source-layer result is normalized before steering.
+The last-position target contrast is broadcast over valid target positions;
+source gradients are pooled over valid positions. The global sign follows the
+positive-minus-negative activation contrast heuristic, not a behavioral proof.
+-- PI/OpenAI
 """
 
 from contextlib import contextmanager
@@ -19,7 +21,16 @@ from loguru import logger
 from jaxtyping import Bool, Float, Int
 from steering_lite import Vector, VjpDeltaC
 from steering_lite.config import SteeringConfig, register, register_config
-from steering_lite.variants.vjp_delta import VjpDelta
+from steering_lite.variants.vjp_delta import VjpDelta, orient_vjp_delta
+
+
+def _unit_direction(direction: torch.Tensor) -> torch.Tensor:
+    norm = direction.float().norm()
+    if not torch.isfinite(norm):
+        raise ValueError("cannot normalize a nonfinite direction")
+    if norm == 0:
+        raise ValueError("cannot normalize a zero direction")
+    return direction / norm
 
 
 @register_config
@@ -338,11 +349,12 @@ def _class_mean_vjp(
     batch_size: int,
     max_length: int,
     skip_first: int,
-) -> dict[int, Float[torch.Tensor, " d"]]:
+) -> tuple[dict[int, torch.Tensor], dict[int, torch.Tensor]]:
     totals = {layer: torch.zeros_like(cotangent, dtype=torch.float32) for layer in layers}
+    activation_totals = {layer: torch.zeros_like(cotangent, dtype=torch.float32) for layer in layers}
     for start in range(0, len(prompts), batch_size):
         batch = prompts[start : start + batch_size]
-        gradients, valid, _ = _batch_gradients(
+        gradients, valid, activations = _batch_gradients(
             model,
             tokenizer,
             batch,
@@ -356,7 +368,14 @@ def _class_mean_vjp(
         for layer, gradient in gradients.items():
             per_prompt = (gradient.float() * valid.unsqueeze(-1)).sum(dim=1) / counts
             totals[layer] += per_prompt.sum(0)
-    return {layer: total / len(prompts) for layer, total in totals.items()}
+            rows = torch.arange(len(batch), device=valid.device)
+            for quantile in (0.25, 0.5, 0.75, 1.0):
+                positions = skip_first + ((valid.sum(1) - 1).float() * quantile).long()
+                activation_totals[layer] += activations[layer][rows, positions].float().sum(0)
+    return (
+        {layer: total / len(prompts) for layer, total in totals.items()},
+        {layer: total / (4 * len(prompts)) for layer, total in activation_totals.items()},
+    )
 
 
 def _class_prompt_vjp(
@@ -494,7 +513,9 @@ def j_word(
 
     def word_embedding(word: str) -> tuple[torch.Tensor, list[int]]:
         token_ids = tokenizer(" " + word, add_special_tokens=False).input_ids
-        return unembedding[torch.tensor(token_ids, device=unembedding.device)].float().mean(0), token_ids
+        if len(token_ids) != 1:
+            raise ValueError(f"J_word requires a single-token concept: {word!r} has token IDs {token_ids}")
+        return unembedding[token_ids[0]].float(), token_ids
 
     positive, positive_ids = word_embedding(J_WORD_POSITIVE)
     negative, negative_ids = word_embedding(J_WORD_NEGATIVE)
@@ -515,7 +536,7 @@ def j_word(
     vector = Vector(
         JWordC(layers=layers),
         {layer: {} for layer in layers},
-        {layer: {"v": (direction / direction.norm()).unsqueeze(0)} for layer, direction in directions.items()},
+        {layer: {"v": _unit_direction(direction).unsqueeze(0)} for layer, direction in directions.items()},
     )
     return vector, {
         "lens_file": str(lens_file),
@@ -594,9 +615,7 @@ residual units along the unit concept vector; C=0 is the bare no-op.
     layer_state, layer_metadata = {}, {}
     for layer in layers:
         v = unembedding[concept_id] @ checkpoint["J"][layer].float()
-        v_hat = v / v.norm()
-        if not torch.isfinite(v_hat).all() or v_hat.norm() == 0:
-            raise ValueError(f"nonfinite injection vector at layer {layer}")
+        v_hat = _unit_direction(v)
         layer_state[layer] = {"v": v_hat}
         layer_metadata[str(layer)] = {"v_norm": float(v.norm().item())}
     vector = Vector(JLensInjectionC(layers=layers, concept_token=concept_token, concept_token_id=concept_id),
@@ -641,9 +660,7 @@ def j_lens_unit_direction(
         basis = unembedding[[source_id, target_id]] @ checkpoint["J"][layer].float()  # 2 x d
         v_source, v_target = basis[0], basis[1]
         d = v_target - v_source  # fixed direction, proportional to mean-swap delta since gap >0
-        d_hat = d / d.norm()
-        if not torch.isfinite(d_hat).all() or d_hat.norm() == 0:
-            raise ValueError(f"nonfinite d_hat at layer {layer}")
+        d_hat = _unit_direction(d)
         layer_state[layer] = {"d_hat": d_hat}
         layer_metadata[str(layer)] = {"d_norm": float(d.norm().item()), "d_hat_norm": float(d_hat.norm().item()), "v_source_norm": float(v_source.norm().item()), "v_target_norm": float(v_target.norm().item())}
     vector = Vector(JLensUnitDirectionC(layers=layers, source_token=source_token, target_token=target_token), layer_state, {layer: {} for layer in layers})
@@ -1241,15 +1258,17 @@ def vjp_delta(
     target_layer = block_count - 3 if target_layer is None else target_layer
     if not 0 <= target_layer < block_count:
         raise ValueError(f"target layer {target_layer} is outside model layers [0, {block_count})")
-    if max(layers) >= target_layer:
-        raise ValueError("source layers must precede the target layer")
+    if not layers or len(set(layers)) != len(layers) or min(layers) < 0 or max(layers) >= target_layer:
+        raise ValueError("source layers must precede the target layer and be nonempty, unique, nonnegative")
+    if not positive_prompts or len(positive_prompts) != len(negative_prompts):
+        raise ValueError("VJP-delta requires nonempty paired positive/negative prompts")
 
     cotangent = _target_mean(
         model, tokenizer, positive_prompts, target_layer, batch_size, max_length
     ) - _target_mean(
         model, tokenizer, negative_prompts, target_layer, batch_size, max_length
     )
-    positive = _class_mean_vjp(
+    positive, positive_activations = _class_mean_vjp(
         model,
         tokenizer,
         positive_prompts,
@@ -1260,7 +1279,7 @@ def vjp_delta(
         max_length,
         skip_first,
     )
-    negative = _class_mean_vjp(
+    negative, negative_activations = _class_mean_vjp(
         model,
         tokenizer,
         negative_prompts,
@@ -1272,10 +1291,15 @@ def vjp_delta(
         skip_first,
     )
     directions = {layer: positive[layer] - negative[layer] for layer in layers}
-    stacked = {
-        layer: {"v": (direction / direction.norm()).unsqueeze(0)}
-        for layer, direction in directions.items()
-    }
+    directions = {layer: _unit_direction(direction) for layer, direction in directions.items()}
+    activation_axis = {layer: positive_activations[layer] - negative_activations[layer] for layer in layers}
+    for axis in activation_axis.values():
+        _unit_direction(axis)
+    directions, cosines, score, flipped = orient_vjp_delta(directions, activation_axis)
+    if not torch.isfinite(torch.tensor(score)):
+        raise ValueError("nonfinite VJP-delta orientation score")
+    logger.info("VJP-delta global activation orientation score={} flipped={} cosines={}; heuristic, not behavioral validation", score, flipped, cosines)
+    stacked = {layer: {"v": direction.unsqueeze(0)} for layer, direction in directions.items()}
     config = VjpDeltaC(
         layers=layers,
         target_layer=target_layer,

@@ -1,0 +1,8 @@
+LABEL 'PCA' anchor=(+4.0899,+1.0306) offset=(28.284271247461902,-28.284271247461902)px
+LABEL 'mean difference' anchor=(-1.2962,+1.1975) offset=(83.4386001800126,-83.4386001800126)px
+LABEL 'VJP-delta' anchor=(+3.7153,+0.6973) offset=(83.4386001800126,-83.4386001800126)px
+LABEL 'per-side VJP +C' anchor=(+3.4665,+1.1290) offset=(83.4386001800126,-83.4386001800126)px
+SHA256 results/plot_pareto.png 0c30067f2ffdab82d4f45518ccd11c30ac99648efd3d1bef7b7218d79773fb23
+SHA256 results/plot.png 99fc24b4c1d08f4116dc45378ffd285f778b4599fae5e6b9a32c17abfb92dce7
+SHA256 results/plot-pareto-dev.png 53e819e88edf73019c81a8bb4238ac0c39331b1b2195c5e7caea3f459cde5b83
+SHA256 results/plot-dev.png 20ca7fc02498a8459d1d43adad4e46e4a42f365f02c47c94fcbad6d24f34f476

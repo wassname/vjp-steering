@@ -1,0 +1,115 @@
+test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes (test_judge_export_contract.TestExportCaller.test_experiment_contract_mismatch_or_unversioned_history_stops_before_writes) ... 2026-09-12 15:00:47.003 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_duplicate_scenario_cannot_publish_all100 (test_judge_export_contract.TestExportCaller.test_experiment_duplicate_scenario_cannot_publish_all100) ... 2026-09-12 15:00:47.469 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_missing_judgments_cannot_create_output (test_judge_export_contract.TestExportCaller.test_experiment_missing_judgments_cannot_create_output) ... 2026-09-12 15:00:47.954 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:00:48.131 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_experiment_writes_current_contract_and_complete_cohort (test_judge_export_contract.TestExportCaller.test_experiment_writes_current_contract_and_complete_cohort) ... 2026-09-12 15:00:48.605 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:00:48.760 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_explicit_v7_can_reexport_unversioned_history_without_relabeling (test_judge_export_contract.TestExportCaller.test_explicit_v7_can_reexport_unversioned_history_without_relabeling) ... 2026-09-12 15:00:49.398 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+2026-09-12 15:00:49.557 | INFO     | judge:experiment_rows:405 - experiment manifest id=fixture profile=full cells=2 demo_sides=200
+ok
+test_legacy_cli_writes_complete_scenarios_and_both_signed_effects (test_judge_export_contract.TestExportCaller.test_legacy_cli_writes_complete_scenarios_and_both_signed_effects) ... ok
+test_missing_generated_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_generated_scenario_stops_before_any_write) ... ok
+test_missing_order_pass_or_whole_scenario_stops_before_any_write (test_judge_export_contract.TestExportCaller.test_missing_order_pass_or_whole_scenario_stops_before_any_write) ... ok
+test_v8_cannot_append_to_historical_aggregate (test_judge_export_contract.TestExportCaller.test_v8_cannot_append_to_historical_aggregate) ... ok
+test_cache_versions_never_collide_or_fallback (test_judge_export_contract.TestJudgeCaller.test_cache_versions_never_collide_or_fallback) ... ok
+test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) ... 
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target=None, rubric='results-demo-perresponse-syco-v7') ... FAIL
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target=None, rubric='results-demo-perresponse-syco-v8') ... FAIL
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='-C', target=None, rubric='results-demo-perresponse-syco-v7') ... FAIL
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='-C', target=None, rubric='results-demo-perresponse-syco-v8') ... FAIL
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target='candidness', rubric='results-demo-perresponse-syco-v7') ... FAIL
+  test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target='candidness', rubric='results-demo-perresponse-syco-v8') ... FAIL
+test_http_exhaustion_counts_actual_client_requests (test_judge_export_contract.TestJudgeCaller.test_http_exhaustion_counts_actual_client_requests) ... 2026-09-12 15:00:52.808 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:00:52.808 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:00:52.809 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+test_legacy_prompt_hashes_are_unchanged (test_judge_export_contract.TestJudgeCaller.test_legacy_prompt_hashes_are_unchanged) ... ok
+test_transient_budget_is_separate_from_format_budget (test_judge_export_contract.TestJudgeCaller.test_transient_budget_is_separate_from_format_budget) ... 2026-09-12 15:00:52.811 | WARNING  | judge:judge_one:640 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 15:00:52.811 | INFO     | judge:judge_one:712 - retry invalid JSON cell=1d14e0b253007d19eafd5a319cbd4cf9a2e1d472f935209028f2baff6440566d attempt=1/3
+2026-09-12 15:00:52.811 | WARNING  | judge:judge_one:640 - transient 500 attempt=2/3 retry_seconds=3.0
+2026-09-12 15:00:52.811 | WARNING  | judge:judge_one:640 - transient 500 attempt=3/3 retry_seconds=4.5
+ok
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target=None, rubric='results-demo-perresponse-syco-v7')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != '6e0667f8913ed1cfac54af874477fb9184bfe2e7330dbf6898be41bdbe2e405f'
+- off_axis_B
++ 6e0667f8913ed1cfac54af874477fb9184bfe2e7330dbf6898be41bdbe2e405f
+
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target=None, rubric='results-demo-perresponse-syco-v8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != '1d14e0b253007d19eafd5a319cbd4cf9a2e1d472f935209028f2baff6440566d'
+- off_axis_B
++ 1d14e0b253007d19eafd5a319cbd4cf9a2e1d472f935209028f2baff6440566d
+
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='-C', target=None, rubric='results-demo-perresponse-syco-v7')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != '0ddb13c69634404252595049c3dbeb62cf99f12db38c87e4e36ec38705b6b0c3'
+- off_axis_B
++ 0ddb13c69634404252595049c3dbeb62cf99f12db38c87e4e36ec38705b6b0c3
+
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='-C', target=None, rubric='results-demo-perresponse-syco-v8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != 'dfb15615a581dbdd0e98de94b997fb7e56bc80a6d2d1b462a3ccbff095ee6428'
+- off_axis_B
++ dfb15615a581dbdd0e98de94b997fb7e56bc80a6d2d1b462a3ccbff095ee6428
+
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target='candidness', rubric='results-demo-perresponse-syco-v7')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != '0ddb13c69634404252595049c3dbeb62cf99f12db38c87e4e36ec38705b6b0c3'
+- off_axis_B
++ 0ddb13c69634404252595049c3dbeb62cf99f12db38c87e4e36ec38705b6b0c3
+
+
+======================================================================
+FAIL: test_client_prompt_and_saved_record_share_explicit_rubric (test_judge_export_contract.TestJudgeCaller.test_client_prompt_and_saved_record_share_explicit_rubric) (side='+C', target='candidness', rubric='results-demo-perresponse-syco-v8')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_judge_export_contract.py", line 102, in test_client_prompt_and_saved_record_share_explicit_rubric
+    self.assertEqual(record["cache_key"], judge.cache_key(row, "AB", 0, rubric=rubric))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'off_axis_B' != 'dfb15615a581dbdd0e98de94b997fb7e56bc80a6d2d1b462a3ccbff095ee6428'
+- off_axis_B
++ dfb15615a581dbdd0e98de94b997fb7e56bc80a6d2d1b462a3ccbff095ee6428
+
+
+----------------------------------------------------------------------
+Ran 14 tests in 6.142s
+
+FAILED (failures=6)
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+EXPERIMENT_EXPORT_COMPLETE id=fixture profile=full arms=2 scenarios=200
+added 2 result arms and 200 scenario scores

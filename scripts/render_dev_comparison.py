@@ -6,9 +6,11 @@ import hashlib
 import json
 from math import isclose
 from pathlib import Path
+from statistics import mean
 
-from judge import CACHE, DEV, experiment_rows, required_cells, valid
-from vjp_steering.results import _display_table, _markdown, _summary, plot
+from judge import CACHE, DEV, LEGACY_RUBRIC, experiment_rows, required_cells, valid
+from export import score_cell, signed_axis_effect
+from vjp_steering.results import INDEX_NOTE, SUMMARY_NOTE, _display_table, _markdown, _summary, plot
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,7 +81,7 @@ def verify_experiment(experiment_id: str, method: str, seed: int, provenance: di
     if manifest["bare"].get("reused_from") != provenance["shared_bare"]["source_experiment"]:
         raise ValueError(f"bare provenance mismatch: {experiment_id}")
     experiment = experiment_rows(experiment_id, "dev", all_generated=True)
-    cells = required_cells(experiment, DEV.orders, DEV.passes)
+    cells = required_cells(experiment, DEV.orders, DEV.passes, rubric=LEGACY_RUBRIC)
     missing = set(cells) - set(cache)
     if missing:
         raise ValueError(f"missing paired AB/BA judgments: {experiment_id} count={len(missing)}")
@@ -93,7 +95,7 @@ def verify_experiment(experiment_id: str, method: str, seed: int, provenance: di
     if not rows:
         raise ValueError(f"empty results: {path}")
     for row in rows:
-        if row["method"] != method or int(row["seed"]) != seed:
+        if row["method"] != method or int(row["seed"]) != seed or row["source_run"] != experiment_id:
             raise ValueError(f"method or seed mismatch: {path}")
         if row["eval_cohort"] != "sycophancy_dev15-v10" or row["data_hash"] != expected_hash:
             raise ValueError(f"CSV cohort mismatch: {path}")
@@ -101,13 +103,38 @@ def verify_experiment(experiment_id: str, method: str, seed: int, provenance: di
         row["C"] = float(row["C"])
         row["effect"] = float(row["effect"])
         row["off_axis_perturbation"] = float(row["off_axis_perturbation"])
+        if row["admissible"] not in {"True", "False"}:
+            raise ValueError(f"invalid coherence flag: {path}")
         row["admissible"] = row["admissible"] == "True"
+        selected = [entry for entry in experiment if entry["side"] == row["side"] and entry["coefficient"] == row["C"]]
+        if sorted(entry["vignette"] for entry in selected) != sorted(expected_ids):
+            raise ValueError(f"CSV dose lacks exact generated cohort: {path} {row['side']} C={row['C']}")
+        scores = []
+        for entry in selected:
+            entry_keys = required_cells([entry], DEV.orders, DEV.passes, rubric=LEGACY_RUBRIC)
+            judgments = [score_cell(cache[key]) for key in entry_keys]
+            scores.append((signed_axis_effect(entry.get("behavior_target") or row["side"], judgments),
+                           abs(mean(score[1] for score in judgments)), mean(score[2] for score in judgments)))
+        for field, column in (("effect", 0), ("off_axis_perturbation", 1)):
+            if not isclose(row[field], mean(score[column] for score in scores), abs_tol=1e-9):
+                raise ValueError(f"CSV {field} differs from frozen v7 judgments: {path} {row['side']} C={row['C']}")
+        health = [cell for cell in manifest["cells"][row["side"]].values() if cell["coefficient"] == row["C"]]
+        if len(health) != 1:
+            raise ValueError(f"CSV dose lacks exact manifest health: {path} {row['side']} C={row['C']}")
+        admissible = not health[0]["breakdown_reasons"] and mean(score[2] for score in scores) <= 1.5
+        if row["admissible"] != admissible:
+            raise ValueError(f"CSV coherence differs from manifest/v7 judgments: {path} {row['side']} C={row['C']}")
         if method == "random":
             row["normalized_dose_id"] = normalized_calibration_dose_id(
                 row["C"],
                 manifest["boundaries"][row["side"]]["C_approx"],
                 provenance["calibration_grid"]["fractions"],
             )
+            row["normalized_dose_fraction"] = (
+                provenance["calibration_grid"]["fractions"][row["normalized_dose_id"]]
+                if row["normalized_dose_id"] is not None else None
+            )
+    print(f"VERIFIED_FROZEN_DEV id={experiment_id} rows={len(rows)} rubric={LEGACY_RUBRIC}")
     return rows
 
 
@@ -118,7 +145,7 @@ def main() -> None:
     provenance = json.loads(args.provenance.read_text())
     cache = raw_judgments()
     specs = comparison_specs(provenance)
-    # Handle display remapping for L16 (verified as j_lens_swap but displayed as j_lens_swap_L16)
+    # Display names distinguish verified L16 variants. -- PI/OpenAI
     rows = []
     for spec in specs:
         exp_id, verify_method, seed, display_method = spec
@@ -139,15 +166,18 @@ def main() -> None:
     output.mkdir(exist_ok=True)
     source_columns = (
         "method", "seed", "C", "side", "effect", "off_axis_perturbation", "admissible",
-        "normalized_dose_id", "source_run", "eval_cohort", "data_hash",
+        "normalized_dose_id", "normalized_dose_fraction", "source_run", "eval_cohort", "data_hash",
     )
     with (output / "dev-comparison.csv").open("w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=source_columns, extrasaction="ignore")
+        writer = csv.DictWriter(file, fieldnames=source_columns, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     markdown = _markdown(table, (
-        "DEV15 comparison only. Every point passed exact scenario, shared-bare, generation-config, AB/BA judgment, and coherence provenance checks.",
-        "The gray region and measured gray dots are five random vectors. It is a descriptive reference, not a confidence interval. This first comparison does not show J-lens outside the measured random points in either direction. Paired two-level bootstrap over the 15 scenarios with AB/BA resampling (B=20000, exact sign-flip p): doubt -C4 margin vs best -C rung seed +0.017, 95% CI [-1.88,+1.88], p=0.98; swap-L16 +C margin vs best +C rung seed +0.41, CI [-0.71,+2.31], p=0.45. Both margins sit inside judge noise: the frozen DEV15 cohort cannot statistically resolve the two-direction discriminator (see audit). Against the stronger +C id0 rung the swap-L16 point leans loss (point -0.853, CI [-2.24,+0.24] crossing zero, p=0.049 borderline) — not robust either. Power extrapolation (audit, labeled): resolving the +C margin at 3 SE would take ~130 scenarios; the -C margin (~473k) needs a better repair, not more data. `not eligible` means an incoherent or wrong-direction measured point; raw rows are in `dev-comparison.csv`.",
+        f"DEV15 comparison only, frozen historical rubric `{LEGACY_RUBRIC}`. Exact scenario/shared-bare and generation settings checked; CSV effects, changes and dose-level coherence recomputed against existing AB/BA judgments and manifest health. No new judgments.",
+        "The figures are separate from the all-100 results. Smooth lines are visual guides with exact bare and selected-dose endpoints, not measured intermediate doses. Open dots are rejected; triangles are off-scale. Selection uses peak accepted effect for J-lens and last accepted dose for the baselines. The table uses peak accepted effect. Raw measured values remain in `dev-comparison.csv`.",
+        SUMMARY_NOTE,
+        INDEX_NOTE,
+        "[Paired scenario uncertainty for the selected comparisons](../slop/logs/20260912_repairs/escape-bootstrap.log); these intervals are conditional on dose and seed selection.",
     ), extra_pareto_plot=True)
     markdown = (
         markdown.replace("plot.png", "plot-dev.png")
