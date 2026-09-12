@@ -1,0 +1,30 @@
+test_summary_excludes_rejected_peaks_and_requires_direction (test_render_dev_comparison.TestCalibratedRandomRegion.test_summary_excludes_rejected_peaks_and_requires_direction) ... ok
+test_summary_uses_calibrated_rungs_not_exact_coefficients (test_render_dev_comparison.TestCalibratedRandomRegion.test_summary_uses_calibrated_rungs_not_exact_coefficients) ... ok
+test_uses_calibration_rank_without_relabeling_actual_coefficients (test_render_dev_comparison.TestCalibratedRandomRegion.test_uses_calibration_rank_without_relabeling_actual_coefficients) ... ok
+test_rejects_mismatched_shared_bare (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_mismatched_shared_bare) ... ok
+test_rejects_missing_ba_order (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_missing_ba_order) ... ok
+test_rejects_stale_method_artifact (test_render_dev_comparison.TestDevComparisonProvenance.test_rejects_stale_method_artifact) ... ok
+test_uses_only_explicit_corrected_experiment_ids (test_render_dev_comparison.TestDevComparisonProvenance.test_uses_only_explicit_corrected_experiment_ids) ... FAIL
+
+======================================================================
+FAIL: test_uses_only_explicit_corrected_experiment_ids (test_render_dev_comparison.TestDevComparisonProvenance.test_uses_only_explicit_corrected_experiment_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/2026/jspace/j-steer_pub/tests/test_render_dev_comparison.py", line 123, in test_uses_only_explicit_corrected_experiment_ids
+    self.assertEqual(specs[2], ("vjp-r2", "vjp_delta", 0))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('vjp-r2', 'vjp_delta', 0, None) != ('vjp-r2', 'vjp_delta', 0)
+
+First tuple contains 1 additional elements.
+First extra element 3:
+None
+
+- ('vjp-r2', 'vjp_delta', 0, None)
+?                          ------
+
++ ('vjp-r2', 'vjp_delta', 0)
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.840s
+
+FAILED (failures=1)

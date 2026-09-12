@@ -1,0 +1,21 @@
+test_rejects_source_layer_at_or_after_target (<run_path>.TestVjpDeltaTargetLayer.test_rejects_source_layer_at_or_after_target) ... ok
+test_rejects_target_outside_actual_model_depth (<run_path>.TestVjpDeltaTargetLayer.test_rejects_target_outside_actual_model_depth) ... ok
+test_alpha_one_exchanges_coordinates_and_preserves_residual (<run_path>.TestJLensCoordinateDiagnostics.test_alpha_one_exchanges_coordinates_and_preserves_residual) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.818s
+
+OK
+CPU existing tests; torch 2.13.0+cu130
+RUN tests/test_j_lens_injection.py test_injection_extraction_both_sides
+PASS extraction: production j_lens_injection returns distinct unit vectors per side
+RUN tests/test_j_lens_injection.py test_injection_apply
+PASS apply: grid 1,2,4,8,16 positive amplitudes, C=0 no-op, dtype/shape, seq_len=1 skip
+RUN tests/test_j_lens_injection.py test_side_dispatch_through_production_path
+PASS dispatch: applied_coefficient unsigned both sides, hooked forward equals y + C*v_hat per side
+RUN tests/test_j_lens_unit_direction.py test_jlens_unit_direction_apply
+PASS JLensUnitDirection.apply: C=0,+1,-1 seq_len>1 dtype/shape/equation, seq_len=1 skip
+RUN tests/test_j_lens_unit_direction.py test_extraction_with_patched_tiny_checkpoint
+PASS extraction via patched _load_j_lens: production j_lens_unit_direction returns unit d_hat
+PASS synthetic: actual Qwen RMSNorm vs identity/uniform mutations correctly differ
+PASS selected CPU checks; real-trial replay deliberately excluded

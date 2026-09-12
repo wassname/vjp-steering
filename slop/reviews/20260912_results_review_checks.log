@@ -1,0 +1,46 @@
+2026-09-12 14:35:40.637 | WARNING  | judge:judge_one:602 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 14:35:40.637 | WARNING  | judge:judge_one:602 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 14:35:40.638 | WARNING  | judge:judge_one:602 - transient 500 attempt=1/3 retry_seconds=1.5
+2026-09-12 14:35:40.638 | WARNING  | judge:judge_one:602 - transient 500 attempt=1/3 retry_seconds=1.5
+INPUT_SHA256 {'/workspace/2026/jspace/j-steer_pub/data/results.csv': 'ca26d3079e7c088a954881babc6ffb4d7ff55756f763f01bce308cb44e524b55', 'results/dev-comparison.csv': '6330558d58df2838bd3934c790eb3e252f3cd28b866789365023c131757fef91', 'results/plot.png': '9061c450c20203300022b2fa6896acc339a22e8889d177f77378e9b5b547ebe1', 'results/plot_pareto.png': 'a4b16fa97e7312c481b030174f896c0ccbb32607889acd5267924fd522c68373'}
+EXPORT_SELF_TEST_PASS
+PRIMARY_SUMMARY_FAIL KeyError('random')
+LEGACY_EXPORT_FAIL TypeError('tuple indices must be integers or slices, not str')
+SUMMARY_WITH_ONLY_RANDOM_MAP_SUPPLIED [["vjp_delta", "+1.371", "1.849", "0.477", "3.806", "0.314", "3", "161", "28"], ["mean_diff", "+0.789", "1.492", "0.703", "4.362", "0.648", "3", "237", "46"], ["vjp_mlp_up_left_right_shrink", "+0.552", "0.968", "0.416", "3.466", "1.129", "1", "12", "1"], ["vjp_mlp_up_shrink", "+0.505", "0.861", "0.356", "3.508", "0.624", "3", "91", "13"], ["pca", "+0.265", "1.227", "0.963", "4.090", "1.031", "3", "222", "69"], ["J_word", "+0.078", "0.275", "0.197", "2.075", "0.626", "1", "17", "5"], ["random", "\u2014", "not confirmed", "\u2014", "2.995", "0.553", "10", "60", "28"], ["j_lens_concept_components", "\u2014", "not confirmed", "\u2014", "-0.565", "0.270", "1", "1", "0"]]
+ROW_COUNTS {'mean_diff': 237, 'pca': 222, 'vjp_delta': 161, 'random': 60, 'J_word': 17, 'vjp_mlp_up_shrink': 91, 'vjp_mlp_up_left_right_shrink': 12, 'j_lens_concept_components': 1}
+DUPLICATE_METHOD_SEED_DOSE_SIDE 31 max_repeats 2
+PRIMARY_SCENARIO_COVERAGE 66600 {100: 666}
+DUPLICATE_RUN_IDENTICAL_TEXTS bare 93 of 100
+DUPLICATE_RUN_IDENTICAL_TEXTS +C 97 of 100
+CURRENT_SORTED_COHORT_HASH 28aa4597841794afdfa9fc26590832d03d016aa832eb3fc922ef64f79bf46ecf
+SMOOTH_THREE_ANCHORS [{'effect': 0.0, 'off_axis_perturbation': 0.0}, {'effect': 1.0, 'off_axis_perturbation': 0.1}, {'effect': 2.0, 'off_axis_perturbation': 1.0}] curve_at_middle_x (1.0, 0.30000000000000004)
+ENDPOINT_VS_TABLE_PEAK vjp_delta +C {'endpoint_C': 0.6299605249474366, 'endpoint_effect': 3.71525, 'endpoint_damage': 0.6973333333333334, 'peak_C': 0.44544935907016964, 'peak_effect': 3.80625, 'peak_damage': 0.31383333333333335}
+ENDPOINT_VS_TABLE_PEAK vjp_delta -C {'endpoint_C': 0.22272467953508485, 'endpoint_effect': -1.1505, 'endpoint_damage': 1.0148333333333333, 'peak_C': 0.1767766952966369, 'peak_effect': -1.8486666666666667, 'peak_damage': 0.4771666666666667}
+ENDPOINT_VS_TABLE_PEAK mean_diff +C {'endpoint_C': 1.0, 'endpoint_effect': 4.31875, 'endpoint_damage': 0.887875, 'peak_C': 0.8908987181403393, 'peak_effect': 4.361804583333333, 'peak_damage': 0.647875}
+ENDPOINT_VS_TABLE_PEAK mean_diff -C {'endpoint_C': 0.7937005259840998, 'endpoint_effect': -1.2961666666666667, 'endpoint_damage': 1.1975, 'peak_C': 0.6299605249474366, 'peak_effect': -1.4915, 'peak_damage': 0.7029166666666666}
+ENDPOINT_VS_TABLE_PEAK pca +C {'endpoint_C': 1.122462048309373, 'endpoint_effect': 4.089916666666666, 'endpoint_damage': 1.0305833333333332, 'peak_C': 1.122462048309373, 'peak_effect': 4.089916666666666, 'peak_damage': 1.0305833333333332}
+ENDPOINT_VS_TABLE_PEAK pca -C {'endpoint_C': 0.7937005259840998, 'endpoint_effect': -1.2274166666666666, 'endpoint_damage': 0.96275, 'peak_C': 0.7937005259840998, 'peak_effect': -1.2274166666666666, 'peak_damage': 0.96275}
+ENDPOINT_VS_TABLE_PEAK J_word +C {'endpoint_C': 0.3535533905932738, 'endpoint_effect': 2.075, 'endpoint_damage': 0.626, 'peak_C': 0.3535533905932738, 'peak_effect': 2.075, 'peak_damage': 0.626}
+ENDPOINT_VS_TABLE_PEAK J_word -C {'endpoint_C': 0.25, 'endpoint_effect': 0.18475000000000005, 'endpoint_damage': 0.3675, 'peak_C': 0.125, 'peak_effect': -0.27475, 'peak_damage': 0.19675}
+ENDPOINT_VS_TABLE_PEAK vjp_mlp_up_shrink +C {'endpoint_C': 25.398416831491197, 'endpoint_effect': 3.5080833333333334, 'endpoint_damage': 0.62375, 'peak_C': 25.398416831491197, 'peak_effect': 3.5080833333333334, 'peak_damage': 0.62375}
+ENDPOINT_VS_TABLE_PEAK vjp_mlp_up_shrink -C {'endpoint_C': 8.0, 'endpoint_effect': -0.7354166666666667, 'endpoint_damage': 0.7665, 'peak_C': 4.0, 'peak_effect': -0.8613333333333333, 'peak_damage': 0.35583333333333333}
+ENDPOINT_VS_TABLE_PEAK vjp_mlp_up_left_right_shrink +C {'endpoint_C': 44.06369064172843, 'endpoint_effect': 3.4665, 'endpoint_damage': 1.129, 'peak_C': 44.06369064172843, 'peak_effect': 3.4665, 'peak_damage': 1.129}
+ENDPOINT_VS_TABLE_PEAK vjp_mlp_up_left_right_shrink -C {'endpoint_C': 24.0, 'endpoint_effect': -0.83, 'endpoint_damage': 0.593, 'peak_C': 16.0, 'peak_effect': -0.968, 'peak_damage': 0.416}
+ENDPOINT_VS_TABLE_PEAK j_lens_concept_components +C {'endpoint_C': 0.5, 'endpoint_effect': -0.5645, 'endpoint_damage': 0.2695, 'peak_C': 0.5, 'peak_effect': -0.5645, 'peak_damage': 0.2695}
+RANDOM_SURVIVORS 1.0 both [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] by_side {'+C': 10, '-C': 10}
+RANDOM_SURVIVORS 1.4142135623730951 both [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] by_side {'+C': 10, '-C': 10}
+RANDOM_SURVIVORS 2.0 both [3, 4, 7, 8, 9] by_side {'+C': 9, '-C': 6}
+DEV_RANDOM_POLYGON_ORDER {'+C': [(0, 0.66, 0.26666666666666666), (1, 0.74375, 0.5266666666666666), (9, 0.4, 0.12000000000000001)], '-C': [(9, 0.4, 0.20333333333333334)]}
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS -C [('j_lens_injection_doubt_L16', 8.0, -0.11000000000000003, 0.5033333333333334)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS +C [('j_lens_swap', 1.2988345817029197, 0.5499999999999999, 0.14666666666666667)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS -C [('j_lens_swap', 0.290625, -0.6566666666666666, 0.5133333333333333)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS +C [('j_lens_swap_L16', 16.409123182340487, 0.98, 0.9299999999999999)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS -C [('j_lens_swap_L16', 18.6, 0.8366666666666667, 0.9566666666666667)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS -C [('j_lens_unit_L16', 8.135527242414497, -0.6766666666666667, 0.97), ('j_lens_unit_L16', 10.200225444087874, -0.23999999999999996, 0.99)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS +C [('mean_diff', 1.1521121781656307, 2.74, 1.1233333333333333)]
+ACTUAL_PLOT_REJECTED_PARETO_ANCHORS +C [('vjp_delta', 0.7354952501132891, 1.1333333333333333, 1.0333333333333332)]
+ACTUAL_DEV_MEAN_DIFF_CURVE_END 2.74 1.1233333333333333
+ACTUAL_DEV_MEAN_DIFF_SELECTED_MARKER (3.433333333333333,) (0.6833333333333333,) mean_diff (baseline) final admissible dose<br>C=1.02238<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>
+ACTUAL_DEV_MEAN_DIFF_SELECTED_MARKER (-5.476666666666667,) (0.91,) mean_diff (baseline) final admissible dose<br>C=0.882262<br>effect=%{x:.3f}<br>damage=%{y:.3f}<extra></extra>
+HTTP500_REQUEST_COUNT_BEFORE_TEST_STOP 5
+CPU_REPRODUCTIONS_COMPLETE no API calls, no GPU, no production writes

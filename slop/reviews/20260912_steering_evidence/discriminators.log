@@ -1,0 +1,11 @@
+vjp_label_swap [[0.7071068286895752, 0.7071068286895752]] [[0.7071068286895752, 0.7071068286895752]] equal True
+constant_jacobian_vjp [[nan, nan]] finite False
+cache_validator_accepts_changed_extraction_args mean_diff
+cache_validator_accepts_changed_extraction_args vjp_delta
+cache_validator_accepts_changed_extraction_args random
+cache_validator_accepts_changed_extraction_args j_lens_injection
+dispatch_kwargs j_lens_swap {'source_token': 'abrasive', 'target_token': 'flattering'}
+dispatch_kwargs j_lens_unit_direction {}
+dispatch_kwargs j_lens_injection {'concept_token': 'flattering'}
+mlp_dispatch_kwargs {'batch_size': 1, 'max_length': 384, 'skip_first': 16}
+PASS discriminators reproduced production-path defects without models/downloads
