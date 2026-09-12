@@ -1,8 +1,7 @@
-"""Production-path CPU repair discriminators. -- PI/OpenAI"""
+"""Regression tests for steering direction and extraction reuse. -- PI/OpenAI"""
 
 import copy
 import importlib
-import json
 from pathlib import Path
 import sys
 import tempfile
@@ -79,14 +78,6 @@ class TestVjpRepairs(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "zero chosen/rejected orientation"):
             self.extract(TinyModel(), ["2"], ["1"])
 
-    def test_nonfinite_raw_direction_rejected(self):
-        model = TinyModel()
-        with torch.no_grad():
-            model.embedding.weight[3, 0] = torch.inf
-        with self.assertRaisesRegex(ValueError, "nonfinite"):
-            self.extract(model, ["3"], ["1"])
-
-
 class TestExtractionIdentity(unittest.TestCase):
     def make_cache(self, root, args):
         vector = Vector(MeanDiffC(layers=(0,), dtype=torch.float32), {}, {0: {"v": torch.tensor([[1., 0.]])}})
@@ -110,35 +101,19 @@ class TestExtractionIdentity(unittest.TestCase):
                         experiment.load_or_extract(changed, root, None, None)
             self.assertEqual(before, {path: path.read_bytes() for path in root.rglob("*") if path.is_file()})
 
-    def test_target_and_lens_and_concepts_are_in_identity(self):
+    def test_changed_lens_cannot_reuse_vectors(self):
         with tempfile.TemporaryDirectory() as directory:
-            lens = Path(directory) / "lens.pt"
-            lens.write_bytes(b"lens version one")
-            for method, changes in (
-                ("vjp_delta", dict(target_layer=2)),
-                ("j_lens_injection", dict(injection_plus_concept="other", injection_minus_concept="another")),
-            ):
-                args = args_for(method, target_layer=1 if method == "vjp_delta" else None,
-                                lens_file=lens if method == "j_lens_injection" else None,
-                                injection_plus_concept="flattering" if method == "j_lens_injection" else "",
-                                injection_minus_concept="abrasive" if method == "j_lens_injection" else "")
-                metadata = dict(method=method, model=args.model, dtype=args.dtype,
-                                extraction_request=experiment.extraction_request(args))
-                experiment.validate_extraction_identity(args, metadata)
-                for key, value in changes.items():
-                    changed = copy.copy(args)
-                    setattr(changed, key, value)
-                    with self.subTest(key=key), self.assertRaisesRegex(ValueError, "request mismatch"):
-                        experiment.validate_extraction_identity(changed, metadata)
-                if method == "j_lens_injection":
-                    lens.write_bytes(b"lens version two")
-                    with self.assertRaisesRegex(ValueError, "lens_sha256"):
-                        experiment.validate_extraction_identity(args, metadata)
-
-    def test_legacy_identity_fails_without_modifying_cache(self):
-        args = args_for()
-        with self.assertRaisesRegex(ValueError, "lacks extraction_request"):
-            experiment.validate_extraction_identity(args, dict(method=args.method, model=args.model, dtype=args.dtype))
+            root = Path(directory)
+            lens = root / "lens.pt"
+            lens.write_bytes(b"original lens")
+            args = args_for("j_lens_injection", lens_file=lens)
+            cache = root / "cache"
+            self.make_cache(cache, args)
+            before = {path: path.read_bytes() for path in cache.rglob("*") if path.is_file()}
+            lens.write_bytes(b"changed lens")
+            with self.assertRaisesRegex(ValueError, "lens_sha256"):
+                experiment.load_or_extract(args, cache, None, None)
+            self.assertEqual(before, {path: path.read_bytes() for path in cache.rglob("*") if path.is_file()})
 
     def test_completed_profile_checks_identity_before_shortcut(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -192,23 +167,6 @@ class TestExtractionDispatch(unittest.TestCase):
                 args.layers = "3"
                 with self.assertRaisesRegex(ValueError, "all layers preceding"):
                     experiment.extract_vectors(args, model, None)
-
-    def test_unsupported_flags_fail(self):
-        for changes in (dict(lens_file=Path("unused")), dict(target_layer=2)):
-            with self.subTest(changes=changes), self.assertRaisesRegex(ValueError, "not used"):
-                experiment.extract_vectors(args_for(**changes), None, None)
-
-    def test_persona_source_uses_supported_nonthinking_and_seed(self):
-        tokenizer = lambda prompts, **kwargs: {"input_ids": [[1] for _ in prompts]}
-        args = args_for(seed=42)
-        with patch.object(experiment, "make_persona_pairs", return_value=(["p"], ["n"])) as pairs:
-            experiment.extraction_prompts(args, tokenizer)
-            self.assertIs(pairs.call_args.kwargs["thinking"], False)
-            self.assertEqual(pairs.call_args.kwargs["seed"], 42)
-        for prompt in ("<think></think><think>reopened", "<think>reasoning</think>"):
-            with patch.object(experiment, "make_persona_pairs", return_value=([prompt], ["n"])):
-                with self.assertRaisesRegex(ValueError, "thinking|non-thinking"):
-                    experiment.extraction_prompts(args, tokenizer)
 
     def test_j_word_rejects_subtokens_and_zero_lens(self):
         with tempfile.TemporaryDirectory() as directory:

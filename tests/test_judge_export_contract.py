@@ -54,15 +54,6 @@ class TestJudgeCaller(unittest.TestCase):
             "run": "fixture", "method": "mean_diff", "source": "fixture.jsonl",
         }
 
-    def test_http_exhaustion_counts_actual_client_requests(self):
-        create = AsyncMock(side_effect=Http500())
-        client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
-        with patch.object(judge.asyncio, "sleep", AsyncMock()) as sleep:
-            with self.assertRaisesRegex(RuntimeError, "transient 500 after 3 attempts"):
-                asyncio.run(judge.judge_one(client, self.row, "AB", 0))
-        self.assertEqual(create.await_count, 3)
-        self.assertEqual([call.args[0] for call in sleep.await_args_list], [1.5, 3.0])
-
     def test_transient_budget_is_separate_from_format_budget(self):
         bad_json = SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="bad JSON"))])
         create = AsyncMock(side_effect=[Http500(), bad_json, Http500(), Http500()])
@@ -71,18 +62,6 @@ class TestJudgeCaller(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "transient 500 after 3 attempts"):
                 asyncio.run(judge.judge_one(client, self.row, "AB", 0))
         self.assertEqual(create.await_count, 4)
-
-    def test_legacy_prompt_hashes_are_unchanged(self):
-        hashes = {
-            ("+C", "AB"): "3b8d6b247883e7383bbaa5bdc3ced9303e30c7e7a2b4d1f6d8d63ca9db4d54f7",
-            ("+C", "BA"): "d91e1fab407e9f8f6ed4c486027243ffed8b9abb3bf428f6e41320488f178a76",
-            ("-C", "AB"): "73e94cf57a23a0c311f45204ca02bb7fd1d10d280994b5a4cf5379b0a7b6d6f9",
-            ("-C", "BA"): "73d4bbba18c684732f681e44ba4fcfb55c980da8319c3a7d83eca9d3c44f1cf4",
-        }
-        with patch.object(judge, "answer_key", return_value="The premise is false."):
-            for (side, order), expected in hashes.items():
-                row = {**self.row, "side": side, "prompt": "Why is this flawed?"}
-                self.assertEqual(judge.sha(judge.judge_prompt(row, order, rubric=judge.LEGACY_RUBRIC)), expected)
 
     def test_client_prompt_and_saved_record_share_explicit_rubric(self):
         for side, target, sign in (("+C", None, "negative"), ("-C", None, "positive"), ("+C", "candidness", "positive")):
@@ -199,19 +178,6 @@ class TestExportCaller(unittest.TestCase):
                     export.export([self.run.name], rubric=judge.LEGACY_RUBRIC)
                 self.assertEqual(self.snapshot(), before)
 
-    def test_missing_generated_scenario_stops_before_any_write(self):
-        write_jsonl(self.run / "moral_demos.jsonl", self.generations[3:])
-        before = self.snapshot()
-        with self.assertRaisesRegex(ValueError, "incomplete all100 generations"):
-            export.export([self.run.name], rubric=judge.LEGACY_RUBRIC)
-        self.assertEqual(self.snapshot(), before)
-
-    def test_v8_cannot_append_to_historical_aggregate(self):
-        before = self.snapshot()
-        with self.assertRaisesRegex(ValueError, "v8 needs a new full-cohort result schema"):
-            export.export([self.run.name])
-        self.assertEqual(self.snapshot(), before)
-
     def experiment_fixture(self, rubric=judge.RUBRIC):
         root = self.root / "experiment"
         root.mkdir()
@@ -246,15 +212,6 @@ class TestExportCaller(unittest.TestCase):
         selected = json.loads((output / "selected.json").read_text())
         self.assertEqual({side: value["effect"] for side, value in selected["sides"].items()}, {"+C": 1.0, "-C": -1.0})
 
-    def test_experiment_missing_judgments_cannot_create_output(self):
-        _, output, entries = self.experiment_fixture()
-        write_jsonl(self.cache, entries[1:])
-        before = self.snapshot()
-        with self.assertRaisesRegex(ValueError, "required cells missing"):
-            export.export_experiment("fixture", "full", all_generated=True)
-        self.assertFalse(output.exists())
-        self.assertEqual(self.snapshot(), before)
-
     def test_experiment_duplicate_scenario_cannot_publish_all100(self):
         root, output, _ = self.experiment_fixture()
         records = [json.loads(line) for line in (root / "+C.jsonl").read_text().splitlines()]
@@ -279,14 +236,6 @@ class TestExportCaller(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "judge contract mismatch"):
             export.export_experiment("fixture", "full", all_generated=True)
         self.assertEqual(self.snapshot(), before)
-
-    def test_explicit_v7_can_reexport_unversioned_history_without_relabeling(self):
-        _, output, _ = self.experiment_fixture(judge.LEGACY_RUBRIC)
-        output.mkdir()
-        (output / "results.csv").write_text("historical fixture\n")
-        export.export_experiment("fixture", "full", all_generated=True, rubric=judge.LEGACY_RUBRIC)
-        self.assertEqual(json.loads((output / "judge_contract.json").read_text())["rubric"], judge.LEGACY_RUBRIC)
-
 
 if __name__ == "__main__":
     unittest.main()

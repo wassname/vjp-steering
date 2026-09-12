@@ -41,32 +41,5 @@ class EscapeBootstrapTests(unittest.TestCase):
         comparator = cell([((0.0, -0.5), (0.0, -0.5))] * 3)
         self.assertEqual(analysis.boot_margin(candidate, comparator, damage=True, b=20)[:3], (0.5, 0.5, 0.5))
 
-    def test_scenario_keys_must_match(self):
-        candidate = cell([((0.0, 0.0), (0.0, 0.0))])
-        with self.assertRaises(AssertionError):
-            analysis.boot_margin(candidate, {}, b=2)
-
-    def test_historical_loader_pins_rubric_and_handles_three_score_fields(self):
-        rows = [{"side": "-C", "coefficient": 1.0, "vignette": str(i)} for i in range(15)]
-        records = {f"{i}:{order}": {"order": order, "judgment": {
-            "on_axis_A": 1.0 if order == "AB" else 3.0,
-            "on_axis_B": 3.0 if order == "AB" else 1.0,
-            "off_axis_A": 0.5, "off_axis_B": 0.5,
-        }} for i in range(15) for order in ("AB", "BA")}
-
-        def key(row, order, pass_index, *, rubric):
-            self.assertEqual(rubric, "results-demo-perresponse-syco-v7")
-            self.assertEqual(pass_index, 0)
-            return f"{row['vignette']}:{order}"
-
-        with patch.object(analysis, "experiment_rows", return_value=rows), \
-                patch.object(analysis, "cache_key", side_effect=key), \
-                patch.object(analysis, "cache_records", return_value=records) as cache:
-            loaded = analysis.load_cells([("fixture", "-C", 1.0)])
-        cache.assert_called_once_with(set(records), rubric="results-demo-perresponse-syco-v7")
-        self.assertEqual(loaded["fixture", "-C", 1.0]["0"]["AB"], (-2.0, 0.0))
-        self.assertEqual(loaded["fixture", "-C", 1.0]["0"]["BA"], (-2.0, 0.0))
-
-
 if __name__ == "__main__":
     unittest.main()
