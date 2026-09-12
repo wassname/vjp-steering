@@ -175,6 +175,8 @@ The saved output now supports source-task revision rather than a causal claim.
 
 ## 2026-09-09 -- J-lens swap reliability as reported, and our persona-transfer null
 
+Superseded interpretation: see the correction below dated 2026-09-12. The pending diagnostic and causal/null claims in this entry were incorrect. -- PI/OpenAI
+
 Evidence (paper): `docs/papers/jacobian_lens_workspace.md` reports systematic swap rates, not a single demo: two-hop answer flips 54% (Haiku) / 70% (Sonnet, Opus); function battery 76/192 at α=1, 101/192 at double strength; category swaps 88% top-5 for pure J-lens vectors vs 5% for non-J-space components; failures concentrate where source workspace loading is weak (countries load highest and swap best, number-words lowest and worst).
 
 Evidence (ours): six J-lens variants (full-band swap, L16 swap, unit-direction control, two injection pairs) vs five random vectors on the frozen DEV15 sycophancy bench: no variant outside the random region in either direction ([plot](results/plot-dev.png), [CSV](results/dev-comparison.csv)); paired bootstrap + exact permutation over the 15 scenarios puts both escape margins inside judge noise (per-scenario swings ±8).
@@ -182,3 +184,20 @@ Evidence (ours): six J-lens variants (full-band swap, L16 swap, unit-direction c
 Interpretation: my read is the paper's rates are honest measurements with controls and failure analysis, and they bound expectations: a 40–88% single-token-flip effect, highly loading- and category-dependent. Our persona transfer (abstract style words, open-ended generation, ±5 judge scale) sat outside that envelope, so the null is roughly the predicted outcome — likely (~70%) the transfer hypothesis failed, not the lens. Remaining 'our bug' caveats: the Qwen L16 band is unattested (paper band is Sonnet 4.5) and the vendor-normalized readout was never rank-checked; the single France→Germany raw+vendor trial scoped in [the fairness audit](slop/audits/20260909_low_damage_fairness.md) would separate these.
 
 <!-- PI[Kimi K3]: journal entry written 2026-09-09. -->
+
+## 2026-09-12 -- Correcting the reliability interpretation
+
+The review found that our earlier explanation exceeded the evidence.
+
+Evidence: [the saved corrected diagnostic](slop/audits/20260909_corrected_vendor_diagnostic.md) already contained raw and vendor-normalized ranks; calling it pending was wrong. [CPU review checks](slop/logs/20260912_repo_review/reporting_checks.log) also reproduce an estimator-labeling defect:
+
+> observed_effect_difference=0 observed_damage_difference=0
+> actual_function_damage(mean,lo,hi) (0.5002759999999999, 0.13333333333333333, 0.8666666666666667)
+
+This fixture has opposite presentation-order differences that average to zero. Resampling the orders before taking absolute value produced a different quantity, which the script incorrectly printed as the observed damage difference.
+
+Interpretation: I withdraw the earlier causal attribution to weak workspace loading and the numerical confidence assigned to transfer failure. The paper reports different tasks and success criteria, not a general reliability rate. A small representation component can still have a causal effect after rescaling. Our selected comparisons did not establish equivalence to random directions or show that a larger cohort could never resolve a difference. [The review](slop/reviews/20260912_repo_review.md) separates current implementation defects from unverified effects on historical results.
+
+The saved model responses remain evidence; the earlier method-level explanation does not.
+
+<!-- PI/OpenAI: correction, not a new behavioral experiment. -->

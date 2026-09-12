@@ -1,0 +1,10 @@
+test_damage_is_absolute_order_mean_not_mean_absolute (test_escape_bootstrap.EscapeBootstrapTests.test_damage_is_absolute_order_mean_not_mean_absolute) ... ok
+test_historical_loader_pins_rubric_and_handles_three_score_fields (test_escape_bootstrap.EscapeBootstrapTests.test_historical_loader_pins_rubric_and_handles_three_score_fields) ... ok
+test_observed_point_does_not_depend_on_bootstrap_draws (test_escape_bootstrap.EscapeBootstrapTests.test_observed_point_does_not_depend_on_bootstrap_draws) ... ok
+test_orders_are_averaged_before_sampling_scenarios (test_escape_bootstrap.EscapeBootstrapTests.test_orders_are_averaged_before_sampling_scenarios) ... ok
+test_scenario_keys_must_match (test_escape_bootstrap.EscapeBootstrapTests.test_scenario_keys_must_match) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.177s
+
+OK

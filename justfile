@@ -41,8 +41,8 @@ judge-dry walk_id:
 judge-experiment experiment_id profile *args:
 	uv run python scripts/judge.py --experiment-id {{experiment_id}} --profile {{profile}} --refresh {{args}}
 
-export walk_id:
-	uv run python scripts/export.py --walk-id {{walk_id}}
+export walk_id *args:
+	uv run python scripts/export.py --walk-id {{walk_id}} {{args}}
 
 results:
 	uv run python -m vjp_steering.results

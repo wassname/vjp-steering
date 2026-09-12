@@ -41,10 +41,6 @@ every experiment dir checked: s0, s1, swap-L16 — same 15 records under rewritt
 - Review reserve $12.00: separate, untouched by v14 work
 - Bounded diagnostics actuals: extension ~$0.322, injection ~$0.17, doubt ~$0.15 — each vs its ceiling
 
-## Uncertainty conclusion (binding)
-Paired bootstrap + exact permutation (slop/logs/20260909_j_lens_dev/escape_bootstrap.log):
-doubt -C4 vs best -C rung +0.0167, 95% CI [-0.240,+0.273], p=0.98;
-swap-L16 +C vs best +C rung +0.407, CI [-0.407,+1.220], p=0.45;
-vs +C id0 best -0.853, CI [-1.263,-0.433], p=0.049 (a loss).
-The frozen DEV15 cohort cannot statistically resolve the two-direction discriminator.
-Options: accept descriptive plots, expand scenario cohort (new scope decision), or stop.
+## Uncertainty conclusion (superseded)
+
+Correction, 2026-09-12, PI/OpenAI: the previous intervals here came from an order-only bootstrap and are withdrawn. A later two-level version also mislabeled its bootstrap damage mean as the observed difference. See [the statistical review](../../reviews/20260912_reporting_review.md) and [the corrected analysis definition](../../scripts/20260909_escape_bootstrap.py). Fixed-comparator intervals do not establish equivalence to random directions or cover selection of the full random region. No new model generations or judgments accompanied this correction.

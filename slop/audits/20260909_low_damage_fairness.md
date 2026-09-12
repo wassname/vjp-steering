@@ -250,7 +250,7 @@ discriminates where the style pair did not.
 
 Two-direction coordinates vs the five-seed random region (for the discriminator to be judged, not declared):
 - -C: doubtful C4 -1.16 @ 0.283 vs rung best seed1 -1.143 @ 0.373 is a +0.017 pointwise margin — CORRECTED
-to at-boundary (bootstrap §10: 95% CI [-0.240, +0.273], p=0.98), NOT a win. C1 -0.823 @ 0.187 beats 4/5
+to an inconclusive fixed comparison (corrected bootstrap in §10), NOT a win. C1 -0.823 @ 0.187 beats 4/5
 pointwise (loses only to seed1 at ~2x damage), same noise caveat.
 - +C: doubtful C8 +0.743 @ 0.40 loses to rung seed4 (+0.837 @ 0.120, lower damage); swap-L16 +1.243 @ 0.163
 and unit +1.480 @ 0.283 sit below the random +C calibrated peak (1.913 @ 0.527). +C remains inside the
@@ -279,43 +279,24 @@ No render changes triggered; wording-level label checks remain flagged for a hum
 - GPU-side: `/home/code/.local/share/pueue/task_logs/876.log` first generation line 10:40:45 UTC, `GPU_STAGE_COMPLETE ... cells=29` 10:48:18 UTC = 453s; Modal app `ap-huwTvWxxcxfrkieyYfx5M9`.
 - Billing: still unknown (Modal emits no receipts); $1 iteration2 reserve retained as ceiling. Budget file updated with wall/app/dose-grid facts, cost still unreconciled by construction.
 
-## 10. Escape-margin uncertainty: paired bootstrap + exact permutation (CPU, saved judgments only)
+## 10. Fixed-comparison uncertainty (corrected 2026-09-12)
 
-Method (`slop/scripts/20260909_escape_bootstrap.py`, saved output in
-`slop/logs/20260909_j_lens_dev/escape_bootstrap.log`): per-scenario per-order signed effects from saved
-AB/BA cache records (no new API calls); paired by scenario across the frozen DEV15; two-level bootstrap
-(resample 15 scenarios with replacement, resample the two order cells within each drawn scenario,
-B=20000) with the published mean-then-abs damage estimator (abs of mean order damages, matching
-export.py/dev-comparison.csv — an earlier mean-of-abs draft was corrected); 95% percentile CIs;
-two-sided exact sign-flip permutation p over the 15 paired differences. Intended-direction margins signed
-positive-when-candidate-wins.
+The [corrected script](../scripts/20260909_escape_bootstrap.py) averages saved AB/BA orders per scenario, then resamples paired scenarios with replacement (B=20000, seed 20260909). Orders are fixed design conditions, not independent replicate judgments. Damage remains the absolute mean signed order difference. The printed point is the observed estimator, not the bootstrap mean. All cache keys explicitly select the original v7 rubric; no judgments were rerun.
 
-Results (CORRECTED 2026-09-09: the first run's bootstrap averaged over all 15 scenarios every
-replicate — order noise only — which understated the CIs RF1. The fixed two-level version resamples
-scenarios AND orders; numbers below are the corrected ones, permutation p-values unaffected):
-- (a) doubt -C4 vs -C id9 best (seed1 -1.143 @ 0.373): effect margin +0.0167, 95% CI [-1.8800, +1.8833],
-  perm p=0.9800. At-boundary; indistinguishable from noise. (Rung median context +0.213 vs -1.160.)
-- (b) swap-L16 +C8.14 vs +C id9 best (seed4 +0.837 @ 0.120): effect margin +0.4067, 95% CI
-  [-0.7134, +2.3067], perm p=0.4529; damage margin +0.0333, CI [-0.2601, +0.3333]. Within noise.
-- (b2) swap-L16 +C8.14 vs +C id0 best (seed1 +2.097): effect margin -0.8533, 95% CI [-2.2367, +0.2367]
-  (CROSSES ZERO under full uncertainty — the earlier 'clean loss' [-1.263,-0.433] was the order-only
-  artifact and is withdrawn), perm p=0.0494 (borderline sign asymmetry: leans loss, not robust to
-  scenario composition); damage margin +0.0068, CI [-0.1867, +0.2433] (matched damage).
+[Saved output](../logs/20260912_repairs/escape-bootstrap.log), effect differences positive when the candidate wins:
 
-Power extrapolation for option 2 (LABELED EXTRAPOLATION, not measurement): from the per-scenario paired-
-difference SDs (+C: SD 1.5459 on margin +0.4067; -C: SD 3.8228 on margin +0.0167), normal approximation
-n ≈ (k·SD/margin)^2 for k-SE separation, ASSUMING per-scenario SD stays as observed, i.i.d. scenarios,
-same judge noise, and the point margin persisting (heavy-tailed outlier data makes this optimistic —
-true n likely larger, since added scenarios dilute rather than replicate the current outliers):
-- +C escape (+0.41): n ≈ 58 scenarios for 2 SE, n ≈ 130 for 3 SE (~4-9x the frozen DEV15).
-- -C escape (+0.017): n ≈ 210,000 for 2 SE, n ≈ 473,000 for 3 SE. No feasible cohort resolves this;
-  the -C margin needs a better repair, not more data (additionally, its sign is unstable: CI symmetric
-  around zero, p=0.98).
+```text
+MARGIN vs best seed1: point=+0.0167 95%CI=[-1.8767,+1.8400] perm p=0.9800
+MARGIN vs best (id9 seed4): point=+0.4067 95%CI=[-0.1333,+1.2567] perm p=0.4529
+DAMAGE margin (cand - rung, negative = cleaner): point=+0.0433 95%CI=[-0.0600,+0.1933]
+MARGIN vs best (id0 seed1): point=-0.8533 95%CI=[-2.1200,-0.0633] perm p=0.0494
+DAMAGE margin (cand - rung, negative = cleaner): point=+0.0367 95%CI=[-0.1067,+0.2200]
+```
 
-Conclusion (both margins within noise for escape; the only significant comparison is a +C loss): the
-measured J-lens points sit at the boundary of the random region with margins inside judge noise
-(per-scenario swings +-8, 3-8/15 AB/BA reversals). The frozen DEV15 cohort cannot statistically resolve
-the two-direction discriminator. Concrete limiting dependency with options: (1) accept these as descriptive
-plots with uncertainty stated (index-dev note updated); (2) expand the scenario cohort — new scope decision
-with its own budget, not covered here; (3) stop J-lens work here. No victory claimed; no further paid runs
-authorized or launched.
+These compare doubtful injection -C4 with negative-side dose ID9 seed1, then L16 swap +C8.14 with positive-side ID9 seed4 and ID0 seed1. Candidate, dose and comparator selection are held fixed. The intervals are not simultaneous random-region confidence bands; the sign-flip p-values also assume exchangeability under sign reversal. The third comparison favors that particular random control under these conditional assumptions. It is not a general rejection of J-lens.
+
+The previous order-only and two-level intervals, and the printed bootstrap damage means, are superseded. [The review](../reviews/20260912_reporting_review.md) preserves the defects and reproductions; original logs remain unchanged. Scenario variation cannot be labeled solely judge noise. Intervals crossing zero do not demonstrate equivalence.
+
+The earlier sample-size estimates were k-standard-error extrapolations from unstable observed margins, not power calculations with a chosen rejection level and desired power. I withdraw the recommendations derived from them, including the claim that no feasible cohort could resolve the negative direction. Choosing another cohort or method still needs new experiment authorization.
+
+-- PI/OpenAI

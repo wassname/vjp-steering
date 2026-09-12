@@ -1,17 +1,12 @@
-"""Bootstrap/permutation uncertainty for the two escape margins (CPU-only, no new API calls).
+"""Paired-scenario uncertainty for fixed DEV15 comparisons. Author: PI/OpenAI.
 
-Uses saved paired AB/BA judgments from outputs/demo_judgments/judgments.jsonl.
-Comparisons (all on the frozen DEV15 scenarios, paired by scenario):
-  (a) doubt -C4 mean vs -C id9 rung (all five seeds; primary escape margin vs
-      best seed s1, plus median context);
-  (b) L16 swap +C8.14 mean vs +C id9 rung best and +C id0 rung best (effect and
-      damage margins).
-Method per margin: paired scenario differences, two-level bootstrap (resample
-15 scenarios with replacement; within each drawn scenario resample its two
-order cells with replacement, keeping the published mean-then-abs estimator
-form), B=20000, 95% percentile CIs; two-sided exact sign-flip permutation
-p-value over the 15 paired differences (2^15 = 32768 enumerations).
-Intended-direction margin is signed positive-when-candidate-wins.
+Average the saved AB/BA judgments within each scenario, then resample paired
+scenarios. Presentation orders are fixed design conditions, not independent
+replicate judgments. Damage is abs(mean signed order differences). This does
+not estimate new-judge sampling or repeat candidate/dose/comparator selection,
+so intervals are conditional comparisons, not confidence bands for a random
+region. Positive effect margins favor the candidate; negative damage margins
+mean less off-axis change. No new API calls.
 """
 import itertools
 import json
@@ -24,11 +19,12 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 from judge import cache_key, experiment_rows  # noqa: E402
-from export import score_cell, signed_axis_effect  # noqa: E402
+from export import cache_records, score_cell  # noqa: E402
 from render_dev_comparison import normalized_calibration_dose_id  # noqa: E402
 
 B = 20000
 RNG = np.random.default_rng(20260909)
+HISTORICAL_RUBRIC = "results-demo-perresponse-syco-v7"
 
 CAND_A = ("v14-dev-j-lens-injection-L16-doubt", "-C", 4.0)
 CAND_B = ("v14-dev-j-lens-swap-L16", "+C", 8.142873158153925)
@@ -49,62 +45,42 @@ def id0_plus_dose(seed: int, fractions: list[float]) -> float:
     return out[0]
 
 
-def load_cell_orders(exp: str, side: str, coeff: float):
-    """scenario -> {AB: (eff, dmg_signed), BA: (eff, dmg_signed)}, signed by axis."""
-    rows = [r for r in experiment_rows(exp, "dev")
-            if r["side"] == side and abs(r["coefficient"] - coeff) < 1e-9]
-    assert len(rows) == 15, f"{exp} {side} {coeff}: {len(rows)} rows"
-    keys = {(r["vignette"], o): cache_key(r, o, 0) for r in rows for o in ("AB", "BA")}
-    recs = {}
-    with open(ROOT / "outputs/demo_judgments/judgments.jsonl") as f:
-        for line in f:
-            try:
-                r = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if r.get("cache_key") in keys.values():
-                recs[r["cache_key"]] = r
-    assert len(recs) == len(keys), f"{exp} {side} {coeff}: {len(recs)}/{len(keys)} records"
-    sign = -1.0 if side == "-C" else 1.0
-    out = {}
-    for r in rows:
-        per_order = {}
-        for o in ("AB", "BA"):
-            cell = score_cell(recs[keys[(r["vignette"], o)]])
-            per_order[o] = (sign * cell[0], cell[1])
-        out[r["vignette"]] = per_order
-    return out
+def load_cells(specs):
+    """Read all requested cells with one scan of the historical judge cache."""
+    rows_by_spec = {}
+    for exp, side, coeff in specs:
+        rows = [r for r in experiment_rows(exp, "dev")
+                if r["side"] == side and abs(r["coefficient"] - coeff) < 1e-9]
+        assert len(rows) == len({r["vignette"] for r in rows}) == 15
+        rows_by_spec[exp, side, coeff] = rows
+    keys = {cache_key(r, o, 0, rubric=HISTORICAL_RUBRIC)
+            for rows in rows_by_spec.values() for r in rows for o in ("AB", "BA")}
+    records = cache_records(keys, rubric=HISTORICAL_RUBRIC)
+    assert keys == records.keys(), f"missing {len(keys - records.keys())} historical judgments"
+    cells = {}
+    for spec, rows in rows_by_spec.items():
+        sign = -1.0 if spec[1] == "-C" else 1.0
+        cells[spec] = {}
+        for row in rows:
+            cells[spec][row["vignette"]] = {}
+            for order in ("AB", "BA"):
+                effect, damage, _ = score_cell(records[cache_key(row, order, 0, rubric=HISTORICAL_RUBRIC)])
+                cells[spec][row["vignette"]][order] = (sign * effect, damage)
+    return cells
 
 
 def boot_margin(cand, rung, damage=False, b=B):
-    """Paired TWO-LEVEL bootstrap mean difference (candidate wins positive).
-
-    Level 1 resamples scenarios with replacement (the dominant uncertainty);
-level 2 resamples the two order cells within each drawn scenario. (A prior
-draft averaged over all 15 scenarios every replicate — order noise only —
-which understated the CIs; fixed 2026-09-09.)
-    """
-    scens = sorted(cand.keys())
-    assert sorted(rung.keys()) == scens
-    n = len(scens)
-    diffs = np.zeros((b, n))
-    for i, sc in enumerate(scens):
-        draws = RNG.integers(0, 2, size=(b, 2))  # order resample per replicate
-        ce = np.array([cand[sc]["AB"][0], cand[sc]["BA"][0]])
-        re_ = np.array([rung[sc]["AB"][0], rung[sc]["BA"][0]])
-        if damage:
-            # Published estimator (export.py judged_scenarios / dev-comparison.csv
-            # off_axis_perturbation) is abs(mean of order damages), NOT mean of abs:
-            # damage can partially cancel across orders before the abs. Match it here.
-            cd = np.array([cand[sc]["AB"][1], cand[sc]["BA"][1]])
-            rd = np.array([rung[sc]["AB"][1], rung[sc]["BA"][1]])
-            diffs[:, i] = np.abs(cd[draws].mean(axis=1)) - np.abs(rd[draws].mean(axis=1))
-        else:
-            diffs[:, i] = ce[draws].mean(axis=1) - re_[draws].mean(axis=1)
-    scen_idx = RNG.integers(0, n, size=(b, n))  # level-1 scenario resample
-    means = diffs[np.arange(b)[:, None], scen_idx].mean(axis=1)
+    """Observed difference and paired-scenario percentile interval. PI/OpenAI."""
+    scens = sorted(cand)
+    assert sorted(rung) == scens and scens
+    metric = 1 if damage else 0
+    candidate_means = scenario_means(cand)[metric]
+    comparator_means = scenario_means(rung)[metric]
+    diffs = np.array([candidate_means[sc] - comparator_means[sc] for sc in scens])
+    scen_idx = RNG.integers(0, len(scens), size=(b, len(scens)))
+    means = diffs[scen_idx].mean(axis=1)
     lo, hi = np.percentile(means, [2.5, 97.5])
-    return float(means.mean()), float(lo), float(hi), diffs.mean(axis=0)
+    return float(diffs.mean()), float(lo), float(hi), diffs
 
 
 def perm_paired(mean_diffs):
@@ -129,16 +105,22 @@ def scenario_means(cell):
 def main() -> None:
     fractions = json.load(open(
         ROOT / "slop/logs/20260909_j_lens_dev/dev-comparison-provenance.json"))["calibration_grid"]["fractions"]
-    cand_a = load_cell_orders(*CAND_A)
-    cand_b = load_cell_orders(*CAND_B)
-    rung_a = {s: load_cell_orders(f"v14-dev-random-s{s}-r2", "-C",
-              json.load(open(ROOT / f"outputs/experiments/v14-dev-random-s{s}-r2/manifest.json"))
-              ["extensions"]["low_extension_0p40"]["side_coeffs"]["-C"][0]) for s in range(5)}
-    rung_b9 = {s: load_cell_orders(f"v14-dev-random-s{s}-r2", "+C",
-               json.load(open(ROOT / f"outputs/experiments/v14-dev-random-s{s}-r2/manifest.json"))
-               ["extensions"]["low_extension_0p40"]["side_coeffs"]["+C"][0]) for s in range(5)}
-    rung_b0 = {s: load_cell_orders(f"v14-dev-random-s{s}-r2", "+C", id0_plus_dose(s, fractions))
-               for s in range(5)}
+    extension_specs = {}
+    original_specs = {}
+    for seed in range(5):
+        exp = f"v14-dev-random-s{seed}-r2"
+        manifest = json.loads((ROOT / "outputs/experiments" / exp / "manifest.json").read_text())
+        for side in ("-C", "+C"):
+            dose = manifest["extensions"]["low_extension_0p40"]["side_coeffs"][side][0]
+            extension_specs[seed, side] = (exp, side, dose)
+        original_specs[seed] = (exp, "+C", id0_plus_dose(seed, fractions))
+    cells = load_cells([CAND_A, CAND_B, *extension_specs.values(), *original_specs.values()])
+    cand_a, cand_b = cells[CAND_A], cells[CAND_B]
+    rung_a = {seed: cells[extension_specs[seed, "-C"]] for seed in range(5)}
+    rung_b9 = {seed: cells[extension_specs[seed, "+C"]] for seed in range(5)}
+    rung_b0 = {seed: cells[original_specs[seed]] for seed in range(5)}
+    print(f"rubric={HISTORICAL_RUBRIC}; paired scenario bootstrap B={B}; AB/BA averaged before resampling")
+    print("Conditional on observed candidate/dose/comparator selection; not random-region confidence bands.")
     print(f"cells loaded: doubt-C4, swapL16+C8.14, 5x-C-ext, 5x+C-ext, 5x+C-id0")
     for name, cell in [("doubt-C4", cand_a), ("swapL16+C8.14", cand_b)]:
         eff, dmg = scenario_means(cell)

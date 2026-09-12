@@ -1,5 +1,7 @@
 # J-lens paper/reference fidelity audit
 
+Status correction, 2026-09-12 (PI/OpenAI): the normalized-readout diagnostic proposed below was completed as task 864. Its nine-layer raw/vendor ranks and failed final-token outcome are saved in [the corrected diagnostic](20260909_corrected_vendor_diagnostic.md). The pending language below is historical, not a request to rerun it. The Qwen workspace-band choice remains unattested. See [the repository review](../reviews/20260912_repo_review.md) for current limitations.
+
 ## Sources read
 
 - Vendored paper: `/workspace/2026/jspace/jsteer/docs/papers/jacobian_lens_workspace.md`, source URL recorded at its first line as Transformer Circuits, July 6 2026. Correct path includes `jspace`; `/workspace/2026/jsteer/...` is missing it.
