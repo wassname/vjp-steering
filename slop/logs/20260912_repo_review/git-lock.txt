@@ -1,0 +1,1 @@
+2026-09-12: git add blocked by zero-byte .git/index.lock dated 2026-09-11 07:42:48 +08. lsof/fuser found no owner; pgrep -x git and ps comm checks found no Git process. Removed stale lock only; cause of original abandoned lock unknown.
