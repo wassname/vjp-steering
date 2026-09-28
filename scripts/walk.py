@@ -217,6 +217,11 @@ def _dense_tail(c_lo: float, c_star: float) -> list[float]:
 
 
 def walk(args: argparse.Namespace) -> None:
+    """ A coarse-to-fine dose search. 
+    
+    Cheap checks (unfinished, role leak, repetition) climb a √2 grid until the model breaks twice in a row; that sets C*. 
+    Then the judge is spent only on a dense sweep from 0.5 to 1.25 × C*.
+    """
     assert args.walk_id
     if not args.refine_around_cstar:
         assert args.limit == 100 and args.status == "RESULT"
