@@ -13,6 +13,7 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import torch
 from loguru import logger
 from steering_lite import MeanDiffC, PCAC, RandomC, Vector
@@ -36,11 +37,14 @@ COHORT = ROOT / "data/bullshit_bench_v2.jsonl"
 PERSONAS = [("sycophantic", "abrasive")]
 PERSONA_TEMPLATE = "Answer as someone who is {persona}."
 ROLE_LEAK = re.compile(r"<\s*/?\s*think\s*>|^\s*(user|assistant|system)\s*$", re.I | re.M)
+# C* trip thresholds as answer counts; equal to health()'s 25%/50% rates only when there are 100 answers
 C_STAR_THRESHOLD = {"repeated": 25, "unfinished": 50, "role_leak": 25}
-# dense linear tail around the predicted breakdown C*: 0.5*C* .. 1.25*C*
-# in 16 steps gives ~half the half-octave gap; symlog wastes samples past breakdown
+# refine tail: 16 log-spaced doses from the last healthy rung to 1.25*C*; only those above C* are run.
+# REFINE_LOW is only written to the certificate, no rung is run at 0.5*C*
 REFINE_LOW, REFINE_HIGH, REFINE_STEPS = 0.5, 1.25, 16
+# dose grid 2^(n/6): 1/32 .. 16384, step x1.12; contains the older sqrt(2) grid
 GRID = tuple(2.0 ** (n / 6) for n in range(-30, 85))
+# rung artifact reason (incl. legacy names) -> breakdown kind used by the stop rule
 BREAKDOWN_REASON = {
     "unfinished": "unfinished",
     "unfinished_ge_0.5": "unfinished",
@@ -205,84 +209,91 @@ def c_star_trips(demo_stats: dict) -> bool:
 
 
 def _dense_tail(c_lo: float, c_star: float) -> list[float]:
-    # densify only the gap (C_lo, 1.25*C*] — not 0.5*C*..C* which is already coarsely sampled
+    """16 log-spaced doses in (c_lo, 1.25*c_star], rounded to 10dp so dedup is stable."""
     hi = c_star * REFINE_HIGH
     if c_lo >= hi:
         return []
-    # log-spaced between c_lo and hi so step scales with dose
-    import numpy as np
-    tail = list(np.geomspace(c_lo * (1 + 1e-9), hi, REFINE_STEPS))
-    # snap to 10dp for dedup stability
-    return [round(float(c), 10) for c in tail]
+    return [round(float(c), 10) for c in np.geomspace(c_lo * (1 + 1e-9), hi, REFINE_STEPS)]
+
+
+def splice_tail(grid: list[float], index: int, c_lo: float, c_star: float) -> list[float]:
+    """Insert the tail doses above C* right after grid[index] (== C*); drop coarse doses it duplicates."""
+    tail = [c for c in _dense_tail(c_lo, c_star) if c > c_star and round(c, 10) != round(c_star, 10)]
+    inserted = {round(c, 10) for c in tail}
+    rest = [c for c in grid[index + 1 :] if round(c, 10) not in inserted]
+    logger.info("REFINE C*={} C_lo={} inserted={} total_grid={}", c_star, c_lo, tail, index + 1 + len(tail) + len(rest))
+    # FIXME: coarse doses in (C*, 1.25*C*] run after the tail, so doses stop ascending here
+    # and the "2 broken in a row" streak can pair a tail dose with a lower coarse dose
+    return grid[: index + 1] + tail + rest
+
+
+def run_rung_subprocess(args: argparse.Namespace, coefficient: float, grid_index: int) -> tuple[Path, dict]:
+    """Run one dose as `walk.py --coefficient C`, then load the rung it saved."""
+    command = rung_command(args, coefficient)
+    wait_for_gpu()
+    environment = os.environ | {"HF_HUB_OFFLINE": "1", "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"}
+    # shared GPU: another job can take memory during a long rung, so retry on OOM instead of losing the walk
+    for attempt in range(3):
+        logger.info("run grid={} C={} attempt={}/3 command={}", grid_index, coefficient, attempt + 1, shlex.join(command))
+        stderr_lines: list[str] = []
+        proc = subprocess.Popen(command, cwd=ROOT, env=environment, text=True, stdout=sys.stdout, stderr=subprocess.PIPE)
+        assert proc.stderr is not None
+        for line in proc.stderr:  # echo stderr live and keep it to detect OOM
+            sys.stdout.write(line)
+            sys.stdout.flush()
+            stderr_lines.append(line)
+        code = proc.wait()
+        if code == 0:
+            break
+        oom = any("OutOfMemoryError" in line for line in stderr_lines)
+        if attempt < 2 and oom:
+            logger.warning("OOM at C={}; re-wait and retry", coefficient)
+            wait_for_gpu()
+            continue
+        raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
+    adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
+    assert adopted is not None
+    return adopted
 
 
 def walk(args: argparse.Namespace) -> None:
-    """ A coarse-to-fine dose search. 
-    
-    Cheap checks (unfinished, role leak, repetition) climb a √2 grid until the model breaks twice in a row; that sets C*. 
-    Then the judge is spent only on a dense sweep from 0.5 to 1.25 × C*.
+    """Climb the dose grid until both steering signs break down. Each dose is one rung, run as a subprocess.
+
+    - a rung generates bare, +C and -C answers on the 100 prompts; breakdown uses cheap health checks, not the judge
+    - stop rule: a side's boundary is its 2nd broken rung in a row; the walk ends one rung after both sides have one
+    - --refine-around-cstar: C* is the first rung where a side trips after a healthy rung (1 break, not 2);
+      doses in (C*, 1.25*C*] are then inserted after C* (see splice_tail)
+    - judge.py later scores every rung of the COMPLETE certificate, not only the refine tail
+    Writes outputs/walk_{method}_s{seed}.json after every rung; saved rungs are reused, so a killed walk resumes.
     """
     assert args.walk_id
     if not args.refine_around_cstar:
         assert args.limit == 100 and args.status == "RESULT"
-    # dose-based boundary (not index) so splice cannot invalidate stop rule
     state = {side: {"streak": 0, "boundary": None, "boundary_C": None} for side in ("+C", "-C")}
     entries: list[dict] = []
     certificate_path = ROOT / "outputs" / f"walk_{args.method}_s{args.seed}.json"
-    phase = "coarse"
     c_star: float | None = None
-    c_star_lo: float | None = None  # C_lo for the side that set C*
-    c_star_side: str | None = None
-    lo_by_side: dict[str, tuple[int, float]] = {}
-    grid_list: list[float] = list(GRID)
+    last_healthy_c: dict[str, float] = {}  # side -> latest dose that did not trip C*
+    grid_list = list(GRID)
     grid_index = 0
     while grid_index < len(grid_list):
         coefficient = grid_list[grid_index]
         adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
-        command = rung_command(args, coefficient)
         if adopted is None and args.dry_run:
-            logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(command))
+            logger.info("DRY_RUN missing grid={} C={} command={}", grid_index, coefficient, shlex.join(rung_command(args, coefficient)))
             grid_index += 1
             continue
         if adopted is None:
-            wait_for_gpu()
-            environment = os.environ.copy()
-            environment["HF_HUB_OFFLINE"] = "1"
-            environment["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-            # shared GPU: a stranger can grab memory under a long rung; retry on OOM instead of losing the walk
-            for attempt in range(3):
-                logger.info(
-                    "run grid={} C={} attempt={}/3 command={}", grid_index, coefficient, attempt + 1, shlex.join(command)
-                )
-                stderr_lines: list[str] = []
-                oom = False
-                proc = subprocess.Popen(command, cwd=ROOT, env=environment, text=True,
-                                        stdout=sys.stdout, stderr=subprocess.PIPE)
-                assert proc.stderr is not None
-                for line in proc.stderr:
-                    sys.stdout.write(line)
-                    sys.stdout.flush()
-                    stderr_lines.append(line)
-                    if "OutOfMemoryError" in line:
-                        oom = True
-                code = proc.wait()
-                if code == 0:
-                    break
-                if attempt < 2 and oom:
-                    logger.warning("OOM at C={}; re-wait and retry", coefficient)
-                    wait_for_gpu()
-                    continue
-                raise subprocess.CalledProcessError(code, command, "".join(stderr_lines))
-            adopted = adopted_rung(args.method, args.seed, coefficient, args.model, args.max_new_tokens, args.walk_id)
-            assert adopted is not None
+            adopted = run_rung_subprocess(args, coefficient, grid_index)
         run_dir, artifact = adopted
         logger.info("adopt grid={} C={} path={}", grid_index, coefficient, run_dir)
+
+        # stop rule: the 2nd broken rung in a row fixes that side's boundary
         entry = {"grid_index": grid_index, "coefficient": coefficient, "run_dir": str(run_dir.relative_to(ROOT))}
         for side in ("+C", "-C"):
             reasons = semantic_reasons(artifact["breakdown_reasons"][side])
-            broken = bool(reasons)
             if state[side]["boundary"] is None:
-                state[side]["streak"] = state[side]["streak"] + 1 if broken else 0
+                state[side]["streak"] = state[side]["streak"] + 1 if reasons else 0
                 if state[side]["streak"] == 2:
                     state[side]["boundary"] = grid_index
                     state[side]["boundary_C"] = coefficient
@@ -290,30 +301,18 @@ def walk(args: argparse.Namespace) -> None:
                 "breakdown_reasons": reasons,
                 "post_boundary": state[side]["boundary"] is not None and grid_index > state[side]["boundary"],
             }
-        if args.refine_around_cstar and phase == "coarse" and c_star is None:
-            for _side in ("+C", "-C"):
-                tripped = c_star_trips(artifact["demo_stats"][_side])
-                if not tripped:
-                    lo_by_side[_side] = (grid_index, coefficient)
-                elif tripped and _side in lo_by_side:
-                    lo_idx, lo_c = lo_by_side[_side]
+
+        # C*: first trip after a healthy rung on either side, then densify above it once
+        if args.refine_around_cstar and c_star is None:
+            for side in ("+C", "-C"):
+                if not c_star_trips(artifact["demo_stats"][side]):
+                    last_healthy_c[side] = coefficient
+                elif side in last_healthy_c:
                     c_star = coefficient
-                    c_star_lo = lo_c
-                    c_star_side = _side
-                    logger.info("ILLINOIS bracket side={} lo_g={} C_lo={} hi_g={} C_hi={} C*~={}", _side, lo_idx, lo_c, grid_index, coefficient, c_star)
-                    tail = _dense_tail(lo_c, c_star)
-                    if not tail:
-                        logger.info("REFINE skipped: C_lo {} >= hi {}", lo_c, c_star * REFINE_HIGH)
-                    else:
-                        seen = {round(e["coefficient"], 10) for e in entries} | {round(coefficient, 10)}
-                        to_insert = [float(c) for c in tail if round(float(c), 10) not in seen and float(c) > coefficient]
-                        if to_insert:
-                            grid_list = grid_list[: grid_index + 1] + to_insert + [c for c in grid_list[grid_index + 1 :] if round(c, 10) not in {round(x, 10) for x in to_insert}]
-                            logger.info("REFINE C*={} C_lo={} tail={}..{} n={} total_grid={}", c_star, lo_c, tail[0], tail[-1], len(to_insert), len(grid_list))
-                        else:
-                            logger.info("REFINE no insert: tail already covered")
-                    phase = "dense"
+                    logger.info("C_STAR side={} C_lo={} C*={}", side, last_healthy_c[side], c_star)
+                    grid_list = splice_tail(grid_list, grid_index, last_healthy_c[side], c_star)
                     break
+
         entries.append(entry)
         certificate = {
             "schema": "dose_walk_v1",
@@ -321,7 +320,7 @@ def walk(args: argparse.Namespace) -> None:
             "method": args.method,
             "seed": args.seed,
             "model": args.model,
-            "grid": "refined" if phase == "dense" else "2^(n/6), n=-30..84",
+            "grid": "refined" if c_star is not None else "2^(n/6), n=-30..84",
             "state": state,
             "rungs": entries,
         }
@@ -330,13 +329,7 @@ def walk(args: argparse.Namespace) -> None:
             certificate["refine"] = {"low": c_star * REFINE_LOW, "high": c_star * REFINE_HIGH, "steps": REFINE_STEPS}
         certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
         grid_index += 1
-        # stop check is dose-anchored: require 2 confirmations beyond boundary_C in dose order.
-        # Since grid_list is dose-sorted except for the one-time tail insert above current C,
-        # index check is only valid pre-splice; post-splice we check that 2 rungs beyond
-        # boundary_C have been evaluated (dose-sorted entries).
-        if phase == "dense" and c_star is not None:
-            # after refine, allow tail to run; stop only when both inserted tail rungs have been visited
-            pass  # fall through to normal check below
+        # index-based: complete once the rung after the later side's boundary has run
         if all(state[side]["boundary"] is not None and grid_index >= state[side]["boundary"] + 2 for side in state):
             certificate["status"] = "COMPLETE"
             certificate_path.write_text(json.dumps(certificate, indent=2) + "\n")
