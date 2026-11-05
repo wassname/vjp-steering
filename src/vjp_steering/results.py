@@ -25,11 +25,28 @@ from vjp_steering.experiment import (
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data" / "results.csv"
 J_LENS_COLOR = "#56b4e9"
-PLOT_NOTE = (
-    "Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible "
-    "dose means in dose order. Smooth curves are visual guides from bare through accepted Pareto control points "
-    "to the selected crosses, not measured or achievable intermediate doses. Crosses mark the last accepted dose "
-    "(J-lens: peak intended effect); the table selects peak intended effect, which can be a different dose."
+REPO_URL = "https://github.com/wassname/vjp-steering"
+# How to read the results page: wassname's own wording from README.md and wassname.com.
+READ_GUIDE = (
+    "This plot shows a nice way of measuring steering as a dose-dependent intervention: we sweep the doses and plot "
+    "the Pareto frontier to see which does the most steering with the least side effect while remaining coherent.",
+    "We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction "
+    "in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated "
+    "changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).",
+    "In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. "
+    "Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into "
+    "incoherence (in the demos we see garbled and repeating text).",
+    "The grey region is the null region where random vectors can steer the model, so any strong steering methods "
+    "should be able to go outside this region before incoherence.",
+)
+# Drafted by Claude for wassname to edit.
+TABLE_NOTES = (
+    "The table shows each method's strongest coherent effect in each direction, and the side effects at that dose. "
+    "The README explains the columns and the score.",
+    "The top plot smooths each line between measured doses. The bottom plot shows the measured doses.",
+)
+SELECTED_FULL_TABLE_NOTE = (
+    "J-lens empirical-candor is one run. Its +C steers toward candour, so a negative +C value is the intended direction."
 )
 SUMMARY_NOTE = (
     "N/rejected count dose-side groups. Table values use peak effect; crosses show final coherent doses. "
@@ -40,12 +57,6 @@ INDEX_NOTE = (
     "per side and calibration fraction. J-lens crosses mark peak accepted effect; baselines take the last accepted dose. "
     "Score is the worse-direction intended effect minus off-axis change (unit weight). Smooth curves are visual guides "
     "from bare to the selected cross, not achievable intermediate doses."
-)
-SELECTED_FULL_NOTE = (
-    "J-lens empirical-candor is one selected all-100 run: its source +C is mapped to the candidness target, "
-    "so its negative +C common-axis value is the intended direction. Fifteen rows were selection-exposed; "
-    "the non-DEV85 result is descriptive. AB/BA signs reverse in 34/100 pairs, and the DEV random control was "
-    "not matched in realized perturbation strength."
 )
 METHODS = (
     "vjp_delta",
@@ -974,16 +985,17 @@ def _markdown(
         SUMMARY_NOTE,
     ),
     extra_pareto_plot: bool = False,
+    notes: tuple[str, ...] = (),
 ) -> str:
     figures = (
         [
-            "## Measured dose paths",
-            "",
-            "![Measured dose paths](plot.png)",
-            "",
             "## Pareto-smoothed paths",
             "",
             "![Pareto-smoothed paths](plot_pareto.png)",
+            "",
+            "## Measured dose paths",
+            "",
+            "![Measured dose paths](plot.png)",
         ]
         if extra_pareto_plot
         else ["![Judged effect against off-axis change](plot.png)"]
@@ -991,11 +1003,14 @@ def _markdown(
     lines = [
         "# Results",
         "",
-        *intro,
+        f"[Code]({REPO_URL}) · [README]({REPO_URL}#readme)",
+        "",
+        "\n\n".join(intro),
         "",
         *figures,
         "",
         _markdown_table(table),
+        *(f"\n{note}" for note in notes),
     ]
     return "\n".join(lines) + "\n"
 
@@ -1012,11 +1027,15 @@ def _update_readme(table: list[list[str]]) -> None:
 def _html(
     table: list[list[str]],
     figure_html: str,
-    intro: str = (
+    intro: tuple[str, ...] = (
         "All rows use the same all-100 evaluation cohort. The table reports each named method's seed count. "
-        "The figure shows both steering directions. " + SUMMARY_NOTE
+        "The figure shows both steering directions. " + SUMMARY_NOTE,
     ),
+    notes: tuple[str, ...] = (),
 ) -> str:
+    def paragraphs(texts: tuple[str, ...]) -> str:
+        return "".join(f"<p>{html.escape(text)}</p>" for text in texts)
+
     def cell(cell: str) -> str:
         if cell.startswith("**") and cell.endswith("**"):
             return f"<strong>{html.escape(cell[2:-2])}</strong>"
@@ -1035,8 +1054,10 @@ def _html(
         ".plotly-graph-div{width:100%!important}table{border-collapse:collapse;width:100%}"
         "th,td{padding:.35rem .7rem;border-bottom:1px solid #ccc}"
         "th{text-align:left}img{max-width:100%}</style>"
-        f"<h1>Results</h1><p>{intro}</p>{figure_html}"
+        f"<h1>Results</h1><p><a href='{REPO_URL}'>Code</a> · <a href='{REPO_URL}#readme'>README</a></p>"
+        f"{paragraphs(intro)}{figure_html}"
         f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
+        f"{paragraphs(notes)}"
     )
 
 
@@ -1204,7 +1225,7 @@ def render_experiment(experiment_id: str, profile_name: str) -> None:
     html_text = _html(
         table,
         figure_html,
-        intro_line + " This output is separate from the primary publication result. " + path_note,
+        (intro_line + " This output is separate from the primary publication result. " + path_note,),
     )
     _check_equivalent(markdown_text, html_text)
     output = results_dir(profile_, experiment_id)
@@ -1237,16 +1258,12 @@ def main() -> None:
     methods, method_seeds = primary_methods()
     rows = _rows(methods=methods, method_seeds=method_seeds)
     table = _display_table(_summary(rows, methods, method_seeds))
+    notes = TABLE_NOTES + ((SELECTED_FULL_TABLE_NOTE,) if SELECTED_FULL_METHOD in methods else ())
     markdown_text = _markdown(
         table,
-        (
-            "The primary table uses the all-100 evaluation cohort and reports each named method's seed count.",
-            SUMMARY_NOTE,
-            INDEX_NOTE,
-            *((SELECTED_FULL_NOTE,) if SELECTED_FULL_METHOD in methods else ()),
-            PLOT_NOTE,
-        ),
+        READ_GUIDE,
         extra_pareto_plot=True,
+        notes=notes,
     )
     figure = plot(rows, methods, method_seeds)
     pareto_figure = plot(
@@ -1257,30 +1274,28 @@ def main() -> None:
         pareto=True,
     )
     figure_html = (
-        "<h2>Measured dose paths</h2>"
-        + figure.to_html(
+        "<h2>Pareto-smoothed paths</h2>"
+        + pareto_figure.to_html(
             full_html=False,
             include_plotlyjs="cdn",
             default_width="100%",
             config={"responsive": True},
-            div_id="results-plot",
+            div_id="results-pareto-plot",
         )
-        + "<h2>Pareto-smoothed paths</h2>"
-        + pareto_figure.to_html(
+        + "<h2>Measured dose paths</h2>"
+        + figure.to_html(
             full_html=False,
             include_plotlyjs=False,
             default_width="100%",
             config={"responsive": True},
-            div_id="results-pareto-plot",
+            div_id="results-plot",
         )
     )
     html_text = _html(
         table,
         figure_html,
-        "The primary table uses the all-100 evaluation cohort and reports each named method's seed count. "
-        + SUMMARY_NOTE + " "
-        + (SELECTED_FULL_NOTE + " " if SELECTED_FULL_METHOD in methods else "")
-        + PLOT_NOTE,
+        READ_GUIDE,
+        notes,
     )
     _check_equivalent(markdown_text, html_text)
     _update_readme(table)

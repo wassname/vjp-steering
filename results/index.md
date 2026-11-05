@@ -1,18 +1,22 @@
 # Results
 
-The primary table uses the all-100 evaluation cohort and reports each named method's seed count.
-N/rejected count dose-side groups. Table values use peak effect; crosses show final coherent doses. The gray region is descriptive; full random summaries use the same paired-coherent seeds (at least five of ten).
-Random eligibility: full pairs both signs with at least 5/10 coherent seeds per C; DEV requires all 5 coherent per side and calibration fraction. J-lens crosses mark peak accepted effect; baselines take the last accepted dose. Score is the worse-direction intended effect minus off-axis change (unit weight). Smooth curves are visual guides from bare to the selected cross, not achievable intermediate doses.
-J-lens empirical-candor is one selected all-100 run: its source +C is mapped to the candidness target, so its negative +C common-axis value is the intended direction. Fifteen rows were selection-exposed; the non-DEV85 result is descriptive. AB/BA signs reverse in 34/100 pairs, and the DEV random control was not matched in realized perturbation strength.
-Both figures retain the all-100 baselines and prior methods. The first connects their displayed admissible dose means in dose order. Smooth curves are visual guides from bare through accepted Pareto control points to the selected crosses, not measured or achievable intermediate doses. Crosses mark the last accepted dose (J-lens: peak intended effect); the table selects peak intended effect, which can be a different dose.
+[Code](https://github.com/wassname/vjp-steering) · [README](https://github.com/wassname/vjp-steering#readme)
 
-## Measured dose paths
+This plot shows a nice way of measuring steering as a dose-dependent intervention: we sweep the doses and plot the Pareto frontier to see which does the most steering with the least side effect while remaining coherent.
 
-![Measured dose paths](plot.png)
+We are steering bluntness <> sycophancy on Bullshit Bench v2. So when we steer left we hope to see a reduction in sycophancy (x-axis) and when we steer right an increase. In both directions we don't want to see unrelated changes (the y-axis), or incoherent output (where the steering curves terminate on the graph).
+
+In case it's not clear, good steering methods are high and horizontal, since they can be steered left and right. Bad steering methods fall down as side effects accumulate, and then the line disappears as they fall off into incoherence (in the demos we see garbled and repeating text).
+
+The grey region is the null region where random vectors can steer the model, so any strong steering methods should be able to go outside this region before incoherence.
 
 ## Pareto-smoothed paths
 
 ![Pareto-smoothed paths](plot_pareto.png)
+
+## Measured dose paths
+
+![Measured dose paths](plot.png)
 
 | method | score↑ | -C on-axis↑ | -C damage↓ | +C on-axis↑ | +C damage↓ | seeds | N | rejected↓ |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -24,3 +28,9 @@ Both figures retain the all-100 baselines and prior methods. The first connects 
 | J_word | +0.078 | 0.275 | **0.197** | 2.075 | 0.626 | 1 | 13 | 5 |
 | *random* | — | not confirmed | — | 3.148 | 0.558 | 10 | 6 | 3 |
 | J-lens empirical-candor (+C source) | — | not confirmed | — | -0.565 | **0.270** | 1 | 1 | 0 |
+
+The table shows each method's strongest coherent effect in each direction, and the side effects at that dose. The README explains the columns and the score.
+
+The top plot smooths each line between measured doses. The bottom plot shows the measured doses.
+
+J-lens empirical-candor is one run. Its +C steers toward candour, so a negative +C value is the intended direction.
